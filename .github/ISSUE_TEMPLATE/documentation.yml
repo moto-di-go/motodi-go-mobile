@@ -1,0 +1,49 @@
+name: 📖 Amélioration de la documentation
+description: Signaler un problème dans la doc ou proposer une amélioration
+title: "[DOCS] "
+labels: ["documentation"]
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type d'amélioration
+      options:
+        - Erreur ou information incorrecte
+        - Information manquante
+        - Exemple de code incorrect ou manquant
+        - Formulation à améliorer
+        - Nouvelle section à ajouter
+        - Traduction / orthographe
+        - Autre
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Fichier / Section concernée
+      placeholder: "README.md — Section Installation / docs/ARCHITECTURE.md"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: Contenu actuel (si applicable)
+      description: Coller le passage qui pose problème.
+      render: markdown
+
+  - type: textarea
+    id: suggested
+    attributes:
+      label: Amélioration proposée
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: J'ai vérifié que cette information n'existe pas déjà ailleurs dans le projet
+          required: true

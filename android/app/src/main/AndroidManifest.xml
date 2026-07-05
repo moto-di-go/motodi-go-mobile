@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Permissions réseau (obligatoire) -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- TODO: [TEMPLATE] Décommenter selon vos besoins -->
+    <!-- Notifications push -->
+    <!-- <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> -->
+    <!-- <uses-permission android:name="android.permission.VIBRATE" /> -->
+    <!-- <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> -->
+
+    <!-- Caméra et galerie -->
+    <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
+    <!-- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> -->
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
+
+    <!-- Micro -->
+    <!-- <uses-permission android:name="android.permission.RECORD_AUDIO" /> -->
+
+    <!-- Biométrie -->
+    <!-- <uses-permission android:name="android.permission.USE_BIOMETRIC" /> -->
+    <!-- <uses-permission android:name="android.permission.USE_FINGERPRINT" /> -->
+
+    <application
+        android:label="moto-di-go"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"
+            />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- TODO: [TEMPLATE] Deep links — remplacer 'yourapp' par votre scheme -->
+            <!-- <intent-filter android:autoVerify="true"> -->
+            <!--   <action android:name="android.intent.action.VIEW" /> -->
+            <!--   <category android:name="android.intent.category.DEFAULT" /> -->
+            <!--   <category android:name="android.intent.category.BROWSABLE" /> -->
+            <!--   <data android:scheme="yourapp" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+
+        <!-- Firebase Messaging (décommenter après config Firebase) -->
+        <!-- <service android:name=".MyFirebaseMessagingService" android:exported="false"> -->
+        <!--   <intent-filter> -->
+        <!--     <action android:name="com.google.firebase.MESSAGING_EVENT" /> -->
+        <!--   </intent-filter> -->
+        <!-- </service> -->
+
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+    </application>
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT" />
+            <data android:mimeType="text/plain" />
+        </intent>
+    </queries>
+</manifest>

@@ -1,0 +1,58 @@
+name: Dependency Audit
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'   # Chaque lundi à 9h UTC
+  workflow_dispatch:
+
+jobs:
+  audit:
+    name: Check outdated packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check for outdated packages
+        run: flutter pub outdated
+
+      - name: Check for incompatible constraints
+        run: flutter pub deps
+
+  # Vérifie les vulnérabilités connues
+  # Nécessite dart pub global activate pana
+  pana-score:
+    name: Package quality (pana)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Activate pana
+        run: dart pub global activate pana
+
+      - name: Run pana analysis
+        run: |
+          dart pub global run pana . --no-warning 2>&1 | tee pana-report.txt
+          echo "## Pana Report" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat pana-report.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

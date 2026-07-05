@@ -1,0 +1,50 @@
+name: ❓ Question / Support
+description: Poser une question sur l'utilisation ou la personnalisation du template
+title: "[QUESTION] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > ⚠️ Avant de poser une question, consultez la [documentation](../docs/), le [README](../README.md) et les [Discussions](https://github.com/BorisGautier/flutter_template_app/discussions) existantes.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Votre question
+      description: Décrivez clairement ce que vous cherchez à faire ou à comprendre.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Catégorie
+      options:
+        - Installation / Configuration initiale
+        - Renommage de l'application
+        - Architecture / Clean Architecture
+        - BLoC / Gestion d'état
+        - Navigation / GoRouter
+        - Réseau / Chopper
+        - Base de données / Drift
+        - Firebase / Configuration
+        - Thème / UI
+        - Tests unitaires
+        - CI/CD / Déploiement
+        - Génération de code
+        - Autre
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: Ce que j'ai déjà essayé
+      description: Listez les solutions que vous avez tenté d'appliquer.
+
+  - type: input
+    id: flutter-version
+    attributes:
+      label: Version Flutter
+      placeholder: "Flutter 3.44.0 / Dart 3.12.0"

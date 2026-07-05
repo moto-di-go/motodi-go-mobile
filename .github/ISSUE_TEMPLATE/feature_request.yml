@@ -1,0 +1,84 @@
+name: ✨ Demande de fonctionnalité
+description: Proposer une nouvelle fonctionnalité ou une amélioration du template
+title: "[FEAT] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de contribuer à l'évolution du template !
+        Décrivez votre idée avec un maximum de détails pour faciliter l'évaluation.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problème ou besoin
+      description: Quel problème cette fonctionnalité résout-elle ?
+      placeholder: "Il me manque… / Je dois à chaque fois… / Il serait utile de…"
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution proposée
+      description: Décrivez la fonctionnalité souhaitée avec le plus de précision possible.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives envisagées
+      description: D'autres approches que vous avez considérées.
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Catégorie
+      options:
+        - Architecture / Clean Architecture
+        - BLoC / Gestion d'état
+        - Navigation / GoRouter
+        - Réseau / Chopper
+        - Base de données / Drift
+        - Firebase / Notifications
+        - Authentification
+        - UI / Thème / Design System
+        - Tests / Qualité
+        - CI/CD / DevOps
+        - Documentation
+        - Internationalisation
+        - Sécurité
+        - Performance
+        - Autre
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priorité estimée
+      options:
+        - 🔴 Critique — bloquant pour l'adoption du template
+        - 🟠 Haute — amélioration importante
+        - 🟡 Moyenne — amélioration utile
+        - 🟢 Faible — nice-to-have
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Notes d'implémentation
+      description: Si vous avez des idées sur comment implémenter cette fonctionnalité.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: J'ai vérifié qu'une demande similaire n'existe pas déjà
+          required: true
+        - label: Cette fonctionnalité s'inscrit dans l'objectif du template (production-ready Flutter)
+          required: true

@@ -1,0 +1,55 @@
+# Fichiers Dart/Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+
+# Fichiers générés (build_runner / drift / injectable / l10n)
+*.g.dart
+*.freezed.dart
+# NE PAS ignorer les fichiers générés de localisation qui sont trackés
+# lib/l10n/app_localizations*.dart
+
+# Variables d'environnement — NE JAMAIS commiter le .env réel
+.env
+*.env
+!.env.example
+
+# Secrets natifs Firebase
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+
+# Clés de signature Android
+*.keystore
+*.jks
+android/key.properties
+
+# iOS
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Pods/
+*.xcworkspace
+!default.xcworkspace
+
+# macOS
+macos/Flutter/GeneratedPluginRegistrant.swift
+.DS_Store
+
+# IDE
+.idea/
+*.iml
+.vscode/settings.json
+.vscode/launch.json
+!.vscode/extensions.json
+
+# Coverage
+coverage/
+
+# Android local properties
+android/local.properties
+
+# Pub cache
+.pub-cache/
+.pub/

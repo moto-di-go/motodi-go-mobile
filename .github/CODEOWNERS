@@ -1,0 +1,31 @@
+# CODEOWNERS — assigne automatiquement les reviewers sur chaque PR
+# Docs : https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Propriétaire global (fallback — tout ce qui n'est pas couvert ci-dessous)
+* @BorisGautier
+
+# Infrastructure core
+/lib/core/           @BorisGautier
+/lib/di/             @BorisGautier
+/lib/routes/         @BorisGautier
+/lib/main.dart       @BorisGautier
+
+# Features
+/lib/features/       @BorisGautier
+
+# CI/CD et automatisation
+/.github/            @BorisGautier
+/scripts/            @BorisGautier
+
+# Tests
+/test/               @BorisGautier
+/integration_test/   @BorisGautier
+
+# Configuration sensible
+pubspec.yaml         @BorisGautier
+analysis_options.yaml @BorisGautier
+Makefile             @BorisGautier
+
+# Documentation
+/docs/               @BorisGautier
+*.md                 @BorisGautier

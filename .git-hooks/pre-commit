@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Hook pre-commit — Bloque le commit si analyze ou les tests échouent.
+# Installé via : git config core.hooksPath .git-hooks (fait automatiquement par make setup)
+set -e
+
+echo ""
+echo "➜ [pre-commit] Analyse du code..."
+flutter analyze --no-pub || {
+    echo "✗ flutter analyze a échoué. Corrigez les erreurs avant de commiter."
+    exit 1
+}
+
+echo "➜ [pre-commit] Tests unitaires..."
+flutter test --no-pub || {
+    echo "✗ Des tests ont échoué. Corrigez les erreurs avant de commiter."
+    exit 1
+}
+
+echo "✓ [pre-commit] Commit autorisé."
+echo ""
