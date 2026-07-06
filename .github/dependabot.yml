@@ -1,0 +1,75 @@
+# Dependabot — mises à jour automatiques des dépendances
+# PRs ouvertes sur la branche 'develop' chaque jour à 8h (Europe/Paris)
+# Créer la branche 'develop' si elle n'existe pas encore.
+
+version: 2
+updates:
+
+  # ── Flutter / Dart (pub) ──────────────────────────────────────────────
+  - package-ecosystem: "pub"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "08:00"
+      timezone: "Europe/Paris"
+    target-branch: "develop"
+    open-pull-requests-limit: 15
+    labels:
+      - "dependencies"
+      - "flutter"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    reviewers:
+      - "BorisGautier"
+    assignees:
+      - "BorisGautier"
+    groups:
+      # Regrouper les packages Firebase en une seule PR
+      firebase:
+        patterns:
+          - "firebase_*"
+          - "_flutterfire_internals"
+      # Regrouper les packages UI
+      ui-packages:
+        patterns:
+          - "google_fonts"
+          - "flutter_animate"
+          - "lottie"
+          - "fl_chart"
+          - "shimmer"
+          - "animations"
+          - "cached_network_image"
+          - "flutter_svg"
+          - "confetti"
+          - "pinput"
+      # Regrouper les packages d'authentification
+      auth-packages:
+        patterns:
+          - "google_sign_in*"
+          - "sign_in_with_apple*"
+          - "local_auth*"
+          - "firebase_auth*"
+    ignore:
+      # Ne pas bumper automatiquement les major versions (breaking changes)
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # ── GitHub Actions ───────────────────────────────────────────────────
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "Europe/Paris"
+    target-branch: "develop"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "ci"
+    commit-message:
+      prefix: "ci(deps)"
+      include: "scope"
+    reviewers:
+      - "BorisGautier"

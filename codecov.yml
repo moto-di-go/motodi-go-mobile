@@ -1,0 +1,35 @@
+# Configuration Codecov — seuils de couverture de code
+# Activation : Settings → Security → Code security and analysis → Codecov
+
+coverage:
+  status:
+    project:
+      default:
+        # Couverture globale minimale attendue
+        target: 70%
+        # Tolérance de régression entre deux builds
+        threshold: 5%
+        if_not_found: success
+        if_ci_failed: error
+    patch:
+      default:
+        # Couverture minimale des nouvelles lignes dans un PR
+        target: 60%
+        threshold: 5%
+        if_not_found: success
+        if_ci_failed: error
+
+# Ignorer les fichiers générés et les stubs dans le calcul
+ignore:
+  - '**/*.g.dart'
+  - '**/*.freezed.dart'
+  - '**/*.config.dart'
+  - '**/*.chopper.dart'
+  - 'lib/l10n/**'
+  - 'lib/main.dart'
+  - 'lib/routes/app_router.dart'
+
+comment:
+  layout: 'reach,diff,flags,files'
+  behavior: default
+  require_changes: false

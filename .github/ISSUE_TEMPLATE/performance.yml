@@ -1,0 +1,80 @@
+name: ⚡ Problème de performance
+description: Signaler une dégradation de performance ou un problème de lenteur
+title: "[PERF] "
+labels: ["performance", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Les métriques concrètes sont essentielles pour diagnostiquer et prioriser un problème de performance.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description du problème
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type de problème
+      options:
+        - Temps de démarrage de l'application (cold/warm start)
+        - Rendu — jank ou frames drops
+        - Utilisation mémoire excessive
+        - Taille de l'APK / IPA
+        - Requêtes réseau (Chopper)
+        - Requêtes base de données (Drift)
+        - Génération de code build_runner
+        - Autre
+    validations:
+      required: true
+
+  - type: textarea
+    id: metrics
+    attributes:
+      label: Métriques observées
+      description: Fournissez des chiffres concrets (fps, ms, Mo, etc.)
+      placeholder: |
+        - Temps de démarrage : 4 200 ms (attendu < 800 ms)
+        - Frames dropped : 45 % sur la page liste
+        - Mémoire : 850 Mo en idle sur Pixel 6
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Étapes pour reproduire
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Plateforme
+      multiple: true
+      options:
+        - Android debug
+        - Android release
+        - iOS debug
+        - iOS release
+        - Web
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Appareil de test
+      placeholder: "Pixel 7 (Android 14) / iPhone 15 (iOS 17)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: profiling
+    attributes:
+      label: Résultats de profiling (optionnel)
+      description: Résultats Flutter DevTools, traces, flamegraphs, timeline…
+      render: shell
