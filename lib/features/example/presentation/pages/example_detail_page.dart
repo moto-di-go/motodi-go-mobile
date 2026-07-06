@@ -18,7 +18,7 @@ class ExampleDetailPage extends StatelessWidget {
         appBar: AppBar(title: const Text('Détail')),
         body: BlocBuilder<ExampleBloc, ExampleState>(
           builder: (context, state) {
-            final item = state.items.where((i) => i.id == itemId).firstOrNull;
+            final item = state.items.firstWhereOrNull((i) => i.id == itemId);
             if (item == null) {
               return const Center(child: Text('Element non trouvé'));
             }
