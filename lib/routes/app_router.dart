@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,7 +16,7 @@ final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(de
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: RouteConstants.splash,
-  debugLogDiagnostics: true,
+  debugLogDiagnostics: kDebugMode,
   redirect: (context, state) {
     // TODO: [TEMPLATE] Ajouter ici la logique de garde (auth check, deep links, etc.)
     // Exemple :
