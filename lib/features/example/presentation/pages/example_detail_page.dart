@@ -1,7 +1,7 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_template_app/di/injection.dart';
-import 'package:flutter_template_app/features/example/presentation/bloc/example_bloc.dart';
 
 // Rôle : Page de détail de la feature example.
 class ExampleDetailPage extends StatelessWidget {
