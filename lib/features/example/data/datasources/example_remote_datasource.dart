@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import 'package:flutter_template_app/features/example/data/models/example_model.dart';
+import 'package:motodi_go_mobile/features/example/data/models/example_model.dart';
 
 // Rôle : Source de données distante — appels API via Chopper.
 // TODO: [TEMPLATE] Injecter votre ChopperService ici et réaliser les vrais appels API.

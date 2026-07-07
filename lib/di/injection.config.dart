@@ -11,19 +11,19 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:chopper/chopper.dart' as _i31;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
-import 'package:flutter_template_app/core/network/network_info.dart' as _i68;
-import 'package:flutter_template_app/core/services/notification_service.dart'
+import 'package:motodi_go_mobile/core/network/network_info.dart' as _i68;
+import 'package:motodi_go_mobile/core/services/notification_service.dart'
     as _i855;
-import 'package:flutter_template_app/di/register_module.dart' as _i747;
-import 'package:flutter_template_app/features/example/data/datasources/example_remote_datasource.dart'
+import 'package:motodi_go_mobile/di/register_module.dart' as _i747;
+import 'package:motodi_go_mobile/features/example/data/datasources/example_remote_datasource.dart'
     as _i532;
-import 'package:flutter_template_app/features/example/data/repositories/example_repository_impl.dart'
+import 'package:motodi_go_mobile/features/example/data/repositories/example_repository_impl.dart'
     as _i721;
-import 'package:flutter_template_app/features/example/domain/repositories/example_repository.dart'
+import 'package:motodi_go_mobile/features/example/domain/repositories/example_repository.dart'
     as _i1020;
-import 'package:flutter_template_app/features/example/domain/usecases/get_examples_usecase.dart'
+import 'package:motodi_go_mobile/features/example/domain/usecases/get_examples_usecase.dart'
     as _i786;
-import 'package:flutter_template_app/features/example/presentation/bloc/example_bloc.dart'
+import 'package:motodi_go_mobile/features/example/presentation/bloc/example_bloc.dart'
     as _i635;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;

@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:flutter_template_app/core/constants/route_constants.dart';
-import 'package:flutter_template_app/features/example/presentation/pages/example_list_page.dart';
-import 'package:flutter_template_app/features/example/presentation/pages/example_detail_page.dart';
+import 'package:motodi_go_mobile/core/constants/route_constants.dart';
+import 'package:motodi_go_mobile/features/example/presentation/pages/example_list_page.dart';
+import 'package:motodi_go_mobile/features/example/presentation/pages/example_detail_page.dart';
 
 // Rôle : Configuration centralisée de la navigation avec GoRouter.
 // Dépendances : go_router, flutter_bloc

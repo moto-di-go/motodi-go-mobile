@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:flutter_template_app/features/example/domain/entities/example_entity.dart';
-import 'package:flutter_template_app/features/example/domain/usecases/get_examples_usecase.dart';
+import 'package:motodi_go_mobile/features/example/domain/entities/example_entity.dart';
+import 'package:motodi_go_mobile/features/example/domain/usecases/get_examples_usecase.dart';
 
 part 'example_event.dart';
 part 'example_state.dart';

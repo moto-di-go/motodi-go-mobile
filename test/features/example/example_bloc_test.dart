@@ -2,9 +2,9 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:flutter_template_app/features/example/domain/entities/example_entity.dart';
-import 'package:flutter_template_app/features/example/domain/usecases/get_examples_usecase.dart';
-import 'package:flutter_template_app/features/example/presentation/bloc/example_bloc.dart';
+import 'package:motodi_go_mobile/features/example/domain/entities/example_entity.dart';
+import 'package:motodi_go_mobile/features/example/domain/usecases/get_examples_usecase.dart';
+import 'package:motodi_go_mobile/features/example/presentation/bloc/example_bloc.dart';
 
 class MockGetExamplesUseCase extends Mock implements GetExamplesUseCase {}
 

@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:flutter_template_app/features/example/domain/entities/example_entity.dart';
+import 'package:motodi_go_mobile/features/example/domain/entities/example_entity.dart';
 
 part 'example_model.g.dart';
 

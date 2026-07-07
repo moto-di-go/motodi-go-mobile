@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_template_app/di/injection.dart';
-import 'package:flutter_template_app/core/widgets/app_loading.dart';
-import 'package:flutter_template_app/core/widgets/app_error_view.dart';
-import 'package:flutter_template_app/features/example/presentation/bloc/example_bloc.dart';
+import 'package:motodi_go_mobile/di/injection.dart';
+import 'package:motodi_go_mobile/core/widgets/app_loading.dart';
+import 'package:motodi_go_mobile/core/widgets/app_error_view.dart';
+import 'package:motodi_go_mobile/features/example/presentation/bloc/example_bloc.dart';
 
 // Rôle : Page principale de la feature example. Illustre le pattern BLoC complet.
 class ExampleListPage extends StatelessWidget {

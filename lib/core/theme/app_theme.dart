@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template_app/core/theme/app_colors.dart';
-import 'package:flutter_template_app/core/theme/app_typography.dart';
+import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/theme/app_typography.dart';
 
 // Rôle : Définit les ThemeData light et dark de l'application (Material 3).
 // Dépendances : app_colors.dart, app_typography.dart

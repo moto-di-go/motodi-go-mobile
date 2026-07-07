@@ -19,7 +19,7 @@ class NotificationService {
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
     const iosSettings = DarwinInitializationSettings();
     const initSettings = InitializationSettings(android: androidSettings, iOS: iosSettings);
-    await _localNotifications.initialize(initSettings);
+    await _localNotifications.initialize(settings: initSettings);
 
     // Écoute des messages en foreground
     FirebaseMessaging.onMessage.listen(_handleForegroundMessage);

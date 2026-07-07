@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_template_app/features/example/domain/entities/example_entity.dart';
+import 'package:motodi_go_mobile/features/example/domain/entities/example_entity.dart';
 
 void main() {
   final tDateTime = DateTime(2024, 1, 1);

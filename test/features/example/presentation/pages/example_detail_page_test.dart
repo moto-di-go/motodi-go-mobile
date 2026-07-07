@@ -2,9 +2,9 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:flutter_template_app/di/injection.dart';
-import 'package:flutter_template_app/features/example/presentation/bloc/example_bloc.dart';
-import 'package:flutter_template_app/features/example/presentation/pages/example_detail_page.dart';
+import 'package:motodi_go_mobile/di/injection.dart';
+import 'package:motodi_go_mobile/features/example/presentation/bloc/example_bloc.dart';
+import 'package:motodi_go_mobile/features/example/presentation/pages/example_detail_page.dart';
 
 import '../../../../helpers/test_data.dart';
 

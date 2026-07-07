@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_template_app/features/example/data/models/example_model.dart';
-import 'package:flutter_template_app/features/example/domain/entities/example_entity.dart';
+import 'package:motodi_go_mobile/features/example/data/models/example_model.dart';
+import 'package:motodi_go_mobile/features/example/domain/entities/example_entity.dart';
 
 import '../../../../helpers/test_data.dart';
 

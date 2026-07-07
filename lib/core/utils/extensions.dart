@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template_app/l10n/app_localizations.dart';
+import 'package:motodi_go_mobile/l10n/app_localizations.dart';
 
 // Rôle : Extensions utilitaires globales sur les types Flutter/Dart.
 extension ContextExtensions on BuildContext {
