@@ -163,4 +163,7 @@ jobs:
         run: cp .env.example .env
 
       - name: Build iOS (no codesign)
-        run: flutter build ios --debug --no-codesign --dart-define=APP_ENV=development
+        run: |
+          flutter create --platforms=ios .
+          flutter pub get
+          flutter build ios --debug --no-codesign --dart-define=APP_ENV=development

@@ -11,25 +11,25 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:chopper/chopper.dart' as _i31;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
-import 'package:motodi_go_mobile/core/network/network_info.dart' as _i68;
-import 'package:motodi_go_mobile/core/services/notification_service.dart'
-    as _i855;
-import 'package:motodi_go_mobile/di/register_module.dart' as _i747;
-import 'package:motodi_go_mobile/features/example/data/datasources/example_remote_datasource.dart'
-    as _i532;
-import 'package:motodi_go_mobile/features/example/data/repositories/example_repository_impl.dart'
-    as _i721;
-import 'package:motodi_go_mobile/features/example/domain/repositories/example_repository.dart'
-    as _i1020;
-import 'package:motodi_go_mobile/features/example/domain/usecases/get_examples_usecase.dart'
-    as _i786;
-import 'package:motodi_go_mobile/features/example/presentation/bloc/example_bloc.dart'
-    as _i635;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:internet_connection_checker/internet_connection_checker.dart'
     as _i973;
 import 'package:logger/logger.dart' as _i974;
+import 'package:motodi_go_mobile/core/network/network_info.dart' as _i247;
+import 'package:motodi_go_mobile/core/services/notification_service.dart'
+    as _i435;
+import 'package:motodi_go_mobile/di/register_module.dart' as _i568;
+import 'package:motodi_go_mobile/features/example/data/datasources/example_remote_datasource.dart'
+    as _i1016;
+import 'package:motodi_go_mobile/features/example/data/repositories/example_repository_impl.dart'
+    as _i387;
+import 'package:motodi_go_mobile/features/example/domain/repositories/example_repository.dart'
+    as _i697;
+import 'package:motodi_go_mobile/features/example/domain/usecases/get_examples_usecase.dart'
+    as _i569;
+import 'package:motodi_go_mobile/features/example/presentation/bloc/example_bloc.dart'
+    as _i57;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -44,8 +44,8 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.prefs,
       preResolve: true,
     );
-    gh.lazySingleton<_i855.NotificationService>(
-      () => _i855.NotificationService(),
+    gh.lazySingleton<_i435.NotificationService>(
+      () => _i435.NotificationService(),
     );
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => registerModule.secureStorage,
@@ -55,26 +55,26 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i973.InternetConnectionChecker>(
       () => registerModule.connectionChecker,
     );
-    gh.lazySingleton<_i532.ExampleRemoteDataSource>(
-      () => _i532.ExampleRemoteDataSource(),
+    gh.lazySingleton<_i1016.ExampleRemoteDataSource>(
+      () => _i1016.ExampleRemoteDataSource(),
     );
-    gh.lazySingleton<_i68.NetworkInfo>(
-      () => _i68.NetworkInfoImpl(gh<_i973.InternetConnectionChecker>()),
+    gh.lazySingleton<_i247.NetworkInfo>(
+      () => _i247.NetworkInfoImpl(gh<_i973.InternetConnectionChecker>()),
     );
-    gh.lazySingleton<_i1020.ExampleRepository>(
-      () => _i721.ExampleRepositoryImpl(
-        gh<_i532.ExampleRemoteDataSource>(),
-        gh<_i68.NetworkInfo>(),
+    gh.lazySingleton<_i697.ExampleRepository>(
+      () => _i387.ExampleRepositoryImpl(
+        gh<_i1016.ExampleRemoteDataSource>(),
+        gh<_i247.NetworkInfo>(),
       ),
     );
-    gh.lazySingleton<_i786.GetExamplesUseCase>(
-      () => _i786.GetExamplesUseCase(gh<_i1020.ExampleRepository>()),
+    gh.lazySingleton<_i569.GetExamplesUseCase>(
+      () => _i569.GetExamplesUseCase(gh<_i697.ExampleRepository>()),
     );
-    gh.factory<_i635.ExampleBloc>(
-      () => _i635.ExampleBloc(gh<_i786.GetExamplesUseCase>()),
+    gh.factory<_i57.ExampleBloc>(
+      () => _i57.ExampleBloc(gh<_i569.GetExamplesUseCase>()),
     );
     return this;
   }
 }
 
-class _$RegisterModule extends _i747.RegisterModule {}
+class _$RegisterModule extends _i568.RegisterModule {}
