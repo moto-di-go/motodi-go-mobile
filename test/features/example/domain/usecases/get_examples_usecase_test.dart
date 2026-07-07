@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:flutter_template_app/core/error/failure.dart';
-import 'package:flutter_template_app/features/example/domain/usecases/get_examples_usecase.dart';
+import 'package:motodi_go_mobile/core/error/failure.dart';
+import 'package:motodi_go_mobile/features/example/domain/usecases/get_examples_usecase.dart';
 
 import '../../../../helpers/mocks.dart';
 import '../../../../helpers/test_data.dart';

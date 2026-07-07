@@ -1,8 +1,8 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_template_app/core/network/interceptors.dart';
-import 'package:flutter_template_app/core/network/authenticator.dart';
-import 'package:flutter_template_app/core/network/json_type_converter.dart';
+import 'package:motodi_go_mobile/core/network/interceptors.dart';
+import 'package:motodi_go_mobile/core/network/authenticator.dart';
+import 'package:motodi_go_mobile/core/network/json_type_converter.dart';
 
 // Rôle : Configure le ChopperClient central avec intercepteurs, auth et convertisseurs JSON.
 // Dépendances : chopper, flutter_dotenv, interceptors.dart, authenticator.dart

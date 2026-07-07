@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_template_app/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 
 // TODO: [TEMPLATE] Remplacer 'Outfit' par votre police de marque.
 // Pour changer la police : modifier fontFamily + les assets dans pubspec.yaml

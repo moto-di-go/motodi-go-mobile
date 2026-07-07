@@ -1,6 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
-import 'package:flutter_template_app/di/injection.config.dart';
+import 'package:motodi_go_mobile/di/injection.config.dart';
 
 // Rôle : Point d'entrée de l'injection de dépendances via GetIt + Injectable.
 // Dépendances : get_it, injectable

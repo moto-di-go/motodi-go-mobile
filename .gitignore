@@ -6,7 +6,6 @@
 build/
 
 # Fichiers générés (build_runner / drift / injectable / l10n)
-*.g.dart
 *.freezed.dart
 # NE PAS ignorer les fichiers générés de localisation qui sont trackés
 # lib/l10n/app_localizations*.dart
