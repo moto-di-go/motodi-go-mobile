@@ -3,96 +3,159 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
-import 'package:motodi_go_mobile/features/example/presentation/pages/example_list_page.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/pages/account_ready_page.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/pages/auth_route_args.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/pages/forgot_password_page.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/pages/login_page.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/pages/onboarding_page.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/pages/otp_page.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/pages/register_page.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/pages/session_expired_page.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/pages/splash_page.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/pages/welcome_page.dart';
 import 'package:motodi_go_mobile/features/example/presentation/pages/example_detail_page.dart';
+import 'package:motodi_go_mobile/features/example/presentation/pages/example_list_page.dart';
+import 'package:motodi_go_mobile/features/home/presentation/pages/home_page.dart';
+import 'package:motodi_go_mobile/features/profiles/presentation/pages/driver_profile_pages.dart';
+import 'package:motodi_go_mobile/features/profiles/presentation/pages/passenger_profile_page.dart';
+import 'package:motodi_go_mobile/features/profiles/presentation/pages/profile_selection_page.dart';
 
-// Rôle : Configuration centralisée de la navigation avec GoRouter.
-// Dépendances : go_router, flutter_bloc
-// TODO: [TEMPLATE] Remplacer les routes d'exemple par vos propres routes.
-// Pour ajouter une route : ajouter un GoRoute dans la liste routes.
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
-final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+GoRouter createAppRouter(SessionCubit sessionCubit) {
+  return GoRouter(
+    navigatorKey: rootNavigatorKey,
+    initialLocation: RouteConstants.splash,
+    debugLogDiagnostics: kDebugMode,
+    refreshListenable: GoRouterRefreshStream(sessionCubit.stream),
+    redirect: (context, state) {
+      final session = sessionCubit.state;
+      final location = state.matchedLocation;
 
-final appRouter = GoRouter(
-  navigatorKey: _rootNavigatorKey,
-  initialLocation: RouteConstants.splash,
-  debugLogDiagnostics: kDebugMode,
-  redirect: (context, state) {
-    // TODO: [TEMPLATE] Ajouter ici la logique de garde (auth check, deep links, etc.)
-    // Exemple :
-    // final authState = context.read<AuthBloc>().state;
-    // final isLoggedIn = authState.status == AuthStatus.authenticated;
-    // final isGoingToLogin = state.matchedLocation == RouteConstants.login;
-    // if (!isLoggedIn && !isGoingToLogin) return RouteConstants.login;
-    return null;
-  },
-  routes: [
-    GoRoute(path: RouteConstants.splash, builder: (context, state) => const _SplashPage()),
-    GoRoute(
-      path: RouteConstants.login,
-      builder: (context, state) => const _PlaceholderPage(title: 'Connexion'),
-    ),
-    // === Feature d'exemple ===
-    GoRoute(
-      path: RouteConstants.exampleList,
-      builder: (context, state) => const ExampleListPage(),
-      routes: [
-        GoRoute(
-          path: ':id',
-          builder: (context, state) {
-            final id = state.pathParameters['id']!;
-            return ExampleDetailPage(itemId: id);
-          },
-        ),
-      ],
-    ),
-    // TODO: [TEMPLATE] Ajouter vos routes ici
-  ],
-);
+      final authEntryRoutes = {
+        RouteConstants.welcome,
+        RouteConstants.login,
+        RouteConstants.register,
+        RouteConstants.otp,
+        RouteConstants.accountReady,
+        RouteConstants.forgotPassword,
+        RouteConstants.resetOtp,
+        RouteConstants.resetPassword,
+        RouteConstants.passwordResetSuccess,
+      };
+      final publicRoutes = {
+        RouteConstants.splash,
+        RouteConstants.onboarding,
+        RouteConstants.sessionExpired,
+        ...authEntryRoutes,
+      };
+      final profileSetupRoutes = {
+        RouteConstants.profileSelection,
+        RouteConstants.profilePassenger,
+        RouteConstants.profileMototaxi,
+        RouteConstants.profileTransporter,
+      };
 
-class _SplashPage extends StatefulWidget {
-  const _SplashPage();
+      if (session.isBootstrapping) {
+        return location == RouteConstants.splash ? null : RouteConstants.splash;
+      }
 
-  @override
-  State<_SplashPage> createState() => _SplashPageState();
-}
+      if (session.isExpired) {
+        return location == RouteConstants.sessionExpired ? null : RouteConstants.sessionExpired;
+      }
 
-class _SplashPageState extends State<_SplashPage> {
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) context.go(RouteConstants.exampleList);
-    });
-  }
+      if (!session.isAuthenticated) {
+        if (location == RouteConstants.splash) {
+          return session.onboardingSeen ? RouteConstants.welcome : RouteConstants.onboarding;
+        }
+        if (publicRoutes.contains(location)) return null;
+        return RouteConstants.welcome;
+      }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // TODO: [TEMPLATE] Remplacer par votre logo
-            const FlutterLogo(size: 80),
-            const SizedBox(height: 16),
-            Text('Flutter Template App', style: Theme.of(context).textTheme.headlineSmall),
-          ],
-        ),
+      if (location == RouteConstants.splash || location == RouteConstants.sessionExpired) {
+        return session.needsProfileSelection
+            ? RouteConstants.profileSelection
+            : RouteConstants.home;
+      }
+
+      if (session.needsProfileSelection) {
+        if (location == RouteConstants.accountReady || profileSetupRoutes.contains(location)) {
+          return null;
+        }
+        return RouteConstants.profileSelection;
+      }
+
+      if (authEntryRoutes.contains(location) || location == RouteConstants.onboarding) {
+        return RouteConstants.home;
+      }
+
+      return null;
+    },
+    routes: [
+      GoRoute(path: RouteConstants.splash, builder: (context, state) => const SplashPage()),
+      GoRoute(path: RouteConstants.onboarding, builder: (context, state) => const OnboardingPage()),
+      GoRoute(path: RouteConstants.welcome, builder: (context, state) => const WelcomePage()),
+      GoRoute(path: RouteConstants.login, builder: (context, state) => const LoginPage()),
+      GoRoute(path: RouteConstants.register, builder: (context, state) => const RegisterPage()),
+      GoRoute(
+        path: RouteConstants.otp,
+        builder: (context, state) => OtpPage(args: state.extra as RegistrationOtpArgs?),
       ),
-    );
-  }
-}
-
-class _PlaceholderPage extends StatelessWidget {
-  final String title;
-  const _PlaceholderPage({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(child: Text('$title — Page à implémenter')),
-    );
-  }
+      GoRoute(
+        path: RouteConstants.accountReady,
+        builder: (context, state) => const AccountReadyPage(),
+      ),
+      GoRoute(
+        path: RouteConstants.forgotPassword,
+        builder: (context, state) => const ForgotPasswordPage(),
+      ),
+      GoRoute(
+        path: RouteConstants.resetOtp,
+        builder: (context, state) => ResetOtpPage(args: state.extra as ResetOtpArgs?),
+      ),
+      GoRoute(
+        path: RouteConstants.resetPassword,
+        builder: (context, state) => NewPasswordPage(args: state.extra as ResetOtpArgs?),
+      ),
+      GoRoute(
+        path: RouteConstants.passwordResetSuccess,
+        builder: (context, state) => const PasswordResetSuccessPage(),
+      ),
+      GoRoute(
+        path: RouteConstants.sessionExpired,
+        builder: (context, state) => const SessionExpiredPage(),
+      ),
+      GoRoute(
+        path: RouteConstants.profileSelection,
+        builder: (context, state) => const ProfileSelectionPage(),
+      ),
+      GoRoute(
+        path: RouteConstants.profilePassenger,
+        builder: (context, state) => const PassengerProfilePage(),
+      ),
+      GoRoute(
+        path: RouteConstants.profileMototaxi,
+        builder: (context, state) => const MotoTaxiProfilePage(),
+      ),
+      GoRoute(
+        path: RouteConstants.profileTransporter,
+        builder: (context, state) => const TransporterProfilePage(),
+      ),
+      GoRoute(path: RouteConstants.home, builder: (context, state) => const HomePage()),
+      GoRoute(
+        path: RouteConstants.exampleList,
+        builder: (context, state) => const ExampleListPage(),
+        routes: [
+          GoRoute(
+            path: ':id',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return ExampleDetailPage(itemId: id);
+            },
+          ),
+        ],
+      ),
+    ],
+  );
 }

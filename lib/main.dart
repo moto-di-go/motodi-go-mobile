@@ -3,39 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:go_router/go_router.dart';
 
-import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/core/theme/app_theme.dart';
-import 'package:motodi_go_mobile/routes/app_router.dart';
+import 'package:motodi_go_mobile/di/injection.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:motodi_go_mobile/l10n/app_localizations.dart';
-
-// TODO: [TEMPLATE] Importer firebase_options.dart généré par FlutterFire CLI
-// import 'firebase_options.dart';
+import 'package:motodi_go_mobile/routes/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Chargement des variables d'environnement
   await dotenv.load(fileName: '.env');
-
-  // Initialisation Firebase
-  // TODO: [TEMPLATE] Décommenter après avoir configuré Firebase
-  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-  // PlatformDispatcher.instance.onError = (error, stack) {
-  //   FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-  //   return true;
-  // };
-
-  // Configuration de l'injection de dépendances
   await configureDependencies();
 
-  // Initialisation des services globaux
-  // TODO: [TEMPLATE] Décommenter après configuration Firebase
-  // await getIt<NotificationService>().initialize();
-
-  // Observateur BLoC global (debug / analytics)
-  // TODO: [TEMPLATE] Remplacer par AnalyticsBlocObserver si analytics activés
   if (kDebugMode) {
     Bloc.observer = _AppBlocObserver();
   }
@@ -43,27 +24,50 @@ void main() async {
   runApp(const App());
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
 
   @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  late final SessionCubit _sessionCubit;
+  late final GoRouter _router;
+
+  @override
+  void initState() {
+    super.initState();
+    _sessionCubit = getIt<SessionCubit>();
+    _router = createAppRouter(_sessionCubit);
+    _sessionCubit.bootstrap();
+  }
+
+  @override
+  void dispose() {
+    _router.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      // TODO: [TEMPLATE] Remplacer par le nom de votre application
-      title: 'Flutter Template App',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme(),
-      darkTheme: AppTheme.darkTheme(),
-      // TODO: [TEMPLATE] Configurer le thème par défaut (light / dark / system)
-      themeMode: ThemeMode.system,
-      routerConfig: appRouter,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
+    return BlocProvider.value(
+      value: _sessionCubit,
+      child: MaterialApp.router(
+        title: "Moto'di Go",
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme(),
+        darkTheme: AppTheme.darkTheme(),
+        themeMode: ThemeMode.light,
+        routerConfig: _router,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
     );
   }
 }
@@ -79,7 +83,8 @@ class _AppBlocObserver extends BlocObserver {
   void onTransition(Bloc bloc, Transition transition) {
     super.onTransition(bloc, transition);
     debugPrint(
-      '[BLoC] ${bloc.runtimeType}: ${transition.event.runtimeType} -> ${transition.nextState.runtimeType}',
+      '[BLoC] ${bloc.runtimeType}: ${transition.event.runtimeType} -> '
+      '${transition.nextState.runtimeType}',
     );
   }
 }
