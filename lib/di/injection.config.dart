@@ -20,6 +20,18 @@ import 'package:motodi_go_mobile/core/network/network_info.dart' as _i247;
 import 'package:motodi_go_mobile/core/services/notification_service.dart'
     as _i435;
 import 'package:motodi_go_mobile/di/register_module.dart' as _i568;
+import 'package:motodi_go_mobile/features/auth/data/datasources/auth_local_datasource.dart'
+    as _i992;
+import 'package:motodi_go_mobile/features/auth/data/datasources/auth_remote_datasource.dart'
+    as _i753;
+import 'package:motodi_go_mobile/features/auth/data/repositories/auth_repository_impl.dart'
+    as _i890;
+import 'package:motodi_go_mobile/features/auth/domain/repositories/auth_repository.dart'
+    as _i1053;
+import 'package:motodi_go_mobile/features/auth/presentation/cubit/auth_form_cubit.dart'
+    as _i459;
+import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart'
+    as _i493;
 import 'package:motodi_go_mobile/features/example/data/datasources/example_remote_datasource.dart'
     as _i1016;
 import 'package:motodi_go_mobile/features/example/data/repositories/example_repository_impl.dart'
@@ -30,6 +42,14 @@ import 'package:motodi_go_mobile/features/example/domain/usecases/get_examples_u
     as _i569;
 import 'package:motodi_go_mobile/features/example/presentation/bloc/example_bloc.dart'
     as _i57;
+import 'package:motodi_go_mobile/features/profiles/data/datasources/profile_remote_datasource.dart'
+    as _i525;
+import 'package:motodi_go_mobile/features/profiles/data/repositories/profile_repository_impl.dart'
+    as _i278;
+import 'package:motodi_go_mobile/features/profiles/domain/repositories/profile_repository.dart'
+    as _i802;
+import 'package:motodi_go_mobile/features/profiles/presentation/cubit/profile_cubit.dart'
+    as _i747;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -58,8 +78,33 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1016.ExampleRemoteDataSource>(
       () => _i1016.ExampleRemoteDataSource(),
     );
+    gh.lazySingleton<_i753.AuthRemoteDataSource>(
+      () => _i753.AuthRemoteDataSourceImpl(gh<_i31.ChopperClient>()),
+    );
+    gh.lazySingleton<_i525.ProfileRemoteDataSource>(
+      () => _i525.ProfileRemoteDataSourceImpl(gh<_i31.ChopperClient>()),
+    );
+    gh.lazySingleton<_i992.AuthLocalDataSource>(
+      () => _i992.AuthLocalDataSourceImpl(
+        gh<_i558.FlutterSecureStorage>(),
+        gh<_i460.SharedPreferences>(),
+      ),
+    );
     gh.lazySingleton<_i247.NetworkInfo>(
       () => _i247.NetworkInfoImpl(gh<_i973.InternetConnectionChecker>()),
+    );
+    gh.lazySingleton<_i802.ProfileRepository>(
+      () => _i278.ProfileRepositoryImpl(
+        gh<_i525.ProfileRemoteDataSource>(),
+        gh<_i247.NetworkInfo>(),
+      ),
+    );
+    gh.lazySingleton<_i1053.AuthRepository>(
+      () => _i890.AuthRepositoryImpl(
+        gh<_i753.AuthRemoteDataSource>(),
+        gh<_i992.AuthLocalDataSource>(),
+        gh<_i247.NetworkInfo>(),
+      ),
     );
     gh.lazySingleton<_i697.ExampleRepository>(
       () => _i387.ExampleRepositoryImpl(
@@ -67,8 +112,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i247.NetworkInfo>(),
       ),
     );
+    gh.factory<_i459.AuthFormCubit>(
+      () => _i459.AuthFormCubit(gh<_i1053.AuthRepository>()),
+    );
+    gh.lazySingleton<_i493.SessionCubit>(
+      () => _i493.SessionCubit(gh<_i1053.AuthRepository>()),
+    );
     gh.lazySingleton<_i569.GetExamplesUseCase>(
       () => _i569.GetExamplesUseCase(gh<_i697.ExampleRepository>()),
+    );
+    gh.factory<_i747.ProfileCubit>(
+      () => _i747.ProfileCubit(gh<_i802.ProfileRepository>()),
     );
     gh.factory<_i57.ExampleBloc>(
       () => _i57.ExampleBloc(gh<_i569.GetExamplesUseCase>()),
