@@ -1,3 +1,7 @@
+# MOTO'DI GO Mobile Status
+
+This repository is still a Flutter template shell with example screens. MOTO'DI GO mobile authentication, OTP, profile, trip, wallet, offline/NFC and notification workflows are not delivered yet. See [docs/current-status.md](docs/current-status.md).
+
 # Flutter Template App
 
 [![CI](https://github.com/BorisGautier/flutter_template_app/actions/workflows/ci.yml/badge.svg)](https://github.com/BorisGautier/flutter_template_app/actions/workflows/ci.yml)
@@ -228,7 +232,7 @@ flutter test integration_test/ --dart-define=APP_ENV=development
 
 | Workflow | Déclencheur | Description |
 |----------|-------------|-------------|
-| `ci.yml` | push/PR → main, develop | analyze + tests + build Android/iOS |
+| `ci.yml` | push/PR → main, dev | analyze + tests + build Android/iOS |
 | `release-android.yml` | tag `v*.*.*` ou manuel | Signature + Google Play Store |
 | `release-ios.yml` | tag `v*.*.*` ou manuel | Signature + TestFlight / App Store |
 | `code-quality.yml` | PR + hebdomadaire | lint, format, détection secrets |

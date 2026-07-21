@@ -18,7 +18,7 @@ class JsonToTypeConverter extends JsonConverter {
   }
 
   T? fromJsonData<T, InnerType>(String? data, JsonFactory? factory) {
-    if (data == null) return null;
+    if (data == null || data.trim().isEmpty) return null;
     final jsonData = json.decode(data);
     if (factory != null) {
       if (jsonData is List) {

@@ -2,7 +2,7 @@ name: Code Quality
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main, dev]
   schedule:
     - cron: '0 8 * * 1'   # Chaque lundi à 8h UTC
 

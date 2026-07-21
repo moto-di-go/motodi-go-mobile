@@ -11,7 +11,7 @@ class AppApiClient {
   // TODO: [TEMPLATE] Renommer 'AppApiClient' selon votre projet
   static ChopperClient create() {
     // TODO: [TEMPLATE] Adapter la clé .env si nécessaire
-    final baseUrl = dotenv.env['API_BASE_URL'] ?? 'https://api.yourapp.com/api/v1';
+    final baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://10.0.2.2:8080/api/v1';
 
     return ChopperClient(
       baseUrl: Uri.parse(baseUrl),

@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// Nom de l'application
   ///
   /// In fr, this message translates to:
-  /// **'Flutter Template App'**
+  /// **'Moto\'di Go'**
   String get appName;
 
   /// No description provided for @common_ok.

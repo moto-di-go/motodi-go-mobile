@@ -1,7 +1,7 @@
 {
   "@@locale": "fr",
 
-  "appName": "Flutter Template App",
+  "appName": "Moto'di Go",
   "@appName": {
     "description": "Nom de l'application"
   },
