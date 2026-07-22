@@ -23,7 +23,7 @@ class HomePage extends StatelessWidget {
         final status = active?.validationStatus ?? ValidationStatus.validated;
         final isLocked = type != ProfileType.passenger && status != ValidationStatus.validated;
         return Scaffold(
-          backgroundColor: const Color(0xFFFBFCF8),
+          backgroundColor: AppColors.background,
           body: SafeArea(
             child: ListView(
               padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),

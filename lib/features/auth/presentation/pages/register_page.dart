@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
+import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/auth_form_cubit.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/pages/auth_route_args.dart';
@@ -105,7 +106,7 @@ class _RegisterViewState extends State<_RegisterView> {
                 children: [
                   Checkbox(
                     value: _accepted,
-                    activeColor: const Color(0xFF17A851),
+                    activeColor: AppColors.primary,
                     onChanged: (value) => setState(() => _accepted = value ?? false),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
@@ -117,12 +118,12 @@ class _RegisterViewState extends State<_RegisterView> {
                         children: [
                           TextSpan(
                             text: "Conditions d'utilisation",
-                            style: TextStyle(color: Color(0xFF17A851), fontWeight: FontWeight.w900),
+                            style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900),
                           ),
                           TextSpan(text: ' et la '),
                           TextSpan(
                             text: 'Politique de confidentialité.',
-                            style: TextStyle(color: Color(0xFF17A851), fontWeight: FontWeight.w900),
+                            style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900),
                           ),
                         ],
                       ),
