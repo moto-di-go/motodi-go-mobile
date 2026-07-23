@@ -42,6 +42,14 @@ import 'package:motodi_go_mobile/features/example/domain/usecases/get_examples_u
     as _i569;
 import 'package:motodi_go_mobile/features/example/presentation/bloc/example_bloc.dart'
     as _i57;
+import 'package:motodi_go_mobile/features/kyc/data/datasources/kyc_remote_datasource.dart'
+    as _i29;
+import 'package:motodi_go_mobile/features/kyc/data/repositories/kyc_repository_impl.dart'
+    as _i356;
+import 'package:motodi_go_mobile/features/kyc/domain/repositories/kyc_repository.dart'
+    as _i9;
+import 'package:motodi_go_mobile/features/kyc/presentation/cubit/kyc_cubit.dart'
+    as _i657;
 import 'package:motodi_go_mobile/features/profiles/data/datasources/profile_remote_datasource.dart'
     as _i525;
 import 'package:motodi_go_mobile/features/profiles/data/repositories/profile_repository_impl.dart'
@@ -84,6 +92,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i525.ProfileRemoteDataSource>(
       () => _i525.ProfileRemoteDataSourceImpl(gh<_i31.ChopperClient>()),
     );
+    gh.lazySingleton<_i29.KycRemoteDataSource>(
+      () => _i29.KycRemoteDataSourceImpl(
+        gh<_i31.ChopperClient>(),
+        gh<_i558.FlutterSecureStorage>(),
+      ),
+    );
     gh.lazySingleton<_i992.AuthLocalDataSource>(
       () => _i992.AuthLocalDataSourceImpl(
         gh<_i558.FlutterSecureStorage>(),
@@ -92,6 +106,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i247.NetworkInfo>(
       () => _i247.NetworkInfoImpl(gh<_i973.InternetConnectionChecker>()),
+    );
+    gh.lazySingleton<_i9.KycRepository>(
+      () => _i356.KycRepositoryImpl(
+        gh<_i29.KycRemoteDataSource>(),
+        gh<_i247.NetworkInfo>(),
+        gh<_i992.AuthLocalDataSource>(),
+      ),
     );
     gh.lazySingleton<_i802.ProfileRepository>(
       () => _i278.ProfileRepositoryImpl(
@@ -112,6 +133,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i247.NetworkInfo>(),
       ),
     );
+    gh.factory<_i657.KycCubit>(() => _i657.KycCubit(gh<_i9.KycRepository>()));
     gh.factory<_i459.AuthFormCubit>(
       () => _i459.AuthFormCubit(gh<_i1053.AuthRepository>()),
     );

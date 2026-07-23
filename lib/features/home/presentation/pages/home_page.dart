@@ -21,7 +21,9 @@ class HomePage extends StatelessWidget {
         final active = state.activeProfile;
         final type = active?.type ?? ProfileType.passenger;
         final status = active?.validationStatus ?? ValidationStatus.validated;
-        final isLocked = type != ProfileType.passenger && status != ValidationStatus.validated;
+        final isLocked =
+            type != ProfileType.passenger &&
+            status != ValidationStatus.validated;
         return Scaffold(
           backgroundColor: AppColors.background,
           body: SafeArea(
@@ -38,10 +40,11 @@ class HomePage extends StatelessWidget {
                     Expanded(
                       child: RichText(
                         text: TextSpan(
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            color: AppColors.textPrimary,
-                            fontWeight: FontWeight.w900,
-                          ),
+                          style: Theme.of(context).textTheme.headlineMedium
+                              ?.copyWith(
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w900,
+                              ),
                           children: const [
                             TextSpan(text: "Moto'di Go"),
                             TextSpan(
@@ -64,17 +67,23 @@ class HomePage extends StatelessWidget {
                       child: CircleAvatar(
                         radius: 26,
                         backgroundColor: const Color(0xFFDFF5E8),
-                        child: Icon(profileIcon(type), color: AppColors.primary),
+                        child: Icon(
+                          profileIcon(type),
+                          color: AppColors.primary,
+                        ),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 34),
-                if (isLocked) _PendingValidationCard(type: type, status: status),
+                if (isLocked)
+                  _PendingValidationCard(type: type, status: status),
                 if (!isLocked) _PassengerReadyCard(type: type),
                 const SizedBox(height: 38),
                 Text(
-                  type == ProfileType.passenger ? 'FONCTIONS PASSAGER' : 'FONCTIONS CONDUCTEUR',
+                  type == ProfileType.passenger
+                      ? 'FONCTIONS PASSAGER'
+                      : 'FONCTIONS CONDUCTEUR',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: const Color(0xFF9CA7A0),
                     fontWeight: FontWeight.w900,
@@ -99,19 +108,25 @@ class HomePage extends StatelessWidget {
                   _FeatureTile(
                     icon: Icons.tune_rounded,
                     title: 'Passer en ligne',
-                    subtitle: isLocked ? 'Disponible après validation' : 'Disponible maintenant',
+                    subtitle: isLocked
+                        ? 'Disponible après validation'
+                        : 'Disponible maintenant',
                     locked: isLocked,
                   ),
                   _FeatureTile(
                     icon: Icons.bookmark_border_rounded,
                     title: 'Publier une annonce',
-                    subtitle: isLocked ? 'Disponible après validation' : 'Créer une offre',
+                    subtitle: isLocked
+                        ? 'Disponible après validation'
+                        : 'Créer une offre',
                     locked: isLocked,
                   ),
                   _FeatureTile(
                     icon: Icons.my_location_rounded,
                     title: 'Partager ma position',
-                    subtitle: isLocked ? 'Disponible après validation' : 'GPS conducteur',
+                    subtitle: isLocked
+                        ? 'Disponible après validation'
+                        : 'GPS conducteur',
                     locked: isLocked,
                   ),
                 ],
@@ -129,13 +144,22 @@ class HomePage extends StatelessWidget {
                 selectedIcon: Icon(Icons.home),
                 label: 'Accueil',
               ),
-              NavigationDestination(icon: Icon(Icons.route_outlined), label: 'Trajets'),
+              NavigationDestination(
+                icon: Icon(Icons.route_outlined),
+                label: 'Trajets',
+              ),
               NavigationDestination(
                 icon: Icon(Icons.account_balance_wallet_outlined),
                 label: 'Wallet',
               ),
-              NavigationDestination(icon: Icon(Icons.notifications_none_rounded), label: 'Notifs'),
-              NavigationDestination(icon: Icon(Icons.person_outline_rounded), label: 'Profil'),
+              NavigationDestination(
+                icon: Icon(Icons.notifications_none_rounded),
+                label: 'Notifs',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.person_outline_rounded),
+                label: 'Profil',
+              ),
             ],
           ),
         );
@@ -154,7 +178,9 @@ class HomePage extends StatelessWidget {
           child: BlocConsumer<ProfileCubit, ProfileState>(
             listener: (context, state) async {
               if (state.isSaved) {
-                await sheetContext.read<SessionCubit>().refreshAfterProfileChange();
+                await sheetContext
+                    .read<SessionCubit>()
+                    .refreshAfterProfileChange();
                 if (sheetContext.mounted) Navigator.of(sheetContext).pop();
               }
             },
@@ -177,10 +203,11 @@ class HomePage extends StatelessWidget {
                     const SizedBox(height: 30),
                     Text(
                       'Changer de profil',
-                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                        color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w900,
-                      ),
+                      style: Theme.of(context).textTheme.headlineLarge
+                          ?.copyWith(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w900,
+                          ),
                     ),
                     const SizedBox(height: 8),
                     const Text(
@@ -202,14 +229,19 @@ class HomePage extends StatelessWidget {
                           selected: profile.active,
                           showAction: !profile.active,
                           onTap: () {
-                            if (profile.validationStatus == ValidationStatus.suspended) {
+                            if (profile.validationStatus ==
+                                ValidationStatus.suspended) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Ce profil est suspendu.')),
+                                const SnackBar(
+                                  content: Text('Ce profil est suspendu.'),
+                                ),
                               );
                               return;
                             }
                             if (!profile.active) {
-                              context.read<ProfileCubit>().activateProfile(profile.id);
+                              context.read<ProfileCubit>().activateProfile(
+                                profile.id,
+                              );
                             }
                           },
                         ),
@@ -245,7 +277,11 @@ class HomePage extends StatelessWidget {
               const CircleAvatar(
                 radius: 44,
                 backgroundColor: Color(0xFFFBE3E5),
-                child: Icon(Icons.logout_rounded, size: 42, color: AppColors.error),
+                child: Icon(
+                  Icons.logout_rounded,
+                  size: 42,
+                  color: AppColors.error,
+                ),
               ),
               const SizedBox(height: 26),
               Text(
@@ -260,9 +296,10 @@ class HomePage extends StatelessWidget {
               Text(
                 'Vous devrez saisir à nouveau votre numéro et votre mot de passe pour vous reconnecter.',
                 textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(color: const Color(0xFF5B6760), height: 1.35),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: const Color(0xFF5B6760),
+                  height: 1.35,
+                ),
               ),
               const SizedBox(height: 34),
               PrimaryAuthButton(
@@ -315,7 +352,11 @@ class _PendingValidationCard extends StatelessWidget {
                   color: const Color(0xFFF7DD7A),
                   borderRadius: BorderRadius.circular(18),
                 ),
-                child: const Icon(Icons.schedule_rounded, color: Color(0xFF9B6B0B), size: 36),
+                child: const Icon(
+                  Icons.schedule_rounded,
+                  color: Color(0xFF9B6B0B),
+                  size: 36,
+                ),
               ),
               const SizedBox(width: 20),
               Expanded(
@@ -324,10 +365,11 @@ class _PendingValidationCard extends StatelessWidget {
                   children: [
                     Text(
                       'Profil en attente de validation',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w900,
-                      ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w900,
+                          ),
                     ),
                     const SizedBox(height: 8),
                     StatusBadge(status: status),
@@ -339,18 +381,17 @@ class _PendingValidationCard extends StatelessWidget {
           const SizedBox(height: 24),
           Text(
             'Prochaine étape : fournir vos documents pour activer vos fonctions conducteur.',
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(color: const Color(0xFF8B6509), height: 1.42),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: const Color(0xFF8B6509),
+              height: 1.42,
+            ),
           ),
           const SizedBox(height: 24),
           PrimaryAuthButton(
             label: 'Voir mes documents',
             leadingIcon: Icons.description_outlined,
             backgroundColor: AppColors.textPrimary,
-            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Le parcours KYC arrive avec MOB-KYC-001.')),
-            ),
+            onPressed: () => context.go(RouteConstants.kycDocuments),
           ),
         ],
       ),
@@ -394,7 +435,10 @@ class _PassengerReadyCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 const Text(
                   'Vous pouvez utiliser les fonctions disponibles.',
-                  style: TextStyle(color: Color(0xFF5B6760), fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                    color: Color(0xFF5B6760),
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ],
             ),
@@ -447,9 +491,10 @@ class _FeatureTile extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(color: color, fontWeight: FontWeight.w900),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -462,7 +507,8 @@ class _FeatureTile extends StatelessWidget {
               ],
             ),
           ),
-          if (locked) const Icon(Icons.lock_outline_rounded, color: Color(0xFFA8B0AA)),
+          if (locked)
+            const Icon(Icons.lock_outline_rounded, color: Color(0xFFA8B0AA)),
         ],
       ),
     );
@@ -474,7 +520,11 @@ class _SquareIconButton extends StatelessWidget {
   final VoidCallback onTap;
   final bool badge;
 
-  const _SquareIconButton({required this.icon, required this.onTap, this.badge = false});
+  const _SquareIconButton({
+    required this.icon,
+    required this.onTap,
+    this.badge = false,
+  });
 
   @override
   Widget build(BuildContext context) {

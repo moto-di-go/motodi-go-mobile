@@ -14,7 +14,10 @@ class MotoTaxiProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(create: (_) => getIt<ProfileCubit>(), child: const _MotoTaxiProfileView());
+    return BlocProvider(
+      create: (_) => getIt<ProfileCubit>(),
+      child: const _MotoTaxiProfileView(),
+    );
   }
 }
 
@@ -62,17 +65,24 @@ class _MotoTaxiProfileViewState extends State<_MotoTaxiProfileView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const _ValidationNotice(
-                text: "Validation obligatoire : vos documents seront vérifiés avant l'activation.",
+                text:
+                    "Validation obligatoire : vos documents seront vérifiés avant l'activation.",
               ),
               const SizedBox(height: 36),
               const FieldLabel('Nom affiché'),
               AuthTextField(controller: _nameController),
               const SizedBox(height: 28),
               const FieldLabel("Zone d'activité"),
-              AuthTextField(controller: _zoneController, icon: Icons.location_on_outlined),
+              AuthTextField(
+                controller: _zoneController,
+                icon: Icons.location_on_outlined,
+              ),
               const SizedBox(height: 28),
               const FieldLabel('N° de permis', suffix: 'si disponible'),
-              AuthTextField(controller: _licenseController, hintText: 'CM-YDE-000000'),
+              AuthTextField(
+                controller: _licenseController,
+                hintText: 'CM-YDE-000000',
+              ),
               InlineError(state.errorMessage),
             ],
           ),
@@ -98,11 +108,14 @@ class _TransporterProfileView extends StatefulWidget {
   const _TransporterProfileView();
 
   @override
-  State<_TransporterProfileView> createState() => _TransporterProfileViewState();
+  State<_TransporterProfileView> createState() =>
+      _TransporterProfileViewState();
 }
 
 class _TransporterProfileViewState extends State<_TransporterProfileView> {
-  final _companyController = TextEditingController(text: 'Express Voyages SARL');
+  final _companyController = TextEditingController(
+    text: 'Express Voyages SARL',
+  );
   final _permitController = TextEditingController();
 
   @override
@@ -135,21 +148,28 @@ class _TransporterProfileViewState extends State<_TransporterProfileView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const _ValidationNotice(
-                text: 'Agrément et documents véhicule requis pour la validation.',
+                text:
+                    'Agrément et documents véhicule requis pour la validation.',
               ),
               const SizedBox(height: 36),
               const FieldLabel('Nom commercial'),
               AuthTextField(controller: _companyController),
               const SizedBox(height: 28),
               const FieldLabel("N° d'agrément / permis"),
-              AuthTextField(controller: _permitController, hintText: 'Ex. AGR-2024-01234'),
+              AuthTextField(
+                controller: _permitController,
+                hintText: 'Ex. AGR-2024-01234',
+              ),
               const SizedBox(height: 28),
               const FieldLabel('Véhicule'),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFDDE3DA), style: BorderStyle.solid),
+                  border: Border.all(
+                    color: const Color(0xFFDDE3DA),
+                    style: BorderStyle.solid,
+                  ),
                   borderRadius: BorderRadius.circular(22),
                 ),
                 child: const Row(
@@ -168,7 +188,10 @@ class _TransporterProfileViewState extends State<_TransporterProfileView> {
                     ),
                     Text(
                       'Bientôt',
-                      style: TextStyle(color: Color(0xFFA8B0AA), fontWeight: FontWeight.w900),
+                      style: TextStyle(
+                        color: Color(0xFFA8B0AA),
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                   ],
                 ),
@@ -185,7 +208,8 @@ class _TransporterProfileViewState extends State<_TransporterProfileView> {
 Future<void> _onSaved(BuildContext context, ProfileState state) async {
   if (state.isSaved) {
     await context.read<SessionCubit>().refreshAfterProfileChange();
-    if (context.mounted) context.go(RouteConstants.home);
+    if (!context.mounted) return;
+    context.go(RouteConstants.home);
   }
 }
 

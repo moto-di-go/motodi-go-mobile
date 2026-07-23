@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:motodi_go_mobile/core/constants/route_constants.dart';
+import 'package:motodi_go_mobile/core/services/notification_service.dart';
 import 'package:motodi_go_mobile/core/theme/app_theme.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
@@ -41,12 +44,33 @@ class _AppState extends State<App> {
     _sessionCubit = getIt<SessionCubit>();
     _router = createAppRouter(_sessionCubit);
     _sessionCubit.bootstrap();
+    _initializeNotifications();
   }
 
   @override
   void dispose() {
     _router.dispose();
     super.dispose();
+  }
+
+  Future<void> _initializeNotifications() async {
+    try {
+      if (Firebase.apps.isEmpty) {
+        await Firebase.initializeApp();
+      }
+      await getIt<NotificationService>().initialize(
+        onKycDecision: (payload) {
+          final context = rootNavigatorKey.currentContext;
+          if (context != null) {
+            context.go(RouteConstants.kycNotification, extra: payload);
+          }
+        },
+      );
+    } catch (error) {
+      if (kDebugMode) {
+        debugPrint('Notifications disabled: $error');
+      }
+    }
   }
 
   @override
