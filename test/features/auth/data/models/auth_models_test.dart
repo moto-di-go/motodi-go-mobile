@@ -29,6 +29,18 @@ void main() {
       expect(error.message, isNotEmpty);
       expect(error.timestamp, isNull);
     });
+
+    test('maps default Spring HTTP errors to HTTP status codes', () {
+      final error = ApiErrorModel.fromJson({
+        'timestamp': '2026-07-23T06:11:31.979+00:00',
+        'status': 404,
+        'error': 'Not Found',
+        'path': '/api/v1/kyc/documents',
+      });
+
+      expect(error.errorCode, 'HTTP_404');
+      expect(error.message, 'Not Found');
+    });
   });
 
   group('AuthSessionModel', () {
@@ -44,7 +56,12 @@ void main() {
         'phoneNumber': '+237678901234',
         'roles': ['PASSENGER', 'AGENCY', 'UNKNOWN_ROLE'],
         'profiles': [
-          {'id': 'profile-1', 'type': 'PASSENGER', 'validationStatus': 'VALIDATED', 'active': true},
+          {
+            'id': 'profile-1',
+            'type': 'PASSENGER',
+            'validationStatus': 'VALIDATED',
+            'active': true,
+          },
         ],
         'activeProfileId': 'profile-1',
         'activeProfileType': 'PASSENGER',
@@ -62,61 +79,67 @@ void main() {
   });
 
   group('ProfileModel and ProfilePayload', () {
-    test('parses mobile and agency profile types while marking agency as hidden for mobile', () {
-      final profile = ProfileModel.fromJson({
-        'id': 'agency-1',
-        'userId': 'user-1',
-        'type': 'AGENCY',
-        'validationStatus': 'PENDING',
-        'displayName': 'Agence',
-        'active': false,
-        'allowedActions': <String>[],
-        'agency': {'legalName': 'Agence Centrale'},
-      }).toEntity();
+    test(
+      'parses mobile and agency profile types while marking agency as hidden for mobile',
+      () {
+        final profile = ProfileModel.fromJson({
+          'id': 'agency-1',
+          'userId': 'user-1',
+          'type': 'AGENCY',
+          'validationStatus': 'PENDING',
+          'displayName': 'Agence',
+          'active': false,
+          'allowedActions': <String>[],
+          'agency': {'legalName': 'Agence Centrale'},
+        }).toEntity();
 
-      expect(profile.type, ProfileType.agency);
-      expect(profile.validationStatus, ValidationStatus.pending);
-      expect(profile.canBeShownInMobile, isFalse);
-    });
+        expect(profile.type, ProfileType.agency);
+        expect(profile.validationStatus, ValidationStatus.pending);
+        expect(profile.canBeShownInMobile, isFalse);
+      },
+    );
 
-    test('builds passenger, mototaxi and transporter payloads aligned with the API', () {
-      final passenger = ProfilePayload.fromInput(
-        const ProfileInput(
-          type: ProfileType.passenger,
-          displayName: 'Passager',
-          preferredLanguage: 'fr',
-          emergencyContact: '+237699001122',
-        ),
-      ).toCreateJson();
-      final mototaxi = ProfilePayload.fromInput(
-        const ProfileInput(
-          type: ProfileType.mototaxi,
-          displayName: 'Ibrahim M.',
-          operatingZone: 'Bastos, Yaounde',
-          licenseNumber: 'CM-YDE-000001',
-        ),
-      ).toCreateJson();
-      final transporter = ProfilePayload.fromInput(
-        const ProfileInput(
-          type: ProfileType.transporter,
-          displayName: 'Express Voyages SARL',
-          companyName: 'Express Voyages SARL',
-          permitNumber: 'AGR-2024-01234',
-        ),
-      ).toCreateJson();
+    test(
+      'builds passenger, mototaxi and transporter payloads aligned with the API',
+      () {
+        final passenger = ProfilePayload.fromInput(
+          const ProfileInput(
+            type: ProfileType.passenger,
+            displayName: 'Passager',
+            preferredLanguage: 'fr',
+            emergencyContact: '+237699001122',
+          ),
+        ).toCreateJson();
+        final mototaxi = ProfilePayload.fromInput(
+          const ProfileInput(
+            type: ProfileType.mototaxi,
+            displayName: 'Ibrahim M.',
+            operatingZone: 'Bastos, Yaounde',
+            licenseNumber: 'CM-YDE-000001',
+          ),
+        ).toCreateJson();
+        final transporter = ProfilePayload.fromInput(
+          const ProfileInput(
+            type: ProfileType.transporter,
+            displayName: 'Express Voyages SARL',
+            companyName: 'Express Voyages SARL',
+            permitNumber: 'AGR-2024-01234',
+          ),
+        ).toCreateJson();
 
-      expect(passenger['passenger'], {
-        'preferredLanguage': 'fr',
-        'emergencyContact': '+237699001122',
-      });
-      expect(mototaxi['motoTaxi'], {
-        'licenseNumber': 'CM-YDE-000001',
-        'operatingZone': 'Bastos, Yaounde',
-      });
-      expect(transporter['transporter'], {
-        'permitNumber': 'AGR-2024-01234',
-        'companyName': 'Express Voyages SARL',
-      });
-    });
+        expect(passenger['passenger'], {
+          'preferredLanguage': 'fr',
+          'emergencyContact': '+237699001122',
+        });
+        expect(mototaxi['motoTaxi'], {
+          'licenseNumber': 'CM-YDE-000001',
+          'operatingZone': 'Bastos, Yaounde',
+        });
+        expect(transporter['transporter'], {
+          'permitNumber': 'AGR-2024-01234',
+          'companyName': 'Express Voyages SARL',
+        });
+      },
+    );
   });
 }
