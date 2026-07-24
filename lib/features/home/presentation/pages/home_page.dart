@@ -10,6 +10,8 @@ import 'package:motodi_go_mobile/features/profiles/domain/entities/profile_type.
 import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/cubit/profile_cubit.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_widgets.dart';
+import 'package:motodi_go_mobile/features/home/presentation/widgets/home_figma_icons.dart';
+import 'package:motodi_go_mobile/l10n/app_localizations.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -33,7 +35,11 @@ class HomePage extends StatelessWidget {
                 Row(
                   children: [
                     _SquareIconButton(
-                      icon: Icons.menu_rounded,
+                      icon: const Icon(
+                        Icons.menu_rounded,
+                        color: AppColors.textPrimary,
+                        size: 30,
+                      ),
                       onTap: () => _showLogoutSheet(context),
                     ),
                     const SizedBox(width: 14),
@@ -56,7 +62,7 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     _SquareIconButton(
-                      icon: Icons.notifications_none_rounded,
+                      icon: const MotodigoNotifGrayIcon(size: 30),
                       onTap: () {},
                       badge: true,
                     ),
@@ -67,9 +73,10 @@ class HomePage extends StatelessWidget {
                       child: CircleAvatar(
                         radius: 26,
                         backgroundColor: const Color(0xFFDFF5E8),
-                        child: Icon(
-                          profileIcon(type),
+                        child: ProfileTypeIcon(
+                          type: type,
                           color: AppColors.primary,
+                          size: 28,
                         ),
                       ),
                     ),
@@ -133,34 +140,11 @@ class HomePage extends StatelessWidget {
               ],
             ),
           ),
-          bottomNavigationBar: NavigationBar(
+          bottomNavigationBar: _HomeBottomNavigation(
             selectedIndex: 0,
-            onDestinationSelected: (index) {
-              if (index == 4) _showLogoutSheet(context);
+            onSelected: (index) {
+              if (index == 4) context.go(RouteConstants.kyc);
             },
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home),
-                label: 'Accueil',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.route_outlined),
-                label: 'Trajets',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.account_balance_wallet_outlined),
-                label: 'Wallet',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.notifications_none_rounded),
-                label: 'Notifs',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.person_outline_rounded),
-                label: 'Profil',
-              ),
-            ],
           ),
         );
       },
@@ -168,6 +152,8 @@ class HomePage extends StatelessWidget {
   }
 
   void _showProfileSwitcher(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -200,25 +186,26 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 28),
                     Text(
-                      'Changer de profil',
-                      style: Theme.of(context).textTheme.headlineLarge
+                      l10n.profileSwitcherTitle,
+                      style: Theme.of(context).textTheme.headlineMedium
                           ?.copyWith(
                             color: AppColors.textPrimary,
+                            fontSize: 32,
                             fontWeight: FontWeight.w900,
                           ),
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Un profil actif à la fois.',
-                      style: TextStyle(
+                    const SizedBox(height: 10),
+                    Text(
+                      l10n.profileSwitcherSubtitle,
+                      style: const TextStyle(
                         color: Color(0xFF8E9A91),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 30),
                     if (state.status == ProfileStatus.loading)
                       const Center(child: CircularProgressIndicator())
                     else
@@ -228,6 +215,7 @@ class HomePage extends StatelessWidget {
                           profile: profile,
                           selected: profile.active,
                           showAction: !profile.active,
+                          compact: true,
                           onTap: () {
                             if (profile.validationStatus ==
                                 ValidationStatus.suspended) {
@@ -247,9 +235,9 @@ class HomePage extends StatelessWidget {
                         ),
                         const SizedBox(height: 14),
                       ],
-                    SecondaryAuthButton(
-                      label: 'Ajouter un profil',
-                      icon: Icons.add_rounded,
+                    const SizedBox(height: 8),
+                    _AddProfileButton(
+                      label: l10n.profileSwitcherAddProfile,
                       onPressed: () {
                         Navigator.of(sheetContext).pop();
                         sheetContext.go(RouteConstants.profileSelection);
@@ -372,7 +360,7 @@ class _PendingValidationCard extends StatelessWidget {
                           ),
                     ),
                     const SizedBox(height: 8),
-                    StatusBadge(status: status),
+                    _PendingProfileBadge(type: type, status: status),
                   ],
                 ),
               ),
@@ -397,6 +385,52 @@ class _PendingValidationCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _PendingProfileBadge extends StatelessWidget {
+  final ProfileType type;
+  final ValidationStatus status;
+
+  const _PendingProfileBadge({required this.type, required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = statusColor(status);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(radius: 5, backgroundColor: color),
+          const SizedBox(width: 9),
+          Text(
+            '${profileLabel(type)} · ${_homeStatusLabel(status)}',
+            style: TextStyle(
+              color: color,
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              height: 1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String _homeStatusLabel(ValidationStatus status) {
+  return switch (status) {
+    ValidationStatus.pending => 'En attente',
+    ValidationStatus.rejected => 'Rejeté',
+    ValidationStatus.suspended => 'Suspendu',
+    ValidationStatus.draft => 'Brouillon',
+    ValidationStatus.validated => 'Validé',
+    ValidationStatus.unknown => 'Statut inconnu',
+  };
 }
 
 class _PassengerReadyCard extends StatelessWidget {
@@ -515,8 +549,128 @@ class _FeatureTile extends StatelessWidget {
   }
 }
 
+class _HomeBottomNavigation extends StatelessWidget {
+  final int selectedIndex;
+  final ValueChanged<int> onSelected;
+
+  const _HomeBottomNavigation({
+    required this.selectedIndex,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const items = [
+      _HomeNavItemData(
+        label: 'Accueil',
+        activeIcon: MotodigoHomeGreenIcon(size: 30),
+        inactiveIcon: MotodigoHomeGrayIcon(size: 30),
+      ),
+      _HomeNavItemData(
+        label: 'Trajets',
+        activeIcon: MotodigoTrajetGreenIcon(size: 30),
+        inactiveIcon: MotodigoTrajetGrayIcon(size: 30),
+      ),
+      _HomeNavItemData(
+        label: 'Wallet',
+        activeIcon: MotodigoWalletGreenIcon(size: 30),
+        inactiveIcon: MotodigoWalletGrayIcon(size: 30),
+      ),
+      _HomeNavItemData(
+        label: 'Notifs',
+        activeIcon: MotodigoNotifGreenIcon(size: 30),
+        inactiveIcon: MotodigoNotifGrayIcon(size: 30),
+      ),
+      _HomeNavItemData(
+        label: 'Profil',
+        activeIcon: MotodigoProfileGreenIcon(size: 30),
+        inactiveIcon: MotodigoProfileGrayIcon(size: 30),
+      ),
+    ];
+
+    return SafeArea(
+      top: false,
+      child: Container(
+        height: 86,
+        decoration: const BoxDecoration(
+          color: AppColors.background,
+          border: Border(top: BorderSide(color: Color(0xFFE4E7DF))),
+        ),
+        padding: const EdgeInsets.fromLTRB(22, 10, 22, 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            for (var index = 0; index < items.length; index++)
+              _HomeNavItem(
+                data: items[index],
+                selected: index == selectedIndex,
+                onTap: () => onSelected(index),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeNavItemData {
+  final String label;
+  final Widget activeIcon;
+  final Widget inactiveIcon;
+
+  const _HomeNavItemData({
+    required this.label,
+    required this.activeIcon,
+    required this.inactiveIcon,
+  });
+}
+
+class _HomeNavItem extends StatelessWidget {
+  final _HomeNavItemData data;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _HomeNavItem({
+    required this.data,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = selected ? AppColors.primary : const Color(0xFF98A29A);
+    return Expanded(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: onTap,
+        child: SizedBox(
+          height: 66,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              selected ? data.activeIcon : data.inactiveIcon,
+              const SizedBox(height: 6),
+              Text(
+                data.label,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  height: 1,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _SquareIconButton extends StatelessWidget {
-  final IconData icon;
+  final Widget icon;
   final VoidCallback onTap;
   final bool badge;
 
@@ -541,7 +695,7 @@ class _SquareIconButton extends StatelessWidget {
               color: const Color(0xFFF1F2ED),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, color: AppColors.textPrimary, size: 30),
+            child: Center(child: icon),
           ),
           if (badge)
             const Positioned(
@@ -550,6 +704,50 @@ class _SquareIconButton extends StatelessWidget {
               child: CircleAvatar(radius: 5, backgroundColor: AppColors.error),
             ),
         ],
+      ),
+    );
+  }
+}
+
+class _AddProfileButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onPressed;
+
+  const _AddProfileButton({required this.label, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 66,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.textPrimary,
+          side: const BorderSide(color: Color(0xFFDDE3DA), width: 1.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(999),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.add_rounded, size: 34),
+            const SizedBox(width: 16),
+            Flexible(
+              child: Text(
+                label,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -566,7 +764,7 @@ class _BottomSheetFrame extends StatelessWidget {
       top: false,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(24, 18, 24, 28),
+        padding: const EdgeInsets.fromLTRB(24, 18, 24, 26),
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(32)),

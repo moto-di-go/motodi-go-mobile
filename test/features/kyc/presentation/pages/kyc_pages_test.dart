@@ -84,12 +84,13 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Mes documents'), findsOneWidget);
-    expect(find.text('IDENTITE'), findsOneWidget);
+    expect(find.text('IDENTITÉ'), findsOneWidget);
     expect(find.text('AUTORISATION DE CONDUITE'), findsOneWidget);
-    expect(find.text('VEHICULE'), findsOneWidget);
+    expect(find.text('VÉHICULE'), findsOneWidget);
     expect(find.text('Ajouter'), findsOneWidget);
-    expect(find.text('Details'), findsOneWidget);
+    expect(find.text('Détails'), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Ajouter'));
     await tester.tap(find.text('Ajouter'));
     await tester.pumpAndSettle();
 
@@ -177,6 +178,33 @@ void main() {
     expect(find.text('Ouvrir le statut KYC'), findsOneWidget);
   });
 
+  testWidgets(
+    'status page switches between required, in progress and history',
+    (tester) async {
+      kycRepository = _FakeKycRepository(_completePendingBundle());
+      await getIt.reset();
+      getIt.registerFactory<KycCubit>(() => KycCubit(kycRepository));
+
+      await tester.pumpWidget(buildApp(const KycStatusPage()));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Statut global'), findsOneWidget);
+      expect(find.text('5 / 5 documents fournis'), findsOneWidget);
+
+      await tester.tap(find.text('En cours'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Dossier soumis'), findsOneWidget);
+      expect(find.text('Verification en cours'), findsOneWidget);
+
+      await tester.tap(find.text('Historique'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Carte nationale d\'identite'), findsOneWidget);
+      expect(find.text('Validé'), findsWidgets);
+    },
+  );
+
   testWidgets('router shows home for unvalidated driver profiles', (
     tester,
   ) async {
@@ -207,7 +235,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Mes documents'), findsOneWidget);
-    expect(find.text('IDENTITE'), findsOneWidget);
+    expect(find.text('IDENTITÉ'), findsOneWidget);
   });
 
   testWidgets('router lets validated driver profiles reach driver features', (
@@ -291,6 +319,73 @@ KycBundle _kycBundle({
         fileName: 'permis.jpg',
       ),
       _rejectedInsurance(),
+    ],
+  );
+}
+
+KycBundle _completePendingBundle() {
+  return KycBundle(
+    profileId: 'profile-1',
+    profileType: ProfileType.mototaxi,
+    profileValidationStatus: ValidationStatus.pending,
+    requirements: const [
+      KycRequirement(
+        type: KycDocumentType.cni,
+        required: true,
+        uploaded: true,
+        latestStatus: KycDocumentStatus.accepted,
+      ),
+      KycRequirement(
+        type: KycDocumentType.profilePhoto,
+        required: true,
+        uploaded: true,
+        latestStatus: KycDocumentStatus.accepted,
+      ),
+      KycRequirement(
+        type: KycDocumentType.driverLicense,
+        required: true,
+        uploaded: true,
+        latestStatus: KycDocumentStatus.pendingReview,
+      ),
+      KycRequirement(
+        type: KycDocumentType.vehicleRegistration,
+        required: true,
+        uploaded: true,
+        latestStatus: KycDocumentStatus.pendingReview,
+      ),
+      KycRequirement(
+        type: KycDocumentType.insurance,
+        required: true,
+        uploaded: true,
+        latestStatus: KycDocumentStatus.pendingReview,
+      ),
+    ],
+    documents: [
+      _document(type: KycDocumentType.cni, status: KycDocumentStatus.accepted),
+      _document(
+        id: 'doc-photo',
+        type: KycDocumentType.profilePhoto,
+        status: KycDocumentStatus.accepted,
+        fileName: 'photo.jpg',
+      ),
+      _document(
+        id: 'doc-permis',
+        type: KycDocumentType.driverLicense,
+        status: KycDocumentStatus.pendingReview,
+        fileName: 'permis.jpg',
+      ),
+      _document(
+        id: 'doc-carte-grise',
+        type: KycDocumentType.vehicleRegistration,
+        status: KycDocumentStatus.pendingReview,
+        fileName: 'carte-grise.jpg',
+      ),
+      _document(
+        id: 'doc-assurance',
+        type: KycDocumentType.insurance,
+        status: KycDocumentStatus.pendingReview,
+        fileName: 'assurance.jpg',
+      ),
     ],
   );
 }
