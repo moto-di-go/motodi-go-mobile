@@ -141,4 +141,64 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get passenger_profile_submit => 'Terminer';
+
+  @override
+  String get mototaxiProfileTitle => 'Profil mototaxi';
+
+  @override
+  String get mototaxiProfileWarning =>
+      'Validation obligatoire : vos documents seront vérifiés avant l\'activation.';
+
+  @override
+  String get mototaxiProfileDisplayNameLabel => 'Nom affiché';
+
+  @override
+  String get mototaxiProfileDisplayNameHint => 'Ibrahim M.';
+
+  @override
+  String get mototaxiProfileZoneLabel => 'Zone d\'activité';
+
+  @override
+  String get mototaxiProfileLicenseLabel => 'N° de permis';
+
+  @override
+  String get mototaxiProfileLicenseOptional => 'si disponible';
+
+  @override
+  String get mototaxiProfileLicenseHint => 'CM-YDE-000000';
+
+  @override
+  String get mototaxiProfileSubmit => 'Continuer vers la validation';
+
+  @override
+  String get transporterProfileTitle => 'Profil transporteur';
+
+  @override
+  String get transporterProfileWarning =>
+      'Agrément et documents véhicule requis pour la validation.';
+
+  @override
+  String get transporterProfileCompanyNameLabel => 'Nom commercial';
+
+  @override
+  String get transporterProfileCompanyNameHint => 'Express Voyages SARL';
+
+  @override
+  String get transporterProfilePermitLabel => 'N° d\'agrément / permis';
+
+  @override
+  String get transporterProfilePermitHint => 'Ex. AGR-2024-01234';
+
+  @override
+  String get transporterProfileVehicleLabel => 'Véhicule';
+
+  @override
+  String get transporterProfileVehicleKycText =>
+      'Ajout possible à l\'étape KYC';
+
+  @override
+  String get transporterProfileVehicleSoon => 'Bientôt';
+
+  @override
+  String get transporterProfileSubmit => 'Continuer vers la validation';
 }

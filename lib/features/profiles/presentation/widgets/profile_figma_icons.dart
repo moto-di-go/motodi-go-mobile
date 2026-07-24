@@ -79,6 +79,60 @@ class MotodigoNetworkGrayIcon extends StatelessWidget {
   }
 }
 
+class MotodigoWarningYellowIcon extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const MotodigoWarningYellowIcon({
+    super.key,
+    this.size = 26,
+    this.color = const Color(0xFF8A6410),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size.square(size),
+      painter: _WarningPainter(color),
+    );
+  }
+}
+
+class MotodigoLocalisationGrayIcon extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const MotodigoLocalisationGrayIcon({
+    super.key,
+    this.size = 28,
+    this.color = const Color(0xFF8A968C),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size.square(size),
+      painter: _LocalisationPainter(color),
+    );
+  }
+}
+
+class MotodigoUploadGrayIcon extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const MotodigoUploadGrayIcon({
+    super.key,
+    this.size = 28,
+    this.color = const Color(0xFF98A29A),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(size: Size.square(size), painter: _UploadPainter(color));
+  }
+}
+
 class _PersonPainter extends CustomPainter {
   final Color color;
 
@@ -233,6 +287,106 @@ class _NetworkPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _NetworkPainter oldDelegate) =>
+      oldDelegate.color != color;
+}
+
+class _WarningPainter extends CustomPainter {
+  final Color color;
+
+  const _WarningPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    _drawScaled(canvas, size, 19, 19, (canvas) {
+      final paint = _strokePaint(color, 1.58333);
+      canvas.drawCircle(const Offset(9.49967, 9.49992), 7.91667, paint);
+      canvas.drawPath(
+        Path()
+          ..moveTo(9.5, 12.6667)
+          ..lineTo(9.5, 9.5),
+        paint,
+      );
+      canvas.drawLine(
+        const Offset(9.5, 6.33325),
+        const Offset(9.50792, 6.33325),
+        paint,
+      );
+    });
+  }
+
+  @override
+  bool shouldRepaint(covariant _WarningPainter oldDelegate) =>
+      oldDelegate.color != color;
+}
+
+class _LocalisationPainter extends CustomPainter {
+  final Color color;
+
+  const _LocalisationPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    _drawScaled(canvas, size, 18, 18, (canvas) {
+      final paint = _strokePaint(color, 1.5);
+      canvas.drawPath(
+        Path()
+          ..moveTo(15, 7.5)
+          ..cubicTo(15, 12, 9, 16.5, 9, 16.5)
+          ..cubicTo(9, 16.5, 3, 12, 3, 7.5)
+          ..cubicTo(3, 5.9087, 3.63214, 4.38258, 4.75736, 3.25736)
+          ..cubicTo(5.88258, 2.13214, 7.4087, 1.5, 9, 1.5)
+          ..cubicTo(10.5913, 1.5, 12.1174, 2.13214, 13.2426, 3.25736)
+          ..cubicTo(14.3679, 4.38258, 15, 5.9087, 15, 7.5),
+        paint,
+      );
+      canvas.drawCircle(const Offset(9, 7.5), 2.25, paint);
+    });
+  }
+
+  @override
+  bool shouldRepaint(covariant _LocalisationPainter oldDelegate) =>
+      oldDelegate.color != color;
+}
+
+class _UploadPainter extends CustomPainter {
+  final Color color;
+
+  const _UploadPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    _drawScaled(canvas, size, 18, 18, (canvas) {
+      final paint = _strokePaint(color, 1.5);
+      canvas.drawPath(
+        Path()
+          ..moveTo(15.75, 11.25)
+          ..lineTo(15.75, 14.25)
+          ..cubicTo(15.75, 14.6478, 15.592, 15.0294, 15.3107, 15.3107)
+          ..cubicTo(15.0294, 15.592, 14.6478, 15.75, 14.25, 15.75)
+          ..lineTo(3.75, 15.75)
+          ..cubicTo(3.35218, 15.75, 2.97064, 15.592, 2.68934, 15.3107)
+          ..cubicTo(2.40804, 15.0294, 2.25, 14.6478, 2.25, 14.25)
+          ..lineTo(2.25, 11.25),
+        paint,
+      );
+      canvas.drawPath(
+        Path()
+          ..moveTo(12.75, 6)
+          ..lineTo(9, 2.25)
+          ..lineTo(5.25, 6),
+        paint,
+      );
+      canvas.drawPath(
+        Path()
+          ..moveTo(9, 2.25)
+          ..lineTo(9, 11.25),
+        paint,
+      );
+    });
+  }
+
+  @override
+  bool shouldRepaint(covariant _UploadPainter oldDelegate) =>
       oldDelegate.color != color;
 }
 

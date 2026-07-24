@@ -355,6 +355,120 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Terminer'**
   String get passenger_profile_submit;
+
+  /// No description provided for @mototaxiProfileTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil mototaxi'**
+  String get mototaxiProfileTitle;
+
+  /// No description provided for @mototaxiProfileWarning.
+  ///
+  /// In fr, this message translates to:
+  /// **'Validation obligatoire : vos documents seront vérifiés avant l\'activation.'**
+  String get mototaxiProfileWarning;
+
+  /// No description provided for @mototaxiProfileDisplayNameLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom affiché'**
+  String get mototaxiProfileDisplayNameLabel;
+
+  /// No description provided for @mototaxiProfileDisplayNameHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ibrahim M.'**
+  String get mototaxiProfileDisplayNameHint;
+
+  /// No description provided for @mototaxiProfileZoneLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zone d\'activité'**
+  String get mototaxiProfileZoneLabel;
+
+  /// No description provided for @mototaxiProfileLicenseLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'N° de permis'**
+  String get mototaxiProfileLicenseLabel;
+
+  /// No description provided for @mototaxiProfileLicenseOptional.
+  ///
+  /// In fr, this message translates to:
+  /// **'si disponible'**
+  String get mototaxiProfileLicenseOptional;
+
+  /// No description provided for @mototaxiProfileLicenseHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'CM-YDE-000000'**
+  String get mototaxiProfileLicenseHint;
+
+  /// No description provided for @mototaxiProfileSubmit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Continuer vers la validation'**
+  String get mototaxiProfileSubmit;
+
+  /// No description provided for @transporterProfileTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil transporteur'**
+  String get transporterProfileTitle;
+
+  /// No description provided for @transporterProfileWarning.
+  ///
+  /// In fr, this message translates to:
+  /// **'Agrément et documents véhicule requis pour la validation.'**
+  String get transporterProfileWarning;
+
+  /// No description provided for @transporterProfileCompanyNameLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom commercial'**
+  String get transporterProfileCompanyNameLabel;
+
+  /// No description provided for @transporterProfileCompanyNameHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Express Voyages SARL'**
+  String get transporterProfileCompanyNameHint;
+
+  /// No description provided for @transporterProfilePermitLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'N° d\'agrément / permis'**
+  String get transporterProfilePermitLabel;
+
+  /// No description provided for @transporterProfilePermitHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. AGR-2024-01234'**
+  String get transporterProfilePermitHint;
+
+  /// No description provided for @transporterProfileVehicleLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Véhicule'**
+  String get transporterProfileVehicleLabel;
+
+  /// No description provided for @transporterProfileVehicleKycText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajout possible à l\'étape KYC'**
+  String get transporterProfileVehicleKycText;
+
+  /// No description provided for @transporterProfileVehicleSoon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bientôt'**
+  String get transporterProfileVehicleSoon;
+
+  /// No description provided for @transporterProfileSubmit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Continuer vers la validation'**
+  String get transporterProfileSubmit;
 }
 
 class _AppLocalizationsDelegate

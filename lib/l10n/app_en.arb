@@ -57,5 +57,26 @@
   "passenger_profile_emergency_label": "Emergency contact",
   "passenger_profile_optional": "optional",
   "passenger_profile_emergency_hint": "A relative's number",
-  "passenger_profile_submit": "Finish"
+  "passenger_profile_submit": "Finish",
+
+  "mototaxiProfileTitle": "Mototaxi profile",
+  "mototaxiProfileWarning": "Validation required: your documents will be checked before activation.",
+  "mototaxiProfileDisplayNameLabel": "Display name",
+  "mototaxiProfileDisplayNameHint": "Ibrahim M.",
+  "mototaxiProfileZoneLabel": "Operating area",
+  "mototaxiProfileLicenseLabel": "License number",
+  "mototaxiProfileLicenseOptional": "if available",
+  "mototaxiProfileLicenseHint": "CM-YDE-000000",
+  "mototaxiProfileSubmit": "Continue to validation",
+
+  "transporterProfileTitle": "Transporter profile",
+  "transporterProfileWarning": "Permit and vehicle documents are required for validation.",
+  "transporterProfileCompanyNameLabel": "Business name",
+  "transporterProfileCompanyNameHint": "Express Voyages SARL",
+  "transporterProfilePermitLabel": "Permit / license number",
+  "transporterProfilePermitHint": "Ex. AGR-2024-01234",
+  "transporterProfileVehicleLabel": "Vehicle",
+  "transporterProfileVehicleKycText": "Can be added during KYC",
+  "transporterProfileVehicleSoon": "Soon",
+  "transporterProfileSubmit": "Continue to validation"
 }

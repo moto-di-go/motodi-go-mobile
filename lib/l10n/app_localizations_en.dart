@@ -140,4 +140,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passenger_profile_submit => 'Finish';
+
+  @override
+  String get mototaxiProfileTitle => 'Mototaxi profile';
+
+  @override
+  String get mototaxiProfileWarning =>
+      'Validation required: your documents will be checked before activation.';
+
+  @override
+  String get mototaxiProfileDisplayNameLabel => 'Display name';
+
+  @override
+  String get mototaxiProfileDisplayNameHint => 'Ibrahim M.';
+
+  @override
+  String get mototaxiProfileZoneLabel => 'Operating area';
+
+  @override
+  String get mototaxiProfileLicenseLabel => 'License number';
+
+  @override
+  String get mototaxiProfileLicenseOptional => 'if available';
+
+  @override
+  String get mototaxiProfileLicenseHint => 'CM-YDE-000000';
+
+  @override
+  String get mototaxiProfileSubmit => 'Continue to validation';
+
+  @override
+  String get transporterProfileTitle => 'Transporter profile';
+
+  @override
+  String get transporterProfileWarning =>
+      'Permit and vehicle documents are required for validation.';
+
+  @override
+  String get transporterProfileCompanyNameLabel => 'Business name';
+
+  @override
+  String get transporterProfileCompanyNameHint => 'Express Voyages SARL';
+
+  @override
+  String get transporterProfilePermitLabel => 'Permit / license number';
+
+  @override
+  String get transporterProfilePermitHint => 'Ex. AGR-2024-01234';
+
+  @override
+  String get transporterProfileVehicleLabel => 'Vehicle';
+
+  @override
+  String get transporterProfileVehicleKycText => 'Can be added during KYC';
+
+  @override
+  String get transporterProfileVehicleSoon => 'Soon';
+
+  @override
+  String get transporterProfileSubmit => 'Continue to validation';
 }
