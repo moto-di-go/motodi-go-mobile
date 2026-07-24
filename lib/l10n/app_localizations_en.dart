@@ -112,4 +112,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String example_created_at(String date) {
     return 'Created on $date';
   }
+
+  @override
+  String get passenger_profile_title => 'Passenger profile';
+
+  @override
+  String get passenger_profile_description =>
+      'A few preferences to finalize your passenger profile.';
+
+  @override
+  String get passenger_profile_language_label => 'Preferred language';
+
+  @override
+  String get passenger_profile_language_fr => 'French';
+
+  @override
+  String get passenger_profile_language_en => 'English';
+
+  @override
+  String get passenger_profile_emergency_label => 'Emergency contact';
+
+  @override
+  String get passenger_profile_optional => 'optional';
+
+  @override
+  String get passenger_profile_emergency_hint => 'A relative\'s number';
+
+  @override
+  String get passenger_profile_submit => 'Finish';
 }
