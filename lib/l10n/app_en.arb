@@ -47,5 +47,15 @@
     "placeholders": {
       "date": { "type": "String" }
     }
-  }
+  },
+
+  "passenger_profile_title": "Passenger profile",
+  "passenger_profile_description": "A few preferences to finalize your passenger profile.",
+  "passenger_profile_language_label": "Preferred language",
+  "passenger_profile_language_fr": "French",
+  "passenger_profile_language_en": "English",
+  "passenger_profile_emergency_label": "Emergency contact",
+  "passenger_profile_optional": "optional",
+  "passenger_profile_emergency_hint": "A relative's number",
+  "passenger_profile_submit": "Finish"
 }

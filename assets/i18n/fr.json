@@ -1,0 +1,11 @@
+{
+  "passenger_profile_title": "Profil passager",
+  "passenger_profile_description": "Quelques préférences pour finaliser votre profil passager.",
+  "passenger_profile_language_label": "Langue préférée",
+  "passenger_profile_language_fr": "Français",
+  "passenger_profile_language_en": "Anglais",
+  "passenger_profile_emergency_label": "Contact d'urgence",
+  "passenger_profile_optional": "optionnel",
+  "passenger_profile_emergency_hint": "Numéro d'un proche",
+  "passenger_profile_submit": "Terminer"
+}

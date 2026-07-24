@@ -5,7 +5,6 @@ import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
-import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_buttons.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/profile_type.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/user_profile.dart';
@@ -33,8 +32,6 @@ class _ProfileSelectionView extends StatefulWidget {
 }
 
 class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
-  ProfileType _selectedType = ProfileType.passenger;
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileCubit, ProfileState>(
@@ -42,13 +39,23 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
         if (state.isSaved) {
           await context.read<SessionCubit>().refreshAfterProfileChange();
           if (context.mounted) context.go(RouteConstants.home);
+        } else if (state.status == ProfileStatus.failure &&
+            state.errorMessage != null &&
+            state.profiles.isNotEmpty) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(
+                content: Text('Impossible de continuer pour le moment.'),
+              ),
+            );
         }
       },
       builder: (context, state) {
         return AuthScaffold(
           scrollable: false,
-          bottom: PrimaryAuthButton(
-            label: 'Continuer',
+          padding: const EdgeInsets.fromLTRB(22, 20, 22, 24),
+          bottom: _ProfileContinueButton(
             isLoading: state.status == ProfileStatus.saving,
             onPressed: () => _continue(context, state),
           ),
@@ -61,19 +68,41 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
                   'Choisissez votre profil',
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
                     color: AppColors.textPrimary,
+                    fontSize: 32,
                     fontWeight: FontWeight.w900,
+                    height: 1.15,
                   ),
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 24),
                 Text(
                   "Vous pourrez en ajouter d'autres à tout moment.",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.headlineSmall?.copyWith(color: const Color(0xFF5B6760), height: 1.4),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: const Color(0xFF54615A),
+                    fontSize: 22,
+                    fontWeight: FontWeight.w500,
+                    height: 1.55,
+                  ),
                 ),
-                const SizedBox(height: 48),
+                const SizedBox(height: 42),
                 if (state.status == ProfileStatus.loading)
-                  const Expanded(child: Center(child: CircularProgressIndicator()))
+                  const Expanded(
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else if (state.status == ProfileStatus.failure &&
+                    state.profiles.isEmpty)
+                  const Expanded(
+                    child: Center(
+                      child: Text(
+                        'Impossible de charger vos profils.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color(0xFF54615A),
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  )
                 else
                   Column(
                     children: [
@@ -85,20 +114,14 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
                         ProfileChoiceCard(
                           type: type,
                           profile: _profileOf(state.profiles, type),
-                          selected: _selectedType == type,
-                          onTap: () => setState(() => _selectedType = type),
+                          selected: state.selectedType == type,
+                          onTap: () =>
+                              context.read<ProfileCubit>().selectType(type),
                         ),
                         const SizedBox(height: 16),
                       ],
                     ],
                   ),
-                if (state.errorMessage != null) ...[
-                  const SizedBox(height: 14),
-                  Text(
-                    state.errorMessage!,
-                    style: const TextStyle(color: AppColors.error, fontWeight: FontWeight.w800),
-                  ),
-                ],
               ],
             ),
           ),
@@ -108,9 +131,10 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
   }
 
   void _continue(BuildContext context, ProfileState state) {
-    final profile = _profileOf(state.profiles, _selectedType);
+    final selectedType = state.selectedType;
+    final profile = _profileOf(state.profiles, selectedType);
     if (profile == null) {
-      final path = switch (_selectedType) {
+      final path = switch (selectedType) {
         ProfileType.passenger => RouteConstants.profilePassenger,
         ProfileType.mototaxi => RouteConstants.profileMototaxi,
         ProfileType.transporter => RouteConstants.profileTransporter,
@@ -137,5 +161,55 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
       if (profile.type == type) return profile;
     }
     return null;
+  }
+}
+
+class _ProfileContinueButton extends StatelessWidget {
+  final bool isLoading;
+  final VoidCallback onPressed;
+
+  const _ProfileContinueButton({
+    required this.isLoading,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 72,
+      child: ElevatedButton(
+        onPressed: isLoading ? null : onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.62),
+          elevation: 10,
+          shadowColor: AppColors.primary.withValues(alpha: 0.34),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(999),
+          ),
+        ),
+        child: isLoading
+            ? const SizedBox(
+                width: 26,
+                height: 26,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.7,
+                  color: Colors.white,
+                ),
+              )
+            : const Text(
+                'Continuer',
+                overflow: TextOverflow.fade,
+                softWrap: false,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 26,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+      ),
+    );
   }
 }

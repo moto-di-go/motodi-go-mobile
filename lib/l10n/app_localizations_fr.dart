@@ -113,4 +113,32 @@ class AppLocalizationsFr extends AppLocalizations {
   String example_created_at(String date) {
     return 'Créé le $date';
   }
+
+  @override
+  String get passenger_profile_title => 'Profil passager';
+
+  @override
+  String get passenger_profile_description =>
+      'Quelques préférences pour finaliser votre profil passager.';
+
+  @override
+  String get passenger_profile_language_label => 'Langue préférée';
+
+  @override
+  String get passenger_profile_language_fr => 'Français';
+
+  @override
+  String get passenger_profile_language_en => 'Anglais';
+
+  @override
+  String get passenger_profile_emergency_label => 'Contact d\'urgence';
+
+  @override
+  String get passenger_profile_optional => 'optionnel';
+
+  @override
+  String get passenger_profile_emergency_hint => 'Numéro d\'un proche';
+
+  @override
+  String get passenger_profile_submit => 'Terminer';
 }

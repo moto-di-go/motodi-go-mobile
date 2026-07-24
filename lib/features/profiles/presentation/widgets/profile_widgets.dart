@@ -3,6 +3,7 @@ import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/profile_type.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/user_profile.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
+import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_figma_icons.dart';
 
 IconData profileIcon(ProfileType type) {
   return switch (type) {
@@ -27,7 +28,7 @@ String profileLabel(ProfileType type) {
 }
 
 String statusLabel(ValidationStatus status, {bool active = false}) {
-  if (active && status == ValidationStatus.validated) return 'Validé · actif';
+  if (active && status == ValidationStatus.validated) return 'Accès immédiat';
   return switch (status) {
     ValidationStatus.validated => 'Accès immédiat',
     ValidationStatus.pending => 'Validation requise',
@@ -69,39 +70,44 @@ class ProfileChoiceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final status =
         profile?.validationStatus ??
-        (type == ProfileType.passenger ? ValidationStatus.validated : ValidationStatus.pending);
+        (type == ProfileType.passenger
+            ? ValidationStatus.validated
+            : ValidationStatus.pending);
     final active = profile?.active ?? false;
-    final borderColor = selected ? AppColors.primary : const Color(0xFFE0E5DF);
-    final backgroundColor = selected ? const Color(0xFFEFFAF3) : Colors.white;
+    final iconColor = selected ? AppColors.primary : const Color(0xFF3C4741);
 
     return Material(
-      color: backgroundColor,
+      color: selected ? const Color(0xFFEFFAF3) : Colors.white,
       borderRadius: BorderRadius.circular(24),
       child: InkWell(
         borderRadius: BorderRadius.circular(24),
         onTap: onTap,
         child: Container(
-          constraints: const BoxConstraints(minHeight: 94),
-          padding: const EdgeInsets.all(18),
+          constraints: const BoxConstraints(minHeight: 112),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: borderColor, width: selected ? 2.5 : 1.3),
+            border: Border.all(
+              color: selected ? AppColors.primary : const Color(0xFFE0E5DF),
+              width: selected ? 2.5 : 1.3,
+            ),
           ),
           child: Row(
             children: [
               Container(
-                width: 58,
-                height: 58,
+                width: 64,
+                height: 64,
                 decoration: BoxDecoration(
-                  color: selected ? const Color(0xFFDDF5E6) : const Color(0xFFF1F2ED),
-                  borderRadius: BorderRadius.circular(18),
+                  color: selected
+                      ? const Color(0xFFDFF5E8)
+                      : const Color(0xFFF1F2ED),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                child: Icon(
-                  profileIcon(type),
-                  color: selected ? AppColors.primary : const Color(0xFF46524A),
+                child: Center(
+                  child: _ProfileTypeIcon(type: type, color: iconColor),
                 ),
               ),
-              const SizedBox(width: 18),
+              const SizedBox(width: 22),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,20 +116,26 @@ class ProfileChoiceCard extends StatelessWidget {
                     Text(
                       profileLabel(type),
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w900,
                         color: AppColors.textPrimary,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w900,
+                        height: 1.05,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 8),
                     StatusBadge(status: status, active: active),
                   ],
                 ),
               ),
               if (selected)
                 const CircleAvatar(
-                  radius: 22,
+                  radius: 24,
                   backgroundColor: AppColors.primary,
-                  child: Icon(Icons.check_rounded, color: Colors.white),
+                  child: Icon(
+                    Icons.check_rounded,
+                    color: Colors.white,
+                    size: 34,
+                  ),
                 )
               else if (showAction)
                 Text(
@@ -134,12 +146,39 @@ class ProfileChoiceCard extends StatelessWidget {
                   ),
                 )
               else
-                const Icon(Icons.chevron_right_rounded, color: Color(0xFFB7C0B8), size: 32),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: Color(0xFFB7C0B8),
+                  size: 38,
+                ),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class _ProfileTypeIcon extends StatelessWidget {
+  final ProfileType type;
+  final Color color;
+
+  const _ProfileTypeIcon({required this.type, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (type) {
+      ProfileType.passenger => MotodigoProfilePersonIcon(
+        size: 32,
+        color: color,
+      ),
+      ProfileType.mototaxi => MotodigoMototaxiIcon(size: 32, color: color),
+      ProfileType.transporter => MotodigoTransporterIcon(
+        size: 32,
+        color: color,
+      ),
+      _ => Icon(profileIcon(type), color: color, size: 32),
+    };
   }
 }
 
@@ -165,9 +204,12 @@ class StatusBadge extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             statusLabel(status, active: active),
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: color, fontWeight: FontWeight.w900),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: color,
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              height: 1.05,
+            ),
           ),
         ],
       ),

@@ -301,6 +301,60 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Créé le {date}'**
   String example_created_at(String date);
+
+  /// No description provided for @passenger_profile_title.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil passager'**
+  String get passenger_profile_title;
+
+  /// No description provided for @passenger_profile_description.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quelques préférences pour finaliser votre profil passager.'**
+  String get passenger_profile_description;
+
+  /// No description provided for @passenger_profile_language_label.
+  ///
+  /// In fr, this message translates to:
+  /// **'Langue préférée'**
+  String get passenger_profile_language_label;
+
+  /// No description provided for @passenger_profile_language_fr.
+  ///
+  /// In fr, this message translates to:
+  /// **'Français'**
+  String get passenger_profile_language_fr;
+
+  /// No description provided for @passenger_profile_language_en.
+  ///
+  /// In fr, this message translates to:
+  /// **'Anglais'**
+  String get passenger_profile_language_en;
+
+  /// No description provided for @passenger_profile_emergency_label.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contact d\'urgence'**
+  String get passenger_profile_emergency_label;
+
+  /// No description provided for @passenger_profile_optional.
+  ///
+  /// In fr, this message translates to:
+  /// **'optionnel'**
+  String get passenger_profile_optional;
+
+  /// No description provided for @passenger_profile_emergency_hint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Numéro d\'un proche'**
+  String get passenger_profile_emergency_hint;
+
+  /// No description provided for @passenger_profile_submit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminer'**
+  String get passenger_profile_submit;
 }
 
 class _AppLocalizationsDelegate
