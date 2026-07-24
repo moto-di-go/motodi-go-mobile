@@ -30,7 +30,11 @@ void main() {
     expect: () => [
       isA<AuthFormState>()
           .having((state) => state.status, 'status', AuthFormStatus.failure)
-          .having((state) => state.errorCode, 'errorCode', 'INVALID_PHONE_NUMBER'),
+          .having(
+            (state) => state.errorCode,
+            'errorCode',
+            'INVALID_PHONE_NUMBER',
+          ),
     ],
     verify: (_) {
       verifyNever(
@@ -43,6 +47,59 @@ void main() {
         ),
       );
     },
+  );
+
+  blocTest<AuthFormCubit, AuthFormState>(
+    'register rejects full name shorter than ten characters locally',
+    build: () => AuthFormCubit(repository),
+    act: (cubit) => cubit.register(
+      rawPhoneNumber: '6 78 90 12 34',
+      fullName: 'Aicha',
+      password: 'password1',
+      confirmPassword: 'password1',
+      cguAccepted: true,
+    ),
+    expect: () => [
+      isA<AuthFormState>()
+          .having((state) => state.status, 'status', AuthFormStatus.failure)
+          .having(
+            (state) => state.errorCode,
+            'errorCode',
+            'FULL_NAME_TOO_SHORT',
+          ),
+    ],
+    verify: (_) {
+      verifyNever(
+        () => repository.register(
+          phoneNumber: any(named: 'phoneNumber'),
+          password: any(named: 'password'),
+          fullName: any(named: 'fullName'),
+          cguAccepted: any(named: 'cguAccepted'),
+          locale: any(named: 'locale'),
+        ),
+      );
+    },
+  );
+
+  blocTest<AuthFormCubit, AuthFormState>(
+    'register validates full name before password and terms',
+    build: () => AuthFormCubit(repository),
+    act: (cubit) => cubit.register(
+      rawPhoneNumber: '6 78 90 12 34',
+      fullName: 'Aicha',
+      password: 'short',
+      confirmPassword: 'different',
+      cguAccepted: false,
+    ),
+    expect: () => [
+      isA<AuthFormState>()
+          .having((state) => state.status, 'status', AuthFormStatus.failure)
+          .having(
+            (state) => state.errorCode,
+            'errorCode',
+            'FULL_NAME_TOO_SHORT',
+          ),
+    ],
   );
 
   blocTest<AuthFormCubit, AuthFormState>(
@@ -76,7 +133,10 @@ void main() {
       cguAccepted: true,
     ),
     expect: () => [
-      const AuthFormState(status: AuthFormStatus.loading, phoneNumber: '+237678901234'),
+      const AuthFormState(
+        status: AuthFormStatus.loading,
+        phoneNumber: '+237678901234',
+      ),
       AuthFormState(
         status: AuthFormStatus.success,
         phoneNumber: '+237678901234',
@@ -124,7 +184,10 @@ void main() {
       password: 'password1',
     ),
     expect: () => [
-      const AuthFormState(status: AuthFormStatus.loading, phoneNumber: '+237678901234'),
+      const AuthFormState(
+        status: AuthFormStatus.loading,
+        phoneNumber: '+237678901234',
+      ),
       AuthFormState(
         status: AuthFormStatus.success,
         phoneNumber: '+237678901234',
@@ -137,16 +200,27 @@ void main() {
     'login maps repository failure to form failure',
     build: () {
       when(
-        () => repository.login(phoneNumber: '+237678901234', password: 'bad-password'),
+        () => repository.login(
+          phoneNumber: '+237678901234',
+          password: 'bad-password',
+        ),
       ).thenAnswer(
-        (_) async =>
-            left(const AuthFailure('Numero ou mot de passe incorrect.', code: 'AUTH_INVALID')),
+        (_) async => left(
+          const AuthFailure(
+            'Numero ou mot de passe incorrect.',
+            code: 'AUTH_INVALID',
+          ),
+        ),
       );
       return AuthFormCubit(repository);
     },
-    act: (cubit) => cubit.login(rawPhoneNumber: '678901234', password: 'bad-password'),
+    act: (cubit) =>
+        cubit.login(rawPhoneNumber: '678901234', password: 'bad-password'),
     expect: () => [
-      const AuthFormState(status: AuthFormStatus.loading, phoneNumber: '+237678901234'),
+      const AuthFormState(
+        status: AuthFormStatus.loading,
+        phoneNumber: '+237678901234',
+      ),
       const AuthFormState(
         status: AuthFormStatus.failure,
         phoneNumber: '+237678901234',
