@@ -84,12 +84,13 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Mes documents'), findsOneWidget);
-    expect(find.text('IDENTITE'), findsOneWidget);
+    expect(find.text('IDENTITÉ'), findsOneWidget);
     expect(find.text('AUTORISATION DE CONDUITE'), findsOneWidget);
-    expect(find.text('VEHICULE'), findsOneWidget);
+    expect(find.text('VÉHICULE'), findsOneWidget);
     expect(find.text('Ajouter'), findsOneWidget);
-    expect(find.text('Details'), findsOneWidget);
+    expect(find.text('Détails'), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Ajouter'));
     await tester.tap(find.text('Ajouter'));
     await tester.pumpAndSettle();
 
@@ -234,7 +235,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Mes documents'), findsOneWidget);
-    expect(find.text('IDENTITE'), findsOneWidget);
+    expect(find.text('IDENTITÉ'), findsOneWidget);
   });
 
   testWidgets('router lets validated driver profiles reach driver features', (
