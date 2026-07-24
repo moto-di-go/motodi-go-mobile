@@ -174,7 +174,7 @@ GoRouter createAppRouter(SessionCubit sessionCubit) {
       ),
       GoRoute(
         path: RouteConstants.kyc,
-        redirect: (context, state) => RouteConstants.home,
+        builder: (context, state) => const KycStatusPage(),
       ),
       GoRoute(
         path: RouteConstants.kycDocuments,

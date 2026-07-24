@@ -143,7 +143,7 @@ class HomePage extends StatelessWidget {
           bottomNavigationBar: _HomeBottomNavigation(
             selectedIndex: 0,
             onSelected: (index) {
-              if (index == 4) _showLogoutSheet(context);
+              if (index == 4) context.go(RouteConstants.kyc);
             },
           ),
         );

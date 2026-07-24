@@ -19,6 +19,7 @@ import 'package:motodi_go_mobile/features/kyc/domain/entities/kyc_document_type.
 import 'package:motodi_go_mobile/features/kyc/domain/entities/kyc_file_draft.dart';
 import 'package:motodi_go_mobile/features/kyc/domain/entities/kyc_requirement.dart';
 import 'package:motodi_go_mobile/features/kyc/presentation/cubit/kyc_cubit.dart';
+import 'package:motodi_go_mobile/features/kyc/presentation/widgets/kyc_figma_icons.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -43,6 +44,44 @@ class KycNotificationPayload {
     this.reason,
     required this.occurredAt,
   });
+}
+
+class KycStatusPage extends StatelessWidget {
+  const KycStatusPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => getIt<KycCubit>()..load(),
+      child: BlocBuilder<KycCubit, KycState>(
+        builder: (context, state) {
+          if (state.status == KycStatus.loading || state.bundle == null) {
+            if (state.status == KycStatus.failure) {
+              return _KycScaffold(
+                title: 'Validation du profil',
+                child: AppErrorView(
+                  message: state.errorMessage ?? 'Chargement KYC impossible.',
+                  onRetry: () => context.read<KycCubit>().load(),
+                ),
+              );
+            }
+            return const _KycScaffold(
+              title: 'Validation du profil',
+              child: AppLoading(),
+            );
+          }
+          return _KycScaffold(
+            title: 'Validation du profil',
+            bottom: PrimaryAuthButton(
+              label: 'Continuer la validation',
+              onPressed: () => context.go(RouteConstants.kycDocuments),
+            ),
+            child: _KycStatusContent(bundle: state.bundle!),
+          );
+        },
+      ),
+    );
+  }
 }
 
 class KycDocumentsPage extends StatelessWidget {
@@ -75,6 +114,668 @@ class KycDocumentsPage extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+enum _KycStatusTabKind { required, inProgress, history }
+
+class _KycStatusContent extends StatefulWidget {
+  final KycBundle bundle;
+
+  const _KycStatusContent({required this.bundle});
+
+  @override
+  State<_KycStatusContent> createState() => _KycStatusContentState();
+}
+
+class _KycStatusContentState extends State<_KycStatusContent> {
+  _KycStatusTabKind _selectedTab = _KycStatusTabKind.required;
+
+  @override
+  Widget build(BuildContext context) {
+    final bundle = widget.bundle;
+    final percent = (bundle.completionRatio * 100).round();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _KycStatusTabs(
+          selected: _selectedTab,
+          onChanged: (tab) => setState(() => _selectedTab = tab),
+        ),
+        const SizedBox(height: 32),
+        switch (_selectedTab) {
+          _KycStatusTabKind.required => _KycRequiredStatusView(
+            bundle: bundle,
+            percent: percent,
+          ),
+          _KycStatusTabKind.inProgress => _KycInProgressView(bundle: bundle),
+          _KycStatusTabKind.history => _KycHistoryView(bundle: bundle),
+        },
+      ],
+    );
+  }
+}
+
+class _KycStatusTabs extends StatelessWidget {
+  final _KycStatusTabKind selected;
+  final ValueChanged<_KycStatusTabKind> onChanged;
+
+  const _KycStatusTabs({required this.selected, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 80,
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF1F1EA),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _KycStatusTab(
+              label: 'Requis',
+              selected: selected == _KycStatusTabKind.required,
+              onTap: () => onChanged(_KycStatusTabKind.required),
+            ),
+          ),
+          Expanded(
+            child: _KycStatusTab(
+              label: 'En cours',
+              selected: selected == _KycStatusTabKind.inProgress,
+              onTap: () => onChanged(_KycStatusTabKind.inProgress),
+            ),
+          ),
+          Expanded(
+            child: _KycStatusTab(
+              label: 'Historique',
+              selected: selected == _KycStatusTabKind.history,
+              onTap: () => onChanged(_KycStatusTabKind.history),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _KycStatusTab extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _KycStatusTab({
+    required this.label,
+    this.selected = false,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Container(
+          height: double.infinity,
+          alignment: Alignment.center,
+          decoration: selected
+              ? BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x17000000),
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                )
+              : null,
+          child: Text(
+            label,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+            style: TextStyle(
+              color: selected ? AppColors.textPrimary : const Color(0xFF8A968C),
+              fontSize: 19,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _KycRequiredStatusView extends StatelessWidget {
+  final KycBundle bundle;
+  final int percent;
+
+  const _KycRequiredStatusView({required this.bundle, required this.percent});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _KycProgressCard(bundle: bundle, percent: percent),
+        const SizedBox(height: 30),
+        for (final requirement in bundle.requirements) ...[
+          _KycStatusRequirementRow(
+            requirement: requirement,
+            document: bundle.latestDocumentFor(requirement.type),
+          ),
+          const SizedBox(height: 20),
+        ],
+      ],
+    );
+  }
+}
+
+class _KycInProgressView extends StatelessWidget {
+  final KycBundle bundle;
+
+  const _KycInProgressView({required this.bundle});
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_hasSubmittedBundleInProgress(bundle)) {
+      return const _KycEmptyState(
+        title: 'Aucun dossier soumis',
+        message:
+            'Tous les documents requis doivent etre fournis avant le suivi de verification.',
+      );
+    }
+    final submittedAt = _latestSubmittedAt(bundle);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF4CB),
+            border: Border.all(color: const Color(0xFFF3D77B), width: 1.5),
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF7DD7A),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: const Center(child: MotodigoPendingYellowIcon(size: 38)),
+              ),
+              const SizedBox(width: 20),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Dossier soumis',
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w900,
+                          ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      submittedAt == null
+                          ? 'En cours de verification'
+                          : 'Soumis le ${_formatShortDate(submittedAt)}',
+                      style: const TextStyle(
+                        color: Color(0xFF8A6410),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 28),
+        const _KycTimelineStep(
+          title: 'Documents soumis',
+          subtitle: 'Dossier complet',
+          active: true,
+          icon: Icons.check_rounded,
+        ),
+        const _KycTimelineStep(
+          title: 'Verification en cours',
+          subtitle: 'En traitement',
+          warning: true,
+          icon: Icons.circle,
+        ),
+        const _KycTimelineStep(
+          title: 'Decision',
+          subtitle: 'En attente',
+          icon: Icons.shield_outlined,
+        ),
+      ],
+    );
+  }
+}
+
+class _KycHistoryView extends StatelessWidget {
+  final KycBundle bundle;
+
+  const _KycHistoryView({required this.bundle});
+
+  @override
+  Widget build(BuildContext context) {
+    final decisions =
+        bundle.documents
+            .where(
+              (document) =>
+                  document.status == KycDocumentStatus.accepted ||
+                  document.status == KycDocumentStatus.rejected,
+            )
+            .toList()
+          ..sort((a, b) {
+            final aDate = a.updatedAt ?? a.uploadedAt ?? DateTime(0);
+            final bDate = b.updatedAt ?? b.uploadedAt ?? DateTime(0);
+            return bDate.compareTo(aDate);
+          });
+
+    if (decisions.isEmpty) {
+      return const _KycEmptyState(
+        title: 'Aucun historique',
+        message:
+            'Les dossiers valides ou rejetes apparaitront ici apres decision admin.',
+      );
+    }
+
+    return Column(
+      children: [
+        for (final document in decisions) ...[
+          _KycHistoryTile(document: document),
+          const SizedBox(height: 14),
+        ],
+      ],
+    );
+  }
+}
+
+class _KycHistoryTile extends StatelessWidget {
+  final KycDocument document;
+
+  const _KycHistoryTile({required this.document});
+
+  @override
+  Widget build(BuildContext context) {
+    final rejected = document.status == KycDocumentStatus.rejected;
+    final color = rejected ? const Color(0xFFC62828) : AppColors.primary;
+    final background = rejected
+        ? const Color(0xFFFDE3E3)
+        : const Color(0xFFDFF5E8);
+    final date = document.updatedAt ?? document.uploadedAt;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.45),
+        border: Border.all(color: const Color(0xFFDDE3DA), width: 1.3),
+        borderRadius: BorderRadius.circular(22),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 54,
+            height: 54,
+            decoration: BoxDecoration(
+              color: background,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(
+              rejected ? Icons.close_rounded : Icons.check_rounded,
+              color: color,
+              size: 32,
+            ),
+          ),
+          const SizedBox(width: 18),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  document.type.label,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  date == null
+                      ? document.displayName
+                      : '${document.displayName} - ${_formatShortDate(date)}',
+                  style: const TextStyle(
+                    color: Color(0xFF8A968C),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Text(
+            rejected ? 'Rejeté' : 'Validé',
+            style: TextStyle(
+              color: color,
+              fontSize: 17,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _KycEmptyState extends StatelessWidget {
+  final String title;
+  final String message;
+
+  const _KycEmptyState({required this.title, required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.45),
+        border: Border.all(color: const Color(0xFFDDE3DA), width: 1.3),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        children: [
+          const MotodigoFileLeftGrayIcon(size: 52),
+          const SizedBox(height: 18),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Color(0xFF54615A),
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+              height: 1.35,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _KycTimelineStep extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final bool active;
+  final bool warning;
+
+  const _KycTimelineStep({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    this.active = false,
+    this.warning = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = active
+        ? AppColors.primary
+        : warning
+        ? const Color(0xFFF3C316)
+        : const Color(0xFFDDE3DA);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 26,
+            backgroundColor: color,
+            child: Icon(
+              icon,
+              color: active ? Colors.white : AppColors.textSecondary,
+              size: warning ? 16 : 28,
+            ),
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: active || warning
+                        ? AppColors.textPrimary
+                        : AppColors.textSecondary,
+                    fontSize: 21,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    color: warning
+                        ? const Color(0xFF8A6410)
+                        : AppColors.textTertiary,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _KycProgressCard extends StatelessWidget {
+  final KycBundle bundle;
+  final int percent;
+
+  const _KycProgressCard({required this.bundle, required this.percent});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 28),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.35),
+        border: Border.all(color: const Color(0xFFDDE3DA), width: 1.5),
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Statut global',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: AppColors.textPrimary,
+                    fontSize: 26,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+              const _KycCompletionPill(),
+            ],
+          ),
+          const SizedBox(height: 28),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  '${bundle.providedCount} / ${bundle.requiredCount} documents fournis',
+                  style: const TextStyle(
+                    color: Color(0xFF54615A),
+                    fontSize: 21,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              Text(
+                '$percent%',
+                style: const TextStyle(
+                  color: AppColors.primary,
+                  fontSize: 21,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: LinearProgressIndicator(
+              minHeight: 14,
+              value: bundle.completionRatio.clamp(0, 1),
+              backgroundColor: const Color(0xFFE5E7E1),
+              color: AppColors.primary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _KycCompletionPill extends StatelessWidget {
+  const _KycCompletionPill();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFEDB7),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(radius: 5, backgroundColor: Color(0xFFF3C316)),
+          SizedBox(width: 9),
+          Text(
+            'À compléter',
+            style: TextStyle(
+              color: Color(0xFF8A6410),
+              fontSize: 17,
+              fontWeight: FontWeight.w900,
+              height: 1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _KycStatusRequirementRow extends StatelessWidget {
+  final KycRequirement requirement;
+  final KycDocument? document;
+
+  const _KycStatusRequirementRow({required this.requirement, this.document});
+
+  @override
+  Widget build(BuildContext context) {
+    final status = document?.status ?? requirement.latestStatus;
+    return Row(
+      children: [
+        _KycStatusRequirementIcon(status: status),
+        const SizedBox(width: 18),
+        Expanded(
+          child: Text(
+            requirement.type.label,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+            style: TextStyle(
+              color: _isMissingStatus(status)
+                  ? const Color(0xFF54615A)
+                  : AppColors.textPrimary,
+              fontSize: 23,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+        const SizedBox(width: 14),
+        Text(
+          _kycStatusChecklistLabel(status),
+          style: TextStyle(
+            color: _kycStatusChecklistColor(status),
+            fontSize: 18,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _KycStatusRequirementIcon extends StatelessWidget {
+  final KycDocumentStatus status;
+
+  const _KycStatusRequirementIcon({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    if (status == KycDocumentStatus.accepted) {
+      return const SizedBox(
+        width: 40,
+        height: 40,
+        child: DecoratedBox(
+          decoration: BoxDecoration(shape: BoxShape.circle),
+          child: Icon(
+            Icons.check_circle_outline,
+            color: AppColors.primary,
+            size: 40,
+          ),
+        ),
+      );
+    }
+    if (status == KycDocumentStatus.pendingReview ||
+        status == KycDocumentStatus.uploaded ||
+        status == KycDocumentStatus.encrypted) {
+      return const SizedBox(
+        width: 40,
+        height: 40,
+        child: Center(child: MotodigoPendingYellowIcon(size: 36)),
+      );
+    }
+    return const SizedBox(
+      width: 40,
+      height: 40,
+      child: Center(child: MotodigoFileLeftGrayIcon(size: 34)),
     );
   }
 }
@@ -1760,6 +2461,62 @@ String _statusLabel(KycDocumentStatus status) {
     KycDocumentStatus.uploaded || KycDocumentStatus.encrypted => 'Fourni',
     KycDocumentStatus.missing || KycDocumentStatus.unknown => 'A fournir',
   };
+}
+
+String _kycStatusChecklistLabel(KycDocumentStatus status) {
+  return switch (status) {
+    KycDocumentStatus.accepted => 'Validé',
+    KycDocumentStatus.pendingReview ||
+    KycDocumentStatus.uploaded ||
+    KycDocumentStatus.encrypted => 'En attente',
+    KycDocumentStatus.rejected => 'Rejeté',
+    KycDocumentStatus.expired => 'Expiré',
+    KycDocumentStatus.missing || KycDocumentStatus.unknown => 'À fournir',
+  };
+}
+
+Color _kycStatusChecklistColor(KycDocumentStatus status) {
+  return switch (status) {
+    KycDocumentStatus.accepted => AppColors.primary,
+    KycDocumentStatus.pendingReview ||
+    KycDocumentStatus.uploaded ||
+    KycDocumentStatus.encrypted => const Color(0xFF8A6410),
+    KycDocumentStatus.rejected ||
+    KycDocumentStatus.expired => const Color(0xFFC62828),
+    KycDocumentStatus.missing ||
+    KycDocumentStatus.unknown => const Color(0xFF98A29A),
+  };
+}
+
+bool _isMissingStatus(KycDocumentStatus status) {
+  return status == KycDocumentStatus.missing ||
+      status == KycDocumentStatus.unknown;
+}
+
+bool _hasSubmittedBundleInProgress(KycBundle bundle) {
+  if (!bundle.isComplete ||
+      bundle.profileValidationStatus == ValidationStatus.validated ||
+      bundle.hasRejectedDocument) {
+    return false;
+  }
+  return bundle.requirements.where((item) => item.required).every((item) {
+    final status = bundle.latestDocumentFor(item.type)?.status;
+    return status == KycDocumentStatus.pendingReview ||
+        status == KycDocumentStatus.uploaded ||
+        status == KycDocumentStatus.encrypted ||
+        status == KycDocumentStatus.accepted;
+  });
+}
+
+DateTime? _latestSubmittedAt(KycBundle bundle) {
+  DateTime? latest;
+  for (final document in bundle.documents) {
+    final date = document.uploadedAt ?? document.updatedAt;
+    if (date != null && (latest == null || date.isAfter(latest))) {
+      latest = date;
+    }
+  }
+  return latest;
 }
 
 Color _statusColor(KycDocumentStatus status) {
