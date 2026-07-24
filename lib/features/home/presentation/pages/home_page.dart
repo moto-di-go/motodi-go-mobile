@@ -10,6 +10,7 @@ import 'package:motodi_go_mobile/features/profiles/domain/entities/profile_type.
 import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/cubit/profile_cubit.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_widgets.dart';
+import 'package:motodi_go_mobile/features/home/presentation/widgets/home_figma_icons.dart';
 import 'package:motodi_go_mobile/l10n/app_localizations.dart';
 
 class HomePage extends StatelessWidget {
@@ -34,7 +35,11 @@ class HomePage extends StatelessWidget {
                 Row(
                   children: [
                     _SquareIconButton(
-                      icon: Icons.menu_rounded,
+                      icon: const Icon(
+                        Icons.menu_rounded,
+                        color: AppColors.textPrimary,
+                        size: 30,
+                      ),
                       onTap: () => _showLogoutSheet(context),
                     ),
                     const SizedBox(width: 14),
@@ -57,7 +62,7 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     _SquareIconButton(
-                      icon: Icons.notifications_none_rounded,
+                      icon: const MotodigoNotifGrayIcon(size: 30),
                       onTap: () {},
                       badge: true,
                     ),
@@ -135,34 +140,11 @@ class HomePage extends StatelessWidget {
               ],
             ),
           ),
-          bottomNavigationBar: NavigationBar(
+          bottomNavigationBar: _HomeBottomNavigation(
             selectedIndex: 0,
-            onDestinationSelected: (index) {
+            onSelected: (index) {
               if (index == 4) _showLogoutSheet(context);
             },
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home),
-                label: 'Accueil',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.route_outlined),
-                label: 'Trajets',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.account_balance_wallet_outlined),
-                label: 'Wallet',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.notifications_none_rounded),
-                label: 'Notifs',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.person_outline_rounded),
-                label: 'Profil',
-              ),
-            ],
           ),
         );
       },
@@ -378,7 +360,7 @@ class _PendingValidationCard extends StatelessWidget {
                           ),
                     ),
                     const SizedBox(height: 8),
-                    StatusBadge(status: status),
+                    _PendingProfileBadge(type: type, status: status),
                   ],
                 ),
               ),
@@ -403,6 +385,52 @@ class _PendingValidationCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _PendingProfileBadge extends StatelessWidget {
+  final ProfileType type;
+  final ValidationStatus status;
+
+  const _PendingProfileBadge({required this.type, required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = statusColor(status);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(radius: 5, backgroundColor: color),
+          const SizedBox(width: 9),
+          Text(
+            '${profileLabel(type)} · ${_homeStatusLabel(status)}',
+            style: TextStyle(
+              color: color,
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              height: 1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String _homeStatusLabel(ValidationStatus status) {
+  return switch (status) {
+    ValidationStatus.pending => 'En attente',
+    ValidationStatus.rejected => 'Rejeté',
+    ValidationStatus.suspended => 'Suspendu',
+    ValidationStatus.draft => 'Brouillon',
+    ValidationStatus.validated => 'Validé',
+    ValidationStatus.unknown => 'Statut inconnu',
+  };
 }
 
 class _PassengerReadyCard extends StatelessWidget {
@@ -521,8 +549,128 @@ class _FeatureTile extends StatelessWidget {
   }
 }
 
+class _HomeBottomNavigation extends StatelessWidget {
+  final int selectedIndex;
+  final ValueChanged<int> onSelected;
+
+  const _HomeBottomNavigation({
+    required this.selectedIndex,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const items = [
+      _HomeNavItemData(
+        label: 'Accueil',
+        activeIcon: MotodigoHomeGreenIcon(size: 30),
+        inactiveIcon: MotodigoHomeGrayIcon(size: 30),
+      ),
+      _HomeNavItemData(
+        label: 'Trajets',
+        activeIcon: MotodigoTrajetGreenIcon(size: 30),
+        inactiveIcon: MotodigoTrajetGrayIcon(size: 30),
+      ),
+      _HomeNavItemData(
+        label: 'Wallet',
+        activeIcon: MotodigoWalletGreenIcon(size: 30),
+        inactiveIcon: MotodigoWalletGrayIcon(size: 30),
+      ),
+      _HomeNavItemData(
+        label: 'Notifs',
+        activeIcon: MotodigoNotifGreenIcon(size: 30),
+        inactiveIcon: MotodigoNotifGrayIcon(size: 30),
+      ),
+      _HomeNavItemData(
+        label: 'Profil',
+        activeIcon: MotodigoProfileGreenIcon(size: 30),
+        inactiveIcon: MotodigoProfileGrayIcon(size: 30),
+      ),
+    ];
+
+    return SafeArea(
+      top: false,
+      child: Container(
+        height: 86,
+        decoration: const BoxDecoration(
+          color: AppColors.background,
+          border: Border(top: BorderSide(color: Color(0xFFE4E7DF))),
+        ),
+        padding: const EdgeInsets.fromLTRB(22, 10, 22, 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            for (var index = 0; index < items.length; index++)
+              _HomeNavItem(
+                data: items[index],
+                selected: index == selectedIndex,
+                onTap: () => onSelected(index),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeNavItemData {
+  final String label;
+  final Widget activeIcon;
+  final Widget inactiveIcon;
+
+  const _HomeNavItemData({
+    required this.label,
+    required this.activeIcon,
+    required this.inactiveIcon,
+  });
+}
+
+class _HomeNavItem extends StatelessWidget {
+  final _HomeNavItemData data;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _HomeNavItem({
+    required this.data,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = selected ? AppColors.primary : const Color(0xFF98A29A);
+    return Expanded(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: onTap,
+        child: SizedBox(
+          height: 66,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              selected ? data.activeIcon : data.inactiveIcon,
+              const SizedBox(height: 6),
+              Text(
+                data.label,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  height: 1,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _SquareIconButton extends StatelessWidget {
-  final IconData icon;
+  final Widget icon;
   final VoidCallback onTap;
   final bool badge;
 
@@ -547,7 +695,7 @@ class _SquareIconButton extends StatelessWidget {
               color: const Color(0xFFF1F2ED),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, color: AppColors.textPrimary, size: 30),
+            child: Center(child: icon),
           ),
           if (badge)
             const Positioned(
