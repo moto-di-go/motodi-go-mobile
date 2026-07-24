@@ -469,6 +469,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Continuer vers la validation'**
   String get transporterProfileSubmit;
+
+  /// No description provided for @profileSwitcherTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer de profil'**
+  String get profileSwitcherTitle;
+
+  /// No description provided for @profileSwitcherSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un profil actif à la fois.'**
+  String get profileSwitcherSubtitle;
+
+  /// No description provided for @profileSwitcherAddProfile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un profil'**
+  String get profileSwitcherAddProfile;
 }
 
 class _AppLocalizationsDelegate

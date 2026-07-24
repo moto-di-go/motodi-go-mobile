@@ -78,5 +78,9 @@
   "transporterProfileVehicleLabel": "Véhicule",
   "transporterProfileVehicleKycText": "Ajout possible à l'étape KYC",
   "transporterProfileVehicleSoon": "Bientôt",
-  "transporterProfileSubmit": "Continuer vers la validation"
+  "transporterProfileSubmit": "Continuer vers la validation",
+
+  "profileSwitcherTitle": "Changer de profil",
+  "profileSwitcherSubtitle": "Un profil actif à la fois.",
+  "profileSwitcherAddProfile": "Ajouter un profil"
 }

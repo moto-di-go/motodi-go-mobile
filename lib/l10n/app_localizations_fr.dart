@@ -201,4 +201,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get transporterProfileSubmit => 'Continuer vers la validation';
+
+  @override
+  String get profileSwitcherTitle => 'Changer de profil';
+
+  @override
+  String get profileSwitcherSubtitle => 'Un profil actif à la fois.';
+
+  @override
+  String get profileSwitcherAddProfile => 'Ajouter un profil';
 }
