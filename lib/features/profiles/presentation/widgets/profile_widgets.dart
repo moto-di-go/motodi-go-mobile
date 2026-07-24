@@ -3,6 +3,7 @@ import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/profile_type.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/user_profile.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
+import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_figma_icons.dart';
 
 IconData profileIcon(ProfileType type) {
   return switch (type) {
@@ -27,10 +28,22 @@ String profileLabel(ProfileType type) {
 }
 
 String statusLabel(ValidationStatus status, {bool active = false}) {
-  if (active && status == ValidationStatus.validated) return 'Validé · actif';
+  if (active && status == ValidationStatus.validated) return 'Accès immédiat';
   return switch (status) {
     ValidationStatus.validated => 'Accès immédiat',
     ValidationStatus.pending => 'Validation requise',
+    ValidationStatus.rejected => 'Rejeté',
+    ValidationStatus.suspended => 'Suspendu',
+    ValidationStatus.draft => 'Brouillon',
+    ValidationStatus.unknown => 'Statut inconnu',
+  };
+}
+
+String compactStatusLabel(ValidationStatus status, {bool active = false}) {
+  if (active && status == ValidationStatus.validated) return 'Validé · actif';
+  return switch (status) {
+    ValidationStatus.validated => 'Validé',
+    ValidationStatus.pending => 'En attente',
     ValidationStatus.rejected => 'Rejeté',
     ValidationStatus.suspended => 'Suspendu',
     ValidationStatus.draft => 'Brouillon',
@@ -55,6 +68,7 @@ class ProfileChoiceCard extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
   final bool showAction;
+  final bool compact;
 
   const ProfileChoiceCard({
     super.key,
@@ -63,45 +77,61 @@ class ProfileChoiceCard extends StatelessWidget {
     required this.selected,
     required this.onTap,
     this.showAction = false,
+    this.compact = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final status =
         profile?.validationStatus ??
-        (type == ProfileType.passenger ? ValidationStatus.validated : ValidationStatus.pending);
+        (type == ProfileType.passenger
+            ? ValidationStatus.validated
+            : ValidationStatus.pending);
     final active = profile?.active ?? false;
-    final borderColor = selected ? AppColors.primary : const Color(0xFFE0E5DF);
-    final backgroundColor = selected ? const Color(0xFFEFFAF3) : Colors.white;
+    final iconColor = selected ? AppColors.primary : const Color(0xFF3C4741);
+    final borderRadius = compact ? 18.0 : 24.0;
+    final iconSize = compact ? 42.0 : 64.0;
+    final iconRadius = compact ? 14.0 : 20.0;
+    final contentPadding = compact
+        ? const EdgeInsets.all(12)
+        : const EdgeInsets.symmetric(horizontal: 20, vertical: 20);
 
     return Material(
-      color: backgroundColor,
-      borderRadius: BorderRadius.circular(24),
+      color: selected ? const Color(0xFFEFFAF3) : Colors.white,
+      borderRadius: BorderRadius.circular(borderRadius),
       child: InkWell(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(borderRadius),
         onTap: onTap,
         child: Container(
-          constraints: const BoxConstraints(minHeight: 94),
-          padding: const EdgeInsets.all(18),
+          constraints: BoxConstraints(minHeight: compact ? 84 : 112),
+          padding: contentPadding,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: borderColor, width: selected ? 2.5 : 1.3),
+            borderRadius: BorderRadius.circular(borderRadius),
+            border: Border.all(
+              color: selected ? AppColors.primary : const Color(0xFFE0E5DF),
+              width: selected ? (compact ? 2 : 2.5) : 1.3,
+            ),
           ),
           child: Row(
             children: [
               Container(
-                width: 58,
-                height: 58,
+                width: iconSize,
+                height: iconSize,
                 decoration: BoxDecoration(
-                  color: selected ? const Color(0xFFDDF5E6) : const Color(0xFFF1F2ED),
-                  borderRadius: BorderRadius.circular(18),
+                  color: selected
+                      ? const Color(0xFFDFF5E8)
+                      : const Color(0xFFF1F2ED),
+                  borderRadius: BorderRadius.circular(iconRadius),
                 ),
-                child: Icon(
-                  profileIcon(type),
-                  color: selected ? AppColors.primary : const Color(0xFF46524A),
+                child: Center(
+                  child: ProfileTypeIcon(
+                    type: type,
+                    color: iconColor,
+                    size: compact ? 24 : 32,
+                  ),
                 ),
               ),
-              const SizedBox(width: 18),
+              SizedBox(width: compact ? 14 : 22),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,31 +140,46 @@ class ProfileChoiceCard extends StatelessWidget {
                     Text(
                       profileLabel(type),
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w900,
                         color: AppColors.textPrimary,
+                        fontSize: compact ? 21 : 25,
+                        fontWeight: FontWeight.w900,
+                        height: 1.05,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    StatusBadge(status: status, active: active),
+                    SizedBox(height: compact ? 6 : 8),
+                    StatusBadge(
+                      status: status,
+                      active: active,
+                      compact: compact,
+                    ),
                   ],
                 ),
               ),
               if (selected)
-                const CircleAvatar(
-                  radius: 22,
+                CircleAvatar(
+                  radius: compact ? 24 : 24,
                   backgroundColor: AppColors.primary,
-                  child: Icon(Icons.check_rounded, color: Colors.white),
+                  child: const Icon(
+                    Icons.check_rounded,
+                    color: Colors.white,
+                    size: 34,
+                  ),
                 )
               else if (showAction)
                 Text(
                   'Utiliser',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: AppColors.primary,
+                    fontSize: compact ? 19 : null,
                     fontWeight: FontWeight.w900,
                   ),
                 )
               else
-                const Icon(Icons.chevron_right_rounded, color: Color(0xFFB7C0B8), size: 32),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: Color(0xFFB7C0B8),
+                  size: 38,
+                ),
             ],
           ),
         ),
@@ -143,11 +188,46 @@ class ProfileChoiceCard extends StatelessWidget {
   }
 }
 
+class ProfileTypeIcon extends StatelessWidget {
+  final ProfileType type;
+  final Color color;
+  final double size;
+
+  const ProfileTypeIcon({
+    super.key,
+    required this.type,
+    required this.color,
+    this.size = 32,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (type) {
+      ProfileType.passenger => MotodigoProfilePersonIcon(
+        size: size,
+        color: color,
+      ),
+      ProfileType.mototaxi => MotodigoMototaxiIcon(size: size, color: color),
+      ProfileType.transporter => MotodigoTransporterIcon(
+        size: size,
+        color: color,
+      ),
+      _ => Icon(profileIcon(type), color: color, size: size),
+    };
+  }
+}
+
 class StatusBadge extends StatelessWidget {
   final ValidationStatus status;
   final bool active;
+  final bool compact;
 
-  const StatusBadge({super.key, required this.status, this.active = false});
+  const StatusBadge({
+    super.key,
+    required this.status,
+    this.active = false,
+    this.compact = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -164,10 +244,15 @@ class StatusBadge extends StatelessWidget {
           CircleAvatar(radius: 4, backgroundColor: color),
           const SizedBox(width: 8),
           Text(
-            statusLabel(status, active: active),
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: color, fontWeight: FontWeight.w900),
+            compact
+                ? compactStatusLabel(status, active: active)
+                : statusLabel(status, active: active),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: color,
+              fontSize: compact ? 15 : 16,
+              fontWeight: FontWeight.w900,
+              height: 1.05,
+            ),
           ),
         ],
       ),

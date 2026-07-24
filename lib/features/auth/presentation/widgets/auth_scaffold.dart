@@ -35,7 +35,7 @@ class AuthScaffold extends StatelessWidget {
     );
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFBFCF8),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: scrollable
             ? SingleChildScrollView(

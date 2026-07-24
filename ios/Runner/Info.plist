@@ -76,6 +76,11 @@
 	<string>Accès aux contacts pour faciliter les transferts</string>
 	-->
 
+	<key>NSCameraUsageDescription</key>
+	<string>Utilisation de la camera pour televerser vos documents KYC.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Acces a vos photos pour selectionner une image de document KYC.</string>
+
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

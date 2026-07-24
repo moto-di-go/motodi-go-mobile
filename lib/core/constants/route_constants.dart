@@ -22,6 +22,18 @@ class RouteConstants {
   static const String profileMototaxi = '/profiles/mototaxi';
   static const String profileTransporter = '/profiles/transporter';
 
+  // KYC
+  static const String kyc = '/kyc';
+  static const String kycDocuments = '/kyc/documents';
+  static const String kycPreview = '/kyc/preview';
+  static const String kycUploading = '/kyc/uploading';
+  static const String kycUploadSuccess = '/kyc/upload-success';
+  static const String kycInvalid = '/kyc/invalid';
+  static const String kycSubmitted = '/kyc/submitted';
+  static const String kycRejected = '/kyc/rejected';
+  static const String kycVerified = '/kyc/verified';
+  static const String kycNotification = '/kyc/notification';
+
   // App
   static const String home = '/home';
   static const String profile = '/profile';

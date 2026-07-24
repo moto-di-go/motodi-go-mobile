@@ -8,7 +8,7 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: Color(0xFFFBFCF8),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [

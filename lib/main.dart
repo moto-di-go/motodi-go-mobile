@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:motodi_go_mobile/core/constants/route_constants.dart';
+import 'package:motodi_go_mobile/core/l10n/app_locale_controller.dart';
+import 'package:motodi_go_mobile/core/services/notification_service.dart';
 import 'package:motodi_go_mobile/core/theme/app_theme.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
@@ -34,39 +38,72 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   late final SessionCubit _sessionCubit;
   late final GoRouter _router;
+  late final AppLocaleController _localeController;
 
   @override
   void initState() {
     super.initState();
+    _localeController = AppLocaleController()..load();
     _sessionCubit = getIt<SessionCubit>();
     _router = createAppRouter(_sessionCubit);
     _sessionCubit.bootstrap();
+    _initializeNotifications();
   }
 
   @override
   void dispose() {
     _router.dispose();
+    _localeController.dispose();
     super.dispose();
+  }
+
+  Future<void> _initializeNotifications() async {
+    try {
+      if (Firebase.apps.isEmpty) {
+        await Firebase.initializeApp();
+      }
+      await getIt<NotificationService>().initialize(
+        onKycDecision: (payload) {
+          final context = rootNavigatorKey.currentContext;
+          if (context != null) {
+            context.go(RouteConstants.kycNotification, extra: payload);
+          }
+        },
+      );
+    } catch (error) {
+      if (kDebugMode) {
+        debugPrint('Notifications disabled: $error');
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: _sessionCubit,
-      child: MaterialApp.router(
-        title: "Moto'di Go",
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme(),
-        darkTheme: AppTheme.darkTheme(),
-        themeMode: ThemeMode.light,
-        routerConfig: _router,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
+    return AppLocaleScope(
+      controller: _localeController,
+      child: BlocProvider.value(
+        value: _sessionCubit,
+        child: AnimatedBuilder(
+          animation: _localeController,
+          builder: (context, _) {
+            return MaterialApp.router(
+              title: "Moto'di Go",
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.lightTheme(),
+              darkTheme: AppTheme.darkTheme(),
+              themeMode: ThemeMode.light,
+              routerConfig: _router,
+              locale: _localeController.locale,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+            );
+          },
+        ),
       ),
     );
   }

@@ -163,6 +163,7 @@ flutter:
   assets:
     - assets/images/
     - assets/fonts/
+    - assets/i18n/
     - .env
 
 #  fonts:

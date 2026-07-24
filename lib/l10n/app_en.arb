@@ -47,5 +47,40 @@
     "placeholders": {
       "date": { "type": "String" }
     }
-  }
+  },
+
+  "passenger_profile_title": "Passenger profile",
+  "passenger_profile_description": "A few preferences to finalize your passenger profile.",
+  "passenger_profile_language_label": "Preferred language",
+  "passenger_profile_language_fr": "French",
+  "passenger_profile_language_en": "English",
+  "passenger_profile_emergency_label": "Emergency contact",
+  "passenger_profile_optional": "optional",
+  "passenger_profile_emergency_hint": "A relative's number",
+  "passenger_profile_submit": "Finish",
+
+  "mototaxiProfileTitle": "Mototaxi profile",
+  "mototaxiProfileWarning": "Validation required: your documents will be checked before activation.",
+  "mototaxiProfileDisplayNameLabel": "Display name",
+  "mototaxiProfileDisplayNameHint": "Ibrahim M.",
+  "mototaxiProfileZoneLabel": "Operating area",
+  "mototaxiProfileLicenseLabel": "License number",
+  "mototaxiProfileLicenseOptional": "if available",
+  "mototaxiProfileLicenseHint": "CM-YDE-000000",
+  "mototaxiProfileSubmit": "Continue to validation",
+
+  "transporterProfileTitle": "Transporter profile",
+  "transporterProfileWarning": "Permit and vehicle documents are required for validation.",
+  "transporterProfileCompanyNameLabel": "Business name",
+  "transporterProfileCompanyNameHint": "Express Voyages SARL",
+  "transporterProfilePermitLabel": "Permit / license number",
+  "transporterProfilePermitHint": "Ex. AGR-2024-01234",
+  "transporterProfileVehicleLabel": "Vehicle",
+  "transporterProfileVehicleKycText": "Can be added during KYC",
+  "transporterProfileVehicleSoon": "Soon",
+  "transporterProfileSubmit": "Continue to validation",
+
+  "profileSwitcherTitle": "Switch profile",
+  "profileSwitcherSubtitle": "One active profile at a time.",
+  "profileSwitcherAddProfile": "Add a profile"
 }

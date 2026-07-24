@@ -10,6 +10,8 @@ import 'package:motodi_go_mobile/features/profiles/domain/entities/profile_type.
 import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/cubit/profile_cubit.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_widgets.dart';
+import 'package:motodi_go_mobile/features/home/presentation/widgets/home_figma_icons.dart';
+import 'package:motodi_go_mobile/l10n/app_localizations.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -21,9 +23,11 @@ class HomePage extends StatelessWidget {
         final active = state.activeProfile;
         final type = active?.type ?? ProfileType.passenger;
         final status = active?.validationStatus ?? ValidationStatus.validated;
-        final isLocked = type != ProfileType.passenger && status != ValidationStatus.validated;
+        final isLocked =
+            type != ProfileType.passenger &&
+            status != ValidationStatus.validated;
         return Scaffold(
-          backgroundColor: const Color(0xFFFBFCF8),
+          backgroundColor: AppColors.background,
           body: SafeArea(
             child: ListView(
               padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
@@ -31,17 +35,22 @@ class HomePage extends StatelessWidget {
                 Row(
                   children: [
                     _SquareIconButton(
-                      icon: Icons.menu_rounded,
+                      icon: const Icon(
+                        Icons.menu_rounded,
+                        color: AppColors.textPrimary,
+                        size: 30,
+                      ),
                       onTap: () => _showLogoutSheet(context),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
                       child: RichText(
                         text: TextSpan(
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            color: AppColors.textPrimary,
-                            fontWeight: FontWeight.w900,
-                          ),
+                          style: Theme.of(context).textTheme.headlineMedium
+                              ?.copyWith(
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w900,
+                              ),
                           children: const [
                             TextSpan(text: "Moto'di Go"),
                             TextSpan(
@@ -53,7 +62,7 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     _SquareIconButton(
-                      icon: Icons.notifications_none_rounded,
+                      icon: const MotodigoNotifGrayIcon(size: 30),
                       onTap: () {},
                       badge: true,
                     ),
@@ -64,17 +73,24 @@ class HomePage extends StatelessWidget {
                       child: CircleAvatar(
                         radius: 26,
                         backgroundColor: const Color(0xFFDFF5E8),
-                        child: Icon(profileIcon(type), color: AppColors.primary),
+                        child: ProfileTypeIcon(
+                          type: type,
+                          color: AppColors.primary,
+                          size: 28,
+                        ),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 34),
-                if (isLocked) _PendingValidationCard(type: type, status: status),
+                if (isLocked)
+                  _PendingValidationCard(type: type, status: status),
                 if (!isLocked) _PassengerReadyCard(type: type),
                 const SizedBox(height: 38),
                 Text(
-                  type == ProfileType.passenger ? 'FONCTIONS PASSAGER' : 'FONCTIONS CONDUCTEUR',
+                  type == ProfileType.passenger
+                      ? 'FONCTIONS PASSAGER'
+                      : 'FONCTIONS CONDUCTEUR',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: const Color(0xFF9CA7A0),
                     fontWeight: FontWeight.w900,
@@ -99,44 +115,36 @@ class HomePage extends StatelessWidget {
                   _FeatureTile(
                     icon: Icons.tune_rounded,
                     title: 'Passer en ligne',
-                    subtitle: isLocked ? 'Disponible après validation' : 'Disponible maintenant',
+                    subtitle: isLocked
+                        ? 'Disponible après validation'
+                        : 'Disponible maintenant',
                     locked: isLocked,
                   ),
                   _FeatureTile(
                     icon: Icons.bookmark_border_rounded,
                     title: 'Publier une annonce',
-                    subtitle: isLocked ? 'Disponible après validation' : 'Créer une offre',
+                    subtitle: isLocked
+                        ? 'Disponible après validation'
+                        : 'Créer une offre',
                     locked: isLocked,
                   ),
                   _FeatureTile(
                     icon: Icons.my_location_rounded,
                     title: 'Partager ma position',
-                    subtitle: isLocked ? 'Disponible après validation' : 'GPS conducteur',
+                    subtitle: isLocked
+                        ? 'Disponible après validation'
+                        : 'GPS conducteur',
                     locked: isLocked,
                   ),
                 ],
               ],
             ),
           ),
-          bottomNavigationBar: NavigationBar(
+          bottomNavigationBar: _HomeBottomNavigation(
             selectedIndex: 0,
-            onDestinationSelected: (index) {
-              if (index == 4) _showLogoutSheet(context);
+            onSelected: (index) {
+              if (index == 4) context.go(RouteConstants.kyc);
             },
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home),
-                label: 'Accueil',
-              ),
-              NavigationDestination(icon: Icon(Icons.route_outlined), label: 'Trajets'),
-              NavigationDestination(
-                icon: Icon(Icons.account_balance_wallet_outlined),
-                label: 'Wallet',
-              ),
-              NavigationDestination(icon: Icon(Icons.notifications_none_rounded), label: 'Notifs'),
-              NavigationDestination(icon: Icon(Icons.person_outline_rounded), label: 'Profil'),
-            ],
           ),
         );
       },
@@ -144,6 +152,8 @@ class HomePage extends StatelessWidget {
   }
 
   void _showProfileSwitcher(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -154,7 +164,9 @@ class HomePage extends StatelessWidget {
           child: BlocConsumer<ProfileCubit, ProfileState>(
             listener: (context, state) async {
               if (state.isSaved) {
-                await sheetContext.read<SessionCubit>().refreshAfterProfileChange();
+                await sheetContext
+                    .read<SessionCubit>()
+                    .refreshAfterProfileChange();
                 if (sheetContext.mounted) Navigator.of(sheetContext).pop();
               }
             },
@@ -174,24 +186,26 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 30),
-                    Text(
-                      'Changer de profil',
-                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                        color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Un profil actif à la fois.',
-                      style: TextStyle(
-                        color: Color(0xFF8E9A91),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
                     const SizedBox(height: 28),
+                    Text(
+                      l10n.profileSwitcherTitle,
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(
+                            color: AppColors.textPrimary,
+                            fontSize: 32,
+                            fontWeight: FontWeight.w900,
+                          ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      l10n.profileSwitcherSubtitle,
+                      style: const TextStyle(
+                        color: Color(0xFF8E9A91),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
                     if (state.status == ProfileStatus.loading)
                       const Center(child: CircularProgressIndicator())
                     else
@@ -201,23 +215,29 @@ class HomePage extends StatelessWidget {
                           profile: profile,
                           selected: profile.active,
                           showAction: !profile.active,
+                          compact: true,
                           onTap: () {
-                            if (profile.validationStatus == ValidationStatus.suspended) {
+                            if (profile.validationStatus ==
+                                ValidationStatus.suspended) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Ce profil est suspendu.')),
+                                const SnackBar(
+                                  content: Text('Ce profil est suspendu.'),
+                                ),
                               );
                               return;
                             }
                             if (!profile.active) {
-                              context.read<ProfileCubit>().activateProfile(profile.id);
+                              context.read<ProfileCubit>().activateProfile(
+                                profile.id,
+                              );
                             }
                           },
                         ),
                         const SizedBox(height: 14),
                       ],
-                    SecondaryAuthButton(
-                      label: 'Ajouter un profil',
-                      icon: Icons.add_rounded,
+                    const SizedBox(height: 8),
+                    _AddProfileButton(
+                      label: l10n.profileSwitcherAddProfile,
                       onPressed: () {
                         Navigator.of(sheetContext).pop();
                         sheetContext.go(RouteConstants.profileSelection);
@@ -245,7 +265,11 @@ class HomePage extends StatelessWidget {
               const CircleAvatar(
                 radius: 44,
                 backgroundColor: Color(0xFFFBE3E5),
-                child: Icon(Icons.logout_rounded, size: 42, color: AppColors.error),
+                child: Icon(
+                  Icons.logout_rounded,
+                  size: 42,
+                  color: AppColors.error,
+                ),
               ),
               const SizedBox(height: 26),
               Text(
@@ -260,9 +284,10 @@ class HomePage extends StatelessWidget {
               Text(
                 'Vous devrez saisir à nouveau votre numéro et votre mot de passe pour vous reconnecter.',
                 textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(color: const Color(0xFF5B6760), height: 1.35),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: const Color(0xFF5B6760),
+                  height: 1.35,
+                ),
               ),
               const SizedBox(height: 34),
               PrimaryAuthButton(
@@ -315,7 +340,11 @@ class _PendingValidationCard extends StatelessWidget {
                   color: const Color(0xFFF7DD7A),
                   borderRadius: BorderRadius.circular(18),
                 ),
-                child: const Icon(Icons.schedule_rounded, color: Color(0xFF9B6B0B), size: 36),
+                child: const Icon(
+                  Icons.schedule_rounded,
+                  color: Color(0xFF9B6B0B),
+                  size: 36,
+                ),
               ),
               const SizedBox(width: 20),
               Expanded(
@@ -324,13 +353,14 @@ class _PendingValidationCard extends StatelessWidget {
                   children: [
                     Text(
                       'Profil en attente de validation',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w900,
-                      ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w900,
+                          ),
                     ),
                     const SizedBox(height: 8),
-                    StatusBadge(status: status),
+                    _PendingProfileBadge(type: type, status: status),
                   ],
                 ),
               ),
@@ -339,23 +369,68 @@ class _PendingValidationCard extends StatelessWidget {
           const SizedBox(height: 24),
           Text(
             'Prochaine étape : fournir vos documents pour activer vos fonctions conducteur.',
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(color: const Color(0xFF8B6509), height: 1.42),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: const Color(0xFF8B6509),
+              height: 1.42,
+            ),
           ),
           const SizedBox(height: 24),
           PrimaryAuthButton(
             label: 'Voir mes documents',
             leadingIcon: Icons.description_outlined,
             backgroundColor: AppColors.textPrimary,
-            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Le parcours KYC arrive avec MOB-KYC-001.')),
+            onPressed: () => context.go(RouteConstants.kycDocuments),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PendingProfileBadge extends StatelessWidget {
+  final ProfileType type;
+  final ValidationStatus status;
+
+  const _PendingProfileBadge({required this.type, required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = statusColor(status);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(radius: 5, backgroundColor: color),
+          const SizedBox(width: 9),
+          Text(
+            '${profileLabel(type)} · ${_homeStatusLabel(status)}',
+            style: TextStyle(
+              color: color,
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              height: 1,
             ),
           ),
         ],
       ),
     );
   }
+}
+
+String _homeStatusLabel(ValidationStatus status) {
+  return switch (status) {
+    ValidationStatus.pending => 'En attente',
+    ValidationStatus.rejected => 'Rejeté',
+    ValidationStatus.suspended => 'Suspendu',
+    ValidationStatus.draft => 'Brouillon',
+    ValidationStatus.validated => 'Validé',
+    ValidationStatus.unknown => 'Statut inconnu',
+  };
 }
 
 class _PassengerReadyCard extends StatelessWidget {
@@ -394,7 +469,10 @@ class _PassengerReadyCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 const Text(
                   'Vous pouvez utiliser les fonctions disponibles.',
-                  style: TextStyle(color: Color(0xFF5B6760), fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                    color: Color(0xFF5B6760),
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ],
             ),
@@ -447,9 +525,10 @@ class _FeatureTile extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(color: color, fontWeight: FontWeight.w900),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -462,19 +541,144 @@ class _FeatureTile extends StatelessWidget {
               ],
             ),
           ),
-          if (locked) const Icon(Icons.lock_outline_rounded, color: Color(0xFFA8B0AA)),
+          if (locked)
+            const Icon(Icons.lock_outline_rounded, color: Color(0xFFA8B0AA)),
         ],
       ),
     );
   }
 }
 
+class _HomeBottomNavigation extends StatelessWidget {
+  final int selectedIndex;
+  final ValueChanged<int> onSelected;
+
+  const _HomeBottomNavigation({
+    required this.selectedIndex,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const items = [
+      _HomeNavItemData(
+        label: 'Accueil',
+        activeIcon: MotodigoHomeGreenIcon(size: 30),
+        inactiveIcon: MotodigoHomeGrayIcon(size: 30),
+      ),
+      _HomeNavItemData(
+        label: 'Trajets',
+        activeIcon: MotodigoTrajetGreenIcon(size: 30),
+        inactiveIcon: MotodigoTrajetGrayIcon(size: 30),
+      ),
+      _HomeNavItemData(
+        label: 'Wallet',
+        activeIcon: MotodigoWalletGreenIcon(size: 30),
+        inactiveIcon: MotodigoWalletGrayIcon(size: 30),
+      ),
+      _HomeNavItemData(
+        label: 'Notifs',
+        activeIcon: MotodigoNotifGreenIcon(size: 30),
+        inactiveIcon: MotodigoNotifGrayIcon(size: 30),
+      ),
+      _HomeNavItemData(
+        label: 'Profil',
+        activeIcon: MotodigoProfileGreenIcon(size: 30),
+        inactiveIcon: MotodigoProfileGrayIcon(size: 30),
+      ),
+    ];
+
+    return SafeArea(
+      top: false,
+      child: Container(
+        height: 86,
+        decoration: const BoxDecoration(
+          color: AppColors.background,
+          border: Border(top: BorderSide(color: Color(0xFFE4E7DF))),
+        ),
+        padding: const EdgeInsets.fromLTRB(22, 10, 22, 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            for (var index = 0; index < items.length; index++)
+              _HomeNavItem(
+                data: items[index],
+                selected: index == selectedIndex,
+                onTap: () => onSelected(index),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeNavItemData {
+  final String label;
+  final Widget activeIcon;
+  final Widget inactiveIcon;
+
+  const _HomeNavItemData({
+    required this.label,
+    required this.activeIcon,
+    required this.inactiveIcon,
+  });
+}
+
+class _HomeNavItem extends StatelessWidget {
+  final _HomeNavItemData data;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _HomeNavItem({
+    required this.data,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = selected ? AppColors.primary : const Color(0xFF98A29A);
+    return Expanded(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: onTap,
+        child: SizedBox(
+          height: 66,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              selected ? data.activeIcon : data.inactiveIcon,
+              const SizedBox(height: 6),
+              Text(
+                data.label,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  height: 1,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _SquareIconButton extends StatelessWidget {
-  final IconData icon;
+  final Widget icon;
   final VoidCallback onTap;
   final bool badge;
 
-  const _SquareIconButton({required this.icon, required this.onTap, this.badge = false});
+  const _SquareIconButton({
+    required this.icon,
+    required this.onTap,
+    this.badge = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -491,7 +695,7 @@ class _SquareIconButton extends StatelessWidget {
               color: const Color(0xFFF1F2ED),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, color: AppColors.textPrimary, size: 30),
+            child: Center(child: icon),
           ),
           if (badge)
             const Positioned(
@@ -500,6 +704,50 @@ class _SquareIconButton extends StatelessWidget {
               child: CircleAvatar(radius: 5, backgroundColor: AppColors.error),
             ),
         ],
+      ),
+    );
+  }
+}
+
+class _AddProfileButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onPressed;
+
+  const _AddProfileButton({required this.label, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 66,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.textPrimary,
+          side: const BorderSide(color: Color(0xFFDDE3DA), width: 1.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(999),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.add_rounded, size: 34),
+            const SizedBox(width: 16),
+            Flexible(
+              child: Text(
+                label,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -516,7 +764,7 @@ class _BottomSheetFrame extends StatelessWidget {
       top: false,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(24, 18, 24, 28),
+        padding: const EdgeInsets.fromLTRB(24, 18, 24, 26),
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
