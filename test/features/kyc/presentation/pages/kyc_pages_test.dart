@@ -105,9 +105,9 @@ void main() {
   ) async {
     await tester.pumpWidget(buildApp(KycPreviewPage(draft: _draft())));
 
-    expect(find.text('Apercu du document'), findsOneWidget);
+    expect(find.text('Aperçu du document'), findsOneWidget);
     expect(find.text('carte-grise.pdf'), findsOneWidget);
-    expect(find.text('PDF - 2.1 Mo - PDF'), findsOneWidget);
+    expect(find.text('PDF · 2.1 Mo · PDF'), findsOneWidget);
     expect(find.text('Envoyer'), findsOneWidget);
     expect(find.text('Reprendre'), findsOneWidget);
   });
