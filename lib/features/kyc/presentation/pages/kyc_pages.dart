@@ -790,7 +790,7 @@ class KycPreviewPage extends StatelessWidget {
     final selectedDraft = draft;
     if (selectedDraft == null) {
       return _KycScaffold(
-        title: 'Apercu du document',
+        title: 'Aperçu du document',
         child: AppErrorView(
           message: 'Aucun document selectionne.',
           onRetry: () => context.go(RouteConstants.kycDocuments),
@@ -798,27 +798,34 @@ class KycPreviewPage extends StatelessWidget {
       );
     }
     return _KycScaffold(
-      title: 'Apercu du document',
+      title: 'Aperçu du document',
       bottom: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          PrimaryAuthButton(
+          _KycBottomButton(
             label: 'Envoyer',
-            leadingIcon: Icons.file_upload_outlined,
+            leading: const MotodigoUploadWhiteIcon(size: 21),
             onPressed: () =>
                 context.push(RouteConstants.kycUploading, extra: selectedDraft),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
           TextButton(
             onPressed: () => context.go(RouteConstants.kycDocuments),
-            child: const Text('Reprendre'),
+            child: const Text(
+              'Reprendre',
+              style: TextStyle(
+                color: Color(0xFF54615A),
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
           ),
         ],
       ),
       child: Column(
         children: [
           _PreviewFrame(draft: selectedDraft),
-          const SizedBox(height: 26),
+          const SizedBox(height: 18),
           _SelectedFileCard(draft: selectedDraft),
         ],
       ),
@@ -902,77 +909,80 @@ class _KycUploadingPageState extends State<KycUploadingPage> {
             backgroundColor: AppColors.background,
             body: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(32, 80, 32, 28),
+                padding: const EdgeInsets.fromLTRB(32, 64, 32, 28),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Spacer(),
                     const CircleAvatar(
-                      radius: 58,
+                      radius: 48,
                       backgroundColor: AppColors.primaryLight,
-                      child: Icon(
-                        Icons.file_upload_outlined,
-                        color: AppColors.primary,
-                        size: 62,
-                      ),
+                      child: MotodigoUploadGreenIcon(size: 46),
                     ),
-                    const SizedBox(height: 34),
-                    Text(
+                    const SizedBox(height: 28),
+                    const Text(
                       'Envoi en cours...',
-                      style: Theme.of(context).textTheme.headlineLarge
-                          ?.copyWith(
-                            fontWeight: FontWeight.w900,
-                            color: AppColors.textPrimary,
-                          ),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        height: 1.2,
+                      ),
                     ),
                     const SizedBox(height: 14),
                     Text(
-                      '${draft.fileName} - ${_formatSize(draft.sizeBytes)}',
+                      '${draft.fileName} · ${_formatSize(draft.sizeBytes)}',
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      style: const TextStyle(
                         color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        height: 1.5,
                       ),
                     ),
-                    const SizedBox(height: 32),
-                    LinearProgressIndicator(
-                      value: progress,
-                      minHeight: 12,
-                      borderRadius: BorderRadius.circular(16),
-                      color: AppColors.primary,
-                      backgroundColor: const Color(0xFFE2E5DF),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: 250,
+                      child: LinearProgressIndicator(
+                        value: progress,
+                        minHeight: 8,
+                        borderRadius: BorderRadius.circular(999),
+                        color: AppColors.primary,
+                        backgroundColor: const Color(0xFFE4E7E1),
+                      ),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                     Text(
                       '${(progress * 100).round()}%',
                       style: const TextStyle(
                         color: AppColors.primary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w900,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 24),
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
                           Icons.lock_outline_rounded,
                           color: AppColors.primary,
-                          size: 20,
+                          size: 15,
                         ),
-                        SizedBox(width: 10),
+                        SizedBox(width: 7),
                         Text(
-                          'Chiffrement et envoi securise',
+                          'Chiffrement et envoi sécurisé',
                           style: TextStyle(
-                            color: AppColors.textTertiary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF8A968C),
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
                     ),
                     const Spacer(),
-                    SecondaryAuthButton(
+                    _KycCancelUploadButton(
                       label: "Annuler l'envoi",
                       onPressed: () {
                         context.read<KycCubit>().cancelUpload();
@@ -1142,6 +1152,35 @@ class KycInvalidFilePage extends StatelessWidget {
             const SizedBox(height: 18),
           ],
         ],
+      ),
+    );
+  }
+}
+
+class _KycCancelUploadButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onPressed;
+
+  const _KycCancelUploadButton({required this.label, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.textSecondary,
+          side: const BorderSide(color: Color(0xFFDEE2DA), width: 1.2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(999),
+          ),
+        ),
+        child: Text(
+          label,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
+        ),
       ),
     );
   }
@@ -1669,8 +1708,9 @@ class _KycScaffold extends StatelessWidget {
 class _KycBottomButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
+  final Widget? leading;
 
-  const _KycBottomButton({required this.label, this.onPressed});
+  const _KycBottomButton({required this.label, this.onPressed, this.leading});
 
   @override
   Widget build(BuildContext context) {
@@ -1688,11 +1728,22 @@ class _KycBottomButton extends StatelessWidget {
           elevation: 10,
           shadowColor: AppColors.primary.withValues(alpha: 0.22),
         ),
-        child: Text(
-          label,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 16.5, fontWeight: FontWeight.w900),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (leading != null) ...[leading!, const SizedBox(width: 12)],
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 16.5,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -1920,10 +1971,7 @@ class _DocumentAddButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(999),
           ),
-          textStyle: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w900,
-          ),
+          textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900),
         ),
       ),
     );
@@ -1966,53 +2014,68 @@ class _PreviewFrame extends StatelessWidget {
   Widget build(BuildContext context) {
     final isImage = draft.mimeType.startsWith('image/');
     return Container(
-      height: 430,
+      height: 372,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.35),
-        border: Border.all(color: const Color(0xFFDDE3DA)),
-        borderRadius: BorderRadius.circular(24),
+        gradient: const LinearGradient(
+          begin: Alignment.bottomLeft,
+          end: Alignment.topRight,
+          colors: [
+            Color(0xFFEDEDE6),
+            Color(0xFFEDEDE6),
+            Color(0xFFF5F5EF),
+            Color(0xFFF5F5EF),
+          ],
+        ),
+        border: Border.all(color: const Color(0xFFE1E1D9)),
+        borderRadius: BorderRadius.circular(18),
       ),
       clipBehavior: Clip.antiAlias,
       child: Stack(
         children: [
           Positioned.fill(
-            child: isImage
-                ? Image.file(
-                    File(draft.path),
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) =>
-                        _PreviewPlaceholder(draft: draft),
-                  )
-                : _PreviewPlaceholder(draft: draft),
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: isImage
+                  ? Image.file(
+                      File(draft.path),
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, _, _) =>
+                          _PreviewPlaceholder(draft: draft),
+                    )
+                  : _PreviewPlaceholder(draft: draft),
+            ),
           ),
           const Positioned(
-            top: 18,
+            top: 14,
             left: 0,
             right: 0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _FloatingIcon(icon: Icons.sync_rounded),
-                SizedBox(width: 12),
+                SizedBox(width: 8),
                 _FloatingIcon(icon: Icons.image_outlined),
               ],
             ),
           ),
           Positioned(
-            left: 20,
-            right: 20,
-            bottom: 24,
+            left: 14,
+            right: 86,
+            bottom: 14,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
+                color: Colors.white.withValues(alpha: 0.85),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                'apercu - ${draft.documentType.shortLabel.toLowerCase()}',
+                'aperçu — ${_documentLabel(draft.documentType).toLowerCase()} (recto)',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: AppColors.textSecondary,
+                  fontSize: 12,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -2036,8 +2099,8 @@ class _PreviewPlaceholder extends StatelessWidget {
         draft.mimeType == 'application/pdf'
             ? Icons.picture_as_pdf_outlined
             : Icons.description_outlined,
-        color: AppColors.textSecondary,
-        size: 96,
+        color: const Color(0xFFB6BEB6),
+        size: 72,
       ),
     );
   }
@@ -2052,41 +2115,60 @@ class _SelectedFileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(13),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.45),
-        border: Border.all(color: const Color(0xFFDDE3DA)),
-        borderRadius: BorderRadius.circular(24),
+        color: Colors.white,
+        border: Border.all(color: const Color(0xFFE7EAE3)),
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
         children: [
-          const _DocumentIcon(status: KycDocumentStatus.missing),
-          const SizedBox(width: 16),
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF1F1EA),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Center(child: MotodigoFileLeftGrayIcon(size: 22)),
+          ),
+          const SizedBox(width: 11),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   draft.fileName,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
                     color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w900,
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
                 Text(
-                  '${draft.mimeType.startsWith('image/') ? 'Image' : 'PDF'} - ${_formatSize(draft.sizeBytes)} - ${draft.extension}',
+                  '${draft.mimeType.startsWith('image/') ? 'Image' : 'PDF'} · ${_formatSize(draft.sizeBytes)} · ${draft.extension}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    color: AppColors.textTertiary,
-                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF8A968C),
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
             ),
           ),
+          const SizedBox(width: 10),
           const CircleAvatar(
-            radius: 24,
+            radius: 13,
             backgroundColor: AppColors.primaryLight,
-            child: Icon(Icons.check_rounded, color: AppColors.primary),
+            child: Icon(
+              Icons.check_rounded,
+              color: AppColors.primary,
+              size: 18,
+            ),
           ),
         ],
       ),
@@ -2265,13 +2347,13 @@ class _FloatingIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 58,
-      height: 58,
+      width: 38,
+      height: 38,
       decoration: BoxDecoration(
-        color: const Color(0xFF3F4640),
-        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xCC101512),
+        borderRadius: BorderRadius.circular(11),
       ),
-      child: Icon(icon, color: Colors.white),
+      child: Icon(icon, color: Colors.white, size: 22),
     );
   }
 }
@@ -2356,10 +2438,10 @@ class _UploadSourceSheet extends StatelessWidget {
       top: false,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(28, 22, 28, 28),
+        padding: const EdgeInsets.fromLTRB(28, 18, 28, 28),
         decoration: const BoxDecoration(
           color: AppColors.background,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(34)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -2369,51 +2451,56 @@ class _UploadSourceSheet extends StatelessWidget {
               Center(
                 child: Container(
                   width: 64,
-                  height: 7,
+                  height: 5,
                   decoration: BoxDecoration(
                     color: const Color(0xFFDDE3DA),
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 30),
               Text(
                 'Ajouter un document',
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                   color: AppColors.textPrimary,
+                  fontSize: 26,
                   fontWeight: FontWeight.w900,
                 ),
               ),
               const SizedBox(height: 10),
               Text(
-                '${type.shortLabel} - JPG, PNG ou PDF - 5 Mo max - document lisible.',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColors.textTertiary,
+                '${_documentLabel(type)} · JPG, PNG ou PDF · 5 Mo max ·\ndocument lisible.',
+                style: const TextStyle(
+                  color: Color(0xFF8A968C),
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
                   height: 1.35,
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 24),
               _UploadOption(
-                icon: Icons.camera_alt_outlined,
+                icon: const MotodigoCameraGreenIcon(size: 28),
                 title: 'Prendre une photo',
-                subtitle: 'Utiliser la camera',
+                subtitle: 'Utiliser la caméra',
                 onTap: () async => Navigator.of(
                   context,
                 ).pop(await _pickImage(type, ImageSource.camera)),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
               _UploadOption(
-                icon: Icons.image_outlined,
+                icon: const MotodigoPictureGreenIcon(size: 28),
                 title: 'Choisir dans la galerie',
                 subtitle: 'Photos existantes',
                 onTap: () async => Navigator.of(
                   context,
                 ).pop(await _pickImage(type, ImageSource.gallery)),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
               _UploadOption(
-                icon: Icons.description_outlined,
+                icon: const MotodigoFileLeftGrayIcon(
+                  size: 28,
+                  color: AppColors.primary,
+                ),
                 title: 'Importer un PDF',
                 subtitle: 'Depuis vos fichiers',
                 onTap: () async =>
@@ -2428,7 +2515,7 @@ class _UploadSourceSheet extends StatelessWidget {
 }
 
 class _UploadOption extends StatelessWidget {
-  final IconData icon;
+  final Widget icon;
   final String title;
   final String subtitle;
   final Future<void> Function() onTap;
@@ -2444,43 +2531,52 @@ class _UploadOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.white.withValues(alpha: 0.45),
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(22),
       child: InkWell(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(22),
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(20),
+          constraints: const BoxConstraints(minHeight: 86),
+          padding: const EdgeInsets.fromLTRB(20, 14, 18, 14),
           decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFFDDE3DA)),
-            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: const Color(0xFFDDE3DA), width: 1.2),
+            borderRadius: BorderRadius.circular(22),
           ),
           child: Row(
             children: [
               Container(
-                width: 60,
-                height: 60,
+                width: 56,
+                height: 56,
                 decoration: BoxDecoration(
                   color: AppColors.primaryLight,
-                  borderRadius: BorderRadius.circular(18),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                child: Icon(icon, color: AppColors.primary),
+                child: Center(child: icon),
               ),
-              const SizedBox(width: 20),
+              const SizedBox(width: 18),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       title,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
                         color: AppColors.primary,
+                        fontSize: 17.5,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
+                    const SizedBox(height: 3),
                     Text(
                       subtitle,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppColors.textTertiary,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Color(0xFF8A968C),
+                        fontSize: 14.5,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -2490,7 +2586,7 @@ class _UploadOption extends StatelessWidget {
               const Icon(
                 Icons.chevron_right_rounded,
                 color: AppColors.textTertiary,
-                size: 34,
+                size: 30,
               ),
             ],
           ),
