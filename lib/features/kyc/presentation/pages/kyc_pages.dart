@@ -870,10 +870,14 @@ class _KycUploadingPageState extends State<KycUploadingPage> {
             final sessionCubit = context.read<SessionCubit>();
             await sessionCubit.refreshAfterProfileChange();
             if (context.mounted) {
-              context.go(
-                RouteConstants.kycUploadSuccess,
-                extra: state.uploadResult,
-              );
+              if (state.status == KycStatus.submitted) {
+                context.go(RouteConstants.kycSubmitted);
+              } else {
+                context.go(
+                  RouteConstants.kycUploadSuccess,
+                  extra: state.uploadResult,
+                );
+              }
             }
             return;
           }
@@ -1193,50 +1197,178 @@ class KycSubmittedPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return _KycScaffold(
       title: 'Dossier soumis',
-      bottom: PrimaryAuthButton(
-        label: "Retour a l'accueil",
-        backgroundColor: AppColors.textPrimary,
-        onPressed: () => context.go(RouteConstants.home),
+      bottom: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _KycBottomButton(
+            label: 'Voir mes documents',
+            onPressed: () => context.go(RouteConstants.kycDocuments),
+          ),
+          const SizedBox(height: 14),
+          _KycBottomButton(
+            label: "Retour à l'accueil",
+            backgroundColor: AppColors.textPrimary,
+            onPressed: () => context.go(RouteConstants.home),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _StatusHeroIcon(icon: Icons.schedule_rounded, warning: true),
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFDF2CD),
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: const Center(child: MotodigoPendingYellowIcon(size: 34)),
+          ),
           const SizedBox(height: 36),
-          Text(
-            'Dossier en cours de verification',
-            style: Theme.of(context).textTheme.displaySmall?.copyWith(
+          const Text(
+            'Dossier en cours de\nvérification',
+            style: TextStyle(
               color: AppColors.textPrimary,
+              fontSize: 30,
               fontWeight: FontWeight.w900,
               height: 1.15,
             ),
           ),
-          const SizedBox(height: 22),
-          Text(
-            'Nos equipes examinent vos documents.\nDelai indicatif : 24 a 48 h.',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: AppColors.textSecondary,
-              height: 1.45,
-              fontWeight: FontWeight.w700,
+          const SizedBox(height: 24),
+          const Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text:
+                      'Nos équipes examinent vos documents.\nDélai indicatif : ',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                TextSpan(
+                  text: '24 à 48 h',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                TextSpan(
+                  text: '.',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
+            style: TextStyle(fontSize: 18, height: 1.5),
           ),
-          const SizedBox(height: 42),
-          const _TimelineStep(
-            icon: Icons.check_rounded,
+          const SizedBox(height: 38),
+          _SubmittedTimelineStep(
+            marker: const CircleAvatar(
+              radius: 20,
+              backgroundColor: AppColors.primary,
+              child: Icon(Icons.check_rounded, color: Colors.white, size: 27),
+            ),
             title: 'Documents soumis',
-            subtitle: "Aujourd'hui",
+            subtitle: "Aujourd'hui · ${_formatClock(DateTime.now())}",
             active: true,
           ),
-          const _TimelineStep(
-            icon: Icons.circle,
-            title: 'Verification en cours',
+          const _SubmittedTimelineStep(
+            marker: MotodigoFolderVerificationIcon(size: 42),
+            title: 'Vérification en cours',
             subtitle: 'En traitement',
             warning: true,
           ),
-          const _TimelineStep(
-            icon: Icons.verified_user_outlined,
-            title: 'Decision',
+          const _SubmittedTimelineStep(
+            marker: CircleAvatar(
+              radius: 20,
+              backgroundColor: Color(0xFFEFF1EC),
+              child: MotodigoFolderCheckedWhiteIcon(
+                size: 21,
+                color: Color(0xFF9BA69E),
+              ),
+            ),
+            title: 'Décision',
             subtitle: 'En attente',
+            last: true,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SubmittedTimelineStep extends StatelessWidget {
+  final Widget marker;
+  final String title;
+  final String subtitle;
+  final bool active;
+  final bool warning;
+  final bool last;
+
+  const _SubmittedTimelineStep({
+    required this.marker,
+    required this.title,
+    required this.subtitle,
+    this.active = false,
+    this.warning = false,
+    this.last = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final titleColor = active || warning
+        ? AppColors.textPrimary
+        : AppColors.textSecondary;
+    final subtitleColor = warning
+        ? const Color(0xFF8A6410)
+        : const Color(0xFF8A968C);
+    final lineColor = active ? AppColors.primary : const Color(0xFFE4E7E1);
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 42,
+            child: Column(
+              children: [
+                SizedBox(width: 42, height: 42, child: Center(child: marker)),
+                if (!last)
+                  Expanded(child: Container(width: 2, color: lineColor)),
+              ],
+            ),
+          ),
+          const SizedBox(width: 18),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(top: 3, bottom: last ? 0 : 26),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: titleColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                      height: 1.1,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: subtitleColor,
+                      fontSize: 15.5,
+                      fontWeight: FontWeight.w700,
+                      height: 1.1,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -1709,8 +1841,14 @@ class _KycBottomButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
   final Widget? leading;
+  final Color backgroundColor;
 
-  const _KycBottomButton({required this.label, this.onPressed, this.leading});
+  const _KycBottomButton({
+    required this.label,
+    this.onPressed,
+    this.leading,
+    this.backgroundColor = AppColors.primary,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1720,13 +1858,13 @@ class _KycBottomButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
+          backgroundColor: backgroundColor,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(28),
           ),
           elevation: 10,
-          shadowColor: AppColors.primary.withValues(alpha: 0.22),
+          shadowColor: backgroundColor.withValues(alpha: 0.22),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -2248,97 +2386,6 @@ class _DocumentIcon extends StatelessWidget {
   }
 }
 
-class _StatusHeroIcon extends StatelessWidget {
-  final IconData icon;
-  final bool warning;
-
-  const _StatusHeroIcon({required this.icon, this.warning = false});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 90,
-      height: 90,
-      decoration: BoxDecoration(
-        color: warning ? const Color(0xFFFFF0BD) : AppColors.primaryLight,
-        borderRadius: BorderRadius.circular(26),
-      ),
-      child: Icon(
-        icon,
-        color: warning ? const Color(0xFF9B6B0B) : AppColors.primary,
-        size: 54,
-      ),
-    );
-  }
-}
-
-class _TimelineStep extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final bool active;
-  final bool warning;
-
-  const _TimelineStep({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    this.active = false,
-    this.warning = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = active
-        ? AppColors.primary
-        : warning
-        ? const Color(0xFFF3C316)
-        : const Color(0xFFDDE3DA);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 24),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 28,
-            backgroundColor: color,
-            child: Icon(
-              icon,
-              color: active ? Colors.white : AppColors.textSecondary,
-            ),
-          ),
-          const SizedBox(width: 20),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: active || warning
-                        ? AppColors.textPrimary
-                        : AppColors.textSecondary,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: warning
-                        ? const Color(0xFF9B6B0B)
-                        : AppColors.textTertiary,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _FloatingIcon extends StatelessWidget {
   final IconData icon;
 
@@ -2754,6 +2801,10 @@ String _formatShortDate(DateTime? date) {
 
 String _formatDate(DateTime date) {
   return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} - ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+}
+
+String _formatClock(DateTime date) {
+  return '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
 }
 
 String _statusLabel(KycDocumentStatus status) {

@@ -376,10 +376,10 @@ class _PendingValidationCard extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           PrimaryAuthButton(
-            label: 'Voir mes documents',
+            label: 'Voir mon dossier',
             leadingIcon: Icons.description_outlined,
             backgroundColor: AppColors.textPrimary,
-            onPressed: () => context.go(RouteConstants.kycDocuments),
+            onPressed: () => context.go(RouteConstants.kycSubmitted),
           ),
         ],
       ),
