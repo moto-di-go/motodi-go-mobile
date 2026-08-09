@@ -116,7 +116,10 @@ class KycRepositoryImpl implements KycRepository {
       profileId: active.id,
       profileType: active.type,
       profileValidationStatus: active.validationStatus,
-      requirements: _defaultRequirements(active.validationStatus),
+      requirements: _defaultRequirements(
+        active.type,
+        active.validationStatus,
+      ),
       documents: const [],
     );
   }
@@ -130,18 +133,23 @@ class KycRepositoryImpl implements KycRepository {
         error.code == 'UNKNOWN';
   }
 
-  List<KycRequirement> _defaultRequirements(ValidationStatus status) {
+  List<KycRequirement> _defaultRequirements(
+    ProfileType profileType,
+    ValidationStatus status,
+  ) {
     final uploaded = status == ValidationStatus.validated;
     final latestStatus = uploaded
         ? KycDocumentStatus.accepted
         : KycDocumentStatus.missing;
-    return const [
+    final types = <KycDocumentType>[
       KycDocumentType.cni,
       KycDocumentType.profilePhoto,
       KycDocumentType.driverLicense,
       KycDocumentType.vehicleRegistration,
       KycDocumentType.insurance,
-    ].map((type) {
+      if (profileType == ProfileType.transporter) KycDocumentType.vehiclePhoto,
+    ];
+    return types.map((type) {
       return KycRequirement(
         type: type,
         required: true,

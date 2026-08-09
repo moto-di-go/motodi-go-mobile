@@ -76,8 +76,8 @@
   "transporterProfilePermitLabel": "Permit / license number",
   "transporterProfilePermitHint": "Ex. AGR-2024-01234",
   "transporterProfileVehicleLabel": "Vehicle",
-  "transporterProfileVehicleKycText": "Can be added during KYC",
-  "transporterProfileVehicleSoon": "Soon",
+  "transporterProfileVehicleKycText": "Add your vehicle photo in KYC verification. Without this document, your profile stays pending validation.",
+  "transporterProfileVehicleSoon": "Required",
   "transporterProfileSubmit": "Continue to validation",
 
   "profileSwitcherTitle": "Switch profile",

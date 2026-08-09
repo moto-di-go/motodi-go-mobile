@@ -71,7 +71,26 @@ class MotodigoPictureGreenIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       size: Size.square(size),
-      painter: _PictureGreenPainter(color),
+      painter: _PicturePainter(color),
+    );
+  }
+}
+
+class MotodigoPictureGrayIcon extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const MotodigoPictureGrayIcon({
+    super.key,
+    this.size = 30,
+    this.color = const Color(0xFFB6BEB6),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size.square(size),
+      painter: _PicturePainter(color),
     );
   }
 }
@@ -301,10 +320,10 @@ class _CniGreenPainter extends CustomPainter {
       oldDelegate.color != color;
 }
 
-class _PictureGreenPainter extends CustomPainter {
+class _PicturePainter extends CustomPainter {
   final Color color;
 
-  const _PictureGreenPainter(this.color);
+  const _PicturePainter(this.color);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -337,7 +356,7 @@ class _PictureGreenPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _PictureGreenPainter oldDelegate) =>
+  bool shouldRepaint(covariant _PicturePainter oldDelegate) =>
       oldDelegate.color != color;
 }
 

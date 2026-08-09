@@ -4,6 +4,7 @@ enum KycDocumentType {
   vehicleRegistration,
   insurance,
   profilePhoto,
+  vehiclePhoto,
   unknown;
 
   static KycDocumentType fromApi(String? value) {
@@ -13,6 +14,7 @@ enum KycDocumentType {
       'VEHICLE_REGISTRATION' => KycDocumentType.vehicleRegistration,
       'INSURANCE' => KycDocumentType.insurance,
       'PROFILE_PHOTO' => KycDocumentType.profilePhoto,
+      'VEHICLE_PHOTO' => KycDocumentType.vehiclePhoto,
       _ => KycDocumentType.unknown,
     };
   }
@@ -24,6 +26,7 @@ enum KycDocumentType {
       KycDocumentType.vehicleRegistration => 'VEHICLE_REGISTRATION',
       KycDocumentType.insurance => 'INSURANCE',
       KycDocumentType.profilePhoto => 'PROFILE_PHOTO',
+      KycDocumentType.vehiclePhoto => 'VEHICLE_PHOTO',
       KycDocumentType.unknown => 'UNKNOWN',
     };
   }
@@ -35,6 +38,7 @@ enum KycDocumentType {
       KycDocumentType.vehicleRegistration => 'Carte grise',
       KycDocumentType.insurance => 'Assurance',
       KycDocumentType.profilePhoto => 'Photo de profil',
+      KycDocumentType.vehiclePhoto => 'Photo du véhicule',
       KycDocumentType.unknown => 'Document',
     };
   }
@@ -46,6 +50,7 @@ enum KycDocumentType {
       KycDocumentType.vehicleRegistration => 'Carte grise',
       KycDocumentType.insurance => 'Assurance',
       KycDocumentType.profilePhoto => 'Photo de profil',
+      KycDocumentType.vehiclePhoto => 'Photo du véhicule',
       KycDocumentType.unknown => 'Document',
     };
   }
@@ -55,7 +60,8 @@ enum KycDocumentType {
       KycDocumentType.cni || KycDocumentType.profilePhoto => 'IDENTITE',
       KycDocumentType.driverLicense => 'AUTORISATION DE CONDUITE',
       KycDocumentType.vehicleRegistration ||
-      KycDocumentType.insurance => 'VEHICULE',
+      KycDocumentType.insurance ||
+      KycDocumentType.vehiclePhoto => 'VEHICULE',
       KycDocumentType.unknown => 'DOCUMENTS',
     };
   }

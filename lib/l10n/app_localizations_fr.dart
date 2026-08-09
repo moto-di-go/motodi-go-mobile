@@ -194,10 +194,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get transporterProfileVehicleKycText =>
-      'Ajout possible à l\'étape KYC';
+      'Ajoutez la photo de votre véhicule dans la vérification KYC. Sans ce document, votre profil reste en attente de validation.';
 
   @override
-  String get transporterProfileVehicleSoon => 'Bientôt';
+  String get transporterProfileVehicleSoon => 'Requis';
 
   @override
   String get transporterProfileSubmit => 'Continuer vers la validation';
