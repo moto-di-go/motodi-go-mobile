@@ -143,6 +143,7 @@ class ProfileModel {
     return TransporterProfileDetails(
       permitNumber: json['permitNumber'] as String?,
       companyName: json['companyName'] as String?,
+      vehicleId: json['vehicleId'] as String?,
     );
   }
 

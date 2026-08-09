@@ -2080,6 +2080,9 @@ class _DocumentListGlyph extends StatelessWidget {
     return switch (type) {
       KycDocumentType.cni => const MotodigoCniGreenIcon(size: 22),
       KycDocumentType.profilePhoto => const MotodigoPictureGreenIcon(size: 22),
+      KycDocumentType.vehiclePhoto => status == KycDocumentStatus.accepted
+          ? const MotodigoPictureGreenIcon(size: 22)
+          : MotodigoPictureGrayIcon(size: 22, color: color),
       KycDocumentType.vehicleRegistration ||
       KycDocumentType.insurance ||
       KycDocumentType.driverLicense ||
@@ -2725,7 +2728,8 @@ String _documentSectionLabel(KycDocumentType type) {
     KycDocumentType.cni || KycDocumentType.profilePhoto => 'IDENTITÉ',
     KycDocumentType.driverLicense => 'AUTORISATION DE CONDUITE',
     KycDocumentType.vehicleRegistration ||
-    KycDocumentType.insurance => 'VÉHICULE',
+    KycDocumentType.insurance ||
+    KycDocumentType.vehiclePhoto => 'VÉHICULE',
     KycDocumentType.unknown => 'DOCUMENTS',
   };
 }
@@ -2737,6 +2741,7 @@ String _documentLabel(KycDocumentType type) {
     KycDocumentType.vehicleRegistration => 'Carte grise',
     KycDocumentType.insurance => 'Assurance',
     KycDocumentType.profilePhoto => 'Photo de profil',
+    KycDocumentType.vehiclePhoto => 'Photo du véhicule',
     KycDocumentType.unknown => 'Document',
   };
 }
@@ -2748,6 +2753,7 @@ String _kycRequirementLabel(KycDocumentType type) {
     KycDocumentType.vehicleRegistration => 'Carte grise',
     KycDocumentType.insurance => 'Assurance',
     KycDocumentType.profilePhoto => 'Photo de profil',
+    KycDocumentType.vehiclePhoto => 'Photo du véhicule',
     KycDocumentType.unknown => 'Document',
   };
 }

@@ -455,13 +455,13 @@ abstract class AppLocalizations {
   /// No description provided for @transporterProfileVehicleKycText.
   ///
   /// In fr, this message translates to:
-  /// **'Ajout possible à l\'étape KYC'**
+  /// **'Ajoutez la photo de votre véhicule dans la vérification KYC. Sans ce document, votre profil reste en attente de validation.'**
   String get transporterProfileVehicleKycText;
 
   /// No description provided for @transporterProfileVehicleSoon.
   ///
   /// In fr, this message translates to:
-  /// **'Bientôt'**
+  /// **'Requis'**
   String get transporterProfileVehicleSoon;
 
   /// No description provided for @transporterProfileSubmit.
