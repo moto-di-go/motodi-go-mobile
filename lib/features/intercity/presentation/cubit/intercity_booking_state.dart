@@ -1,0 +1,106 @@
+part of 'intercity_booking_cubit.dart';
+
+enum IntercityDetailStatus { initial, loading, success, failure }
+
+enum IntercitySubscribeStatus { initial, submitting, success, failure }
+
+enum IntercityBookingsStatus { initial, loading, success, failure }
+
+class IntercityBookingState extends Equatable {
+  final IntercityDetailStatus detailStatus;
+  final IntercityAnnouncement? announcement;
+  final String? detailErrorMessage;
+
+  final IntercitySubscribeStatus subscribeStatus;
+  final IntercityBooking? createdBooking;
+  final String? subscribeErrorMessage;
+  final String? subscribeErrorCode;
+
+  final IntercityBookingsStatus myBookingsStatus;
+  final List<IntercityBooking> myBookings;
+  final int myBookingsPage;
+  final bool myBookingsHasMore;
+  final String? myBookingsErrorMessage;
+
+  final IntercityBookingsStatus bookingStatus;
+  final IntercityBooking? booking;
+  final String? bookingErrorMessage;
+
+  const IntercityBookingState({
+    this.detailStatus = IntercityDetailStatus.initial,
+    this.announcement,
+    this.detailErrorMessage,
+    this.subscribeStatus = IntercitySubscribeStatus.initial,
+    this.createdBooking,
+    this.subscribeErrorMessage,
+    this.subscribeErrorCode,
+    this.myBookingsStatus = IntercityBookingsStatus.initial,
+    this.myBookings = const [],
+    this.myBookingsPage = 0,
+    this.myBookingsHasMore = false,
+    this.myBookingsErrorMessage,
+    this.bookingStatus = IntercityBookingsStatus.initial,
+    this.booking,
+    this.bookingErrorMessage,
+  });
+
+  bool get isDetailLoading => detailStatus == IntercityDetailStatus.loading;
+  bool get isSubscribing => subscribeStatus == IntercitySubscribeStatus.submitting;
+  bool get isMyBookingsLoading => myBookingsStatus == IntercityBookingsStatus.loading;
+  bool get isBookingLoading => bookingStatus == IntercityBookingsStatus.loading;
+
+  IntercityBookingState copyWith({
+    IntercityDetailStatus? detailStatus,
+    IntercityAnnouncement? announcement,
+    String? detailErrorMessage,
+    IntercitySubscribeStatus? subscribeStatus,
+    IntercityBooking? createdBooking,
+    String? subscribeErrorMessage,
+    String? subscribeErrorCode,
+    IntercityBookingsStatus? myBookingsStatus,
+    List<IntercityBooking>? myBookings,
+    int? myBookingsPage,
+    bool? myBookingsHasMore,
+    String? myBookingsErrorMessage,
+    IntercityBookingsStatus? bookingStatus,
+    IntercityBooking? booking,
+    String? bookingErrorMessage,
+  }) {
+    return IntercityBookingState(
+      detailStatus: detailStatus ?? this.detailStatus,
+      announcement: announcement ?? this.announcement,
+      detailErrorMessage: detailErrorMessage,
+      subscribeStatus: subscribeStatus ?? this.subscribeStatus,
+      createdBooking: createdBooking ?? this.createdBooking,
+      subscribeErrorMessage: subscribeErrorMessage,
+      subscribeErrorCode: subscribeErrorCode,
+      myBookingsStatus: myBookingsStatus ?? this.myBookingsStatus,
+      myBookings: myBookings ?? this.myBookings,
+      myBookingsPage: myBookingsPage ?? this.myBookingsPage,
+      myBookingsHasMore: myBookingsHasMore ?? this.myBookingsHasMore,
+      myBookingsErrorMessage: myBookingsErrorMessage,
+      bookingStatus: bookingStatus ?? this.bookingStatus,
+      booking: booking ?? this.booking,
+      bookingErrorMessage: bookingErrorMessage,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+    detailStatus,
+    announcement,
+    detailErrorMessage,
+    subscribeStatus,
+    createdBooking,
+    subscribeErrorMessage,
+    subscribeErrorCode,
+    myBookingsStatus,
+    myBookings,
+    myBookingsPage,
+    myBookingsHasMore,
+    myBookingsErrorMessage,
+    bookingStatus,
+    booking,
+    bookingErrorMessage,
+  ];
+}

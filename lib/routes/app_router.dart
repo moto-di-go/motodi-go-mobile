@@ -17,6 +17,12 @@ import 'package:motodi_go_mobile/features/auth/presentation/pages/welcome_page.d
 import 'package:motodi_go_mobile/features/example/presentation/pages/example_detail_page.dart';
 import 'package:motodi_go_mobile/features/example/presentation/pages/example_list_page.dart';
 import 'package:motodi_go_mobile/features/home/presentation/pages/home_page.dart';
+import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_announcement.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_publish_cubit.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_search_cubit.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/pages/booking_pages.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/pages/publish_pages.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/pages/search_pages.dart';
 import 'package:motodi_go_mobile/features/kyc/domain/entities/kyc_bundle.dart';
 import 'package:motodi_go_mobile/features/kyc/domain/entities/kyc_document.dart';
 import 'package:motodi_go_mobile/features/kyc/domain/entities/kyc_file_draft.dart';
@@ -222,6 +228,65 @@ GoRouter createAppRouter(SessionCubit sessionCubit) {
       GoRoute(
         path: RouteConstants.home,
         builder: (context, state) => const HomePage(),
+      ),
+      GoRoute(
+        path: RouteConstants.intercity,
+        builder: (context, state) => const IntercityHubPage(),
+      ),
+      GoRoute(
+        path: RouteConstants.intercityResults,
+        builder: (context, state) =>
+            IntercityResultsPage(cubit: state.extra as IntercitySearchCubit),
+      ),
+      GoRoute(
+        path: RouteConstants.intercityEmpty,
+        builder: (context, state) =>
+            IntercityEmptyResultsPage(cubit: state.extra as IntercitySearchCubit),
+      ),
+      GoRoute(
+        path: RouteConstants.intercityDetail,
+        builder: (context, state) =>
+            IntercityDetailPage(announcementId: state.extra as String),
+      ),
+      GoRoute(
+        path: RouteConstants.intercitySubscribe,
+        builder: (context, state) =>
+            IntercitySubscribePage(args: state.extra as IntercitySubscribeArgs),
+      ),
+      GoRoute(
+        path: RouteConstants.intercityBooking,
+        builder: (context, state) =>
+            IntercityBookingStatusPage(bookingId: state.extra as String),
+      ),
+      GoRoute(
+        path: RouteConstants.intercityPublishGuard,
+        builder: (context, state) => const IntercityPublishGuardPage(),
+      ),
+      GoRoute(
+        path: RouteConstants.intercityCreate,
+        builder: (context, state) =>
+            IntercityCreateAnnouncementPage(cubit: state.extra as IntercityPublishCubit),
+      ),
+      GoRoute(
+        path: RouteConstants.intercityPreview,
+        builder: (context, state) {
+          final args = state.extra as (IntercityPublishCubit, CreateAnnouncementDraft);
+          return IntercityPreviewPage(cubit: args.$1, draft: args.$2);
+        },
+      ),
+      GoRoute(
+        path: RouteConstants.intercityPublishSuccess,
+        builder: (context, state) =>
+            IntercityPublishSuccessPage(announcement: state.extra as IntercityAnnouncement),
+      ),
+      GoRoute(
+        path: RouteConstants.intercityMyAnnouncements,
+        builder: (context, state) => const IntercityMyAnnouncementsPage(),
+      ),
+      GoRoute(
+        path: RouteConstants.intercityIncomingBookings,
+        builder: (context, state) =>
+            IntercityIncomingBookingsPage(announcementId: state.extra as String),
       ),
       GoRoute(
         path: RouteConstants.exampleList,

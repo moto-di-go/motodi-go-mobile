@@ -105,11 +105,12 @@ class HomePage extends StatelessWidget {
                     subtitle: 'Recherche disponible',
                     locked: false,
                   ),
-                  const _FeatureTile(
+                  _FeatureTile(
                     icon: Icons.route_outlined,
                     title: 'Préparer un trajet',
                     subtitle: 'Prix standardisé',
                     locked: false,
+                    onTap: () => context.push(RouteConstants.intercity),
                   ),
                 ] else ...[
                   _FeatureTile(
@@ -127,6 +128,9 @@ class HomePage extends StatelessWidget {
                         ? 'Disponible après validation'
                         : 'Créer une offre',
                     locked: isLocked,
+                    onTap: isLocked
+                        ? null
+                        : () => context.push(RouteConstants.intercityPublishGuard),
                   ),
                   _FeatureTile(
                     icon: Icons.my_location_rounded,
@@ -143,6 +147,7 @@ class HomePage extends StatelessWidget {
           bottomNavigationBar: _HomeBottomNavigation(
             selectedIndex: 0,
             onSelected: (index) {
+              if (index == 1) context.push(RouteConstants.intercity);
               if (index == 4) context.go(RouteConstants.kyc);
             },
           ),
@@ -488,62 +493,68 @@ class _FeatureTile extends StatelessWidget {
   final String title;
   final String subtitle;
   final bool locked;
+  final VoidCallback? onTap;
 
   const _FeatureTile({
     required this.icon,
     required this.title,
     required this.subtitle,
     required this.locked,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final color = locked ? const Color(0xFFA8B0AA) : AppColors.textPrimary;
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFE7ECE6)),
-        borderRadius: BorderRadius.circular(22),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 58,
-            height: 58,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF1F2ED),
-              borderRadius: BorderRadius.circular(18),
+    return InkWell(
+      borderRadius: BorderRadius.circular(22),
+      onTap: locked ? null : onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: const Color(0xFFE7ECE6)),
+          borderRadius: BorderRadius.circular(22),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 58,
+              height: 58,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F2ED),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Icon(icon, color: const Color(0xFF9AA49D)),
             ),
-            child: Icon(icon, color: const Color(0xFF9AA49D)),
-          ),
-          const SizedBox(width: 18),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.w900,
+            const SizedBox(width: 18),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: color,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: const Color(0xFFA8B0AA),
-                    fontWeight: FontWeight.w700,
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: const Color(0xFFA8B0AA),
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          if (locked)
-            const Icon(Icons.lock_outline_rounded, color: Color(0xFFA8B0AA)),
-        ],
+            if (locked)
+              const Icon(Icons.lock_outline_rounded, color: Color(0xFFA8B0AA)),
+          ],
+        ),
       ),
     );
   }
