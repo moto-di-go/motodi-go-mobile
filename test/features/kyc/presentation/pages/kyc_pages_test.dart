@@ -105,9 +105,9 @@ void main() {
   ) async {
     await tester.pumpWidget(buildApp(KycPreviewPage(draft: _draft())));
 
-    expect(find.text('Apercu du document'), findsOneWidget);
+    expect(find.text('Aperçu du document'), findsOneWidget);
     expect(find.text('carte-grise.pdf'), findsOneWidget);
-    expect(find.text('PDF - 2.1 Mo - PDF'), findsOneWidget);
+    expect(find.text('PDF · 2.1 Mo · PDF'), findsOneWidget);
     expect(find.text('Envoyer'), findsOneWidget);
     expect(find.text('Reprendre'), findsOneWidget);
   });
@@ -142,8 +142,10 @@ void main() {
 
     await tester.pumpWidget(buildApp(const KycSubmittedPage()));
     expect(find.text('Dossier soumis'), findsOneWidget);
-    expect(find.text('Dossier en cours de verification'), findsOneWidget);
-    expect(find.text('Verification en cours'), findsOneWidget);
+    expect(find.text('Dossier en cours de\nvérification'), findsOneWidget);
+    expect(find.text('Vérification en cours'), findsOneWidget);
+    expect(find.text('Voir mes documents'), findsOneWidget);
+    expect(find.text("Retour à l'accueil"), findsOneWidget);
 
     await tester.pumpWidget(
       buildApp(KycRejectedDocumentPage(document: _rejectedInsurance())),
@@ -228,14 +230,14 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Profil en attente de validation'), findsOneWidget);
-    expect(find.text('Voir mes documents'), findsOneWidget);
+    expect(find.text('Voir mon dossier'), findsOneWidget);
     expect(find.text('FONCTIONS CONDUCTEUR'), findsOneWidget);
 
-    await tester.tap(find.text('Voir mes documents'));
+    await tester.tap(find.text('Voir mon dossier'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Mes documents'), findsOneWidget);
-    expect(find.text('IDENTITÉ'), findsOneWidget);
+    expect(find.text('Dossier soumis'), findsOneWidget);
+    expect(find.text('Dossier en cours de\nvérification'), findsOneWidget);
   });
 
   testWidgets('router lets validated driver profiles reach driver features', (

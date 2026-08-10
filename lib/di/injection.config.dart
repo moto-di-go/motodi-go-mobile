@@ -42,6 +42,18 @@ import 'package:motodi_go_mobile/features/example/domain/usecases/get_examples_u
     as _i569;
 import 'package:motodi_go_mobile/features/example/presentation/bloc/example_bloc.dart'
     as _i57;
+import 'package:motodi_go_mobile/features/intercity/data/datasources/intercity_remote_datasource.dart'
+    as _i162;
+import 'package:motodi_go_mobile/features/intercity/data/repositories/intercity_repository_impl.dart'
+    as _i115;
+import 'package:motodi_go_mobile/features/intercity/domain/repositories/intercity_repository.dart'
+    as _i1053;
+import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_booking_cubit.dart'
+    as _i741;
+import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_publish_cubit.dart'
+    as _i1051;
+import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_search_cubit.dart'
+    as _i183;
 import 'package:motodi_go_mobile/features/kyc/data/datasources/kyc_remote_datasource.dart'
     as _i29;
 import 'package:motodi_go_mobile/features/kyc/data/repositories/kyc_repository_impl.dart'
@@ -89,6 +101,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i753.AuthRemoteDataSource>(
       () => _i753.AuthRemoteDataSourceImpl(gh<_i31.ChopperClient>()),
     );
+    gh.lazySingleton<_i162.IntercityRemoteDataSource>(
+      () => _i162.IntercityRemoteDataSourceImpl(gh<_i31.ChopperClient>()),
+    );
     gh.lazySingleton<_i525.ProfileRemoteDataSource>(
       () => _i525.ProfileRemoteDataSourceImpl(gh<_i31.ChopperClient>()),
     );
@@ -106,6 +121,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i247.NetworkInfo>(
       () => _i247.NetworkInfoImpl(gh<_i973.InternetConnectionChecker>()),
+    );
+    gh.lazySingleton<_i1053.IntercityRepository>(
+      () => _i115.IntercityRepositoryImpl(
+        gh<_i162.IntercityRemoteDataSource>(),
+        gh<_i247.NetworkInfo>(),
+      ),
     );
     gh.lazySingleton<_i9.KycRepository>(
       () => _i356.KycRepositoryImpl(
@@ -134,6 +155,18 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.factory<_i657.KycCubit>(() => _i657.KycCubit(gh<_i9.KycRepository>()));
+    gh.factory<_i741.IntercityBookingCubit>(
+      () => _i741.IntercityBookingCubit(gh<_i1053.IntercityRepository>()),
+    );
+    gh.factory<_i183.IntercitySearchCubit>(
+      () => _i183.IntercitySearchCubit(gh<_i1053.IntercityRepository>()),
+    );
+    gh.factory<_i1051.IntercityPublishCubit>(
+      () => _i1051.IntercityPublishCubit(
+        gh<_i1053.IntercityRepository>(),
+        gh<_i802.ProfileRepository>(),
+      ),
+    );
     gh.factory<_i459.AuthFormCubit>(
       () => _i459.AuthFormCubit(gh<_i1053.AuthRepository>()),
     );

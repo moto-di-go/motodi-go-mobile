@@ -71,7 +71,26 @@ class MotodigoPictureGreenIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       size: Size.square(size),
-      painter: _PictureGreenPainter(color),
+      painter: _PicturePainter(color),
+    );
+  }
+}
+
+class MotodigoPictureGrayIcon extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const MotodigoPictureGrayIcon({
+    super.key,
+    this.size = 30,
+    this.color = const Color(0xFFB6BEB6),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size.square(size),
+      painter: _PicturePainter(color),
     );
   }
 }
@@ -110,6 +129,77 @@ class MotodigoUploadWhiteIcon extends StatelessWidget {
     return CustomPaint(
       size: Size.square(size),
       painter: _UploadWhitePainter(color),
+    );
+  }
+}
+
+class MotodigoUploadGreenIcon extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const MotodigoUploadGreenIcon({
+    super.key,
+    this.size = 46,
+    this.color = const Color(0xFF16A34A),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size.square(size),
+      painter: _UploadGreenPainter(color),
+    );
+  }
+}
+
+class MotodigoCameraGreenIcon extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const MotodigoCameraGreenIcon({
+    super.key,
+    this.size = 30,
+    this.color = const Color(0xFF16A34A),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size.square(size),
+      painter: _CameraGreenPainter(color),
+    );
+  }
+}
+
+class MotodigoFolderVerificationIcon extends StatelessWidget {
+  final double size;
+
+  const MotodigoFolderVerificationIcon({super.key, this.size = 28});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size.square(size),
+      painter: const _FolderVerificationPainter(),
+    );
+  }
+}
+
+class MotodigoFolderCheckedWhiteIcon extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const MotodigoFolderCheckedWhiteIcon({
+    super.key,
+    this.size = 22,
+    this.color = Colors.white,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size.square(size),
+      painter: _FolderCheckedWhitePainter(color),
     );
   }
 }
@@ -230,10 +320,10 @@ class _CniGreenPainter extends CustomPainter {
       oldDelegate.color != color;
 }
 
-class _PictureGreenPainter extends CustomPainter {
+class _PicturePainter extends CustomPainter {
   final Color color;
 
-  const _PictureGreenPainter(this.color);
+  const _PicturePainter(this.color);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -266,7 +356,7 @@ class _PictureGreenPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _PictureGreenPainter oldDelegate) =>
+  bool shouldRepaint(covariant _PicturePainter oldDelegate) =>
       oldDelegate.color != color;
 }
 
@@ -358,6 +448,167 @@ class _UploadWhitePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _UploadWhitePainter oldDelegate) =>
+      oldDelegate.color != color;
+}
+
+class _UploadGreenPainter extends CustomPainter {
+  final Color color;
+
+  const _UploadGreenPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    _drawScaled(canvas, size, 46, 46, (canvas) {
+      final paint = _strokePaint(color, 3.83333);
+      canvas.drawPath(
+        Path()
+          ..moveTo(40.25, 28.75)
+          ..lineTo(40.25, 36.4167)
+          ..cubicTo(40.25, 37.4333, 39.8461, 38.4084, 39.1272, 39.1272)
+          ..cubicTo(38.4084, 39.8461, 37.4333, 40.25, 36.4167, 40.25)
+          ..lineTo(9.58333, 40.25)
+          ..cubicTo(8.56667, 40.25, 7.59165, 39.8461, 6.87276, 39.1272)
+          ..cubicTo(6.15387, 38.4084, 5.75, 37.4333, 5.75, 36.4167)
+          ..lineTo(5.75, 28.75),
+        paint,
+      );
+      canvas.drawPath(
+        Path()
+          ..moveTo(32.5837, 15.3333)
+          ..lineTo(23.0003, 5.75)
+          ..lineTo(13.417, 15.3333),
+        paint,
+      );
+      canvas.drawPath(
+        Path()
+          ..moveTo(23, 5.75)
+          ..lineTo(23, 28.75),
+        paint,
+      );
+    });
+  }
+
+  @override
+  bool shouldRepaint(covariant _UploadGreenPainter oldDelegate) =>
+      oldDelegate.color != color;
+}
+
+class _CameraGreenPainter extends CustomPainter {
+  final Color color;
+
+  const _CameraGreenPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    _drawScaled(canvas, size, 22, 22, (canvas) {
+      final paint = _strokePaint(color, 1.83333);
+      canvas.drawPath(
+        Path()
+          ..moveTo(13.2913, 3.66675)
+          ..lineTo(8.70801, 3.66675)
+          ..lineTo(6.41634, 6.41675)
+          ..lineTo(3.66634, 6.41675)
+          ..cubicTo(3.18011, 6.41675, 2.7138, 6.6099, 2.36998, 6.95372)
+          ..cubicTo(2.02616, 7.29754, 1.83301, 7.76385, 1.83301, 8.25008)
+          ..lineTo(1.83301, 16.5001)
+          ..cubicTo(1.83301, 16.9863, 2.02616, 17.4526, 2.36998, 17.7964)
+          ..cubicTo(2.7138, 18.1403, 3.18011, 18.3334, 3.66634, 18.3334)
+          ..lineTo(18.333, 18.3334)
+          ..cubicTo(18.8192, 18.3334, 19.2856, 18.1403, 19.6294, 17.7964)
+          ..cubicTo(19.9732, 17.4526, 20.1663, 16.9863, 20.1663, 16.5001)
+          ..lineTo(20.1663, 8.25008)
+          ..cubicTo(20.1663, 7.76385, 19.9732, 7.29754, 19.6294, 6.95372)
+          ..cubicTo(19.2856, 6.6099, 18.8192, 6.41675, 18.333, 6.41675)
+          ..lineTo(15.583, 6.41675)
+          ..lineTo(13.2913, 3.66675),
+        paint,
+      );
+      canvas.drawCircle(const Offset(11, 11.9167), 2.75, paint);
+    });
+  }
+
+  @override
+  bool shouldRepaint(covariant _CameraGreenPainter oldDelegate) =>
+      oldDelegate.color != color;
+}
+
+class _FolderVerificationPainter extends CustomPainter {
+  const _FolderVerificationPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    _drawScaled(canvas, size, 28, 28, (canvas) {
+      canvas.drawCircle(
+        const Offset(14, 14),
+        14,
+        Paint()
+          ..color = const Color(0xFFFDF2CD)
+          ..style = PaintingStyle.fill,
+      );
+      canvas.drawCircle(
+        const Offset(14, 14),
+        12,
+        Paint()
+          ..color = const Color(0xFFF5C518)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 4,
+      );
+      final center = Paint()
+        ..color = const Color(0xFFF5C518)
+        ..style = PaintingStyle.fill;
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          const Rect.fromLTWH(9.5, 9.5, 9, 9),
+          const Radius.circular(4.5),
+        ),
+        center,
+      );
+    });
+  }
+
+  @override
+  bool shouldRepaint(covariant _FolderVerificationPainter oldDelegate) => false;
+}
+
+class _FolderCheckedWhitePainter extends CustomPainter {
+  final Color color;
+
+  const _FolderCheckedWhitePainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    _drawScaled(canvas, size, 22, 22, (canvas) {
+      final paint = _strokePaint(color, 1.83333);
+      canvas.drawPath(
+        Path()
+          ..moveTo(18.3337, 11.9168)
+          ..cubicTo(18.3337, 16.5001, 15.1253, 18.7918, 11.312, 20.1209)
+          ..cubicTo(11.1123, 20.1886, 10.8954, 20.1853, 10.6978, 20.1118)
+          ..cubicTo(6.87533, 18.7918, 3.66699, 16.5001, 3.66699, 11.9168)
+          ..lineTo(3.66699, 5.50009)
+          ..cubicTo(3.66699, 5.25697, 3.76357, 5.02381, 3.93548, 4.85191)
+          ..cubicTo(4.10739, 4.68, 4.34054, 4.58342, 4.58366, 4.58342)
+          ..cubicTo(6.41699, 4.58342, 8.70866, 3.48342, 10.3037, 2.09009)
+          ..cubicTo(10.4979, 1.92417, 10.7449, 1.83301, 11.0003, 1.83301)
+          ..cubicTo(11.2558, 1.83301, 11.5028, 1.92417, 11.697, 2.09009)
+          ..cubicTo(13.3012, 3.49259, 15.5837, 4.58342, 17.417, 4.58342)
+          ..cubicTo(17.6601, 4.58342, 17.8933, 4.68, 18.0652, 4.85191)
+          ..cubicTo(18.2371, 5.02381, 18.3337, 5.25697, 18.3337, 5.50009)
+          ..lineTo(18.3337, 11.9168),
+        paint,
+      );
+      canvas.drawPath(
+        Path()
+          ..moveTo(8.25, 11.0001)
+          ..lineTo(10.0833, 12.8334)
+          ..lineTo(13.75, 9.16675),
+        paint,
+      );
+    });
+  }
+
+  @override
+  bool shouldRepaint(covariant _FolderCheckedWhitePainter oldDelegate) =>
       oldDelegate.color != color;
 }
 
