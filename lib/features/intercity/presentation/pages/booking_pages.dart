@@ -9,6 +9,7 @@ import 'package:motodi_go_mobile/core/widgets/app_error_view.dart';
 import 'package:motodi_go_mobile/core/widgets/app_loading.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_buttons.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_announcement.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_booking.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_booking_cubit.dart';
@@ -560,162 +561,292 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
   String? _phoneError;
 
   @override
+  void initState() {
+    super.initState();
+    final sessionState = getIt<SessionCubit>().state;
+    final registeredPhone = sessionState.session?.phoneNumber ?? sessionState.lastPhoneNumber;
+    if (registeredPhone != null && registeredPhone.isNotEmpty) {
+      _phoneController.text = _nationalPhoneDigits(registeredPhone);
+    }
+  }
+
+  @override
   void dispose() {
     _phoneController.dispose();
     _cubit.close();
     super.dispose();
   }
 
+  /// Extrait les 9 chiffres nationaux (sans +237) pour le champ de saisie.
+  static String _nationalPhoneDigits(String phone) {
+    final digits = phone.replaceAll(RegExp(r'\D'), '');
+    if (digits.startsWith('237') && digits.length >= 12) {
+      return digits.substring(3, 12);
+    }
+    if (digits.length > 9) return digits.substring(digits.length - 9);
+    return digits;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final unitPrice = widget.args.pricePerSeat;
+    final total = unitPrice * _seats;
+    final placesLabel = '$_seats place${_seats > 1 ? 's' : ''}';
+
     return BlocProvider.value(
       value: _cubit,
       child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-          backgroundColor: AppColors.background,
-          elevation: 0,
-          iconTheme: const IconThemeData(color: AppColors.textPrimary),
-          title: const Text('Souscrire', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w900)),
-        ),
-        body: BlocConsumer<IntercityBookingCubit, IntercityBookingState>(
-          listener: (context, state) {
-            if (state.subscribeStatus == IntercitySubscribeStatus.success && state.createdBooking != null) {
-              context.pushReplacement(RouteConstants.intercityBooking, extra: state.createdBooking!.id);
-            }
-            if (state.subscribeStatus == IntercitySubscribeStatus.failure &&
-                state.subscribeErrorMessage != null) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.subscribeErrorMessage!)));
-            }
-          },
-          builder: (context, state) {
-            return ListView(
-              padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(18),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEFFAF3),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.25)),
+        backgroundColor: const Color(0xFFFAFAF6),
+        body: SafeArea(
+          child: BlocConsumer<IntercityBookingCubit, IntercityBookingState>(
+            listener: (context, state) {
+              if (state.subscribeStatus == IntercitySubscribeStatus.success &&
+                  state.createdBooking != null) {
+                context.pushReplacement(
+                  RouteConstants.intercityBooking,
+                  extra: state.createdBooking!.id,
+                );
+              }
+              if (state.subscribeStatus == IntercitySubscribeStatus.failure &&
+                  state.subscribeErrorMessage != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.subscribeErrorMessage!)),
+                );
+              }
+            },
+            builder: (context, state) {
+              final fieldBorder = _phoneError != null
+                  ? AppColors.error
+                  : const Color(0xFFE7EAE3);
+
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 14, left: 20, right: 20),
+                    child: Row(
+                      children: [
+                        _SubscribeBackButton(onTap: () => context.pop()),
+                        const SizedBox(width: 14),
+                        Text(
+                          'Souscrire',
+                          style: _detailText(fontSize: 28, fontWeight: FontWeight.w800),
+                        ),
+                      ],
+                    ),
                   ),
-                  child: Row(
-                    children: [
-                      const MotodigoPinGreenIcon(size: 26),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          widget.args.route,
-                          style: const TextStyle(fontWeight: FontWeight.w900, color: AppColors.textPrimary),
+                  Expanded(
+                    child: ListView(
+                      padding: const EdgeInsets.fromLTRB(20, 28, 20, 16),
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Nombre de places',
+                                style: _detailText(fontSize: 20, fontWeight: FontWeight.w700),
+                              ),
+                            ),
+                            _SubscribeStepperButton(
+                              icon: Icons.remove_rounded,
+                              filled: false,
+                              enabled: _seats > 1,
+                              onTap: () => setState(() => _seats--),
+                            ),
+                            SizedBox(
+                              width: 36,
+                              child: Text(
+                                '$_seats',
+                                textAlign: TextAlign.center,
+                                style: _detailText(fontSize: 20, fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                            _SubscribeStepperButton(
+                              icon: Icons.add_rounded,
+                              filled: true,
+                              enabled: _seats < widget.args.maxSeats,
+                              onTap: () => setState(() => _seats++),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 32),
+                        Text(
+                          'Numéro de contact',
+                          style: _detailText(fontSize: 18, fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Container(
+                              width: 80,
+                              height: 52,
+                              alignment: Alignment.center,
+                              decoration: ShapeDecoration(
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(width: 1, color: fieldBorder),
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                              child: Text(
+                                '+237',
+                                style: _detailText(fontSize: 17, fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Container(
+                                height: 52,
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                alignment: Alignment.centerLeft,
+                                decoration: ShapeDecoration(
+                                  color: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(width: 1, color: fieldBorder),
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                ),
+                                child: TextField(
+                                  controller: _phoneController,
+                                  keyboardType: TextInputType.phone,
+                                  cursorColor: const Color(0xFF16A34A),
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    LengthLimitingTextInputFormatter(9),
+                                  ],
+                                  decoration: InputDecoration(
+                                    filled: false,
+                                    fillColor: Colors.transparent,
+                                    isCollapsed: true,
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                    border: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    focusedErrorBorder: InputBorder.none,
+                                    hintText: '6XXXXXXXX',
+                                    hintStyle: _detailText(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w700,
+                                      color: const Color(0xFFB7C0B9),
+                                    ),
+                                  ),
+                                  style: _detailText(fontSize: 17, fontWeight: FontWeight.w800),
+                                  onChanged: (_) {
+                                    if (_phoneError != null) {
+                                      setState(() => _phoneError = null);
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (_phoneError != null) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            _phoneError!,
+                            style: _detailText(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.error,
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 28),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+                          decoration: ShapeDecoration(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(width: 1, color: Color(0xFFE7EAE3)),
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      '$placesLabel × ${formatPriceF(unitPrice)}',
+                                      style: _detailText(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        color: const Color(0xFF54615A),
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    formatPriceF(total),
+                                    style: _detailText(fontSize: 17, fontWeight: FontWeight.w800),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 14),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Total',
+                                      style: _detailText(fontSize: 18, fontWeight: FontWeight.w800),
+                                    ),
+                                  ),
+                                  Text(
+                                    formatPriceF(total),
+                                    style: _detailText(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w800,
+                                      color: const Color(0xFF16A34A),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                    child: Material(
+                      color: const Color(0xFF16A34A),
+                      borderRadius: BorderRadius.circular(28),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(28),
+                        onTap: state.isSubscribing ? null : () => _submit(context),
+                        child: Container(
+                          width: double.infinity,
+                          height: 60,
+                          alignment: Alignment.center,
+                          child: state.isSubscribing
+                              ? const SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  'Confirmer la demande',
+                                  style: _detailText(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Nombre de sièges',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: const Color(0xFFE7ECE6)),
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      MotodigoStepperButton(
-                        increment: false,
-                        enabled: _seats > 1,
-                        onTap: () => setState(() => _seats--),
-                      ),
-                      Text(
-                        '$_seats',
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
-                      ),
-                      MotodigoStepperButton(
-                        increment: true,
-                        enabled: _seats < widget.args.maxSeats,
-                        onTap: () => setState(() => _seats++),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  '${widget.args.maxSeats} siège(s) disponible(s) au maximum',
-                  style: const TextStyle(color: Color(0xFF8A968C), fontSize: 13),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Numéro de contact',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                      color: _phoneError != null ? AppColors.error : const Color(0xFFE7ECE6),
                     ),
-                    borderRadius: BorderRadius.circular(18),
                   ),
-                  child: TextField(
-                    controller: _phoneController,
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(9)],
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      prefixText: '+237 ',
-                      prefixStyle: TextStyle(fontWeight: FontWeight.w800, color: AppColors.textPrimary),
-                      hintText: '6XXXXXXXX',
-                    ),
-                    style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.textPrimary),
-                  ),
-                ),
-                if (_phoneError != null) ...[
-                  const SizedBox(height: 8),
-                  Text(_phoneError!, style: const TextStyle(color: AppColors.error, fontSize: 13)),
                 ],
-                const SizedBox(height: 24),
-                Container(
-                  padding: const EdgeInsets.all(18),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: const Color(0xFFE7ECE6)),
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Total estimé', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF8A968C))),
-                      Text(
-                        formatPriceFcfa(widget.args.pricePerSeat * _seats),
-                        style: const TextStyle(fontWeight: FontWeight.w900, color: AppColors.primary, fontSize: 18),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 30),
-                PrimaryAuthButton(
-                  label: 'Confirmer la demande',
-                  isLoading: state.isSubscribing,
-                  onPressed: () => _submit(context),
-                ),
-              ],
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
@@ -732,6 +863,78 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
       announcementId: widget.args.announcementId,
       seatsRequested: _seats,
       contactPhone: phone,
+    );
+  }
+}
+
+class _SubscribeBackButton extends StatelessWidget {
+  final VoidCallback onTap;
+  const _SubscribeBackButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(24),
+      onTap: onTap,
+      child: Container(
+        width: 48,
+        height: 48,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: const Color(0xFFF1F1EA),
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: const Icon(Icons.arrow_back_ios_new_rounded, size: 20, color: Color(0xFF101512)),
+      ),
+    );
+  }
+}
+
+class _SubscribeStepperButton extends StatelessWidget {
+  final IconData icon;
+  final bool filled;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  const _SubscribeStepperButton({
+    required this.icon,
+    required this.filled,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = !enabled
+        ? const Color(0xFFF1F1EA)
+        : filled
+            ? const Color(0xFF16A34A)
+            : Colors.white;
+    final fg = !enabled
+        ? const Color(0xFFB7C0B9)
+        : filled
+            ? Colors.white
+            : const Color(0xFF101512);
+
+    return Material(
+      color: bg,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: enabled ? onTap : null,
+        child: Container(
+          width: 36,
+          height: 36,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: filled || !enabled
+                ? null
+                : Border.all(color: const Color(0xFFDEE2DA), width: 1.2),
+          ),
+          child: Icon(icon, size: 20, color: fg),
+        ),
+      ),
     );
   }
 }
@@ -768,45 +971,112 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
     return BlocProvider.value(
       value: _cubit,
       child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-          backgroundColor: AppColors.background,
-          elevation: 0,
-          iconTheme: const IconThemeData(color: AppColors.textPrimary),
-          title: const Text(
-            'Ma réservation',
-            style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w900),
-          ),
-        ),
-        body: BlocBuilder<IntercityBookingCubit, IntercityBookingState>(
-          builder: (context, state) {
-            if (state.isBookingLoading && state.booking == null) return const AppLoading();
-            final booking = state.booking;
-            if (booking == null) {
-              return AppErrorView(
-                message: state.bookingErrorMessage ?? 'Réservation introuvable.',
-                onRetry: () => _cubit.loadBooking(widget.bookingId),
-              );
-            }
-            return ListView(
-              padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-              children: [
-                _StatusHeader(status: booking.status),
-                const SizedBox(height: 28),
-                _BookingTimeline(booking: booking),
-                const SizedBox(height: 24),
-                _BookingSummaryCard(booking: booking),
-                if (booking.status.isCancellable) ...[
-                  const SizedBox(height: 30),
-                  SecondaryAuthButton(
-                    label: 'Annuler la réservation',
-                    icon: Icons.close_rounded,
-                    onPressed: () => _confirmCancel(context, booking),
+        backgroundColor: const Color(0xFFFAFAF6),
+        body: SafeArea(
+          child: BlocBuilder<IntercityBookingCubit, IntercityBookingState>(
+            builder: (context, state) {
+              if (state.isBookingLoading && state.booking == null) {
+                return const AppLoading();
+              }
+              final booking = state.booking;
+              if (booking == null) {
+                return AppErrorView(
+                  message: state.bookingErrorMessage ?? 'Réservation introuvable.',
+                  onRetry: () => _cubit.loadBooking(widget.bookingId),
+                );
+              }
+              final announcement = state.announcement?.id == booking.announcementId
+                  ? state.announcement
+                  : null;
+
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 14, left: 20, right: 20),
+                    child: Row(
+                      children: [
+                        _DetailBackButton(onTap: () => context.pop()),
+                        const SizedBox(width: 14),
+                        Text(
+                          'Ma réservation',
+                          style: _detailText(fontSize: 22, fontWeight: FontWeight.w800),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                      children: [
+                        _BookingTripSummaryCard(
+                          booking: booking,
+                          announcement: announcement,
+                        ),
+                        const SizedBox(height: 24),
+                        _BookingTimeline(booking: booking),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                    child: Column(
+                      children: [
+                        if (booking.status.isCancellable) ...[
+                          SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: OutlinedButton(
+                              onPressed: () => _confirmCancel(context, booking),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: const Color(0xFF101512),
+                                side: const BorderSide(color: Color(0xFFDDE3DA), width: 1.5),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.close_rounded, size: 20),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    'Annuler la réservation',
+                                    style: _detailText(fontSize: 17, fontWeight: FontWeight.w700),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                        ],
+                        Material(
+                          color: const Color(0xFF101512),
+                          borderRadius: BorderRadius.circular(999),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(999),
+                            onTap: () => context.go(RouteConstants.home),
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Retour à l'accueil",
+                                style: _detailText(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
-              ],
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
@@ -830,9 +1100,9 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Annuler cette réservation ?',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
+                style: _detailText(fontSize: 20, fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 16),
               TextField(
@@ -850,67 +1120,152 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
                 onPressed: () => Navigator.of(sheetContext).pop(true),
               ),
               const SizedBox(height: 10),
-              SecondaryAuthButton(label: 'Retour', onPressed: () => Navigator.of(sheetContext).pop(false)),
+              SecondaryAuthButton(
+                label: 'Retour',
+                onPressed: () => Navigator.of(sheetContext).pop(false),
+              ),
             ],
           ),
         ),
       ),
     );
     if (confirmed == true && context.mounted) {
-      final reason = reasonController.text.trim().isEmpty ? 'Annulation demandée' : reasonController.text.trim();
+      final reason =
+          reasonController.text.trim().isEmpty ? 'Annulation demandée' : reasonController.text.trim();
       await _cubit.cancelBooking(booking.id, reason);
     }
   }
 }
 
-class _StatusHeader extends StatelessWidget {
-  final IntercityBookingStatus status;
+class _BookingTripSummaryCard extends StatelessWidget {
+  final IntercityBooking booking;
+  final IntercityAnnouncement? announcement;
 
-  const _StatusHeader({required this.status});
+  const _BookingTripSummaryCard({required this.booking, required this.announcement});
 
   @override
   Widget build(BuildContext context) {
-    final color = _statusColor(status);
-    return Column(
-      children: [
-        Container(
-          width: 84,
-          height: 84,
-          decoration: BoxDecoration(color: color.withValues(alpha: 0.14), shape: BoxShape.circle),
-          child: Icon(_statusIcon(status), color: color, size: 40),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          status.longLabel,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
-        ),
-      ],
-    );
-  }
+    final routeLabel = announcement?.route ?? 'Trajet';
+    final total = announcement == null
+        ? null
+        : announcement!.priceFcfa * booking.seatsRequested;
+    final metaParts = <String>[
+      if (announcement != null) formatDayMonth(announcement!.departureDate),
+      if (announcement != null) announcement!.formattedDepartureTime,
+      '${booking.seatsRequested} place${booking.seatsRequested > 1 ? 's' : ''}',
+      if (total != null) formatPriceF(total),
+    ];
 
-  IconData _statusIcon(IntercityBookingStatus status) {
-    return switch (status) {
-      IntercityBookingStatus.pending => Icons.hourglass_top_rounded,
-      IntercityBookingStatus.confirmed => Icons.check_circle_rounded,
-      IntercityBookingStatus.pendingPayment => Icons.payments_rounded,
-      IntercityBookingStatus.paid => Icons.verified_rounded,
-      IntercityBookingStatus.cancelled => Icons.cancel_rounded,
-      IntercityBookingStatus.expired => Icons.timer_off_rounded,
-      IntercityBookingStatus.unknown => Icons.help_outline_rounded,
-    };
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 1, color: Color(0xFFE7EAE3)),
+          borderRadius: BorderRadius.circular(18),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  routeLabel,
+                  style: _detailText(fontSize: 20, fontWeight: FontWeight.w800),
+                ),
+              ),
+              const SizedBox(width: 10),
+              _BookingStatusBadge(status: booking.status),
+            ],
+          ),
+          if (metaParts.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Text(
+              metaParts.join(' • '),
+              style: _detailText(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF54615A),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }
 
-Color _statusColor(IntercityBookingStatus status) {
-  return switch (status) {
-    IntercityBookingStatus.pending => const Color(0xFFF59E0B),
-    IntercityBookingStatus.confirmed => AppColors.primary,
-    IntercityBookingStatus.pendingPayment => AppColors.primary,
-    IntercityBookingStatus.paid => AppColors.primary,
-    IntercityBookingStatus.cancelled => AppColors.error,
-    IntercityBookingStatus.expired => const Color(0xFF9AA49D),
-    IntercityBookingStatus.unknown => const Color(0xFF9AA49D),
-  };
+class _BookingStatusBadge extends StatelessWidget {
+  final IntercityBookingStatus status;
+
+  const _BookingStatusBadge({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    final (label, fg, bg) = switch (status) {
+      IntercityBookingStatus.pending => (
+          'En attente',
+          const Color(0xFFB45309),
+          const Color(0xFFFFF7ED),
+        ),
+      IntercityBookingStatus.confirmed || IntercityBookingStatus.pendingPayment => (
+          'Confirmée',
+          const Color(0xFF16A34A),
+          const Color(0xFFEFFAF3),
+        ),
+      IntercityBookingStatus.paid => (
+          'Payée',
+          const Color(0xFF16A34A),
+          const Color(0xFFEFFAF3),
+        ),
+      IntercityBookingStatus.cancelled => (
+          'Annulée',
+          const Color(0xFFDC2626),
+          const Color(0xFFFEF2F2),
+        ),
+      IntercityBookingStatus.expired => (
+          'Expirée',
+          const Color(0xFF6B7280),
+          const Color(0xFFF3F4F6),
+        ),
+      IntercityBookingStatus.unknown => (
+          status.label,
+          const Color(0xFF6B7280),
+          const Color(0xFFF3F4F6),
+        ),
+    };
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: _detailText(fontSize: 13, fontWeight: FontWeight.w700, color: fg),
+      ),
+    );
+  }
+}
+
+enum _TimelineStepVisual { done, payment, pending, cancelled }
+
+class _TimelineStepData {
+  final String label;
+  final String? subtitle;
+  final _TimelineStepVisual visual;
+  final bool accentSubtitle;
+
+  const _TimelineStepData({
+    required this.label,
+    required this.visual,
+    this.subtitle,
+    this.accentSubtitle = false,
+  });
 }
 
 class _BookingTimeline extends StatelessWidget {
@@ -920,74 +1275,130 @@ class _BookingTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final steps = <(String, DateTime?, bool)>[
-      ('Demande envoyée', booking.requestedAt, true),
-      ('Confirmée par le transporteur', booking.confirmedAt, booking.confirmedAt != null),
-      (
-        booking.status == IntercityBookingStatus.cancelled ? 'Annulée' : 'Payée / terminée',
-        booking.status == IntercityBookingStatus.cancelled ? booking.cancelledAt : null,
-        booking.status == IntercityBookingStatus.paid || booking.status == IntercityBookingStatus.cancelled,
-      ),
-    ];
+    final steps = _stepsFor(booking);
     return Column(
       children: [
         for (var i = 0; i < steps.length; i++)
           _TimelineRow(
-            label: steps[i].$1,
-            date: steps[i].$2,
-            done: steps[i].$3,
+            step: steps[i],
             isLast: i == steps.length - 1,
           ),
       ],
     );
   }
+
+  List<_TimelineStepData> _stepsFor(IntercityBooking booking) {
+    final confirmed = booking.confirmedAt != null ||
+        booking.status == IntercityBookingStatus.confirmed ||
+        booking.status == IntercityBookingStatus.pendingPayment ||
+        booking.status == IntercityBookingStatus.paid;
+    final paid = booking.status == IntercityBookingStatus.paid;
+    final cancelled = booking.status == IntercityBookingStatus.cancelled;
+
+    return [
+      _TimelineStepData(
+        label: 'Demande envoyée',
+        subtitle: booking.requestedAt == null ? null : formatRelativeDayTime(booking.requestedAt!),
+        visual: _TimelineStepVisual.done,
+      ),
+      _TimelineStepData(
+        label: 'Confirmée par le transporteur',
+        subtitle: booking.confirmedAt == null ? null : formatRelativeDayTime(booking.confirmedAt!),
+        visual: confirmed ? _TimelineStepVisual.done : _TimelineStepVisual.pending,
+      ),
+      if (cancelled)
+        _TimelineStepData(
+          label: 'Annulée',
+          subtitle: booking.cancelledAt == null ? null : formatRelativeDayTime(booking.cancelledAt!),
+          visual: _TimelineStepVisual.cancelled,
+        )
+      else if (paid)
+        const _TimelineStepData(
+          label: 'Payée / terminée',
+          visual: _TimelineStepVisual.done,
+        )
+      else if (confirmed)
+        const _TimelineStepData(
+          label: 'Paiement',
+          subtitle: 'À régler via Wallet avant le départ',
+          visual: _TimelineStepVisual.payment,
+          accentSubtitle: true,
+        )
+      else
+        const _TimelineStepData(
+          label: 'Paiement',
+          visual: _TimelineStepVisual.pending,
+        ),
+    ];
+  }
 }
 
 class _TimelineRow extends StatelessWidget {
-  final String label;
-  final DateTime? date;
-  final bool done;
+  final _TimelineStepData step;
   final bool isLast;
 
-  const _TimelineRow({required this.label, required this.date, required this.done, required this.isLast});
+  const _TimelineRow({required this.step, required this.isLast});
 
   @override
   Widget build(BuildContext context) {
-    final color = done ? AppColors.primary : const Color(0xFFD8DED6);
+    final connectorColor = switch (step.visual) {
+      _TimelineStepVisual.done => const Color(0xFF16A34A),
+      _TimelineStepVisual.payment => const Color(0xFFEAB308),
+      _TimelineStepVisual.cancelled => const Color(0xFFDC2626),
+      _TimelineStepVisual.pending => const Color(0xFFD8DED6),
+    };
+    final labelColor = switch (step.visual) {
+      _TimelineStepVisual.pending => const Color(0xFF9AA49D),
+      _TimelineStepVisual.payment => const Color(0xFFCA8A04),
+      _ => const Color(0xFF101512),
+    };
+    final subtitleColor = switch (step.visual) {
+      _TimelineStepVisual.payment => const Color(0xFFCA8A04),
+      _TimelineStepVisual.pending => const Color(0xFF9AA49D),
+      _ => const Color(0xFF6B756E),
+    };
+
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Column(
             children: [
-              Container(
-                width: 18,
-                height: 18,
-                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-                child: done ? const Icon(Icons.check, size: 12, color: Colors.white) : null,
-              ),
-              if (!isLast) Expanded(child: Container(width: 2, color: color.withValues(alpha: 0.4))),
+              _TimelineDot(visual: step.visual),
+              if (!isLast)
+                Expanded(
+                  child: Container(
+                    width: 2,
+                    margin: const EdgeInsets.symmetric(vertical: 4),
+                    color: connectorColor.withValues(alpha: 0.55),
+                  ),
+                ),
             ],
           ),
           const SizedBox(width: 14),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 24),
+              padding: EdgeInsets.only(bottom: isLast ? 0 : 22, top: 2),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    label,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      color: done ? AppColors.textPrimary : const Color(0xFF9AA49D),
+                    step.label,
+                    style: _detailText(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                      color: labelColor,
                     ),
                   ),
-                  if (date != null) ...[
+                  if (step.subtitle != null) ...[
                     const SizedBox(height: 4),
                     Text(
-                      '${formatShortDate(date!)} · ${date!.hour.toString().padLeft(2, '0')}:${date!.minute.toString().padLeft(2, '0')}',
-                      style: const TextStyle(color: Color(0xFF8A968C), fontSize: 12),
+                      step.subtitle!,
+                      style: _detailText(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: subtitleColor,
+                      ),
                     ),
                   ],
                 ],
@@ -1000,64 +1411,54 @@ class _TimelineRow extends StatelessWidget {
   }
 }
 
-class _BookingSummaryCard extends StatelessWidget {
-  final IntercityBooking booking;
+class _TimelineDot extends StatelessWidget {
+  final _TimelineStepVisual visual;
 
-  const _BookingSummaryCard({required this.booking});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFE7ECE6)),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        children: [
-          _SummaryRow(label: 'Sièges réservés', value: '${booking.seatsRequested}'),
-          const Divider(height: 24, color: Color(0xFFF1F2ED)),
-          _SummaryRow(label: 'Contact', value: booking.contactPhone),
-          if (booking.expiresAt != null && !booking.status.isFinal) ...[
-            const Divider(height: 24, color: Color(0xFFF1F2ED)),
-            _SummaryRow(
-              label: 'Expire le',
-              value:
-                  '${formatShortDate(booking.expiresAt!)} à ${booking.expiresAt!.hour.toString().padLeft(2, '0')}:${booking.expiresAt!.minute.toString().padLeft(2, '0')}',
-            ),
-          ],
-          if (booking.cancellationReason != null) ...[
-            const Divider(height: 24, color: Color(0xFFF1F2ED)),
-            _SummaryRow(label: 'Motif', value: booking.cancellationReason!),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _SummaryRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _SummaryRow({required this.label, required this.value});
+  const _TimelineDot({required this.visual});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(label, style: const TextStyle(color: Color(0xFF8A968C), fontWeight: FontWeight.w700)),
+    return switch (visual) {
+      _TimelineStepVisual.done => Container(
+          width: 28,
+          height: 28,
+          decoration: const BoxDecoration(
+            color: Color(0xFF16A34A),
+            shape: BoxShape.circle,
+          ),
+          alignment: Alignment.center,
+          child: const Icon(Icons.check_rounded, size: 16, color: Colors.white),
         ),
-        Flexible(
-          child: Text(
-            value,
-            textAlign: TextAlign.right,
-            style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w800),
+      _TimelineStepVisual.payment => Container(
+          width: 34,
+          height: 34,
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFFBEB),
+            shape: BoxShape.circle,
+            border: Border.all(color: const Color(0xFFEAB308), width: 2),
+          ),
+          alignment: Alignment.center,
+          child: const MotodigoWalletYellowIcon(size: 18),
+        ),
+      _TimelineStepVisual.cancelled => Container(
+          width: 28,
+          height: 28,
+          decoration: const BoxDecoration(
+            color: Color(0xFFDC2626),
+            shape: BoxShape.circle,
+          ),
+          alignment: Alignment.center,
+          child: const Icon(Icons.close_rounded, size: 16, color: Colors.white),
+        ),
+      _TimelineStepVisual.pending => Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            border: Border.all(color: const Color(0xFFD8DED6), width: 2),
           ),
         ),
-      ],
-    );
+    };
   }
 }

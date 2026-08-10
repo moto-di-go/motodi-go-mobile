@@ -77,3 +77,16 @@ String formatDuration(Duration duration) {
   if (hours > 0) return '${hours}h${minutes.toString().padLeft(2, '0')}';
   return '$minutes min';
 }
+
+/// Horodatage relatif Figma timeline — ex. `Aujourd'hui • 08:14`.
+String formatRelativeDayTime(DateTime date) {
+  final local = date.toLocal();
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final day = DateTime(local.year, local.month, local.day);
+  final time =
+      '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+  if (day == today) return "Aujourd'hui • $time";
+  if (day == today.subtract(const Duration(days: 1))) return 'Hier • $time';
+  return '${formatDayMonth(local)} • $time';
+}

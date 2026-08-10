@@ -222,7 +222,10 @@ class MotodigoWalletYellowIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(size: Size.square(size), painter: const _WalletPainter(Color(0xFFF59E0B)));
+    return CustomPaint(
+      size: Size.square(size),
+      painter: const _WalletYellowPainter(Color(0xFFEAB308)),
+    );
   }
 }
 
@@ -619,26 +622,102 @@ class _VerifiedPainter extends CustomPainter {
   bool shouldRepaint(covariant _VerifiedPainter oldDelegate) => false;
 }
 
-class _WalletPainter extends CustomPainter {
+/// Wallet rempli style `motodigo-wallet-gray` (home), teinte jaune Figma paiement.
+class _WalletYellowPainter extends CustomPainter {
   final Color color;
-  const _WalletPainter(this.color);
+  const _WalletYellowPainter(this.color);
 
   @override
   void paint(Canvas canvas, Size size) {
-    _drawScaled(canvas, size, 24, 24, (canvas) {
-      final paint = _strokePaint(color, 1.7);
-      final rect = RRect.fromRectAndRadius(
-        const Rect.fromLTWH(2.5, 6, 19, 13),
-        const Radius.circular(4),
+    _drawScaled(canvas, size, 22, 22, (canvas) {
+      final paint = Paint()
+        ..color = color
+        ..style = PaintingStyle.fill;
+      canvas.drawPath(
+        Path()
+          ..moveTo(18.7091, 9.03835)
+          ..cubicTo(18.6557, 9.03587, 18.6022, 9.03496, 18.5487, 9.0356)
+          ..lineTo(16.3166, 9.0356)
+          ..cubicTo(14.4906, 9.0356, 12.9268, 10.4848, 12.9268, 12.375)
+          ..cubicTo(12.9268, 14.2652, 14.4906, 15.7144, 16.3175, 15.7144)
+          ..lineTo(18.5478, 15.7144)
+          ..cubicTo(18.604, 15.715, 18.6575, 15.7138, 18.7082, 15.7108)
+          ..cubicTo(19.085, 15.6863, 19.44, 15.5259, 19.7074, 15.2593)
+          ..cubicTo(19.9748, 14.9928, 20.1364, 14.6382, 20.162, 14.2615)
+          ..cubicTo(20.1657, 14.2074, 20.1657, 14.1497, 20.1657, 14.0965)
+          ..lineTo(20.1657, 10.6535)
+          ..cubicTo(20.1657, 10.6003, 20.1657, 10.5426, 20.162, 10.4885)
+          ..cubicTo(20.1364, 10.112, 19.975, 9.75751, 19.7078, 9.49097)
+          ..cubicTo(19.4406, 9.22443, 19.0857, 9.06393, 18.7091, 9.03927)
+          ..moveTo(16.1213, 13.266)
+          ..cubicTo(16.5916, 13.266, 16.9738, 12.8682, 16.9738, 12.3759)
+          ..cubicTo(16.9738, 11.8837, 16.5916, 11.4858, 16.1213, 11.4858)
+          ..cubicTo(15.6511, 11.4858, 15.2698, 11.8837, 15.2698, 12.3759)
+          ..cubicTo(15.2698, 12.8682, 15.6502, 13.266, 16.1213, 13.266),
+        paint,
       );
-      canvas.drawRRect(rect, paint);
-      canvas.drawLine(const Offset(2.5, 10.5), const Offset(21.5, 10.5), paint);
-      canvas.drawCircle(const Offset(17, 15), 1.4, Paint()..color = color);
+      canvas.drawPath(
+        Path()
+          ..moveTo(18.5475, 17.0499)
+          ..cubicTo(18.5782, 17.0488, 18.6088, 17.055, 18.6366, 17.0679)
+          ..cubicTo(18.6645, 17.0808, 18.689, 17.1, 18.7081, 17.1241)
+          ..cubicTo(18.7272, 17.1482, 18.7404, 17.1764, 18.7465, 17.2065)
+          ..cubicTo(18.7527, 17.2366, 18.7517, 17.2678, 18.7437, 17.2974)
+          ..cubicTo(18.5658, 17.9318, 18.2844, 18.4726, 17.8325, 18.9273)
+          ..cubicTo(17.1716, 19.5937, 16.3328, 19.8898, 15.297, 20.03)
+          ..cubicTo(14.2905, 20.1666, 13.0053, 20.1666, 11.381, 20.1666)
+          ..lineTo(9.51376, 20.1666)
+          ..cubicTo(7.89034, 20.1666, 6.60426, 20.1666, 5.59776, 20.03)
+          ..cubicTo(4.56192, 19.8898, 3.72317, 19.5937, 3.06226, 18.9273)
+          ..cubicTo(2.40134, 18.2627, 2.10801, 17.4166, 1.96867, 16.3734)
+          ..cubicTo(1.83301, 15.3578, 1.83301, 14.0616, 1.83301, 12.4253)
+          ..lineTo(1.83301, 12.3245)
+          ..cubicTo(1.83301, 10.6883, 1.83301, 9.39117, 1.96867, 8.37734)
+          ..cubicTo(2.10801, 7.33325, 2.40134, 6.48992, 3.06134, 5.82167)
+          ..cubicTo(3.72226, 5.15617, 4.56101, 4.85917, 5.59684, 4.71984)
+          ..cubicTo(6.60426, 4.58325, 7.89034, 4.58325, 9.51376, 4.58325)
+          ..lineTo(11.381, 4.58325)
+          ..cubicTo(13.0044, 4.58325, 14.2905, 4.58325, 15.297, 4.71984)
+          ..cubicTo(16.3328, 4.86009, 17.1716, 5.15617, 17.8325, 5.82167)
+          ..cubicTo(18.2844, 6.27725, 18.5658, 6.81808, 18.7437, 7.45333)
+          ..cubicTo(18.7516, 7.48293, 18.7524, 7.51396, 18.7462, 7.54394)
+          ..cubicTo(18.7399, 7.57392, 18.7267, 7.60202, 18.7076, 7.62599)
+          ..cubicTo(18.6886, 7.64996, 18.6642, 7.66913, 18.6364, 7.68197)
+          ..cubicTo(18.6085, 7.6948, 18.5781, 7.70095, 18.5475, 7.69992)
+          ..lineTo(16.3173, 7.69992)
+          ..cubicTo(13.8111, 7.69992, 11.6028, 9.6955, 11.6028, 12.3749)
+          ..cubicTo(11.6028, 15.0543, 13.812, 17.0499, 16.3182, 17.0499)
+          ..lineTo(18.5475, 17.0499)
+          ..moveTo(5.14584, 8.14542)
+          ..cubicTo(5.05857, 8.14578, 4.97222, 8.16333, 4.89172, 8.19706)
+          ..cubicTo(4.81123, 8.23079, 4.73817, 8.28005, 4.67671, 8.34201)
+          ..cubicTo(4.61526, 8.40398, 4.56661, 8.47745, 4.53354, 8.55822)
+          ..cubicTo(4.50048, 8.63899, 4.48365, 8.72548, 4.48401, 8.81275)
+          ..cubicTo(4.48401, 9.18217, 4.78009, 9.481, 5.14584, 9.481)
+          ..lineTo(8.68051, 9.481)
+          ..cubicTo(9.04718, 9.481, 9.34326, 9.18217, 9.34326, 8.81275)
+          ..cubicTo(9.34375, 8.63641, 9.27422, 8.46708, 9.14996, 8.34196)
+          ..cubicTo(9.0257, 8.21683, 8.85685, 8.14615, 8.68051, 8.14542)
+          ..lineTo(5.14584, 8.14542),
+        paint,
+      );
+      canvas.drawPath(
+        Path()
+          ..moveTo(7.12891, 3.68866)
+          ..lineTo(8.92374, 2.36591)
+          ..cubicTo(9.39216, 2.01979, 9.95923, 1.83301, 10.5417, 1.83301)
+          ..cubicTo(11.1241, 1.83301, 11.6912, 2.01979, 12.1596, 2.36591)
+          ..lineTo(13.9645, 3.69599)
+          ..cubicTo(13.2092, 3.66666, 12.3658, 3.66666, 11.4427, 3.66666)
+          ..lineTo(9.45357, 3.66666)
+          ..cubicTo(8.60841, 3.66666, 7.83199, 3.66666, 7.12891, 3.68866),
+        paint,
+      );
     });
   }
 
   @override
-  bool shouldRepaint(covariant _WalletPainter oldDelegate) => oldDelegate.color != color;
+  bool shouldRepaint(covariant _WalletYellowPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _CheckCirclePainter extends CustomPainter {

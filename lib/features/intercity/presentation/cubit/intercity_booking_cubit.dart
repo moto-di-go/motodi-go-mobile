@@ -95,15 +95,23 @@ class IntercityBookingCubit extends Cubit<IntercityBookingState> {
   Future<void> loadBooking(String bookingId) async {
     emit(state.copyWith(bookingStatus: IntercityBookingsStatus.loading, bookingErrorMessage: null));
     final result = await _repository.getBooking(bookingId);
-    result.fold(
-      (failure) => emit(
-        state.copyWith(
-          bookingStatus: IntercityBookingsStatus.failure,
-          bookingErrorMessage: failure.message,
-        ),
-      ),
-      (booking) =>
-          emit(state.copyWith(bookingStatus: IntercityBookingsStatus.success, booking: booking)),
+    await result.fold(
+      (failure) async {
+        emit(
+          state.copyWith(
+            bookingStatus: IntercityBookingsStatus.failure,
+            bookingErrorMessage: failure.message,
+          ),
+        );
+      },
+      (booking) async {
+        emit(state.copyWith(bookingStatus: IntercityBookingsStatus.success, booking: booking));
+        final announcementResult = await _repository.getAnnouncement(booking.announcementId);
+        announcementResult.fold(
+          (_) {},
+          (announcement) => emit(state.copyWith(announcement: announcement)),
+        );
+      },
     );
   }
 
