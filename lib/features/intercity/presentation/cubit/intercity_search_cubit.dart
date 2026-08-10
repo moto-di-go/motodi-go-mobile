@@ -120,8 +120,8 @@ class IntercitySearchCubit extends Cubit<IntercitySearchState> {
     switch (suggestion.code) {
       case 'RELAX_DATE':
         filters = filters.copyWith(clearDate: true);
-      case 'DROP_QUARTER':
-        filters = filters.copyWith(clearQuarter: true);
+      case 'DROP_PT_RAMASSAGE':
+        filters = filters.copyWith(clearPtRamassage: true);
       case 'DROP_TIME_RANGE':
         filters = filters.copyWith(clearTimeSlot: true);
       case 'RAISE_MAX_PRICE':

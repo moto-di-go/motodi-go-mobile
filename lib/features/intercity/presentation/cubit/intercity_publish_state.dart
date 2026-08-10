@@ -30,6 +30,7 @@ class IntercityPublishState extends Equatable {
 
   final IntercityIncomingStatus incomingStatus;
   final List<IntercityBooking> incomingBookings;
+  final IntercityAnnouncement? incomingAnnouncement;
   final String? currentAnnouncementId;
   final String? incomingErrorMessage;
   final Set<String> processingBookingIds;
@@ -50,6 +51,7 @@ class IntercityPublishState extends Equatable {
     this.mineErrorMessage,
     this.incomingStatus = IntercityIncomingStatus.initial,
     this.incomingBookings = const [],
+    this.incomingAnnouncement,
     this.currentAnnouncementId,
     this.incomingErrorMessage,
     this.processingBookingIds = const {},
@@ -78,6 +80,7 @@ class IntercityPublishState extends Equatable {
     String? mineErrorMessage,
     IntercityIncomingStatus? incomingStatus,
     List<IntercityBooking>? incomingBookings,
+    IntercityAnnouncement? incomingAnnouncement,
     String? currentAnnouncementId,
     String? incomingErrorMessage,
     Set<String>? processingBookingIds,
@@ -98,6 +101,7 @@ class IntercityPublishState extends Equatable {
       mineErrorMessage: mineErrorMessage,
       incomingStatus: incomingStatus ?? this.incomingStatus,
       incomingBookings: incomingBookings ?? this.incomingBookings,
+      incomingAnnouncement: incomingAnnouncement ?? this.incomingAnnouncement,
       currentAnnouncementId: currentAnnouncementId ?? this.currentAnnouncementId,
       incomingErrorMessage: incomingErrorMessage,
       processingBookingIds: processingBookingIds ?? this.processingBookingIds,
@@ -121,6 +125,7 @@ class IntercityPublishState extends Equatable {
     mineErrorMessage,
     incomingStatus,
     incomingBookings,
+    incomingAnnouncement,
     currentAnnouncementId,
     incomingErrorMessage,
     processingBookingIds,

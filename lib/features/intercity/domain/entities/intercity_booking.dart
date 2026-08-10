@@ -82,6 +82,7 @@ class IntercityBooking {
   final DateTime? cancelledAt;
   final DateTime? expiresAt;
   final String? cancellationReason;
+  final String? passengerDisplayName;
 
   const IntercityBooking({
     required this.id,
@@ -96,11 +97,38 @@ class IntercityBooking {
     this.cancelledAt,
     this.expiresAt,
     this.cancellationReason,
+    this.passengerDisplayName,
   });
 
   bool get isExpiringSoon {
     if (expiresAt == null || status.isFinal) return false;
     return expiresAt!.difference(DateTime.now()).inMinutes <= 5;
+  }
+
+  /// Libellé court Figma — ex. `Marie N.`
+  String get shortPassengerName {
+    final raw = passengerDisplayName?.trim();
+    if (raw == null || raw.isEmpty) {
+      final digits = contactPhone.replaceAll(RegExp(r'\D'), '');
+      final tail = digits.length >= 2 ? digits.substring(digits.length - 2) : '';
+      return tail.isEmpty ? 'Voyageur' : 'Voyageur $tail';
+    }
+    final parts = raw.split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+    if (parts.length == 1) return parts.first;
+    final initial = parts.last.isNotEmpty ? parts.last[0].toUpperCase() : '';
+    return '${parts.first} $initial.';
+  }
+
+  String get passengerInitials {
+    final name = shortPassengerName;
+    final parts = name.split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+    if (parts.length >= 2) {
+      final a = parts[0].isNotEmpty ? parts[0][0] : '';
+      final b = parts[1].isNotEmpty ? parts[1][0] : '';
+      return ('$a$b').toUpperCase();
+    }
+    if (name.length >= 2) return name.substring(0, 2).toUpperCase();
+    return name.toUpperCase();
   }
 }
 

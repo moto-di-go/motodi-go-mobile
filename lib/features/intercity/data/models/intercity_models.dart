@@ -9,7 +9,7 @@ class IntercityAnnouncementModel {
   final String? vehicleId;
   final String departureCity;
   final String destinationCity;
-  final String? departureQuarter;
+  final String? ptRamassage;
   final String departureDate;
   final String departureTime;
   final double priceFcfa;
@@ -33,7 +33,7 @@ class IntercityAnnouncementModel {
     this.vehicleId,
     required this.departureCity,
     required this.destinationCity,
-    this.departureQuarter,
+    this.ptRamassage,
     required this.departureDate,
     required this.departureTime,
     required this.priceFcfa,
@@ -59,7 +59,7 @@ class IntercityAnnouncementModel {
       vehicleId: json['vehicleId'] as String?,
       departureCity: json['departureCity'] as String? ?? '',
       destinationCity: json['destinationCity'] as String? ?? '',
-      departureQuarter: json['departureQuarter'] as String?,
+      ptRamassage: json['ptRamassage'] as String?,
       departureDate: json['departureDate'] as String? ?? '',
       departureTime: json['departureTime'] as String? ?? '00:00:00',
       priceFcfa: (json['priceFcfa'] as num?)?.toDouble() ?? 0,
@@ -86,7 +86,7 @@ class IntercityAnnouncementModel {
       vehicleId: vehicleId,
       departureCity: departureCity,
       destinationCity: destinationCity,
-      departureQuarter: departureQuarter,
+      ptRamassage: ptRamassage,
       departureDate: DateTime.tryParse(departureDate) ?? DateTime.now(),
       departureTime: departureTime,
       priceFcfa: priceFcfa,
@@ -224,6 +224,7 @@ class IntercityBookingModel {
   final String? cancelledAt;
   final String? expiresAt;
   final String? cancellationReason;
+  final String? passengerDisplayName;
 
   const IntercityBookingModel({
     required this.id,
@@ -238,6 +239,7 @@ class IntercityBookingModel {
     this.cancelledAt,
     this.expiresAt,
     this.cancellationReason,
+    this.passengerDisplayName,
   });
 
   factory IntercityBookingModel.fromJson(Map<String, dynamic> json) {
@@ -254,6 +256,7 @@ class IntercityBookingModel {
       cancelledAt: json['cancelledAt'] as String?,
       expiresAt: json['expiresAt'] as String?,
       cancellationReason: json['cancellationReason'] as String?,
+      passengerDisplayName: json['passengerDisplayName'] as String?,
     );
   }
 
@@ -271,6 +274,7 @@ class IntercityBookingModel {
       cancelledAt: cancelledAt == null ? null : DateTime.tryParse(cancelledAt!),
       expiresAt: expiresAt == null ? null : DateTime.tryParse(expiresAt!),
       cancellationReason: cancellationReason,
+      passengerDisplayName: passengerDisplayName,
     );
   }
 }
@@ -358,7 +362,7 @@ class IntercityVehicleModel {
 class CreateAnnouncementPayload {
   final String departureCity;
   final String destinationCity;
-  final String? departureQuarter;
+  final String? ptRamassage;
   final double? departureLat;
   final double? departureLon;
   final double? destinationLat;
@@ -373,7 +377,7 @@ class CreateAnnouncementPayload {
   const CreateAnnouncementPayload({
     required this.departureCity,
     required this.destinationCity,
-    this.departureQuarter,
+    this.ptRamassage,
     this.departureLat,
     this.departureLon,
     this.destinationLat,
@@ -393,7 +397,7 @@ class CreateAnnouncementPayload {
     return {
       'departureCity': departureCity,
       'destinationCity': destinationCity,
-      if (departureQuarter != null && departureQuarter!.isNotEmpty) 'departureQuarter': departureQuarter,
+      if (ptRamassage != null && ptRamassage!.isNotEmpty) 'ptRamassage': ptRamassage,
       if (departureLat != null && departureLon != null)
         'departurePoint': {'latitude': departureLat, 'longitude': departureLon},
       if (destinationLat != null && destinationLon != null)

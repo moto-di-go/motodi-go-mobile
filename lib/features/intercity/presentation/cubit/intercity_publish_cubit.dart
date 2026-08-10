@@ -80,7 +80,7 @@ class IntercityPublishCubit extends Cubit<IntercityPublishState> {
   Future<void> createAnnouncement({
     required String departureCity,
     required String destinationCity,
-    String? departureQuarter,
+    String? ptRamassage,
     double? departureLat,
     double? departureLon,
     double? destinationLat,
@@ -96,7 +96,7 @@ class IntercityPublishCubit extends Cubit<IntercityPublishState> {
     final result = await _repository.createAnnouncement(
       departureCity: departureCity,
       destinationCity: destinationCity,
-      departureQuarter: departureQuarter,
+      ptRamassage: ptRamassage,
       departureLat: departureLat,
       departureLon: departureLon,
       destinationLat: destinationLat,
@@ -181,17 +181,34 @@ class IntercityPublishCubit extends Cubit<IntercityPublishState> {
         currentAnnouncementId: announcementId,
       ),
     );
-    final result = await _repository.listAnnouncementBookings(announcementId, page: 0, size: _pageSize);
-    result.fold(
+    final announcementResult = await _repository.getAnnouncement(announcementId);
+    final bookingsResult = await _repository.listAnnouncementBookings(announcementId, page: 0, size: _pageSize);
+
+    announcementResult.fold(
       (failure) => emit(
         state.copyWith(
           incomingStatus: IntercityIncomingStatus.failure,
           incomingErrorMessage: failure.message,
         ),
       ),
-      (page) => emit(
-        state.copyWith(incomingStatus: IntercityIncomingStatus.success, incomingBookings: page.items),
-      ),
+      (announcement) {
+        bookingsResult.fold(
+          (failure) => emit(
+            state.copyWith(
+              incomingStatus: IntercityIncomingStatus.failure,
+              incomingErrorMessage: failure.message,
+              incomingAnnouncement: announcement,
+            ),
+          ),
+          (page) => emit(
+            state.copyWith(
+              incomingStatus: IntercityIncomingStatus.success,
+              incomingAnnouncement: announcement,
+              incomingBookings: page.items,
+            ),
+          ),
+        );
+      },
     );
   }
 

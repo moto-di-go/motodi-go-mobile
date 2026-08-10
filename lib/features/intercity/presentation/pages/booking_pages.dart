@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -114,17 +114,24 @@ class _DetailContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasSeats = announcement.hasSeatsAvailable && announcement.status.isActive;
+    final profiles = getIt<SessionCubit>().state.session?.profiles ?? const [];
+    final ownedByMe = profiles.any((profile) => profile.id == announcement.publisherProfileId);
+    final hasSeats = !ownedByMe && announcement.hasSeatsAvailable && announcement.status.isActive;
     final agency = announcement.publisherDisplayName?.trim().isNotEmpty == true
         ? announcement.publisherDisplayName!
         : 'Transporteur';
-    final quarter = announcement.departureQuarter?.trim();
+    final ptRamassage = announcement.ptRamassage?.trim();
     final metaParts = <String>[
       '${formatDayMonth(announcement.departureDate)} ${announcement.departureDate.year}',
       announcement.formattedDepartureTime,
-      if (quarter != null && quarter.isNotEmpty) 'Départ $quarter',
+      if (ptRamassage != null && ptRamassage.isNotEmpty) 'Pt. Ramassage $ptRamassage',
     ];
     final metaLine = metaParts.join(' · ');
+    final ctaLabel = ownedByMe
+        ? 'Émis par vous'
+        : hasSeats
+            ? 'Souscrire'
+            : 'Complet';
 
     return Column(
       children: [
@@ -396,7 +403,7 @@ class _DetailContent extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 alignment: Alignment.center,
                 child: Text(
-                  hasSeats ? 'Souscrire' : 'Complet',
+                  ctaLabel,
                   style: _detailText(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,

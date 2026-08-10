@@ -90,7 +90,7 @@ class SearchFilters {
   final int seats;
   final double? maxPrice;
   final IntercityTimeSlot? timeSlot;
-  final String? quarter;
+  final String? ptRamassage;
   final bool onlyVerified;
   final bool onlyAvailable;
   final IntercitySort sort;
@@ -102,7 +102,7 @@ class SearchFilters {
     this.seats = 1,
     this.maxPrice,
     this.timeSlot,
-    this.quarter,
+    this.ptRamassage,
     this.onlyVerified = false,
     this.onlyAvailable = true,
     this.sort = IntercitySort.departureTime,
@@ -117,7 +117,7 @@ class SearchFilters {
     if (date != null) count++;
     if (maxPrice != null) count++;
     if (timeSlot != null) count++;
-    if (quarter != null && quarter!.trim().isNotEmpty) count++;
+    if (ptRamassage != null && ptRamassage!.trim().isNotEmpty) count++;
     if (onlyVerified) count++;
     if (!onlyAvailable) count++;
     if (sort != IntercitySort.departureTime) count++;
@@ -137,8 +137,8 @@ class SearchFilters {
     bool clearMaxPrice = false,
     IntercityTimeSlot? timeSlot,
     bool clearTimeSlot = false,
-    String? quarter,
-    bool clearQuarter = false,
+    String? ptRamassage,
+    bool clearPtRamassage = false,
     bool? onlyVerified,
     bool? onlyAvailable,
     IntercitySort? sort,
@@ -150,7 +150,7 @@ class SearchFilters {
       seats: seats ?? this.seats,
       maxPrice: clearMaxPrice ? null : (maxPrice ?? this.maxPrice),
       timeSlot: clearTimeSlot ? null : (timeSlot ?? this.timeSlot),
-      quarter: clearQuarter ? null : (quarter ?? this.quarter),
+      ptRamassage: clearPtRamassage ? null : (ptRamassage ?? this.ptRamassage),
       onlyVerified: onlyVerified ?? this.onlyVerified,
       onlyAvailable: onlyAvailable ?? this.onlyAvailable,
       sort: sort ?? this.sort,
@@ -179,9 +179,9 @@ class SearchFilters {
           ? (suggestedQuery['maxPrice'] as num?)?.toDouble()
           : maxPrice,
       timeSlot: suggestedQuery.containsKey('timeSlot') ? null : timeSlot,
-      quarter: suggestedQuery.containsKey('quarter')
-          ? suggestedQuery['quarter'] as String?
-          : quarter,
+      ptRamassage: suggestedQuery.containsKey('ptRamassage')
+          ? suggestedQuery['ptRamassage'] as String?
+          : ptRamassage,
       onlyVerified: onlyVerified,
       onlyAvailable: onlyAvailable,
       sort: sort,

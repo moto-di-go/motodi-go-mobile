@@ -19,7 +19,7 @@ abstract class IntercityRepository {
   Future<Either<Failure, IntercityAnnouncement>> createAnnouncement({
     required String departureCity,
     required String destinationCity,
-    String? departureQuarter,
+    String? ptRamassage,
     double? departureLat,
     double? departureLon,
     double? destinationLat,

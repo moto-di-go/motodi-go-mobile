@@ -49,7 +49,7 @@ class IntercityAnnouncement {
   final String? vehicleId;
   final String departureCity;
   final String destinationCity;
-  final String? departureQuarter;
+  final String? ptRamassage;
   final DateTime departureDate;
   final String departureTime;
   final double priceFcfa;
@@ -73,7 +73,7 @@ class IntercityAnnouncement {
     this.vehicleId,
     required this.departureCity,
     required this.destinationCity,
-    this.departureQuarter,
+    this.ptRamassage,
     required this.departureDate,
     required this.departureTime,
     required this.priceFcfa,

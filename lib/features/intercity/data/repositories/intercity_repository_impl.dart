@@ -50,7 +50,7 @@ class IntercityRepositoryImpl implements IntercityRepository {
   Future<Either<Failure, IntercityAnnouncement>> createAnnouncement({
     required String departureCity,
     required String destinationCity,
-    String? departureQuarter,
+    String? ptRamassage,
     double? departureLat,
     double? departureLon,
     double? destinationLat,
@@ -67,7 +67,7 @@ class IntercityRepositoryImpl implements IntercityRepository {
         CreateAnnouncementPayload(
           departureCity: departureCity,
           destinationCity: destinationCity,
-          departureQuarter: departureQuarter,
+          ptRamassage: ptRamassage,
           departureLat: departureLat,
           departureLon: departureLon,
           destinationLat: destinationLat,

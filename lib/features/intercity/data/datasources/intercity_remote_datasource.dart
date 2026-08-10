@@ -77,9 +77,9 @@ class IntercityRemoteDataSourceImpl implements IntercityRemoteDataSource {
       params['timeFrom'] = filters.timeSlot!.timeFrom;
       params['timeTo'] = filters.timeSlot!.timeTo;
     }
-    final quarter = filters.quarter?.trim();
-    if (quarter != null && quarter.isNotEmpty) {
-      params['quarter'] = quarter;
+    final ptRamassage = filters.ptRamassage?.trim();
+    if (ptRamassage != null && ptRamassage.isNotEmpty) {
+      params['ptRamassage'] = ptRamassage;
     }
     final response = await _client.get<Map<String, dynamic>, Map<String, dynamic>>(
       Uri.parse('/intercity/announcements'),
