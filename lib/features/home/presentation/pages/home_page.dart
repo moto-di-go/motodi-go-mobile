@@ -63,7 +63,7 @@ class HomePage extends StatelessWidget {
                     ),
                     _SquareIconButton(
                       icon: const MotodigoNotifGrayIcon(size: 30),
-                      onTap: () {},
+                      onTap: () => context.go(RouteConstants.notifications),
                       badge: true,
                     ),
                     const SizedBox(width: 14),
@@ -105,11 +105,12 @@ class HomePage extends StatelessWidget {
                     subtitle: 'Recherche disponible',
                     locked: false,
                   ),
-                  const _FeatureTile(
+                  _FeatureTile(
                     icon: Icons.route_outlined,
                     title: 'Préparer un trajet',
                     subtitle: 'Prix standardisé',
                     locked: false,
+                    onTap: () => context.go(RouteConstants.intercity),
                   ),
                 ] else ...[
                   _FeatureTile(
@@ -127,6 +128,18 @@ class HomePage extends StatelessWidget {
                         ? 'Disponible après validation'
                         : 'Créer une offre',
                     locked: isLocked,
+                    onTap: isLocked
+                        ? null
+                        : () => context.push(RouteConstants.intercityPublishGuard),
+                  ),
+                  _FeatureTile(
+                    icon: Icons.list_alt_rounded,
+                    title: 'Mes annonces',
+                    subtitle: isLocked
+                        ? 'Disponible après validation'
+                        : 'Gérer vos trajets',
+                    locked: isLocked,
+                    onTap: isLocked ? null : () => context.go(RouteConstants.intercity),
                   ),
                   _FeatureTile(
                     icon: Icons.my_location_rounded,
@@ -139,12 +152,6 @@ class HomePage extends StatelessWidget {
                 ],
               ],
             ),
-          ),
-          bottomNavigationBar: _HomeBottomNavigation(
-            selectedIndex: 0,
-            onSelected: (index) {
-              if (index == 4) context.go(RouteConstants.kyc);
-            },
           ),
         );
       },
@@ -488,181 +495,67 @@ class _FeatureTile extends StatelessWidget {
   final String title;
   final String subtitle;
   final bool locked;
+  final VoidCallback? onTap;
 
   const _FeatureTile({
     required this.icon,
     required this.title,
     required this.subtitle,
     required this.locked,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final color = locked ? const Color(0xFFA8B0AA) : AppColors.textPrimary;
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFE7ECE6)),
-        borderRadius: BorderRadius.circular(22),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 58,
-            height: 58,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF1F2ED),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Icon(icon, color: const Color(0xFF9AA49D)),
-          ),
-          const SizedBox(width: 18),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: const Color(0xFFA8B0AA),
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (locked)
-            const Icon(Icons.lock_outline_rounded, color: Color(0xFFA8B0AA)),
-        ],
-      ),
-    );
-  }
-}
-
-class _HomeBottomNavigation extends StatelessWidget {
-  final int selectedIndex;
-  final ValueChanged<int> onSelected;
-
-  const _HomeBottomNavigation({
-    required this.selectedIndex,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const items = [
-      _HomeNavItemData(
-        label: 'Accueil',
-        activeIcon: MotodigoHomeGreenIcon(size: 30),
-        inactiveIcon: MotodigoHomeGrayIcon(size: 30),
-      ),
-      _HomeNavItemData(
-        label: 'Trajets',
-        activeIcon: MotodigoTrajetGreenIcon(size: 30),
-        inactiveIcon: MotodigoTrajetGrayIcon(size: 30),
-      ),
-      _HomeNavItemData(
-        label: 'Wallet',
-        activeIcon: MotodigoWalletGreenIcon(size: 30),
-        inactiveIcon: MotodigoWalletGrayIcon(size: 30),
-      ),
-      _HomeNavItemData(
-        label: 'Notifs',
-        activeIcon: MotodigoNotifGreenIcon(size: 30),
-        inactiveIcon: MotodigoNotifGrayIcon(size: 30),
-      ),
-      _HomeNavItemData(
-        label: 'Profil',
-        activeIcon: MotodigoProfileGreenIcon(size: 30),
-        inactiveIcon: MotodigoProfileGrayIcon(size: 30),
-      ),
-    ];
-
-    return SafeArea(
-      top: false,
+    return InkWell(
+      borderRadius: BorderRadius.circular(22),
+      onTap: locked ? null : onTap,
       child: Container(
-        height: 86,
-        decoration: const BoxDecoration(
-          color: AppColors.background,
-          border: Border(top: BorderSide(color: Color(0xFFE4E7DF))),
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: const Color(0xFFE7ECE6)),
+          borderRadius: BorderRadius.circular(22),
         ),
-        padding: const EdgeInsets.fromLTRB(22, 10, 22, 8),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            for (var index = 0; index < items.length; index++)
-              _HomeNavItem(
-                data: items[index],
-                selected: index == selectedIndex,
-                onTap: () => onSelected(index),
+            Container(
+              width: 58,
+              height: 58,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F2ED),
+                borderRadius: BorderRadius.circular(18),
               ),
+              child: Icon(icon, color: const Color(0xFF9AA49D)),
+            ),
+            const SizedBox(width: 18),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: color,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: const Color(0xFFA8B0AA),
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (locked)
+              const Icon(Icons.lock_outline_rounded, color: Color(0xFFA8B0AA)),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _HomeNavItemData {
-  final String label;
-  final Widget activeIcon;
-  final Widget inactiveIcon;
-
-  const _HomeNavItemData({
-    required this.label,
-    required this.activeIcon,
-    required this.inactiveIcon,
-  });
-}
-
-class _HomeNavItem extends StatelessWidget {
-  final _HomeNavItemData data;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _HomeNavItem({
-    required this.data,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = selected ? AppColors.primary : const Color(0xFF98A29A);
-    return Expanded(
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: onTap,
-        child: SizedBox(
-          height: 66,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              selected ? data.activeIcon : data.inactiveIcon,
-              const SizedBox(height: 6),
-              Text(
-                data.label,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-                style: TextStyle(
-                  color: color,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w800,
-                  height: 1,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

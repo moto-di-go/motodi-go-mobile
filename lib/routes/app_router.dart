@@ -17,6 +17,15 @@ import 'package:motodi_go_mobile/features/auth/presentation/pages/welcome_page.d
 import 'package:motodi_go_mobile/features/example/presentation/pages/example_detail_page.dart';
 import 'package:motodi_go_mobile/features/example/presentation/pages/example_list_page.dart';
 import 'package:motodi_go_mobile/features/home/presentation/pages/home_page.dart';
+import 'package:motodi_go_mobile/features/home/presentation/pages/main_shell.dart';
+import 'package:motodi_go_mobile/features/home/presentation/pages/placeholder_tab_pages.dart';
+import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_announcement.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_publish_cubit.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_search_cubit.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/pages/booking_pages.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/pages/intercity_tab_page.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/pages/publish_pages.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/pages/search_pages.dart';
 import 'package:motodi_go_mobile/features/kyc/domain/entities/kyc_bundle.dart';
 import 'package:motodi_go_mobile/features/kyc/domain/entities/kyc_document.dart';
 import 'package:motodi_go_mobile/features/kyc/domain/entities/kyc_file_draft.dart';
@@ -172,56 +181,177 @@ GoRouter createAppRouter(SessionCubit sessionCubit) {
         path: RouteConstants.profileTransporter,
         builder: (context, state) => const TransporterProfilePage(),
       ),
-      GoRoute(
-        path: RouteConstants.kyc,
-        builder: (context, state) => const KycStatusPage(),
-      ),
-      GoRoute(
-        path: RouteConstants.kycDocuments,
-        builder: (context, state) => const KycDocumentsPage(),
-      ),
-      GoRoute(
-        path: RouteConstants.kycPreview,
-        builder: (context, state) =>
-            KycPreviewPage(draft: state.extra as KycFileDraft?),
-      ),
-      GoRoute(
-        path: RouteConstants.kycUploading,
-        builder: (context, state) =>
-            KycUploadingPage(draft: state.extra as KycFileDraft?),
-      ),
-      GoRoute(
-        path: RouteConstants.kycUploadSuccess,
-        builder: (context, state) =>
-            KycUploadSuccessPage(result: state.extra as KycUploadResult?),
-      ),
-      GoRoute(
-        path: RouteConstants.kycInvalid,
-        builder: (context, state) =>
-            KycInvalidFilePage(args: state.extra as KycInvalidFileArgs?),
-      ),
-      GoRoute(
-        path: RouteConstants.kycSubmitted,
-        builder: (context, state) => const KycSubmittedPage(),
-      ),
-      GoRoute(
-        path: RouteConstants.kycRejected,
-        builder: (context, state) =>
-            KycRejectedDocumentPage(document: state.extra as KycDocument?),
-      ),
-      GoRoute(
-        path: RouteConstants.kycVerified,
-        builder: (context, state) => const KycVerifiedPage(),
-      ),
-      GoRoute(
-        path: RouteConstants.kycNotification,
-        builder: (context, state) => KycNotificationDetailPage(
-          payload: state.extra as KycNotificationPayload?,
-        ),
-      ),
-      GoRoute(
-        path: RouteConstants.home,
-        builder: (context, state) => const HomePage(),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            MainShell(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteConstants.home,
+                builder: (context, state) => const HomePage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteConstants.intercity,
+                builder: (context, state) => const IntercityTabPage(),
+                routes: [
+                  GoRoute(
+                    path: 'results',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => IntercityResultsPage(
+                      cubit: state.extra as IntercitySearchCubit,
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'empty',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => IntercityEmptyResultsPage(
+                      cubit: state.extra as IntercitySearchCubit,
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'detail',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => IntercityDetailPage(
+                      announcementId: state.extra as String,
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'subscribe',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => IntercitySubscribePage(
+                      args: state.extra as IntercitySubscribeArgs,
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'booking',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => IntercityBookingStatusPage(
+                      bookingId: state.extra as String,
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'publish/guard',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => const IntercityPublishGuardPage(),
+                  ),
+                  GoRoute(
+                    path: 'publish/create',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => IntercityCreateAnnouncementPage(
+                      cubit: state.extra as IntercityPublishCubit,
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'publish/preview',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) {
+                      final args =
+                          state.extra as (IntercityPublishCubit, CreateAnnouncementDraft);
+                      return IntercityPreviewPage(cubit: args.$1, draft: args.$2);
+                    },
+                  ),
+                  GoRoute(
+                    path: 'publish/success',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => IntercityPublishSuccessPage(
+                      announcement: state.extra as IntercityAnnouncement,
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'publish/incoming',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => IntercityIncomingBookingsPage(
+                      announcementId: state.extra as String,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteConstants.wallet,
+                builder: (context, state) => const WalletTabPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteConstants.notifications,
+                builder: (context, state) => const NotificationsTabPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteConstants.kyc,
+                builder: (context, state) => const KycStatusPage(),
+                routes: [
+                  GoRoute(
+                    path: 'documents',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => const KycDocumentsPage(),
+                  ),
+                  GoRoute(
+                    path: 'preview',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) =>
+                        KycPreviewPage(draft: state.extra as KycFileDraft?),
+                  ),
+                  GoRoute(
+                    path: 'uploading',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) =>
+                        KycUploadingPage(draft: state.extra as KycFileDraft?),
+                  ),
+                  GoRoute(
+                    path: 'upload-success',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) =>
+                        KycUploadSuccessPage(result: state.extra as KycUploadResult?),
+                  ),
+                  GoRoute(
+                    path: 'invalid',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) =>
+                        KycInvalidFilePage(args: state.extra as KycInvalidFileArgs?),
+                  ),
+                  GoRoute(
+                    path: 'submitted',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => const KycSubmittedPage(),
+                  ),
+                  GoRoute(
+                    path: 'rejected',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) =>
+                        KycRejectedDocumentPage(document: state.extra as KycDocument?),
+                  ),
+                  GoRoute(
+                    path: 'verified',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => const KycVerifiedPage(),
+                  ),
+                  GoRoute(
+                    path: 'notification',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => KycNotificationDetailPage(
+                      payload: state.extra as KycNotificationPayload?,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
       GoRoute(
         path: RouteConstants.exampleList,

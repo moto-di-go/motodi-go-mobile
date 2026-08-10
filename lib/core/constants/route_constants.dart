@@ -34,10 +34,27 @@ class RouteConstants {
   static const String kycVerified = '/kyc/verified';
   static const String kycNotification = '/kyc/notification';
 
-  // App
+  // App (onglets shell)
   static const String home = '/home';
   static const String profile = '/profile';
   static const String settings = '/settings';
+  static const String wallet = '/wallet';
+  static const String notifications = '/notifications';
+
+  // Intercity
+  static const String intercity = '/intercity';
+  /// Alias historique : ouvre l'onglet Trajets / Annonces.
+  static const String intercityMyAnnouncements = '/intercity';
+  static const String intercityResults = '/intercity/results';
+  static const String intercityEmpty = '/intercity/empty';
+  static const String intercityDetail = '/intercity/detail';
+  static const String intercitySubscribe = '/intercity/subscribe';
+  static const String intercityBooking = '/intercity/booking';
+  static const String intercityPublishGuard = '/intercity/publish/guard';
+  static const String intercityCreate = '/intercity/publish/create';
+  static const String intercityPreview = '/intercity/publish/preview';
+  static const String intercityPublishSuccess = '/intercity/publish/success';
+  static const String intercityIncomingBookings = '/intercity/publish/incoming';
 
   // Feature d'exemple conservee pour les tests template existants.
   static const String exampleList = '/examples';
