@@ -102,7 +102,10 @@ class UserProfile extends Equatable {
 
   bool get canBeShownInMobile => type.isSelfService;
   bool get isValidated => validationStatus == ValidationStatus.validated;
-  bool get requiresValidation => type == ProfileType.mototaxi || type == ProfileType.transporter;
+  bool get requiresValidation =>
+      type == ProfileType.passenger ||
+      type == ProfileType.mototaxi ||
+      type == ProfileType.transporter;
 
   @override
   List<Object?> get props => [

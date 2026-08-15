@@ -76,6 +76,10 @@
 	<string>Accès aux contacts pour faciliter les transferts</string>
 	-->
 
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>MOTO'DI GO utilise votre position pour afficher la carte urbaine et les mototaxis proches.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>MOTO'DI GO peut diffuser votre position conducteur pendant que vous etes disponible.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Utilisation de la camera pour televerser vos documents KYC.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
