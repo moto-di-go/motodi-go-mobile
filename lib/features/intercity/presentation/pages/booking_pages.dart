@@ -14,6 +14,7 @@ import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_an
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_booking.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_booking_cubit.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/authenticated_network_image.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_itinerary_map.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_figma_icons.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_formatters.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
@@ -99,7 +100,11 @@ class _IntercityDetailPageState extends State<IntercityDetailPage> {
                   onRetry: () => _cubit.loadDetail(widget.announcementId),
                 );
               }
-              return _DetailContent(announcement: announcement);
+              return _DetailContent(
+                announcement: announcement,
+                itineraryStatus: state.itineraryStatus,
+                itinerary: state.itinerary,
+              );
             },
           ),
         ),
@@ -110,8 +115,14 @@ class _IntercityDetailPageState extends State<IntercityDetailPage> {
 
 class _DetailContent extends StatelessWidget {
   final IntercityAnnouncement announcement;
+  final IntercityItineraryStatus itineraryStatus;
+  final IntercityItinerary? itinerary;
 
-  const _DetailContent({required this.announcement});
+  const _DetailContent({
+    required this.announcement,
+    required this.itineraryStatus,
+    this.itinerary,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -416,6 +427,18 @@ class _DetailContent extends StatelessWidget {
               ),
               const SizedBox(height: 22),
               Text(
+                'ITINÉRAIRE',
+                style: _detailText(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF7A857E),
+                  letterSpacing: 1.1,
+                ),
+              ),
+              const SizedBox(height: 10),
+              _ItineraryBlock(status: itineraryStatus, itinerary: itinerary),
+              const SizedBox(height: 22),
+              Text(
                 "POLITIQUE D'ANNULATION",
                 style: _detailText(
                   fontSize: 13,
@@ -464,6 +487,63 @@ class _DetailContent extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ItineraryBlock extends StatelessWidget {
+  final IntercityItineraryStatus status;
+  final IntercityItinerary? itinerary;
+
+  const _ItineraryBlock({required this.status, this.itinerary});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 240,
+      child: switch (status) {
+        IntercityItineraryStatus.ready when itinerary != null => IntercityItineraryMap(itinerary: itinerary!),
+        IntercityItineraryStatus.failure => const _ItineraryMessage(
+            'Itinéraire routier indisponible pour le moment.',
+          ),
+        IntercityItineraryStatus.idle || IntercityItineraryStatus.loading => const Center(
+            child: SizedBox(
+              width: 26,
+              height: 26,
+              child: CircularProgressIndicator(strokeWidth: 2.4, color: Color(0xFF16A34A)),
+            ),
+          ),
+        _ => const _ItineraryMessage('Itinéraire routier indisponible pour le moment.'),
+      },
+    );
+  }
+}
+
+class _ItineraryMessage extends StatelessWidget {
+  final String text;
+  const _ItineraryMessage(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.center,
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 1, color: Color(0xFFE7EAE3)),
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: _detailText(
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+          color: const Color(0xFF54615A),
+        ),
+      ),
     );
   }
 }

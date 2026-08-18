@@ -86,6 +86,34 @@ class UrbanRemoteDataSource {
     return _getPlaces('/urban/geocode', parameters: parameters);
   }
 
+  Future<RoutePreview?> previewRoute({
+    required double originLat,
+    required double originLon,
+    required double destinationLat,
+    required double destinationLon,
+    String? costing,
+  }) async {
+    try {
+      final body = <String, dynamic>{
+        'originLat': originLat,
+        'originLon': originLon,
+        'destinationLat': destinationLat,
+        'destinationLon': destinationLon,
+      };
+      if (costing != null && costing.isNotEmpty) {
+        body['costing'] = costing;
+      }
+      final response = await _client.post<Map<String, dynamic>, Map<String, dynamic>>(
+        Uri.parse('/urban/route/preview'),
+        body: body,
+      );
+      if (!response.isSuccessful) return null;
+      return RoutePreview.fromJson(response.body ?? <String, dynamic>{});
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<UrbanPlace?> reverseGeocode({required double lat, required double lon}) async {
     try {
       final response = await _client.get<dynamic, dynamic>(

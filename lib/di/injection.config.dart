@@ -176,7 +176,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i815.NotificationsCubit(gh<_i814.NotificationRepository>()),
     );
     gh.factory<_i741.IntercityBookingCubit>(
-      () => _i741.IntercityBookingCubit(gh<_i1053.IntercityRepository>()),
+      () => _i741.IntercityBookingCubit(
+        gh<_i1053.IntercityRepository>(),
+        gh<_i31.ChopperClient>(),
+      ),
     );
     gh.factory<_i183.IntercitySearchCubit>(
       () => _i183.IntercitySearchCubit(gh<_i1053.IntercityRepository>()),

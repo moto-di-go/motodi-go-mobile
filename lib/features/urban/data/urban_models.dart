@@ -323,6 +323,29 @@ class FareEstimate {
   }
 }
 
+class RoutePreview {
+  final String polyline;
+  final double distanceKm;
+  final int durationMinutes;
+  final String engine;
+
+  const RoutePreview({
+    required this.polyline,
+    this.distanceKm = 0,
+    this.durationMinutes = 0,
+    this.engine = '',
+  });
+
+  factory RoutePreview.fromJson(Map<String, dynamic> json) {
+    return RoutePreview(
+      polyline: json['polyline'] as String? ?? json['polylineWkt'] as String? ?? '',
+      distanceKm: (json['distanceKm'] as num?)?.toDouble() ?? 0,
+      durationMinutes: (json['durationMinutes'] as num?)?.toInt() ?? 0,
+      engine: json['engine'] as String? ?? '',
+    );
+  }
+}
+
 class TrafficLayer {
   final String id;
   final String type;

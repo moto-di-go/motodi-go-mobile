@@ -1,9 +1,14 @@
+import 'package:chopper/chopper.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_announcement.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_booking.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/repositories/intercity_repository.dart';
+import 'package:motodi_go_mobile/features/urban/data/urban_models.dart';
+import 'package:motodi_go_mobile/features/urban/data/urban_remote_datasource.dart';
+import 'package:motodi_go_mobile/features/urban/presentation/wkt_parser.dart';
 
 part 'intercity_booking_state.dart';
 
@@ -12,24 +17,90 @@ part 'intercity_booking_state.dart';
 @injectable
 class IntercityBookingCubit extends Cubit<IntercityBookingState> {
   final IntercityRepository _repository;
+  final UrbanRemoteDataSource _urbanRemote;
   static const _pageSize = 20;
 
-  IntercityBookingCubit(this._repository) : super(const IntercityBookingState());
+  IntercityBookingCubit(this._repository, ChopperClient client)
+      : _urbanRemote = UrbanRemoteDataSource(client),
+        super(const IntercityBookingState());
 
   Future<void> loadDetail(String announcementId) async {
-    emit(state.copyWith(detailStatus: IntercityDetailStatus.loading, detailErrorMessage: null));
-    final result = await _repository.getAnnouncement(announcementId);
-    result.fold(
-      (failure) => emit(
-        state.copyWith(
-          detailStatus: IntercityDetailStatus.failure,
-          detailErrorMessage: failure.message,
-        ),
-      ),
-      (announcement) => emit(
-        state.copyWith(detailStatus: IntercityDetailStatus.success, announcement: announcement),
+    emit(
+      state.copyWith(
+        detailStatus: IntercityDetailStatus.loading,
+        detailErrorMessage: null,
+        itineraryStatus: IntercityItineraryStatus.idle,
+        clearItinerary: true,
       ),
     );
+    final result = await _repository.getAnnouncement(announcementId);
+    await result.fold(
+      (failure) async {
+        emit(
+          state.copyWith(
+            detailStatus: IntercityDetailStatus.failure,
+            detailErrorMessage: failure.message,
+          ),
+        );
+      },
+      (announcement) async {
+        emit(
+          state.copyWith(detailStatus: IntercityDetailStatus.success, announcement: announcement),
+        );
+        await _loadItinerary(announcement);
+      },
+    );
+  }
+
+  Future<void> _loadItinerary(IntercityAnnouncement announcement) async {
+    emit(state.copyWith(itineraryStatus: IntercityItineraryStatus.loading, clearItinerary: true));
+    try {
+      final originPlaces = await _urbanRemote.geocode(announcement.departureCity, kind: 'CITY');
+      final destPlaces = await _urbanRemote.geocode(announcement.destinationCity, kind: 'CITY');
+      if (isClosed) return;
+      final origin = originPlaces == null || originPlaces.isEmpty ? null : originPlaces.first;
+      final dest = destPlaces == null || destPlaces.isEmpty ? null : destPlaces.first;
+      if (origin == null || dest == null) {
+        emit(state.copyWith(itineraryStatus: IntercityItineraryStatus.failure));
+        return;
+      }
+      final preview = await _urbanRemote.previewRoute(
+        originLat: origin.point.latitude,
+        originLon: origin.point.longitude,
+        destinationLat: dest.point.latitude,
+        destinationLon: dest.point.longitude,
+        costing: 'auto',
+      );
+      if (isClosed) return;
+      if (!_isRoadItinerary(preview)) {
+        emit(state.copyWith(itineraryStatus: IntercityItineraryStatus.failure));
+        return;
+      }
+      emit(
+        state.copyWith(
+          itineraryStatus: IntercityItineraryStatus.ready,
+          itinerary: IntercityItinerary(
+            polylineWkt: preview!.polyline,
+            origin: origin.point,
+            destination: dest.point,
+          ),
+        ),
+      );
+    } catch (_) {
+      if (!isClosed) {
+        emit(state.copyWith(itineraryStatus: IntercityItineraryStatus.failure));
+      }
+    }
+  }
+
+  static bool _isRoadItinerary(RoutePreview? preview) {
+    if (preview == null || preview.polyline.trim().isEmpty) {
+      return false;
+    }
+    if (preview.engine.toUpperCase() == 'DIRECT') {
+      return false;
+    }
+    return parseWktLine(preview.polyline).length >= 3;
   }
 
   Future<void> subscribe({

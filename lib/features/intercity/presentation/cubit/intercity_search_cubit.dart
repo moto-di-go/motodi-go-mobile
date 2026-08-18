@@ -48,10 +48,6 @@ class IntercitySearchCubit extends Cubit<IntercitySearchState> {
     emit(state.copyWith(filters: state.filters.copyWith(seats: seats)));
   }
 
-  void toggleMap() {
-    emit(state.copyWith(showMap: !state.showMap));
-  }
-
   void clearFilters() {
     emit(state.copyWith(filters: state.filters.clearAdvancedFilters()));
   }
