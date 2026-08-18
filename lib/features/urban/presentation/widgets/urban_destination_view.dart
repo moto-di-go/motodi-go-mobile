@@ -179,14 +179,24 @@ class _UrbanDestinationViewState extends State<UrbanDestinationView> {
                 child: UrbanDemoBanner(message: 'Quartiers Yaoundé — données de démonstration'),
               ),
             Expanded(
-              child: ListView.separated(
+              child: state.geocoding && state.visiblePlaces.isEmpty
+                  ? ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                      itemCount: 3,
+                      separatorBuilder: (_, _) => const SizedBox(height: 8),
+                      itemBuilder: (context, index) => const _PlaceSkeleton(),
+                    )
+                  : ListView.separated(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
                 itemCount: state.visiblePlaces.length,
                 separatorBuilder: (_, _) => const SizedBox(height: 8),
                 itemBuilder: (context, index) {
                   final place = state.visiblePlaces[index];
-                  final km = haversineKm(origin, place.point);
+                  final km = place.distanceKm ?? haversineKm(origin, place.point);
                   final minutes = estimateUrbanMinutes(km);
+                  final subtitle = place.subtitle?.trim().isNotEmpty == true
+                      ? '${place.subtitle} · ${km.toStringAsFixed(1)} km'
+                      : '${km.toStringAsFixed(1)} km · ~$minutes min';
                   return ListTile(
                     onTap: () => cubit.selectPopularPlace(place),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
@@ -197,7 +207,7 @@ class _UrbanDestinationViewState extends State<UrbanDestinationView> {
                     ),
                     title: Text(place.label, style: urbanText(fontSize: 16, fontWeight: FontWeight.w800)),
                     subtitle: Text(
-                      '${km.toStringAsFixed(1)} km · ~$minutes min',
+                      subtitle,
                       style: urbanText(fontSize: 13, color: AppColors.textSecondary),
                     ),
                     trailing: const Icon(Icons.chevron_right_rounded, color: Color(0xFF9CA7A0)),
@@ -229,6 +239,43 @@ class _Dot extends StatelessWidget {
       width: 14,
       height: 14,
       decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+    );
+  }
+}
+
+class _PlaceSkeleton extends StatelessWidget {
+  const _PlaceSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 72,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: const BoxDecoration(color: Color(0xFFE8EDE8), shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(height: 12, width: 160, color: const Color(0xFFE8EDE8)),
+                const SizedBox(height: 8),
+                Container(height: 10, width: 110, color: const Color(0xFFF1F4F1)),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

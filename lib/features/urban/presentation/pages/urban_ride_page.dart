@@ -1,9 +1,7 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
@@ -25,7 +23,7 @@ import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_desti
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_driver_sheets.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_traffic_sheets.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_trip_sheets.dart';
-import 'package:motodi_go_mobile/features/urban/presentation/wkt_parser.dart';
+import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_vector_map.dart';
 import 'package:motodi_go_mobile/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,23 +51,9 @@ class _UrbanRideView extends StatefulWidget {
 }
 
 class _UrbanRideViewState extends State<_UrbanRideView> {
-  final MapController _mapController = MapController();
-  LatLng? _lastCenter;
-
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<UrbanRideCubit, UrbanRideState>(
-      listenWhen: (previous, current) => previous.center != current.center,
-      listener: (context, state) {
-        if (_lastCenter != state.center) {
-          _lastCenter = state.center;
-          try {
-            _mapController.move(state.center, _mapController.camera.zoom);
-          } catch (_) {
-            // Map not ready yet.
-          }
-        }
-      },
+    return BlocBuilder<UrbanRideCubit, UrbanRideState>(
       builder: (context, state) {
         final cubit = context.read<UrbanRideCubit>();
         if (state.step == UrbanRideStep.destination) {
@@ -79,23 +63,7 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
           backgroundColor: AppColors.background,
           body: Stack(
             children: [
-              FlutterMap(
-                mapController: _mapController,
-                options: MapOptions(
-                  initialCenter: state.center,
-                  initialZoom: 14,
-                  onTap: (_, point) => cubit.onMapTap(point),
-                ),
-                children: [
-                  TileLayer(
-                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'com.motodigo.mobile',
-                  ),
-                  PolylineLayer(polylines: _trafficPolylines(state)),
-                  if (_routePolylines(state).isNotEmpty) PolylineLayer(polylines: _routePolylines(state)),
-                  MarkerLayer(markers: _markers(state)),
-                ],
-              ),
+              Positioned.fill(child: UrbanVectorMap(state: state, cubit: cubit)),
               SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
@@ -235,102 +203,6 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
           ),
         ),
       _ => const SizedBox.shrink(),
-    };
-  }
-
-  List<Polyline> _trafficPolylines(UrbanRideState state) {
-    return [
-      for (final layer in state.visibleLayers)
-        if (parseWktLine(layer.geometryWkt).length >= 2)
-          Polyline(
-            points: parseWktLine(layer.geometryWkt),
-            color: _layerColor(layer),
-            strokeWidth: 5,
-            pattern: layer.isStale() || layer.type.toUpperCase() == 'DAMAGED_ROAD'
-                ? const StrokePattern.dotted()
-                : const StrokePattern.solid(),
-          ),
-    ];
-  }
-
-  List<Polyline> _routePolylines(UrbanRideState state) {
-    final selected = parseWktLine(state.selectedPolyline);
-    final showCompare = state.step == UrbanRideStep.compareRoutes;
-    final alt = state.routeOptions
-        .where((option) => option.kind == RouteOptionKind.fastest)
-        .map((option) => parseWktLine(option.polyline))
-        .where((points) => points.length >= 2);
-    return [
-      if (selected.length >= 2)
-        Polyline(
-          points: selected,
-          color: AppColors.primary,
-          strokeWidth: 5.5,
-          pattern: state.selectedOption?.degraded == true
-              ? const StrokePattern.dotted()
-              : const StrokePattern.solid(),
-        ),
-      if (showCompare)
-        for (final points in alt)
-          Polyline(
-            points: points,
-            color: AppColors.info,
-            strokeWidth: 4.5,
-          ),
-    ];
-  }
-
-  List<Marker> _markers(UrbanRideState state) {
-    return [
-      if (state.userPosition != null)
-        Marker(
-          point: state.userPosition!,
-          width: 56,
-          height: 56,
-          child: const _GpsMarker(),
-        ),
-      if (state.origin != null)
-        Marker(
-          point: state.origin!,
-          width: 28,
-          height: 28,
-          child: Container(
-            decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-            child: const Icon(Icons.circle, size: 10, color: Colors.white),
-          ),
-        ),
-      if (state.destination != null)
-        Marker(
-          point: state.destination!,
-          width: 36,
-          height: 36,
-          child: const Icon(Icons.place_rounded, color: AppColors.error, size: 34),
-        ),
-      for (final driver in state.drivers)
-        Marker(
-          point: LatLng(driver.lat, driver.lon),
-          width: 36,
-          height: 36,
-          child: Icon(
-            Icons.two_wheeler_rounded,
-            color: driver.id == state.selectedDriverId ? AppColors.primaryDark : AppColors.primary,
-          ),
-        ),
-    ];
-  }
-
-  Color _layerColor(TrafficLayer layer) {
-    if (layer.isStale()) return const Color(0xFF9CA3AF);
-    return switch (layer.type.toUpperCase()) {
-      'CONGESTION' => const Color(0xFFF59E0B),
-      'ROADWORK' => const Color(0xFFF59E0B),
-      'DAMAGED_ROAD' => const Color(0xFFEF4444),
-      'ALTERNATIVE_ROUTE' => const Color(0xFF3B82F6),
-      _ => switch (layer.severity.toUpperCase()) {
-          'CRITICAL' || 'HIGH' => const Color(0xFFEF4444),
-          'MEDIUM' => const Color(0xFFF59E0B),
-          _ => const Color(0xFFFBBF24),
-        },
     };
   }
 
@@ -643,36 +515,6 @@ class _RoundIcon extends StatelessWidget {
         onTap: onTap,
         child: SizedBox(width: 48, height: 48, child: Icon(icon, color: AppColors.textPrimary)),
       ),
-    );
-  }
-}
-
-class _GpsMarker extends StatelessWidget {
-  const _GpsMarker();
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Container(
-          width: 46,
-          height: 46,
-          decoration: BoxDecoration(
-            color: AppColors.info.withValues(alpha: 0.18),
-            shape: BoxShape.circle,
-          ),
-        ),
-        Container(
-          width: 16,
-          height: 16,
-          decoration: BoxDecoration(
-            color: AppColors.info,
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 3),
-          ),
-        ),
-      ],
     );
   }
 }

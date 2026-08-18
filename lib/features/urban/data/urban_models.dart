@@ -398,12 +398,18 @@ class UrbanPlace extends Equatable {
   final String id;
   final String label;
   final LatLng point;
+  final String? subtitle;
+  final String source;
+  final double? distanceKm;
   final bool isDemo;
 
   const UrbanPlace({
     required this.id,
     required this.label,
     required this.point,
+    this.subtitle,
+    this.source = 'LOCAL',
+    this.distanceKm,
     this.isDemo = false,
   });
 
@@ -419,12 +425,15 @@ class UrbanPlace extends Equatable {
       id: json['id']?.toString() ?? json['label']?.toString() ?? '$lat,$lon',
       label: json['label'] as String? ?? json['name'] as String? ?? 'Lieu',
       point: LatLng(lat, lon),
+      subtitle: json['subtitle'] as String?,
+      source: json['source'] as String? ?? 'LOCAL',
+      distanceKm: (json['distanceKm'] as num?)?.toDouble(),
       isDemo: isDemo,
     );
   }
 
   @override
-  List<Object?> get props => [id, label, point, isDemo];
+  List<Object?> get props => [id, label, point, subtitle, source, distanceKm, isDemo];
 }
 
 class DestinationHistoryEntry extends Equatable {

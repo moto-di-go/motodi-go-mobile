@@ -27,7 +27,7 @@ void main() {
     location = _FixedLocationSource(const LatLng(3.868, 11.516));
     when(() => remote.wallet()).thenAnswer((_) async => const WalletSummary(currentBalance: 4500));
     when(() => remote.popularPlaces()).thenAnswer((_) async => null);
-    when(() => remote.geocode(any())).thenAnswer((_) async => null);
+    when(() => remote.geocode(any(), lat: any(named: 'lat'), lon: any(named: 'lon'))).thenAnswer((_) async => null);
     when(() => remote.layers()).thenAnswer((_) async => const []);
     when(() => remote.reverseGeocode(lat: any(named: 'lat'), lon: any(named: 'lon')))
         .thenAnswer((_) async => null);
@@ -227,4 +227,7 @@ class _FixedLocationSource implements UrbanLocationSource {
   Future<UrbanLocationResult> currentPosition() async {
     return UrbanLocationResult(position: point);
   }
+
+  @override
+  Stream<UrbanLocationResult> watchPosition() => const Stream.empty();
 }

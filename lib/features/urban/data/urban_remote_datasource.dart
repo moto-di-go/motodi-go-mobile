@@ -74,8 +74,16 @@ class UrbanRemoteDataSource {
     return _getPlaces('/urban/places/popular');
   }
 
-  Future<List<UrbanPlace>?> geocode(String query) async {
-    return _getPlaces('/urban/geocode', parameters: {'q': query});
+  Future<List<UrbanPlace>?> geocode(String query, {double? lat, double? lon, String? kind}) async {
+    final parameters = <String, dynamic>{'q': query};
+    if (lat != null && lon != null) {
+      parameters['lat'] = '$lat';
+      parameters['lon'] = '$lon';
+    }
+    if (kind != null && kind.isNotEmpty) {
+      parameters['kind'] = kind;
+    }
+    return _getPlaces('/urban/geocode', parameters: parameters);
   }
 
   Future<UrbanPlace?> reverseGeocode({required double lat, required double lon}) async {

@@ -13,6 +13,7 @@ import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_an
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_booking.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_vehicle.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_publish_cubit.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/widgets/city_autocomplete_field.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/authenticated_network_image.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_figma_icons.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_formatters.dart';
@@ -295,9 +296,27 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
                       Expanded(
                         child: _CreateLabeledField(
                           label: 'Départ',
-                          child: _CreateTextBox(
+                          child: CityAutocompleteField(
                             controller: _departureController,
                             hint: 'Yaoundé',
+                            minHeight: 56,
+                            boxDecoration: _createFieldDecoration(),
+                            boxPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                            textStyle: _publishText(fontSize: 16, fontWeight: FontWeight.w700),
+                            decoration: InputDecoration(
+                              isDense: true,
+                              filled: false,
+                              fillColor: Colors.transparent,
+                              border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                              hintStyle: _publishText(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFFB0B8B1),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -305,9 +324,27 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
                       Expanded(
                         child: _CreateLabeledField(
                           label: 'Destination',
-                          child: _CreateTextBox(
+                          child: CityAutocompleteField(
                             controller: _destinationController,
                             hint: 'Douala',
+                            minHeight: 56,
+                            boxDecoration: _createFieldDecoration(),
+                            boxPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                            textStyle: _publishText(fontSize: 16, fontWeight: FontWeight.w700),
+                            decoration: InputDecoration(
+                              isDense: true,
+                              filled: false,
+                              fillColor: Colors.transparent,
+                              border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                              hintStyle: _publishText(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFFB0B8B1),
+                              ),
+                            ),
                           ),
                         ),
                       ),

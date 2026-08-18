@@ -32,6 +32,7 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
   final Duration searchMinDuration;
   Timer? _poll;
   Timer? _geocodeDebounce;
+  StreamSubscription<UrbanLocationResult>? _locationSub;
 
   Future<void> bootstrap() async {
     emit(state.copyWith(
@@ -59,6 +60,7 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
         center: result.position,
         locationError: null,
       ));
+      _watchLocation();
       await _reverseOrigin(result.position!);
     } else {
       emit(state.copyWith(
@@ -67,6 +69,18 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
         locationError: result.error,
       ));
     }
+  }
+
+  void _watchLocation() {
+    _locationSub?.cancel();
+    _locationSub = _location.watchPosition().listen((result) {
+      if (isClosed || result.position == null) return;
+      emit(state.copyWith(
+        userPosition: result.position,
+        origin: state.origin ?? result.position,
+        locationError: null,
+      ));
+    });
   }
 
   Future<void> _reverseOrigin(LatLng point) async {
@@ -221,7 +235,7 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
   }
 
   void updateDestinationQuery(String value) {
-    emit(state.copyWith(destinationQuery: value, geocodeFailed: false));
+    emit(state.copyWith(destinationQuery: value, geocodeFailed: false, geocoding: value.trim().isNotEmpty));
     _scheduleGeocode(value);
   }
 
@@ -233,6 +247,7 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
       destination: null,
       geocodeResults: const [],
       geocodeFailed: false,
+      geocoding: false,
     ));
   }
 
@@ -240,23 +255,30 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
     _geocodeDebounce?.cancel();
     final query = value.trim();
     if (query.isEmpty) {
-      emit(state.copyWith(geocodeResults: const [], geocodeFailed: false));
+      emit(state.copyWith(geocodeResults: const [], geocodeFailed: false, geocoding: false));
       return;
     }
+    emit(state.copyWith(geocoding: true));
     _geocodeDebounce = Timer(const Duration(milliseconds: 280), () => _geocode(query));
   }
 
   Future<void> _geocode(String query) async {
     try {
-      final places = await _remote.geocode(query);
+      final origin = state.origin ?? state.userPosition;
+      final places = await _remote.geocode(
+        query,
+        lat: origin?.latitude,
+        lon: origin?.longitude,
+      );
       if (isClosed || state.destinationQuery.trim() != query) return;
       emit(state.copyWith(
         geocodeResults: places ?? const [],
         geocodeFailed: places == null,
+        geocoding: false,
       ));
     } catch (_) {
       if (!isClosed && state.destinationQuery.trim() == query) {
-        emit(state.copyWith(geocodeResults: const [], geocodeFailed: true));
+        emit(state.copyWith(geocodeResults: const [], geocodeFailed: true, geocoding: false));
       }
     }
   }
@@ -517,6 +539,7 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
       destinationQuery: '',
       geocodeResults: const [],
       geocodeFailed: false,
+      geocoding: false,
       selectedDriverId: null,
       nearby: null,
       drivers: const [],
@@ -546,6 +569,7 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
   @override
   Future<void> close() {
     _geocodeDebounce?.cancel();
+    _locationSub?.cancel();
     _stopPoll();
     return super.close();
   }

@@ -13,10 +13,11 @@ import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_bo
 import 'package:motodi_go_mobile/features/intercity/domain/entities/search_filters.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_booking_cubit.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_search_cubit.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/widgets/city_autocomplete_field.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_figma_icons.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_formatters.dart';
 
-const List<String> _kPopularCities = ['Douala', 'Bafoussam', 'Bamenda', 'Garoua'];
+const List<String> _kPopularCities = ['Yaoundé', 'Douala', 'Bafoussam', 'Bamenda', 'Garoua'];
 
 TextStyle _resultsText({
   double fontSize = 14,
@@ -172,11 +173,35 @@ class _SearchFormState extends State<_SearchForm> {
                 ),
                 child: Column(
                   children: [
-                    _CityFieldRow(
-                      icon: const MotodigoLocationGreenIcon(size: 46),
+                    CityAutocompleteField(
+                      leading: const MotodigoLocationGreenIcon(size: 46),
                       label: 'Ville de départ',
                       controller: widget.departureController,
                       hint: 'Ex : Yaoundé',
+                      textStyle: const TextStyle(
+                        color: Color(0xFF101512),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        height: 1.25,
+                      ),
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        filled: false,
+                        fillColor: Colors.transparent,
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        focusedErrorBorder: InputBorder.none,
+                        contentPadding: EdgeInsets.zero,
+                        hintStyle: TextStyle(
+                          color: Color(0xFFB0B8B1),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          height: 1.25,
+                        ),
+                      ),
                     ),
                     Container(
                       width: double.infinity,
@@ -184,11 +209,35 @@ class _SearchFormState extends State<_SearchForm> {
                       margin: const EdgeInsets.symmetric(vertical: 16),
                       color: const Color(0xFFECEEE8),
                     ),
-                    _CityFieldRow(
-                      icon: const MotodigoLocationRedIcon(size: 46),
+                    CityAutocompleteField(
+                      leading: const MotodigoLocationRedIcon(size: 46),
                       label: 'Ville de destination',
                       controller: widget.destinationController,
                       hint: 'Ex : Douala',
+                      textStyle: const TextStyle(
+                        color: Color(0xFF101512),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        height: 1.25,
+                      ),
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        filled: false,
+                        fillColor: Colors.transparent,
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        focusedErrorBorder: InputBorder.none,
+                        contentPadding: EdgeInsets.zero,
+                        hintStyle: TextStyle(
+                          color: Color(0xFFB0B8B1),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          height: 1.25,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -367,82 +416,6 @@ class _SearchFormState extends State<_SearchForm> {
         ? RouteConstants.intercityEmpty
         : RouteConstants.intercityResults;
     await context.push(route, extra: widget.cubit);
-  }
-}
-
-class _CityFieldRow extends StatelessWidget {
-  final Widget icon;
-  final String label;
-  final TextEditingController controller;
-  final String hint;
-
-  const _CityFieldRow({
-    required this.icon,
-    required this.label,
-    required this.controller,
-    required this.hint,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        icon,
-        const SizedBox(width: 14),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  color: Color(0xFF8A968C),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  height: 1.2,
-                ),
-              ),
-              const SizedBox(height: 4),
-              TextField(
-                controller: controller,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.words,
-                cursorColor: const Color(0xFF16A34A),
-                style: const TextStyle(
-                  color: Color(0xFF101512),
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  height: 1.25,
-                ),
-                // Annule le InputDecorationTheme global (fond gris + padding).
-                decoration: const InputDecoration(
-                  isDense: true,
-                  filled: false,
-                  fillColor: Colors.transparent,
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  disabledBorder: InputBorder.none,
-                  errorBorder: InputBorder.none,
-                  focusedErrorBorder: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
-                  hintText: null,
-                ).copyWith(
-                  hintText: hint,
-                  hintStyle: const TextStyle(
-                    color: Color(0xFFB0B8B1),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    height: 1.25,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
   }
 }
 

@@ -1,4 +1,4 @@
-package com.yourcompany.flutter_template_app
+package com.motodigo.app
 
 import io.flutter.embedding.android.FlutterActivity
 

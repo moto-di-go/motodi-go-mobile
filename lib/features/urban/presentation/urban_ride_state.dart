@@ -21,6 +21,7 @@ class UrbanRideState extends Equatable {
   final bool popularPlacesDemo;
   final List<UrbanPlace> geocodeResults;
   final bool geocodeFailed;
+  final bool geocoding;
   final List<DestinationHistoryEntry> history;
   final FareEstimate? estimate;
   final List<RouteOption> routeOptions;
@@ -58,6 +59,7 @@ class UrbanRideState extends Equatable {
     this.popularPlacesDemo = false,
     this.geocodeResults = const [],
     this.geocodeFailed = false,
+    this.geocoding = false,
     this.history = const [],
     this.estimate,
     this.routeOptions = const [],
@@ -165,6 +167,7 @@ class UrbanRideState extends Equatable {
     bool? popularPlacesDemo,
     List<UrbanPlace>? geocodeResults,
     bool? geocodeFailed,
+    bool? geocoding,
     List<DestinationHistoryEntry>? history,
     Object? estimate = _unset,
     List<RouteOption>? routeOptions,
@@ -202,6 +205,7 @@ class UrbanRideState extends Equatable {
       popularPlacesDemo: popularPlacesDemo ?? this.popularPlacesDemo,
       geocodeResults: geocodeResults ?? this.geocodeResults,
       geocodeFailed: geocodeFailed ?? this.geocodeFailed,
+      geocoding: geocoding ?? this.geocoding,
       history: history ?? this.history,
       estimate: identical(estimate, _unset) ? this.estimate : estimate as FareEstimate?,
       routeOptions: routeOptions ?? this.routeOptions,
@@ -244,6 +248,7 @@ class UrbanRideState extends Equatable {
         popularPlacesDemo,
         geocodeResults,
         geocodeFailed,
+        geocoding,
         history,
         estimate,
         routeOptions,

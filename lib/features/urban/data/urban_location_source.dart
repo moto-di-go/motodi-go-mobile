@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -10,9 +12,16 @@ class UrbanLocationResult {
 
 abstract class UrbanLocationSource {
   Future<UrbanLocationResult> currentPosition();
+
+  Stream<UrbanLocationResult> watchPosition();
 }
 
 class GeolocatorLocationSource implements UrbanLocationSource {
+  static const _settings = LocationSettings(
+    accuracy: LocationAccuracy.high,
+    distanceFilter: 8,
+  );
+
   @override
   Future<UrbanLocationResult> currentPosition() async {
     try {
@@ -30,5 +39,21 @@ class GeolocatorLocationSource implements UrbanLocationSource {
         error: 'GPS indisponible. Mode dégradé : sélection manuelle sur la carte.',
       );
     }
+  }
+
+  @override
+  Stream<UrbanLocationResult> watchPosition() {
+    return Geolocator.getPositionStream(locationSettings: _settings).transform(
+      StreamTransformer<Position, UrbanLocationResult>.fromHandlers(
+        handleData: (position, sink) {
+          sink.add(UrbanLocationResult(position: LatLng(position.latitude, position.longitude)));
+        },
+        handleError: (error, stack, sink) {
+          sink.add(const UrbanLocationResult(
+            error: 'GPS indisponible. Mode dégradé : sélection manuelle sur la carte.',
+          ));
+        },
+      ),
+    );
   }
 }
