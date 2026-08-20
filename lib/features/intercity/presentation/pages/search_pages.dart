@@ -1083,13 +1083,13 @@ class IntercityEmptyResultsPage extends StatelessWidget {
                                   children: [
                                     const TextSpan(text: 'Aucun trajet '),
                                     TextSpan(text: from),
-                                    WidgetSpan(
+                                    const WidgetSpan(
                                       alignment: PlaceholderAlignment.middle,
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                                        padding: EdgeInsets.symmetric(horizontal: 6),
                                         child: MotodigoRightArrowGrayIcon(
                                           size: 14,
-                                          color: const Color(0xFF54615A),
+                                          color: Color(0xFF54615A),
                                         ),
                                       ),
                                     ),

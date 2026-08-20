@@ -88,9 +88,9 @@ void main() {
   blocTest<UrbanRideCubit, UrbanRideState>(
     'applies client filters without a new nearby query when radius is unchanged',
     build: buildCubit,
-    seed: () => UrbanRideState(
+    seed: () => const UrbanRideState(
       step: UrbanRideStep.results,
-      origin: const LatLng(3.868, 11.516),
+      origin: LatLng(3.868, 11.516),
       nearby: NearbySearchResult(
         items: [
           NearbyDriver(
@@ -112,8 +112,8 @@ void main() {
         ],
         radiusKm: 2,
       ),
-      drivers: const [],
-      draftFilters: const UrbanFilters(maxPriceFcfa: 800),
+      drivers: [],
+      draftFilters: UrbanFilters(maxPriceFcfa: 800),
     ),
     act: (cubit) => cubit.applyFilters(),
     expect: () => [
