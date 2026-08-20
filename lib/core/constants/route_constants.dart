@@ -18,6 +18,7 @@ class RouteConstants {
 
   // Profils
   static const String profileSelection = '/profiles/select';
+  static const String profilesMine = '/profiles/mine';
   static const String profilePassenger = '/profiles/passenger';
   static const String profileMototaxi = '/profiles/mototaxi';
   static const String profileTransporter = '/profiles/transporter';
@@ -40,6 +41,8 @@ class RouteConstants {
   static const String settings = '/settings';
   static const String wallet = '/wallet';
   static const String notifications = '/notifications';
+  static const String urbanMap = '/urban/map';
+  static const String driverAvailability = '/urban/driver';
 
   // Intercity
   static const String intercity = '/intercity';

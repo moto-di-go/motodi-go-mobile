@@ -29,19 +29,6 @@ class WalletTabPage extends StatelessWidget {
   }
 }
 
-/// Placeholder notifications.
-class NotificationsTabPage extends StatelessWidget {
-  const NotificationsTabPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const _PlaceholderTabScaffold(
-      title: 'Notifications',
-      message: 'Vos notifications apparaîtront ici.',
-    );
-  }
-}
-
 class _PlaceholderTabScaffold extends StatelessWidget {
   final String title;
   final String message;

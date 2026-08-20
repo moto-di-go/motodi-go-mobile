@@ -19,6 +19,7 @@ import 'package:motodi_go_mobile/features/example/presentation/pages/example_lis
 import 'package:motodi_go_mobile/features/home/presentation/pages/home_page.dart';
 import 'package:motodi_go_mobile/features/home/presentation/pages/main_shell.dart';
 import 'package:motodi_go_mobile/features/home/presentation/pages/placeholder_tab_pages.dart';
+import 'package:motodi_go_mobile/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_announcement.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_publish_cubit.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_search_cubit.dart';
@@ -31,8 +32,13 @@ import 'package:motodi_go_mobile/features/kyc/domain/entities/kyc_document.dart'
 import 'package:motodi_go_mobile/features/kyc/domain/entities/kyc_file_draft.dart';
 import 'package:motodi_go_mobile/features/kyc/presentation/pages/kyc_pages.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/pages/driver_profile_pages.dart';
+import 'package:motodi_go_mobile/features/profiles/presentation/pages/mes_profils_page.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/pages/passenger_profile_page.dart';
+import 'package:motodi_go_mobile/features/profiles/presentation/pages/profile_hub_page.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/pages/profile_selection_page.dart';
+import 'package:motodi_go_mobile/features/profiles/presentation/pages/settings_page.dart';
+import 'package:motodi_go_mobile/features/urban/presentation/pages/driver_availability_page.dart';
+import 'package:motodi_go_mobile/features/urban/presentation/pages/urban_map_page.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(
   debugLabel: 'root',
@@ -170,6 +176,14 @@ GoRouter createAppRouter(SessionCubit sessionCubit) {
         builder: (context, state) => const ProfileSelectionPage(),
       ),
       GoRoute(
+        path: RouteConstants.profilesMine,
+        builder: (context, state) => const MesProfilsPage(),
+      ),
+      GoRoute(
+        path: RouteConstants.settings,
+        builder: (context, state) => const SettingsPage(),
+      ),
+      GoRoute(
         path: RouteConstants.profilePassenger,
         builder: (context, state) => const PassengerProfilePage(),
       ),
@@ -180,6 +194,63 @@ GoRouter createAppRouter(SessionCubit sessionCubit) {
       GoRoute(
         path: RouteConstants.profileTransporter,
         builder: (context, state) => const TransporterProfilePage(),
+      ),
+      GoRoute(
+        path: RouteConstants.kyc,
+        builder: (context, state) => const KycStatusPage(),
+        routes: [
+          GoRoute(
+            path: 'documents',
+            builder: (context, state) => const KycDocumentsPage(),
+          ),
+          GoRoute(
+            path: 'preview',
+            builder: (context, state) =>
+                KycPreviewPage(draft: state.extra as KycFileDraft?),
+          ),
+          GoRoute(
+            path: 'uploading',
+            builder: (context, state) =>
+                KycUploadingPage(draft: state.extra as KycFileDraft?),
+          ),
+          GoRoute(
+            path: 'upload-success',
+            builder: (context, state) =>
+                KycUploadSuccessPage(result: state.extra as KycUploadResult?),
+          ),
+          GoRoute(
+            path: 'invalid',
+            builder: (context, state) =>
+                KycInvalidFilePage(args: state.extra as KycInvalidFileArgs?),
+          ),
+          GoRoute(
+            path: 'submitted',
+            builder: (context, state) => const KycSubmittedPage(),
+          ),
+          GoRoute(
+            path: 'rejected',
+            builder: (context, state) =>
+                KycRejectedDocumentPage(document: state.extra as KycDocument?),
+          ),
+          GoRoute(
+            path: 'verified',
+            builder: (context, state) => const KycVerifiedPage(),
+          ),
+          GoRoute(
+            path: 'notification',
+            builder: (context, state) => KycNotificationDetailPage(
+              payload: state.extra as KycNotificationPayload?,
+            ),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: RouteConstants.urbanMap,
+        builder: (context, state) => const UrbanMapPage(),
+      ),
+      GoRoute(
+        path: RouteConstants.driverAvailability,
+        builder: (context, state) => const DriverAvailabilityPage(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
@@ -292,62 +363,8 @@ GoRouter createAppRouter(SessionCubit sessionCubit) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: RouteConstants.kyc,
-                builder: (context, state) => const KycStatusPage(),
-                routes: [
-                  GoRoute(
-                    path: 'documents',
-                    parentNavigatorKey: rootNavigatorKey,
-                    builder: (context, state) => const KycDocumentsPage(),
-                  ),
-                  GoRoute(
-                    path: 'preview',
-                    parentNavigatorKey: rootNavigatorKey,
-                    builder: (context, state) =>
-                        KycPreviewPage(draft: state.extra as KycFileDraft?),
-                  ),
-                  GoRoute(
-                    path: 'uploading',
-                    parentNavigatorKey: rootNavigatorKey,
-                    builder: (context, state) =>
-                        KycUploadingPage(draft: state.extra as KycFileDraft?),
-                  ),
-                  GoRoute(
-                    path: 'upload-success',
-                    parentNavigatorKey: rootNavigatorKey,
-                    builder: (context, state) =>
-                        KycUploadSuccessPage(result: state.extra as KycUploadResult?),
-                  ),
-                  GoRoute(
-                    path: 'invalid',
-                    parentNavigatorKey: rootNavigatorKey,
-                    builder: (context, state) =>
-                        KycInvalidFilePage(args: state.extra as KycInvalidFileArgs?),
-                  ),
-                  GoRoute(
-                    path: 'submitted',
-                    parentNavigatorKey: rootNavigatorKey,
-                    builder: (context, state) => const KycSubmittedPage(),
-                  ),
-                  GoRoute(
-                    path: 'rejected',
-                    parentNavigatorKey: rootNavigatorKey,
-                    builder: (context, state) =>
-                        KycRejectedDocumentPage(document: state.extra as KycDocument?),
-                  ),
-                  GoRoute(
-                    path: 'verified',
-                    parentNavigatorKey: rootNavigatorKey,
-                    builder: (context, state) => const KycVerifiedPage(),
-                  ),
-                  GoRoute(
-                    path: 'notification',
-                    parentNavigatorKey: rootNavigatorKey,
-                    builder: (context, state) => KycNotificationDetailPage(
-                      payload: state.extra as KycNotificationPayload?,
-                    ),
-                  ),
-                ],
+                path: RouteConstants.profile,
+                builder: (context, state) => const ProfileHubPage(),
               ),
             ],
           ),

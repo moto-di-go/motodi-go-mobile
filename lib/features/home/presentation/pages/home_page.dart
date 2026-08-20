@@ -11,6 +11,7 @@ import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_st
 import 'package:motodi_go_mobile/features/profiles/presentation/cubit/profile_cubit.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_widgets.dart';
 import 'package:motodi_go_mobile/features/home/presentation/widgets/home_figma_icons.dart';
+import 'package:motodi_go_mobile/features/urban/presentation/pages/urban_ride_page.dart';
 import 'package:motodi_go_mobile/l10n/app_localizations.dart';
 
 class HomePage extends StatelessWidget {
@@ -26,6 +27,9 @@ class HomePage extends StatelessWidget {
         final isLocked =
             type != ProfileType.passenger &&
             status != ValidationStatus.validated;
+        if (type == ProfileType.passenger) {
+          return const UrbanRidePage();
+        }
         return Scaffold(
           backgroundColor: AppColors.background,
           body: SafeArea(
@@ -98,21 +102,7 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 18),
-                if (type == ProfileType.passenger) ...[
-                  const _FeatureTile(
-                    icon: Icons.search_rounded,
-                    title: 'Trouver un mototaxi',
-                    subtitle: 'Recherche disponible',
-                    locked: false,
-                  ),
-                  _FeatureTile(
-                    icon: Icons.route_outlined,
-                    title: 'Préparer un trajet',
-                    subtitle: 'Prix standardisé',
-                    locked: false,
-                    onTap: () => context.go(RouteConstants.intercity),
-                  ),
-                ] else ...[
+                if (type != ProfileType.passenger) ...[
                   _FeatureTile(
                     icon: Icons.tune_rounded,
                     title: 'Passer en ligne',
@@ -120,6 +110,9 @@ class HomePage extends StatelessWidget {
                         ? 'Disponible après validation'
                         : 'Disponible maintenant',
                     locked: isLocked,
+                    onTap: isLocked
+                        ? null
+                        : () => context.push(RouteConstants.driverAvailability),
                   ),
                   _FeatureTile(
                     icon: Icons.bookmark_border_rounded,
@@ -148,6 +141,9 @@ class HomePage extends StatelessWidget {
                         ? 'Disponible après validation'
                         : 'GPS conducteur',
                     locked: isLocked,
+                    onTap: isLocked
+                        ? null
+                        : () => context.push(RouteConstants.driverAvailability),
                   ),
                 ],
               ],

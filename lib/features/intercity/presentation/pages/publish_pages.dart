@@ -9,11 +9,11 @@ import 'package:motodi_go_mobile/core/widgets/app_error_view.dart';
 import 'package:motodi_go_mobile/core/widgets/app_loading.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_buttons.dart';
-import 'package:motodi_go_mobile/features/home/presentation/widgets/home_figma_icons.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_announcement.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_booking.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_vehicle.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_publish_cubit.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/widgets/city_autocomplete_field.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/authenticated_network_image.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_figma_icons.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_formatters.dart';
@@ -296,9 +296,27 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
                       Expanded(
                         child: _CreateLabeledField(
                           label: 'Départ',
-                          child: _CreateTextBox(
+                          child: CityAutocompleteField(
                             controller: _departureController,
                             hint: 'Yaoundé',
+                            minHeight: 56,
+                            boxDecoration: _createFieldDecoration(),
+                            boxPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                            textStyle: _publishText(fontSize: 16, fontWeight: FontWeight.w700),
+                            decoration: InputDecoration(
+                              isDense: true,
+                              filled: false,
+                              fillColor: Colors.transparent,
+                              border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                              hintStyle: _publishText(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFFB0B8B1),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -306,9 +324,27 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
                       Expanded(
                         child: _CreateLabeledField(
                           label: 'Destination',
-                          child: _CreateTextBox(
+                          child: CityAutocompleteField(
                             controller: _destinationController,
                             hint: 'Douala',
+                            minHeight: 56,
+                            boxDecoration: _createFieldDecoration(),
+                            boxPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                            textStyle: _publishText(fontSize: 16, fontWeight: FontWeight.w700),
+                            decoration: InputDecoration(
+                              isDense: true,
+                              filled: false,
+                              fillColor: Colors.transparent,
+                              border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                              hintStyle: _publishText(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFFB0B8B1),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -1548,47 +1584,48 @@ class _IntercityIncomingBookingsPageState extends State<IntercityIncomingBooking
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(18, 10, 18, 0),
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _IncomingBackButton(onTap: () => context.pop()),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 14),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Réservations reçues',
+                                'Réservations\nreçues',
                                 style: _publishText(
-                                  fontSize: 28,
+                                  fontSize: 32,
                                   fontWeight: FontWeight.w800,
-                                  height: 1.15,
+                                  height: 1.05,
                                 ),
                               ),
                               if (subtitle != null) ...[
-                                const SizedBox(height: 6),
+                                const SizedBox(height: 8),
                                 Text(
                                   subtitle,
+                                  textAlign: TextAlign.left,
                                   style: _publishText(
-                                    fontSize: 14,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.w500,
-                                    color: const Color(0xFF8B968D),
-                                    height: 1.3,
+                                    color: const Color(0xFF8A968C),
+                                    height: 1.35,
                                   ),
                                 ),
                               ],
                             ],
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 10),
                         _IncomingNotifButton(
                           onTap: () => context.go(RouteConstants.notifications),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 22),
                   Expanded(
                     child: state.isLoadingIncoming && state.incomingBookings.isEmpty
                         ? const AppLoading()
@@ -1630,7 +1667,7 @@ class _IntercityIncomingBookingsPageState extends State<IntercityIncomingBooking
                                     onRefresh: () =>
                                         _cubit.loadIncomingBookings(widget.announcementId),
                                     child: ListView.builder(
-                                      padding: const EdgeInsets.fromLTRB(18, 0, 18, 24),
+                                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
                                       itemCount: state.incomingBookings.length,
                                       itemBuilder: (context, index) {
                                         final booking = state.incomingBookings[index];
@@ -1676,15 +1713,15 @@ class _IncomingBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: const Color(0xFFEEEEE6),
-      borderRadius: BorderRadius.circular(24),
+      color: const Color(0xFFF1F1EA),
+      shape: const CircleBorder(),
       child: InkWell(
-        borderRadius: BorderRadius.circular(24),
+        customBorder: const CircleBorder(),
         onTap: onTap,
         child: const SizedBox(
           width: 48,
           height: 48,
-          child: Icon(Icons.arrow_back_ios_new_rounded, size: 20, color: Color(0xFF101512)),
+          child: Icon(Icons.arrow_back_rounded, size: 24, color: Color(0xFF101512)),
         ),
       ),
     );
@@ -1698,31 +1735,73 @@ class _IncomingNotifButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return Material(
+      color: const Color(0xFFF1F1EA),
       borderRadius: BorderRadius.circular(14),
-      onTap: onTap,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            width: 48,
-            height: 48,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
+        child: const SizedBox(
+          width: 48,
+          height: 48,
+          child: Stack(
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: const Color(0xFFEEEEE6),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: const MotodigoNotifGrayIcon(size: 26),
+            clipBehavior: Clip.none,
+            children: [
+              CustomPaint(
+                size: Size.square(26),
+                painter: _IncomingBellPainter(Color(0xFF101512)),
+              ),
+              Positioned(
+                right: 11,
+                top: 10,
+                child: CircleAvatar(radius: 4, backgroundColor: Color(0xFFEF4444)),
+              ),
+            ],
           ),
-          const Positioned(
-            right: 10,
-            top: 10,
-            child: CircleAvatar(radius: 4.5, backgroundColor: Color(0xFFEF4444)),
-          ),
-        ],
+        ),
       ),
     );
   }
+}
+
+class _IncomingBellPainter extends CustomPainter {
+  final Color color;
+  const _IncomingBellPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final s = size.shortestSide / 24;
+    canvas.save();
+    canvas.scale(s, s);
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    canvas.drawPath(
+      Path()
+        ..moveTo(6, 10.5)
+        ..cubicTo(6, 6.9, 8.7, 4, 12, 4)
+        ..cubicTo(15.3, 4, 18, 6.9, 18, 10.5)
+        ..cubicTo(18, 14.5, 19.5, 16, 19.5, 16)
+        ..lineTo(4.5, 16)
+        ..cubicTo(4.5, 16, 6, 14.5, 6, 10.5),
+      paint,
+    );
+    canvas.drawPath(
+      Path()
+        ..moveTo(9.5, 19)
+        ..cubicTo(9.5, 20.4, 10.6, 21.5, 12, 21.5)
+        ..cubicTo(13.4, 21.5, 14.5, 20.4, 14.5, 19),
+      paint,
+    );
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant _IncomingBellPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _IncomingBookingCard extends StatelessWidget {
@@ -1743,123 +1822,129 @@ class _IncomingBookingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPending = booking.status == IntercityBookingStatus.pending;
-    final showPrice = !isPending &&
-        booking.status != IntercityBookingStatus.cancelled &&
-        booking.status != IntercityBookingStatus.expired &&
-        pricePerSeat != null;
+    final isAccepted = booking.status == IntercityBookingStatus.confirmed ||
+        booking.status == IntercityBookingStatus.pendingPayment ||
+        booking.status == IntercityBookingStatus.paid;
+    final showPrice = isAccepted && pricePerSeat != null;
     final total = showPrice ? pricePerSeat! * booking.seatsRequested : null;
+
     final cardBg = switch (booking.status) {
-      IntercityBookingStatus.pending => const Color(0xFFFFF8EE),
+      IntercityBookingStatus.pending => const Color(0xFFFFF7ED),
       IntercityBookingStatus.confirmed ||
       IntercityBookingStatus.pendingPayment ||
       IntercityBookingStatus.paid =>
         const Color(0xFFEFFAF3),
       IntercityBookingStatus.cancelled => const Color(0xFFFEF2F2),
-      IntercityBookingStatus.expired => const Color(0xFFF3F4F0),
+      IntercityBookingStatus.expired => Colors.white,
       IntercityBookingStatus.unknown => Colors.white,
     };
-    final avatarBg = switch (booking.status) {
-      IntercityBookingStatus.pending => const Color(0xFFE8E8E0),
-      IntercityBookingStatus.cancelled => const Color(0xFFFECACA),
-      IntercityBookingStatus.expired => const Color(0xFFD8DED6),
-      _ => const Color(0xFF16A34A),
-    };
-    final avatarFg = switch (booking.status) {
-      IntercityBookingStatus.pending => const Color(0xFF54615A),
-      IntercityBookingStatus.cancelled => const Color(0xFFDC2626),
-      IntercityBookingStatus.expired => const Color(0xFF6B756E),
-      _ => Colors.white,
-    };
+    final avatarBg = isPending
+        ? const Color(0xFFE8E4D9)
+        : isAccepted
+            ? const Color(0xFF16A34A)
+            : booking.status == IntercityBookingStatus.cancelled
+                ? const Color(0xFFFECACA)
+                : const Color(0xFFE7EAE3);
+    final avatarFg = isPending || booking.status == IntercityBookingStatus.expired
+        ? const Color(0xFF54615A)
+        : booking.status == IntercityBookingStatus.cancelled
+            ? const Color(0xFFDC2626)
+            : Colors.white;
     final seatsLabel =
         '${booking.seatsRequested} place${booking.seatsRequested > 1 ? 's' : ''} demandée${booking.seatsRequested > 1 ? 's' : ''}';
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 16, 14, 16),
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
       decoration: BoxDecoration(
         color: cardBg,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: isAccepted || isPending ? cardBg : const Color(0xFFE7EAE3),
+          width: 1,
+        ),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
-            radius: 28,
+            radius: 26,
             backgroundColor: avatarBg,
             child: Text(
               booking.passengerInitials,
               style: _publishText(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.w800,
                 color: avatarFg,
+                height: 1,
               ),
             ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   booking.shortPassengerName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: _publishText(fontSize: 17, fontWeight: FontWeight.w800, height: 1.2),
                 ),
+                if (isPending) ...[
+                  const SizedBox(height: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFE8C2),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      'En attente',
+                      style: _publishText(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFFB45309),
+                        height: 1.1,
+                      ),
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 4),
                 Text(
                   seatsLabel,
                   style: _publishText(
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: const Color(0xFF8B968D),
+                    color: const Color(0xFF8A968C),
+                    height: 1.25,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 10),
           if (isPending)
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFE8C7),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    'En attente',
-                    style: _publishText(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFFB45309),
-                      height: 1.1,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
                 if (onCancel != null)
-                  _IncomingIconAction(
-                    processing: processing,
-                    onTap: onCancel,
-                    child: const MotodigoCancelRedIcon(size: 40),
+                  _IncomingSquareAction(
+                    background: const Color(0xFFFEE2E2),
+                    onTap: processing ? null : onCancel,
+                    child: const Icon(Icons.close_rounded, size: 22, color: Color(0xFFEF4444)),
                   ),
-                if (onCancel != null && onConfirm != null) const SizedBox(width: 6),
+                if (onCancel != null && onConfirm != null) const SizedBox(width: 8),
                 if (onConfirm != null)
-                  _IncomingIconAction(
-                    processing: processing,
-                    onTap: onConfirm,
+                  _IncomingSquareAction(
+                    background: const Color(0xFF16A34A),
+                    onTap: processing ? null : onConfirm,
                     child: processing
                         ? const SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: Padding(
-                              padding: EdgeInsets.all(8),
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.2,
-                                color: Color(0xFF16A34A),
-                              ),
-                            ),
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2.2, color: Colors.white),
                           )
-                        : const MotodigoAcceptGreenIcon(size: 40),
+                        : const Icon(Icons.check_rounded, size: 22, color: Colors.white),
                   ),
               ],
             )
@@ -1880,23 +1965,31 @@ class _IncomingBookingCard extends StatelessWidget {
   }
 }
 
-class _IncomingIconAction extends StatelessWidget {
-  final bool processing;
+class _IncomingSquareAction extends StatelessWidget {
+  final Color background;
   final VoidCallback? onTap;
   final Widget child;
 
-  const _IncomingIconAction({
-    required this.processing,
+  const _IncomingSquareAction({
+    required this.background,
     required this.onTap,
     required this.child,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(24),
-      onTap: processing ? null : onTap,
-      child: Opacity(opacity: processing ? 0.55 : 1, child: child),
+    return Material(
+      color: background,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: SizedBox(
+          width: 44,
+          height: 44,
+          child: Center(child: child),
+        ),
+      ),
     );
   }
 }
@@ -1917,12 +2010,12 @@ class _IncomingCompactBadge extends StatelessWidget {
       IntercityBookingStatus.expired => (
           'Expirée',
           const Color(0xFF6B756E),
-          const Color(0xFFE8E8E0),
+          const Color(0xFFEEEEE6),
         ),
       _ => (
           status.label,
           const Color(0xFF6B756E),
-          const Color(0xFFE8E8E0),
+          const Color(0xFFEEEEE6),
         ),
     };
 

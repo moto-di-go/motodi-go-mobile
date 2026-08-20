@@ -6,6 +6,23 @@ enum IntercitySubscribeStatus { initial, submitting, success, failure }
 
 enum IntercityBookingsStatus { initial, loading, success, failure }
 
+enum IntercityItineraryStatus { idle, loading, ready, failure }
+
+class IntercityItinerary extends Equatable {
+  final String polylineWkt;
+  final LatLng origin;
+  final LatLng destination;
+
+  const IntercityItinerary({
+    required this.polylineWkt,
+    required this.origin,
+    required this.destination,
+  });
+
+  @override
+  List<Object?> get props => [polylineWkt, origin, destination];
+}
+
 class IntercityBookingState extends Equatable {
   final IntercityDetailStatus detailStatus;
   final IntercityAnnouncement? announcement;
@@ -26,6 +43,9 @@ class IntercityBookingState extends Equatable {
   final IntercityBooking? booking;
   final String? bookingErrorMessage;
 
+  final IntercityItineraryStatus itineraryStatus;
+  final IntercityItinerary? itinerary;
+
   const IntercityBookingState({
     this.detailStatus = IntercityDetailStatus.initial,
     this.announcement,
@@ -42,6 +62,8 @@ class IntercityBookingState extends Equatable {
     this.bookingStatus = IntercityBookingsStatus.initial,
     this.booking,
     this.bookingErrorMessage,
+    this.itineraryStatus = IntercityItineraryStatus.idle,
+    this.itinerary,
   });
 
   bool get isDetailLoading => detailStatus == IntercityDetailStatus.loading;
@@ -65,6 +87,9 @@ class IntercityBookingState extends Equatable {
     IntercityBookingsStatus? bookingStatus,
     IntercityBooking? booking,
     String? bookingErrorMessage,
+    IntercityItineraryStatus? itineraryStatus,
+    IntercityItinerary? itinerary,
+    bool clearItinerary = false,
   }) {
     return IntercityBookingState(
       detailStatus: detailStatus ?? this.detailStatus,
@@ -82,25 +107,29 @@ class IntercityBookingState extends Equatable {
       bookingStatus: bookingStatus ?? this.bookingStatus,
       booking: booking ?? this.booking,
       bookingErrorMessage: bookingErrorMessage,
+      itineraryStatus: itineraryStatus ?? this.itineraryStatus,
+      itinerary: clearItinerary ? null : (itinerary ?? this.itinerary),
     );
   }
 
   @override
   List<Object?> get props => [
-    detailStatus,
-    announcement,
-    detailErrorMessage,
-    subscribeStatus,
-    createdBooking,
-    subscribeErrorMessage,
-    subscribeErrorCode,
-    myBookingsStatus,
-    myBookings,
-    myBookingsPage,
-    myBookingsHasMore,
-    myBookingsErrorMessage,
-    bookingStatus,
-    booking,
-    bookingErrorMessage,
-  ];
+        detailStatus,
+        announcement,
+        detailErrorMessage,
+        subscribeStatus,
+        createdBooking,
+        subscribeErrorMessage,
+        subscribeErrorCode,
+        myBookingsStatus,
+        myBookings,
+        myBookingsPage,
+        myBookingsHasMore,
+        myBookingsErrorMessage,
+        bookingStatus,
+        booking,
+        bookingErrorMessage,
+        itineraryStatus,
+        itinerary,
+      ];
 }

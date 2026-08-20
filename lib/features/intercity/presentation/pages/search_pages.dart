@@ -1,9 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/widgets/app_loading.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
@@ -13,10 +11,11 @@ import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_bo
 import 'package:motodi_go_mobile/features/intercity/domain/entities/search_filters.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_booking_cubit.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_search_cubit.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/widgets/city_autocomplete_field.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_figma_icons.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_formatters.dart';
 
-const List<String> _kPopularCities = ['Douala', 'Bafoussam', 'Bamenda', 'Garoua'];
+const List<String> _kPopularCities = ['Yaoundé', 'Douala', 'Bafoussam', 'Bamenda', 'Garoua'];
 
 TextStyle _resultsText({
   double fontSize = 14,
@@ -172,11 +171,35 @@ class _SearchFormState extends State<_SearchForm> {
                 ),
                 child: Column(
                   children: [
-                    _CityFieldRow(
-                      icon: const MotodigoLocationGreenIcon(size: 46),
+                    CityAutocompleteField(
+                      leading: const MotodigoLocationGreenIcon(size: 46),
                       label: 'Ville de départ',
                       controller: widget.departureController,
                       hint: 'Ex : Yaoundé',
+                      textStyle: const TextStyle(
+                        color: Color(0xFF101512),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        height: 1.25,
+                      ),
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        filled: false,
+                        fillColor: Colors.transparent,
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        focusedErrorBorder: InputBorder.none,
+                        contentPadding: EdgeInsets.zero,
+                        hintStyle: TextStyle(
+                          color: Color(0xFFB0B8B1),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          height: 1.25,
+                        ),
+                      ),
                     ),
                     Container(
                       width: double.infinity,
@@ -184,11 +207,35 @@ class _SearchFormState extends State<_SearchForm> {
                       margin: const EdgeInsets.symmetric(vertical: 16),
                       color: const Color(0xFFECEEE8),
                     ),
-                    _CityFieldRow(
-                      icon: const MotodigoLocationRedIcon(size: 46),
+                    CityAutocompleteField(
+                      leading: const MotodigoLocationRedIcon(size: 46),
                       label: 'Ville de destination',
                       controller: widget.destinationController,
                       hint: 'Ex : Douala',
+                      textStyle: const TextStyle(
+                        color: Color(0xFF101512),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        height: 1.25,
+                      ),
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        filled: false,
+                        fillColor: Colors.transparent,
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        focusedErrorBorder: InputBorder.none,
+                        contentPadding: EdgeInsets.zero,
+                        hintStyle: TextStyle(
+                          color: Color(0xFFB0B8B1),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          height: 1.25,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -367,82 +414,6 @@ class _SearchFormState extends State<_SearchForm> {
         ? RouteConstants.intercityEmpty
         : RouteConstants.intercityResults;
     await context.push(route, extra: widget.cubit);
-  }
-}
-
-class _CityFieldRow extends StatelessWidget {
-  final Widget icon;
-  final String label;
-  final TextEditingController controller;
-  final String hint;
-
-  const _CityFieldRow({
-    required this.icon,
-    required this.label,
-    required this.controller,
-    required this.hint,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        icon,
-        const SizedBox(width: 14),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  color: Color(0xFF8A968C),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  height: 1.2,
-                ),
-              ),
-              const SizedBox(height: 4),
-              TextField(
-                controller: controller,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.words,
-                cursorColor: const Color(0xFF16A34A),
-                style: const TextStyle(
-                  color: Color(0xFF101512),
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  height: 1.25,
-                ),
-                // Annule le InputDecorationTheme global (fond gris + padding).
-                decoration: const InputDecoration(
-                  isDense: true,
-                  filled: false,
-                  fillColor: Colors.transparent,
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  disabledBorder: InputBorder.none,
-                  errorBorder: InputBorder.none,
-                  focusedErrorBorder: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
-                  hintText: null,
-                ).copyWith(
-                  hintText: hint,
-                  hintStyle: const TextStyle(
-                    color: Color(0xFFB0B8B1),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    height: 1.25,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
   }
 }
 
@@ -793,53 +764,20 @@ class _IntercityResultsPageState extends State<IntercityResultsPage> {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                countLabel,
-                                style: _resultsText(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: const Color(0xFF757575),
-                                  height: 1.25,
-                                ),
-                              ),
-                            ),
-                            _ResultsToolbarButton(
-                              active: !state.showMap,
-                              onTap: () {
-                                if (state.showMap) {
-                                  context.read<IntercitySearchCubit>().toggleMap();
-                                }
-                              },
-                              child: MotodigoListBlackIcon(
-                                size: 20,
-                                color: state.showMap ? const Color(0xFF8A968C) : Colors.white,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            _ResultsToolbarButton(
-                              active: state.showMap,
-                              onTap: () {
-                                if (!state.showMap) {
-                                  context.read<IntercitySearchCubit>().toggleMap();
-                                }
-                              },
-                              child: MotodigoLocationGrayIcon(
-                                size: 20,
-                                color: state.showMap ? Colors.white : const Color(0xFF8A968C),
-                              ),
-                            ),
-                          ],
+                        Text(
+                          countLabel,
+                          style: _resultsText(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF757575),
+                            height: 1.25,
+                          ),
                         ),
                       ],
                     ),
                   ),
                   if (state.isLoading)
                     const Expanded(child: AppLoading())
-                  else if (state.showMap)
-                    Expanded(child: _ResultsMap(results: state.results))
                   else
                     Expanded(
                       child: NotificationListener<ScrollNotification>(
@@ -912,75 +850,6 @@ class _ResultsBackButton extends StatelessWidget {
   }
 }
 
-class _ResultsToolbarButton extends StatelessWidget {
-  final bool active;
-  final VoidCallback onTap;
-  final Widget child;
-
-  const _ResultsToolbarButton({
-    required this.active,
-    required this.onTap,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: onTap,
-      child: Container(
-        width: 42,
-        height: 42,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: active ? const Color(0xFF101512) : const Color(0xFFF1F1EA),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: child,
-      ),
-    );
-  }
-}
-
-class _ResultsMap extends StatelessWidget {
-  final List<IntercityAnnouncement> results;
-
-  const _ResultsMap({required this.results});
-
-  @override
-  Widget build(BuildContext context) {
-    final withGeo = results.where((item) => item.hasGeoPoint).toList();
-    final center = withGeo.isNotEmpty
-        ? LatLng(withGeo.first.departureLat!, withGeo.first.departureLon!)
-        : const LatLng(4.0511, 9.7679);
-    return FlutterMap(
-      options: MapOptions(initialCenter: center, initialZoom: 12),
-      children: [
-        TileLayer(
-          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-          userAgentPackageName: 'com.motodigo.mobile',
-        ),
-        MarkerLayer(
-          markers: [
-            for (final announcement in withGeo)
-              Marker(
-                point: LatLng(announcement.departureLat!, announcement.departureLon!),
-                width: 40,
-                height: 40,
-                child: GestureDetector(
-                  onTap: _isOwnAnnouncement(announcement)
-                      ? null
-                      : () => context.push(RouteConstants.intercityDetail, extra: announcement.id),
-                  child: const MotodigoPinGreenIcon(size: 36),
-                ),
-              ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
 class _AnnouncementCard extends StatelessWidget {
   final IntercityAnnouncement announcement;
   final VoidCallback? onTap;
@@ -1006,9 +875,6 @@ class _AnnouncementCard extends StatelessWidget {
     final seatsColor = announcement.remainingSeats <= 2
         ? const Color(0xFF8A6410)
         : const Color(0xFF15803D);
-    final agency = announcement.publisherDisplayName?.trim().isNotEmpty == true
-        ? announcement.publisherDisplayName!
-        : 'Transporteur';
 
     return Material(
       color: Colors.white,
@@ -1061,7 +927,7 @@ class _AnnouncementCard extends StatelessWidget {
                 children: [
                   Flexible(
                     child: Text(
-                      agency,
+                      announcement.route,
                       overflow: TextOverflow.ellipsis,
                       style: _resultsText(
                         fontSize: 17,
@@ -1217,13 +1083,13 @@ class IntercityEmptyResultsPage extends StatelessWidget {
                                   children: [
                                     const TextSpan(text: 'Aucun trajet '),
                                     TextSpan(text: from),
-                                    WidgetSpan(
+                                    const WidgetSpan(
                                       alignment: PlaceholderAlignment.middle,
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                                        padding: EdgeInsets.symmetric(horizontal: 6),
                                         child: MotodigoRightArrowGrayIcon(
                                           size: 14,
-                                          color: const Color(0xFF54615A),
+                                          color: Color(0xFF54615A),
                                         ),
                                       ),
                                     ),
