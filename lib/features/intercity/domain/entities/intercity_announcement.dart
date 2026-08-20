@@ -133,4 +133,3 @@ class AnnouncementPage {
 
   static const empty = AnnouncementPage(items: [], page: 0, size: 20, hasMore: false);
 }
-

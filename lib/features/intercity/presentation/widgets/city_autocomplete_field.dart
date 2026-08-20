@@ -106,9 +106,7 @@ class _CityAutocompleteFieldState extends State<CityAutocompleteField> {
       textCapitalization: TextCapitalization.words,
       cursorColor: const Color(0xFF16A34A),
       style: widget.textStyle,
-      decoration: widget.decoration.copyWith(
-        hintText: widget.hint,
-      ),
+      decoration: widget.decoration.copyWith(hintText: widget.hint),
     );
 
     final input = widget.boxDecoration == null
@@ -129,34 +127,40 @@ class _CityAutocompleteFieldState extends State<CityAutocompleteField> {
         input,
         if (_suggestions.isNotEmpty) ...[
           const SizedBox(height: 8),
-          ..._suggestions.take(6).map(
-            (place) => Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () => _select(place),
-                borderRadius: BorderRadius.circular(12),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.location_city_outlined, size: 18, color: Color(0xFF8A968C)),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          place.label,
-                          style: const TextStyle(
-                            color: Color(0xFF101512),
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
+          ..._suggestions
+              .take(6)
+              .map(
+                (place) => Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => _select(place),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.location_city_outlined,
+                            size: 18,
+                            color: Color(0xFF8A968C),
                           ),
-                        ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              place.label,
+                              style: const TextStyle(
+                                color: Color(0xFF101512),
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
         ],
       ],
     );
@@ -169,10 +173,7 @@ class _CityAutocompleteFieldState extends State<CityAutocompleteField> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        if (widget.leading != null) ...[
-          widget.leading!,
-          const SizedBox(width: 14),
-        ],
+        if (widget.leading != null) ...[widget.leading!, const SizedBox(width: 14)],
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

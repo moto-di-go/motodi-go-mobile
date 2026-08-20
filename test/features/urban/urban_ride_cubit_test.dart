@@ -27,10 +27,20 @@ void main() {
     location = _FixedLocationSource(const LatLng(3.868, 11.516));
     when(() => remote.wallet()).thenAnswer((_) async => const WalletSummary(currentBalance: 4500));
     when(() => remote.popularPlaces()).thenAnswer((_) async => null);
-    when(() => remote.geocode(any(), lat: any(named: 'lat'), lon: any(named: 'lon'))).thenAnswer((_) async => null);
+    when(
+      () => remote.geocode(
+        any(),
+        lat: any(named: 'lat'),
+        lon: any(named: 'lon'),
+      ),
+    ).thenAnswer((_) async => null);
     when(() => remote.layers()).thenAnswer((_) async => const []);
-    when(() => remote.reverseGeocode(lat: any(named: 'lat'), lon: any(named: 'lon')))
-        .thenAnswer((_) async => null);
+    when(
+      () => remote.reverseGeocode(
+        lat: any(named: 'lat'),
+        lon: any(named: 'lon'),
+      ),
+    ).thenAnswer((_) async => null);
   });
 
   UrbanRideCubit buildCubit() {
@@ -46,10 +56,7 @@ void main() {
   blocTest<UrbanRideCubit, UrbanRideState>(
     'builds demo route options when estimate has no options[]',
     build: buildCubit,
-    seed: () => const UrbanRideState(
-      origin: LatLng(3.868, 11.516),
-      originLabel: 'Ma position',
-    ),
+    seed: () => const UrbanRideState(origin: LatLng(3.868, 11.516), originLabel: 'Ma position'),
     setUp: () {
       when(
         () => remote.estimate(
@@ -69,10 +76,7 @@ void main() {
         }),
       );
     },
-    act: (cubit) => cubit.selectDestination(
-      label: 'Bastos',
-      point: const LatLng(3.8905, 11.5108),
-    ),
+    act: (cubit) => cubit.selectDestination(label: 'Bastos', point: const LatLng(3.8905, 11.5108)),
     wait: const Duration(milliseconds: 20),
     expect: () => [
       isA<UrbanRideState>().having((s) => s.step, 'step', UrbanRideStep.calculating),
@@ -139,10 +143,7 @@ void main() {
   blocTest<UrbanRideCubit, UrbanRideState>(
     'uses API options[] without demo banner when the backend returns them',
     build: buildCubit,
-    seed: () => const UrbanRideState(
-      origin: LatLng(3.868, 11.516),
-      originLabel: 'Ma position',
-    ),
+    seed: () => const UrbanRideState(origin: LatLng(3.868, 11.516), originLabel: 'Ma position'),
     setUp: () {
       when(
         () => remote.estimate(
@@ -192,10 +193,7 @@ void main() {
         }),
       );
     },
-    act: (cubit) => cubit.selectDestination(
-      label: 'Bastos',
-      point: const LatLng(3.8905, 11.5108),
-    ),
+    act: (cubit) => cubit.selectDestination(label: 'Bastos', point: const LatLng(3.8905, 11.5108)),
     wait: const Duration(milliseconds: 20),
     expect: () => [
       isA<UrbanRideState>().having((s) => s.step, 'step', UrbanRideStep.calculating),

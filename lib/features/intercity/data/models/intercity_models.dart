@@ -123,9 +123,7 @@ class WideningSuggestionModel {
     return WideningSuggestionModel(
       code: json['code'] as String? ?? '',
       message: json['message'] as String? ?? '',
-      suggestedQuery: rawQuery is Map
-          ? Map<String, dynamic>.from(rawQuery)
-          : <String, dynamic>{},
+      suggestedQuery: rawQuery is Map ? Map<String, dynamic>.from(rawQuery) : <String, dynamic>{},
     );
   }
 
@@ -154,7 +152,9 @@ class AnnouncementSearchPageModel {
     final rawSuggestions = json['wideningSuggestions'] as List<dynamic>? ?? [];
     return AnnouncementSearchPageModel(
       items: rawItems
-          .map((item) => IntercityAnnouncementModel.fromJson(Map<String, dynamic>.from(item as Map)))
+          .map(
+            (item) => IntercityAnnouncementModel.fromJson(Map<String, dynamic>.from(item as Map)),
+          )
           .toList(),
       page: (json['page'] as num?)?.toInt() ?? 0,
       size: (json['size'] as num?)?.toInt() ?? 20,
@@ -193,7 +193,9 @@ class AnnouncementPageModel {
     final rawItems = json['items'] as List<dynamic>? ?? [];
     return AnnouncementPageModel(
       items: rawItems
-          .map((item) => IntercityAnnouncementModel.fromJson(Map<String, dynamic>.from(item as Map)))
+          .map(
+            (item) => IntercityAnnouncementModel.fromJson(Map<String, dynamic>.from(item as Map)),
+          )
           .toList(),
       page: (json['page'] as num?)?.toInt() ?? 0,
       size: (json['size'] as num?)?.toInt() ?? 20,

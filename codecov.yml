@@ -19,7 +19,7 @@ coverage:
         if_not_found: success
         if_ci_failed: error
 
-# Ignorer les fichiers générés et les stubs dans le calcul
+# Ignorer les fichiers générés, l'UI et les datasources (TESTING_POLICY.md)
 ignore:
   - '**/*.g.dart'
   - '**/*.freezed.dart'
@@ -28,6 +28,12 @@ ignore:
   - 'lib/l10n/**'
   - 'lib/main.dart'
   - 'lib/routes/app_router.dart'
+  - 'lib/**/presentation/pages/**'
+  - 'lib/**/presentation/widgets/**'
+  - '**/*_figma_icons.dart'
+  - 'lib/**/datasources/**'
+  - '**/*_datasource.dart'
+  - 'lib/features/example/**'
 
 comment:
   layout: 'reach,diff,flags,files'

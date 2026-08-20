@@ -38,9 +38,7 @@ class UrbanBottomSheet extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-        boxShadow: [
-          BoxShadow(color: Color(0x1A101512), blurRadius: 24, offset: Offset(0, -4)),
-        ],
+        boxShadow: [BoxShadow(color: Color(0x1A101512), blurRadius: 24, offset: Offset(0, -4))],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -69,10 +67,7 @@ class UrbanBottomSheet extends StatelessWidget {
 class UrbanDemoBanner extends StatelessWidget {
   final String message;
 
-  const UrbanDemoBanner({
-    super.key,
-    this.message = 'Données de démonstration',
-  });
+  const UrbanDemoBanner({super.key, this.message = 'Données de démonstration'});
 
   @override
   Widget build(BuildContext context) {
@@ -87,11 +82,7 @@ class UrbanDemoBanner extends StatelessWidget {
       ),
       child: Text(
         message,
-        style: urbanText(
-          fontSize: 13,
-          fontWeight: FontWeight.w700,
-          color: const Color(0xFF8B6509),
-        ),
+        style: urbanText(fontSize: 13, fontWeight: FontWeight.w700, color: const Color(0xFF8B6509)),
       ),
     );
   }

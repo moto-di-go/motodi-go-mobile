@@ -33,82 +33,63 @@ void main() {
   });
 
   group('register', () {
-    test(
-      'returns NetworkFailure without calling remote when offline',
-      () async {
-        when(() => network.isConnected).thenAnswer((_) async => false);
+    test('returns NetworkFailure without calling remote when offline', () async {
+      when(() => network.isConnected).thenAnswer((_) async => false);
 
-        final result = await repository.register(
-          phoneNumber: '+237678901234',
-          password: 'password1',
-          fullName: 'Aicha Ngono',
-          cguAccepted: true,
-        );
+      final result = await repository.register(
+        phoneNumber: '+237678901234',
+        password: 'password1',
+        fullName: 'Aicha Ngono',
+        cguAccepted: true,
+      );
 
-        expect(result.isLeft(), isTrue);
-        result.fold(
-          (failure) => expect(failure, isA<NetworkFailure>()),
-          (_) => fail('no data'),
-        );
-        verifyNever(
-          () => remote.register(
-            phoneNumber: any(named: 'phoneNumber'),
-            password: any(named: 'password'),
-            fullName: any(named: 'fullName'),
-            cguAccepted: any(named: 'cguAccepted'),
-            locale: any(named: 'locale'),
-          ),
-        );
-      },
-    );
+      expect(result.isLeft(), isTrue);
+      result.fold((failure) => expect(failure, isA<NetworkFailure>()), (_) => fail('no data'));
+      verifyNever(
+        () => remote.register(
+          phoneNumber: any(named: 'phoneNumber'),
+          password: any(named: 'password'),
+          fullName: any(named: 'fullName'),
+          cguAccepted: any(named: 'cguAccepted'),
+          locale: any(named: 'locale'),
+        ),
+      );
+    });
   });
 
   group('verifyRegistrationOtpAndLogin', () {
-    test(
-      'verifies OTP, logs in automatically and stores the session',
-      () async {
-        when(() => network.isConnected).thenAnswer((_) async => true);
-        when(
-          () => remote.verifyOtp(
-            phoneNumber: '+237678901234',
-            code: '123456',
-            purpose: 'REGISTRATION',
-          ),
-        ).thenAnswer(
-          (_) async => const OtpVerifyResponseModel(
-            userId: 'user-1',
-            phoneNumber: '+237678901234',
-            status: 'ACTIVE',
-          ),
-        );
-        when(
-          () =>
-              remote.login(phoneNumber: '+237678901234', password: 'password1'),
-        ).thenAnswer((_) async => _sessionModel());
-        when(() => local.saveSession(any())).thenAnswer((_) async {});
-        when(() => local.saveLastPhoneNumber(any())).thenAnswer((_) async {});
-
-        final result = await repository.verifyRegistrationOtpAndLogin(
+    test('verifies OTP, logs in automatically and stores the session', () async {
+      when(() => network.isConnected).thenAnswer((_) async => true);
+      when(
+        () =>
+            remote.verifyOtp(phoneNumber: '+237678901234', code: '123456', purpose: 'REGISTRATION'),
+      ).thenAnswer(
+        (_) async => const OtpVerifyResponseModel(
+          userId: 'user-1',
           phoneNumber: '+237678901234',
-          code: '123456',
-          password: 'password1',
-        );
+          status: 'ACTIVE',
+        ),
+      );
+      when(
+        () => remote.login(phoneNumber: '+237678901234', password: 'password1'),
+      ).thenAnswer((_) async => _sessionModel());
+      when(() => local.saveSession(any())).thenAnswer((_) async {});
+      when(() => local.saveLastPhoneNumber(any())).thenAnswer((_) async {});
 
-        expect(result.isRight(), isTrue);
-        verify(
-          () => remote.verifyOtp(
-            phoneNumber: '+237678901234',
-            code: '123456',
-            purpose: 'REGISTRATION',
-          ),
-        ).called(1);
-        verify(
-          () =>
-              remote.login(phoneNumber: '+237678901234', password: 'password1'),
-        ).called(1);
-        verify(() => local.saveSession(any())).called(1);
-      },
-    );
+      final result = await repository.verifyRegistrationOtpAndLogin(
+        phoneNumber: '+237678901234',
+        code: '123456',
+        password: 'password1',
+      );
+
+      expect(result.isRight(), isTrue);
+      verify(
+        () =>
+            remote.verifyOtp(phoneNumber: '+237678901234', code: '123456', purpose: 'REGISTRATION'),
+      ).called(1);
+      verify(() => remote.login(phoneNumber: '+237678901234', password: 'password1')).called(1);
+      verify(() => local.saveSession(any())).called(1);
+    });
 
     test('maps OTP_INVALID to ValidationFailure', () async {
       when(() => network.isConnected).thenAnswer((_) async => true);
@@ -147,85 +128,67 @@ void main() {
       final result = await repository.bootstrapSession();
 
       expect(result.isRight(), isTrue);
-      result.fold(
-        (_) => fail('no failure'),
-        (session) => expect(session, isNull),
-      );
+      result.fold((_) => fail('no failure'), (session) => expect(session, isNull));
     });
 
-    test(
-      'clears session and returns SESSION_EXPIRED when refresh token is expired',
-      () async {
-        when(() => local.readSession()).thenAnswer(
-          (_) async => _sessionModel(
-            accessTokenExpiresAt: DateTime.now().subtract(
-              const Duration(hours: 2),
-            ),
-            refreshTokenExpiresAt: DateTime.now().subtract(
-              const Duration(minutes: 1),
-            ),
-          ),
-        );
-        when(() => local.clearSession()).thenAnswer((_) async {});
+    test('clears session and returns SESSION_EXPIRED when refresh token is expired', () async {
+      when(() => local.readSession()).thenAnswer(
+        (_) async => _sessionModel(
+          accessTokenExpiresAt: DateTime.now().subtract(const Duration(hours: 2)),
+          refreshTokenExpiresAt: DateTime.now().subtract(const Duration(minutes: 1)),
+        ),
+      );
+      when(() => local.clearSession()).thenAnswer((_) async {});
 
-        final result = await repository.bootstrapSession();
+      final result = await repository.bootstrapSession();
 
-        expect(result.isLeft(), isTrue);
-        result.fold((failure) {
-          expect(failure, isA<AuthFailure>());
-          expect(failure.code, 'SESSION_EXPIRED');
-        }, (_) => fail('no data'));
-        verify(() => local.clearSession()).called(1);
-      },
-    );
+      expect(result.isLeft(), isTrue);
+      result.fold((failure) {
+        expect(failure, isA<AuthFailure>());
+        expect(failure.code, 'SESSION_EXPIRED');
+      }, (_) => fail('no data'));
+      verify(() => local.clearSession()).called(1);
+    });
 
-    test(
-      'refreshes a valid local session when online to sync active profile',
-      () async {
-        when(
-          () => local.readSession(),
-        ).thenAnswer((_) async => _sessionModel());
-        when(() => network.isConnected).thenAnswer((_) async => true);
-        when(() => local.readRefreshToken()).thenAnswer((_) async => 'refresh');
-        when(
-          () => remote.refresh(refreshToken: 'refresh'),
-        ).thenAnswer((_) async => _sessionModel(accessToken: 'synced-access'));
-        when(() => local.saveSession(any())).thenAnswer((_) async {});
+    test('refreshes a valid local session when online to sync active profile', () async {
+      when(() => local.readSession()).thenAnswer((_) async => _sessionModel());
+      when(() => network.isConnected).thenAnswer((_) async => true);
+      when(() => local.readRefreshToken()).thenAnswer((_) async => 'refresh');
+      when(
+        () => remote.refresh(refreshToken: 'refresh'),
+      ).thenAnswer((_) async => _sessionModel(accessToken: 'synced-access'));
+      when(() => local.saveSession(any())).thenAnswer((_) async {});
 
-        final result = await repository.bootstrapSession();
+      final result = await repository.bootstrapSession();
 
-        expect(result.isRight(), isTrue);
-        result.fold(
-          (_) => fail('no failure'),
-          (session) => expect(session?.accessToken, 'synced-access'),
-        );
-        verify(() => remote.refresh(refreshToken: 'refresh')).called(1);
-        verify(() => local.saveSession(any())).called(1);
-      },
-    );
+      expect(result.isRight(), isTrue);
+      result.fold(
+        (_) => fail('no failure'),
+        (session) => expect(session?.accessToken, 'synced-access'),
+      );
+      verify(() => remote.refresh(refreshToken: 'refresh')).called(1);
+      verify(() => local.saveSession(any())).called(1);
+    });
   });
 
   group('refreshSession', () {
-    test(
-      'refreshes with stored refresh token and persists the new session',
-      () async {
-        when(() => network.isConnected).thenAnswer((_) async => true);
-        when(() => local.readRefreshToken()).thenAnswer((_) async => 'refresh');
-        when(
-          () => remote.refresh(refreshToken: 'refresh'),
-        ).thenAnswer((_) async => _sessionModel(accessToken: 'new-access'));
-        when(() => local.saveSession(any())).thenAnswer((_) async {});
+    test('refreshes with stored refresh token and persists the new session', () async {
+      when(() => network.isConnected).thenAnswer((_) async => true);
+      when(() => local.readRefreshToken()).thenAnswer((_) async => 'refresh');
+      when(
+        () => remote.refresh(refreshToken: 'refresh'),
+      ).thenAnswer((_) async => _sessionModel(accessToken: 'new-access'));
+      when(() => local.saveSession(any())).thenAnswer((_) async {});
 
-        final result = await repository.refreshSession();
+      final result = await repository.refreshSession();
 
-        expect(result.isRight(), isTrue);
-        result.fold(
-          (_) => fail('no failure'),
-          (session) => expect(session.accessToken, 'new-access'),
-        );
-        verify(() => local.saveSession(any())).called(1);
-      },
-    );
+      expect(result.isRight(), isTrue);
+      result.fold(
+        (_) => fail('no failure'),
+        (session) => expect(session.accessToken, 'new-access'),
+      );
+      verify(() => local.saveSession(any())).called(1);
+    });
 
     test('clears local session when refresh token is missing', () async {
       when(() => network.isConnected).thenAnswer((_) async => true);
@@ -235,10 +198,7 @@ void main() {
       final result = await repository.refreshSession();
 
       expect(result.isLeft(), isTrue);
-      result.fold(
-        (failure) => expect(failure.code, 'SESSION_EXPIRED'),
-        (_) => fail('no data'),
-      );
+      result.fold((failure) => expect(failure.code, 'SESSION_EXPIRED'), (_) => fail('no data'));
       verify(() => local.clearSession()).called(1);
     });
   });
@@ -253,10 +213,8 @@ AuthSessionModel _sessionModel({
     tokenType: 'Bearer',
     accessToken: accessToken,
     refreshToken: 'refresh',
-    accessTokenExpiresAt:
-        accessTokenExpiresAt ?? DateTime.now().add(const Duration(hours: 1)),
-    refreshTokenExpiresAt:
-        refreshTokenExpiresAt ?? DateTime.now().add(const Duration(days: 30)),
+    accessTokenExpiresAt: accessTokenExpiresAt ?? DateTime.now().add(const Duration(hours: 1)),
+    refreshTokenExpiresAt: refreshTokenExpiresAt ?? DateTime.now().add(const Duration(days: 30)),
     sessionId: 'session-1',
     userId: 'user-1',
     phoneNumber: '+237678901234',

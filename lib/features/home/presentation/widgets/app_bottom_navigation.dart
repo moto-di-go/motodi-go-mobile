@@ -74,11 +74,7 @@ class _NavItemData {
   final Widget activeIcon;
   final Widget inactiveIcon;
 
-  const _NavItemData({
-    required this.label,
-    required this.activeIcon,
-    required this.inactiveIcon,
-  });
+  const _NavItemData({required this.label, required this.activeIcon, required this.inactiveIcon});
 }
 
 class _NavItem extends StatelessWidget {
@@ -86,11 +82,7 @@ class _NavItem extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _NavItem({
-    required this.data,
-    required this.selected,
-    required this.onTap,
-  });
+  const _NavItem({required this.data, required this.selected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -110,11 +102,7 @@ class _NavItem extends StatelessWidget {
                 data.label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: color,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w700),
               ),
             ],
           ),

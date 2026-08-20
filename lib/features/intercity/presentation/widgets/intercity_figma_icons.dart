@@ -83,10 +83,7 @@ class MotodigoDateGrayIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: const _CalendarPainter(Color(0xFF8A968C)),
-    );
+    return CustomPaint(size: Size.square(size), painter: const _CalendarPainter(Color(0xFF8A968C)));
   }
 }
 
@@ -94,11 +91,7 @@ class MotodigoDateGrayIcon extends StatelessWidget {
 class MotodigoBuildingGrayIcon extends StatelessWidget {
   final double size;
   final Color color;
-  const MotodigoBuildingGrayIcon({
-    super.key,
-    this.size = 22,
-    this.color = const Color(0xFF8A968C),
-  });
+  const MotodigoBuildingGrayIcon({super.key, this.size = 22, this.color = const Color(0xFF8A968C)});
 
   @override
   Widget build(BuildContext context) {
@@ -135,10 +128,7 @@ class MotodigoPeopleGrayIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: const _PeoplePainter(Color(0xFF8A968C)),
-    );
+    return CustomPaint(size: Size.square(size), painter: const _PeoplePainter(Color(0xFF8A968C)));
   }
 }
 
@@ -180,18 +170,11 @@ class MotodigoListIcon extends StatelessWidget {
 class MotodigoLocationGrayIcon extends StatelessWidget {
   final double size;
   final Color color;
-  const MotodigoLocationGrayIcon({
-    super.key,
-    this.size = 16,
-    this.color = const Color(0xFF8A968C),
-  });
+  const MotodigoLocationGrayIcon({super.key, this.size = 16, this.color = const Color(0xFF8A968C)});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _LocationPinStrokePainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _LocationPinStrokePainter(color));
   }
 }
 
@@ -235,7 +218,10 @@ class MotodigoCheckCircleGreenIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(size: Size.square(size), painter: const _CheckCirclePainter(Color(0xFF16A34A)));
+    return CustomPaint(
+      size: Size.square(size),
+      painter: const _CheckCirclePainter(Color(0xFF16A34A)),
+    );
   }
 }
 
@@ -256,7 +242,10 @@ class MotodigoCancelRedIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(size: Size.square(size), painter: const _CrossCirclePainter(Color(0xFFEF4444)));
+    return CustomPaint(
+      size: Size.square(size),
+      painter: const _CrossCirclePainter(Color(0xFFEF4444)),
+    );
   }
 }
 
@@ -266,7 +255,10 @@ class MotodigoAcceptGreenIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(size: Size.square(size), painter: const _CheckCirclePainter(Color(0xFF16A34A)));
+    return CustomPaint(
+      size: Size.square(size),
+      painter: const _CheckCirclePainter(Color(0xFF16A34A)),
+    );
   }
 }
 
@@ -274,11 +266,7 @@ class MotodigoAcceptGreenIcon extends StatelessWidget {
 class MotodigoLoupeGrayIcon extends StatelessWidget {
   final double size;
   final Color color;
-  const MotodigoLoupeGrayIcon({
-    super.key,
-    this.size = 38,
-    this.color = const Color(0xFF9AA49D),
-  });
+  const MotodigoLoupeGrayIcon({super.key, this.size = 38, this.color = const Color(0xFF9AA49D)});
 
   @override
   Widget build(BuildContext context) {
@@ -298,10 +286,7 @@ class MotodigoRightArrowGrayIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size(size * 1.15, size),
-      painter: _RightArrowGrayPainter(color),
-    );
+    return CustomPaint(size: Size(size * 1.15, size), painter: _RightArrowGrayPainter(color));
   }
 }
 
@@ -954,7 +939,13 @@ class _DocumentPainter extends CustomPainter {
           ..close(),
         paint,
       );
-      canvas.drawPath(Path()..moveTo(14.5, 2.5)..lineTo(14.5, 6.5)..lineTo(18.5, 6.5), paint);
+      canvas.drawPath(
+        Path()
+          ..moveTo(14.5, 2.5)
+          ..lineTo(14.5, 6.5)
+          ..lineTo(18.5, 6.5),
+        paint,
+      );
       canvas.drawLine(const Offset(9, 12), const Offset(15.5, 12), paint);
       canvas.drawLine(const Offset(9, 16), const Offset(15.5, 16), paint);
     });

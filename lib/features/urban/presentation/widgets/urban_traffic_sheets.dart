@@ -21,7 +21,10 @@ class UrbanLayersSheet extends StatelessWidget {
         children: [
           Text('Couches carte', style: urbanText(fontSize: 24, fontWeight: FontWeight.w800)),
           const SizedBox(height: 6),
-          Text(state.layersFreshness, style: urbanText(fontSize: 14, color: AppColors.textSecondary)),
+          Text(
+            state.layersFreshness,
+            style: urbanText(fontSize: 14, color: AppColors.textSecondary),
+          ),
           const SizedBox(height: 12),
           _LayerToggle(
             label: 'Trafic dense',
@@ -62,7 +65,9 @@ class UrbanLayersSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              Expanded(child: UrbanPrimaryButton(label: 'Appliquer', onPressed: cubit.applyLayers)),
+              Expanded(
+                child: UrbanPrimaryButton(label: 'Appliquer', onPressed: cubit.applyLayers),
+              ),
             ],
           ),
         ],
@@ -187,14 +192,24 @@ class UrbanCompareSheet extends StatelessWidget {
               ),
               child: Text(
                 'Trafic ou voie dégradée sur l’itinéraire principal.',
-                style: urbanText(fontSize: 13, fontWeight: FontWeight.w700, color: const Color(0xFF8B6509)),
+                style: urbanText(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF8B6509),
+                ),
               ),
             ),
           Row(
             children: [
-              if (main != null) Expanded(child: _CompareCard(title: 'Principal', option: main)),
+              if (main != null)
+                Expanded(
+                  child: _CompareCard(title: 'Principal', option: main),
+                ),
               if (main != null && alt != null) const SizedBox(width: 8),
-              if (alt != null) Expanded(child: _CompareCard(title: 'Alternative', option: alt)),
+              if (alt != null)
+                Expanded(
+                  child: _CompareCard(title: 'Alternative', option: alt),
+                ),
             ],
           ),
           const SizedBox(height: 14),
@@ -221,8 +236,12 @@ class UrbanRouteOptionsSheet extends StatelessWidget {
       child: ListView(
         shrinkWrap: true,
         children: [
-          Text('Choisir un itinéraire', style: urbanText(fontSize: 22, fontWeight: FontWeight.w800)),
-          if (state.routeOptionsDemo) const Padding(padding: EdgeInsets.only(top: 12), child: UrbanDemoBanner()),
+          Text(
+            'Choisir un itinéraire',
+            style: urbanText(fontSize: 22, fontWeight: FontWeight.w800),
+          ),
+          if (state.routeOptionsDemo)
+            const Padding(padding: EdgeInsets.only(top: 12), child: UrbanDemoBanner()),
           const SizedBox(height: 12),
           for (final option in state.routeOptions) ...[
             _RouteOptionCard(
@@ -269,7 +288,11 @@ class _LegendRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
-          Container(width: 14, height: 4, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4))),
+          Container(
+            width: 14,
+            height: 4,
+            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4)),
+          ),
           const SizedBox(width: 8),
           Text(label, style: urbanText(fontSize: 12, fontWeight: FontWeight.w600)),
         ],
@@ -312,10 +335,23 @@ class _CompareCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: urbanText(fontSize: 13, fontWeight: FontWeight.w800, color: AppColors.textSecondary)),
+          Text(
+            title,
+            style: urbanText(
+              fontSize: 13,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textSecondary,
+            ),
+          ),
           const SizedBox(height: 6),
-          Text('${option.durationMinutes} min', style: urbanText(fontSize: 18, fontWeight: FontWeight.w800)),
-          Text('${option.distanceKm.toStringAsFixed(1)} km', style: urbanText(fontSize: 13, color: AppColors.textSecondary)),
+          Text(
+            '${option.durationMinutes} min',
+            style: urbanText(fontSize: 18, fontWeight: FontWeight.w800),
+          ),
+          Text(
+            '${option.distanceKm.toStringAsFixed(1)} km',
+            style: urbanText(fontSize: 13, color: AppColors.textSecondary),
+          ),
         ],
       ),
     );
@@ -350,7 +386,12 @@ class _RouteOptionCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Expanded(child: Text(option.label, style: urbanText(fontSize: 18, fontWeight: FontWeight.w800))),
+                Expanded(
+                  child: Text(
+                    option.label,
+                    style: urbanText(fontSize: 18, fontWeight: FontWeight.w800),
+                  ),
+                ),
                 if (recommended)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -358,7 +399,14 @@ class _RouteOptionCard extends StatelessWidget {
                       color: const Color(0xFFDDF5E6),
                       borderRadius: BorderRadius.circular(999),
                     ),
-                    child: Text('Conseillé', style: urbanText(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.primary)),
+                    child: Text(
+                      'Conseillé',
+                      style: urbanText(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.primary,
+                      ),
+                    ),
                   ),
                 if (option.degraded) ...[
                   const SizedBox(width: 6),
@@ -368,12 +416,26 @@ class _RouteOptionCard extends StatelessWidget {
                       color: const Color(0xFFFFF3C9),
                       borderRadius: BorderRadius.circular(999),
                     ),
-                    child: Text('Dégradée', style: urbanText(fontSize: 11, fontWeight: FontWeight.w800, color: const Color(0xFF8B6509))),
+                    child: Text(
+                      'Dégradée',
+                      style: urbanText(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: const Color(0xFF8B6509),
+                      ),
+                    ),
                   ),
                 ],
                 if (option.isDemo) ...[
                   const SizedBox(width: 6),
-                  Text('Démo', style: urbanText(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.accent)),
+                  Text(
+                    'Démo',
+                    style: urbanText(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.accent,
+                    ),
+                  ),
                 ],
               ],
             ),

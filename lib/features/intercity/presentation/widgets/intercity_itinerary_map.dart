@@ -39,10 +39,7 @@ class _IntercityItineraryMapState extends State<IntercityItineraryMap> {
         color: const Color(0xFFE7EEE6),
         child: ml.MapLibreMap(
           styleString: UrbanMapStyle.url,
-          initialCameraPosition: const ml.CameraPosition(
-            target: ml.LatLng(5.69, 12.39),
-            zoom: 5.4,
-          ),
+          initialCameraPosition: const ml.CameraPosition(target: ml.LatLng(5.69, 12.39), zoom: 5.4),
           compassEnabled: false,
           rotateGesturesEnabled: false,
           tiltGesturesEnabled: false,
@@ -72,20 +69,15 @@ class _IntercityItineraryMapState extends State<IntercityItineraryMap> {
       return;
     }
     await controller.animateCamera(
-      ml.CameraUpdate.newLatLngBounds(
-        _boundsFor(points),
-        left: 36,
-        top: 36,
-        right: 36,
-        bottom: 36,
-      ),
+      ml.CameraUpdate.newLatLngBounds(_boundsFor(points), left: 36, top: 36, right: 36, bottom: 36),
     );
   }
 
   Future<void> _syncOverlays() async {
     final controller = _controller;
     if (controller == null || !_styleReady) return;
-    final key = '${widget.itinerary.polylineWkt}|${widget.itinerary.origin}|${widget.itinerary.destination}';
+    final key =
+        '${widget.itinerary.polylineWkt}|${widget.itinerary.origin}|${widget.itinerary.destination}';
     if (key == _overlayKey) return;
     _overlayKey = key;
     await controller.clearLines();

@@ -14,10 +14,7 @@ class MotodigoNotifShieldWhiteIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _ShieldCheckPainter(color, checkColor),
-    );
+    return CustomPaint(size: Size.square(size), painter: _ShieldCheckPainter(color, checkColor));
   }
 }
 
@@ -35,10 +32,7 @@ class MotodigoNotifWarningTriangleIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _WarningTrianglePainter(color, markColor),
-    );
+    return CustomPaint(size: Size.square(size), painter: _WarningTrianglePainter(color, markColor));
   }
 }
 
@@ -129,11 +123,7 @@ class _WarningTrianglePainter extends CustomPainter {
           ..color = color
           ..style = PaintingStyle.fill,
       );
-      canvas.drawLine(
-        const Offset(12, 10),
-        const Offset(12, 14.6),
-        _stroke(markColor, 2.1),
-      );
+      canvas.drawLine(const Offset(12, 10), const Offset(12, 14.6), _stroke(markColor, 2.1));
       canvas.drawCircle(const Offset(12, 17.3), 1.05, Paint()..color = markColor);
     });
   }

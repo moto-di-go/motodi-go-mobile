@@ -134,11 +134,7 @@ class _FilterTabs extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: _FilterChip(
-              label: 'Toutes',
-              selected: !unreadOnly,
-              onTap: onAll,
-            ),
+            child: _FilterChip(label: 'Toutes', selected: !unreadOnly, onTap: onAll),
           ),
         ],
       ),
@@ -151,11 +147,7 @@ class _FilterChip extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _FilterChip({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
+  const _FilterChip({required this.label, required this.selected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -168,9 +160,7 @@ class _FilterChip extends StatelessWidget {
           color: selected ? Colors.white : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
           boxShadow: selected
-              ? const [
-                  BoxShadow(color: Color(0x1A101512), blurRadius: 8, offset: Offset(0, 2)),
-                ]
+              ? const [BoxShadow(color: Color(0x1A101512), blurRadius: 8, offset: Offset(0, 2))]
               : null,
         ),
         child: Text(
@@ -212,7 +202,9 @@ class _NotificationsBody extends StatelessWidget {
               const MotodigoNotifGrayIcon(size: 72),
               const SizedBox(height: 22),
               Text(
-                state.unreadOnly ? 'Aucune notification non lue' : 'Aucune notification pour le moment',
+                state.unreadOnly
+                    ? 'Aucune notification non lue'
+                    : 'Aucune notification pour le moment',
                 textAlign: TextAlign.center,
                 style: _notifText(
                   fontSize: 16,
@@ -295,10 +287,7 @@ class _NotificationCard extends StatelessWidget {
   final AppNotification notification;
   final VoidCallback onTap;
 
-  const _NotificationCard({
-    required this.notification,
-    required this.onTap,
-  });
+  const _NotificationCard({required this.notification, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -343,7 +332,12 @@ class _NotificationCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             notification.title,
-                            style: _notifText(fontSize: 16, fontWeight: FontWeight.w800, color: titleColor, height: 1.25),
+                            style: _notifText(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: titleColor,
+                              height: 1.25,
+                            ),
                           ),
                         ),
                         if (notification.unread) ...[

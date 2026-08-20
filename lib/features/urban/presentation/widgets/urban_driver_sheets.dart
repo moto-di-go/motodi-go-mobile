@@ -17,7 +17,10 @@ class UrbanSearchingSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Recherche des mototaxis…', style: urbanText(fontSize: 20, fontWeight: FontWeight.w800)),
+          Text(
+            'Recherche des mototaxis…',
+            style: urbanText(fontSize: 20, fontWeight: FontWeight.w800),
+          ),
           const SizedBox(height: 14),
           Shimmer.fromColors(
             baseColor: const Color(0xFFE7ECE6),
@@ -65,7 +68,14 @@ class UrbanResultsSheet extends StatelessWidget {
               TextButton.icon(
                 onPressed: cubit.openFilters,
                 icon: const Icon(Icons.tune_rounded, size: 18),
-                label: Text('Filtres', style: urbanText(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.primary)),
+                label: Text(
+                  'Filtres',
+                  style: urbanText(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.primary,
+                  ),
+                ),
               ),
             ],
           ),
@@ -119,7 +129,10 @@ class UrbanFiltersSheet extends StatelessWidget {
             activeColor: AppColors.primary,
             onChanged: (value) => cubit.updateDraftFilters(draft.copyWith(radiusKm: value)),
           ),
-          Text('${draft.radiusKm.toStringAsFixed(1)} km', style: urbanText(color: AppColors.textSecondary)),
+          Text(
+            '${draft.radiusKm.toStringAsFixed(1)} km',
+            style: urbanText(color: AppColors.textSecondary),
+          ),
           const SizedBox(height: 16),
           Text('Note minimale', style: urbanText(fontSize: 15, fontWeight: FontWeight.w800)),
           const SizedBox(height: 8),
@@ -146,7 +159,10 @@ class UrbanFiltersSheet extends StatelessWidget {
           const SizedBox(height: 18),
           SwitchListTile.adaptive(
             contentPadding: EdgeInsets.zero,
-            title: Text('Disponibilité immédiate', style: urbanText(fontSize: 15, fontWeight: FontWeight.w800)),
+            title: Text(
+              'Disponibilité immédiate',
+              style: urbanText(fontSize: 15, fontWeight: FontWeight.w800),
+            ),
             value: draft.immediateOnly,
             activeThumbColor: AppColors.primary,
             onChanged: (value) => cubit.updateDraftFilters(draft.copyWith(immediateOnly: value)),
@@ -189,10 +205,17 @@ class UrbanEmptySheet extends StatelessWidget {
         children: [
           const Icon(Icons.two_wheeler_outlined, size: 48, color: Color(0xFF9CA7A0)),
           const SizedBox(height: 12),
-          Text('Aucun mototaxi disponible', style: urbanText(fontSize: 22, fontWeight: FontWeight.w800)),
+          Text(
+            'Aucun mototaxi disponible',
+            style: urbanText(fontSize: 22, fontWeight: FontWeight.w800),
+          ),
           if (error != null) ...[
             const SizedBox(height: 8),
-            Text(error!, textAlign: TextAlign.center, style: urbanText(fontSize: 13, color: AppColors.error)),
+            Text(
+              error!,
+              textAlign: TextAlign.center,
+              style: urbanText(fontSize: 13, color: AppColors.error),
+            ),
           ],
           const SizedBox(height: 8),
           Text(
@@ -209,7 +232,10 @@ class UrbanEmptySheet extends StatelessWidget {
               minimumSize: const Size.fromHeight(52),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
             ),
-            child: Text('Modifier la destination', style: urbanText(fontSize: 16, fontWeight: FontWeight.w800)),
+            child: Text(
+              'Modifier la destination',
+              style: urbanText(fontSize: 16, fontWeight: FontWeight.w800),
+            ),
           ),
           const SizedBox(height: 8),
           UrbanTextLink(label: 'Réessayer', onTap: cubit.searchMototaxis),
@@ -235,13 +261,21 @@ class UrbanDriverDetailSheet extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (driver.profileIsDemo) const UrbanDemoBanner(message: 'Fiche conducteur — données de démonstration'),
+          if (driver.profileIsDemo)
+            const UrbanDemoBanner(message: 'Fiche conducteur — données de démonstration'),
           Row(
             children: [
               CircleAvatar(
                 radius: 32,
                 backgroundColor: const Color(0xFFDDF5E6),
-                child: Text(driver.initials, style: urbanText(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.primary)),
+                child: Text(
+                  driver.initials,
+                  style: urbanText(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.primary,
+                  ),
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -265,9 +299,21 @@ class UrbanDriverDetailSheet extends StatelessWidget {
             label: driver.documentsVerified ? 'Documents vérifiés' : 'Documents en cours',
             trailing: driver.cniVerified ? 'CNI' : 'CNI — Démo',
           ),
-          _InfoRow(icon: Icons.schedule_rounded, label: 'ETA', trailing: '${driver.etaMinutes} min'),
-          _InfoRow(icon: Icons.two_wheeler_rounded, label: driver.vehicleLabel, trailing: driver.plate),
-          _InfoRow(icon: Icons.payments_outlined, label: 'Prix estimé', trailing: formatPriceF(driver.priceFcfa)),
+          _InfoRow(
+            icon: Icons.schedule_rounded,
+            label: 'ETA',
+            trailing: '${driver.etaMinutes} min',
+          ),
+          _InfoRow(
+            icon: Icons.two_wheeler_rounded,
+            label: driver.vehicleLabel,
+            trailing: driver.plate,
+          ),
+          _InfoRow(
+            icon: Icons.payments_outlined,
+            label: 'Prix estimé',
+            trailing: formatPriceF(driver.priceFcfa),
+          ),
           const SizedBox(height: 16),
           UrbanPrimaryButton(label: 'Choisir ce mototaxi', onPressed: cubit.chooseSelectedDriver),
         ],
@@ -302,7 +348,11 @@ class UrbanConfirmSheet extends StatelessWidget {
               ),
               child: Text(
                 'Trafic dense sur le trajet. Un itinéraire alternatif est disponible.',
-                style: urbanText(fontSize: 13, fontWeight: FontWeight.w700, color: const Color(0xFF8B6509)),
+                style: urbanText(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF8B6509),
+                ),
               ),
             ),
           ],
@@ -310,7 +360,11 @@ class UrbanConfirmSheet extends StatelessWidget {
           _InfoRow(icon: Icons.trip_origin, label: state.originLabel, trailing: ''),
           _InfoRow(icon: Icons.place_rounded, label: state.destinationLabel, trailing: ''),
           if (driver != null)
-            _InfoRow(icon: Icons.person_outline, label: driver.name, trailing: formatPriceF(state.selectedAmount)),
+            _InfoRow(
+              icon: Icons.person_outline,
+              label: driver.name,
+              trailing: formatPriceF(state.selectedAmount),
+            ),
           const SizedBox(height: 8),
           Text(
             'Intégration paiement/backend à venir',
@@ -373,13 +427,19 @@ class _DriverCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: selected ? AppColors.primary : AppColors.outline, width: selected ? 2 : 1),
+          border: Border.all(
+            color: selected ? AppColors.primary : AppColors.outline,
+            width: selected ? 2 : 1,
+          ),
         ),
         child: Row(
           children: [
             CircleAvatar(
               backgroundColor: const Color(0xFFDDF5E6),
-              child: Text(driver.initials, style: urbanText(fontWeight: FontWeight.w800, color: AppColors.primary)),
+              child: Text(
+                driver.initials,
+                style: urbanText(fontWeight: FontWeight.w800, color: AppColors.primary),
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -388,10 +448,22 @@ class _DriverCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Flexible(child: Text(driver.name, style: urbanText(fontSize: 16, fontWeight: FontWeight.w800))),
+                      Flexible(
+                        child: Text(
+                          driver.name,
+                          style: urbanText(fontSize: 16, fontWeight: FontWeight.w800),
+                        ),
+                      ),
                       if (driver.profileIsDemo) ...[
                         const SizedBox(width: 6),
-                        Text('Démo', style: urbanText(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.accent)),
+                        Text(
+                          'Démo',
+                          style: urbanText(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.accent,
+                          ),
+                        ),
                       ],
                     ],
                   ),
@@ -402,7 +474,10 @@ class _DriverCard extends StatelessWidget {
                 ],
               ),
             ),
-            Text(formatPriceF(driver.priceFcfa), style: urbanText(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.primary)),
+            Text(
+              formatPriceF(driver.priceFcfa),
+              style: urbanText(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.primary),
+            ),
           ],
         ),
       ),
@@ -471,8 +546,11 @@ class _InfoRow extends StatelessWidget {
         children: [
           Icon(icon, size: 20, color: AppColors.textSecondary),
           const SizedBox(width: 10),
-          Expanded(child: Text(label, style: urbanText(fontSize: 15, fontWeight: FontWeight.w700))),
-          if (trailing.isNotEmpty) Text(trailing, style: urbanText(fontSize: 14, fontWeight: FontWeight.w800)),
+          Expanded(
+            child: Text(label, style: urbanText(fontSize: 15, fontWeight: FontWeight.w700)),
+          ),
+          if (trailing.isNotEmpty)
+            Text(trailing, style: urbanText(fontSize: 14, fontWeight: FontWeight.w800)),
         ],
       ),
     );

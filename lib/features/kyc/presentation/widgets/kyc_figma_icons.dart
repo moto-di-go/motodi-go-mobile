@@ -12,10 +12,7 @@ class MotodigoPendingYellowIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _PendingYellowPainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _PendingYellowPainter(color));
   }
 }
 
@@ -23,18 +20,11 @@ class MotodigoFileLeftGrayIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoFileLeftGrayIcon({
-    super.key,
-    this.size = 30,
-    this.color = const Color(0xFFB6BEB6),
-  });
+  const MotodigoFileLeftGrayIcon({super.key, this.size = 30, this.color = const Color(0xFFB6BEB6)});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _FileLeftGrayPainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _FileLeftGrayPainter(color));
   }
 }
 
@@ -42,18 +32,11 @@ class MotodigoCniGreenIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoCniGreenIcon({
-    super.key,
-    this.size = 30,
-    this.color = const Color(0xFF16A34A),
-  });
+  const MotodigoCniGreenIcon({super.key, this.size = 30, this.color = const Color(0xFF16A34A)});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _CniGreenPainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _CniGreenPainter(color));
   }
 }
 
@@ -61,18 +44,11 @@ class MotodigoPictureGreenIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoPictureGreenIcon({
-    super.key,
-    this.size = 30,
-    this.color = const Color(0xFF16A34A),
-  });
+  const MotodigoPictureGreenIcon({super.key, this.size = 30, this.color = const Color(0xFF16A34A)});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _PicturePainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _PicturePainter(color));
   }
 }
 
@@ -80,18 +56,11 @@ class MotodigoPictureGrayIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoPictureGrayIcon({
-    super.key,
-    this.size = 30,
-    this.color = const Color(0xFFB6BEB6),
-  });
+  const MotodigoPictureGrayIcon({super.key, this.size = 30, this.color = const Color(0xFFB6BEB6)});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _PicturePainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _PicturePainter(color));
   }
 }
 
@@ -99,18 +68,11 @@ class MotodigoAlertRedIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoAlertRedIcon({
-    super.key,
-    this.size = 30,
-    this.color = const Color(0xFFB42318),
-  });
+  const MotodigoAlertRedIcon({super.key, this.size = 30, this.color = const Color(0xFFB42318)});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _AlertRedPainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _AlertRedPainter(color));
   }
 }
 
@@ -118,18 +80,11 @@ class MotodigoUploadWhiteIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoUploadWhiteIcon({
-    super.key,
-    this.size = 24,
-    this.color = Colors.white,
-  });
+  const MotodigoUploadWhiteIcon({super.key, this.size = 24, this.color = Colors.white});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _UploadWhitePainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _UploadWhitePainter(color));
   }
 }
 
@@ -137,18 +92,11 @@ class MotodigoUploadGreenIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoUploadGreenIcon({
-    super.key,
-    this.size = 46,
-    this.color = const Color(0xFF16A34A),
-  });
+  const MotodigoUploadGreenIcon({super.key, this.size = 46, this.color = const Color(0xFF16A34A)});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _UploadGreenPainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _UploadGreenPainter(color));
   }
 }
 
@@ -156,18 +104,11 @@ class MotodigoCameraGreenIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoCameraGreenIcon({
-    super.key,
-    this.size = 30,
-    this.color = const Color(0xFF16A34A),
-  });
+  const MotodigoCameraGreenIcon({super.key, this.size = 30, this.color = const Color(0xFF16A34A)});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _CameraGreenPainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _CameraGreenPainter(color));
   }
 }
 
@@ -178,10 +119,7 @@ class MotodigoFolderVerificationIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: const _FolderVerificationPainter(),
-    );
+    return CustomPaint(size: Size.square(size), painter: const _FolderVerificationPainter());
   }
 }
 
@@ -189,18 +127,11 @@ class MotodigoFolderCheckedWhiteIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoFolderCheckedWhiteIcon({
-    super.key,
-    this.size = 22,
-    this.color = Colors.white,
-  });
+  const MotodigoFolderCheckedWhiteIcon({super.key, this.size = 22, this.color = Colors.white});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _FolderCheckedWhitePainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _FolderCheckedWhitePainter(color));
   }
 }
 
@@ -225,8 +156,7 @@ class _PendingYellowPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _PendingYellowPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _PendingYellowPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _FileLeftGrayPainter extends CustomPainter {
@@ -275,8 +205,7 @@ class _FileLeftGrayPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _FileLeftGrayPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _FileLeftGrayPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _CniGreenPainter extends CustomPainter {
@@ -316,8 +245,7 @@ class _CniGreenPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _CniGreenPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _CniGreenPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _PicturePainter extends CustomPainter {
@@ -356,8 +284,7 @@ class _PicturePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _PicturePainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _PicturePainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _AlertRedPainter extends CustomPainter {
@@ -405,8 +332,7 @@ class _AlertRedPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _AlertRedPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _AlertRedPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _UploadWhitePainter extends CustomPainter {
@@ -447,8 +373,7 @@ class _UploadWhitePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _UploadWhitePainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _UploadWhitePainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _UploadGreenPainter extends CustomPainter {
@@ -489,8 +414,7 @@ class _UploadGreenPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _UploadGreenPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _UploadGreenPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _CameraGreenPainter extends CustomPainter {
@@ -528,8 +452,7 @@ class _CameraGreenPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _CameraGreenPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _CameraGreenPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _FolderVerificationPainter extends CustomPainter {
@@ -557,10 +480,7 @@ class _FolderVerificationPainter extends CustomPainter {
         ..color = const Color(0xFFF5C518)
         ..style = PaintingStyle.fill;
       canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          const Rect.fromLTWH(9.5, 9.5, 9, 9),
-          const Radius.circular(4.5),
-        ),
+        RRect.fromRectAndRadius(const Rect.fromLTWH(9.5, 9.5, 9, 9), const Radius.circular(4.5)),
         center,
       );
     });

@@ -29,7 +29,9 @@ class UrbanDestinationHistoryStore {
   Future<List<DestinationHistoryEntry>> add(DestinationHistoryEntry entry) async {
     final next = [
       entry,
-      ...load().where((item) => item.label != entry.label || item.lat != entry.lat || item.lon != entry.lon),
+      ...load().where(
+        (item) => item.label != entry.label || item.lat != entry.lat || item.lon != entry.lon,
+      ),
     ].take(maxEntries).toList();
     await _prefs.setString(key, jsonEncode(next.map((e) => e.toJson()).toList()));
     return next;

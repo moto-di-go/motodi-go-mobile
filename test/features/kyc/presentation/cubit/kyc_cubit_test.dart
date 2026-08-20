@@ -32,9 +32,7 @@ void main() {
   blocTest<KycCubit, KycState>(
     'load emits ready bundle',
     build: () {
-      when(
-        () => repository.loadCurrentDocuments(),
-      ).thenAnswer((_) async => right(_bundle()));
+      when(() => repository.loadCurrentDocuments()).thenAnswer((_) async => right(_bundle()));
       return KycCubit(repository);
     },
     act: (cubit) => cubit.load(),
@@ -47,9 +45,7 @@ void main() {
   blocTest<KycCubit, KycState>(
     'validateDraft emits invalid file state',
     build: () => KycCubit(repository),
-    act: (cubit) => cubit.validateDraft(
-      _draft(fileName: 'bad.txt', mimeType: 'text/plain'),
-    ),
+    act: (cubit) => cubit.validateDraft(_draft(fileName: 'bad.txt', mimeType: 'text/plain')),
     expect: () => [
       isA<KycState>()
           .having((state) => state.status, 'status', KycStatus.invalidFile)
@@ -67,8 +63,7 @@ void main() {
           cancelToken: any(named: 'cancelToken'),
         ),
       ).thenAnswer((invocation) async {
-        final onProgress =
-            invocation.namedArguments[#onProgress] as void Function(int, int)?;
+        final onProgress = invocation.namedArguments[#onProgress] as void Function(int, int)?;
         onProgress?.call(1, 2);
         return right(_uploadResult(complete: false));
       });
@@ -92,10 +87,9 @@ void main() {
   blocTest<KycCubit, KycState>(
     'load maps repository failures',
     build: () {
-      when(() => repository.loadCurrentDocuments()).thenAnswer(
-        (_) async =>
-            left(const NetworkFailure('Offline', code: 'NETWORK_OFFLINE')),
-      );
+      when(
+        () => repository.loadCurrentDocuments(),
+      ).thenAnswer((_) async => left(const NetworkFailure('Offline', code: 'NETWORK_OFFLINE')));
       return KycCubit(repository);
     },
     act: (cubit) => cubit.load(),
@@ -145,10 +139,7 @@ void main() {
   );
 }
 
-KycFileDraft _draft({
-  String fileName = 'cni.jpg',
-  String mimeType = 'image/jpeg',
-}) {
+KycFileDraft _draft({String fileName = 'cni.jpg', String mimeType = 'image/jpeg'}) {
   return KycFileDraft(
     documentType: KycDocumentType.cni,
     path: '/tmp/$fileName',
@@ -191,9 +182,7 @@ KycUploadResult _uploadResult({required bool complete}) {
         type: KycDocumentType.insurance,
         required: true,
         uploaded: complete,
-        latestStatus: complete
-            ? KycDocumentStatus.accepted
-            : KycDocumentStatus.missing,
+        latestStatus: complete ? KycDocumentStatus.accepted : KycDocumentStatus.missing,
       ),
     ],
   );

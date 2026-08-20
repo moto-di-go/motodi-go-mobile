@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -118,11 +118,7 @@ class _DetailContent extends StatelessWidget {
   final IntercityItineraryStatus itineraryStatus;
   final IntercityItinerary? itinerary;
 
-  const _DetailContent({
-    required this.announcement,
-    required this.itineraryStatus,
-    this.itinerary,
-  });
+  const _DetailContent({required this.announcement, required this.itineraryStatus, this.itinerary});
 
   @override
   Widget build(BuildContext context) {
@@ -144,8 +140,8 @@ class _DetailContent extends StatelessWidget {
     final ctaLabel = ownedByMe
         ? 'Émis par vous'
         : hasSeats
-            ? 'Souscrire'
-            : 'Complet';
+        ? 'Souscrire'
+        : 'Complet';
 
     void openSubscribe() {
       if (!kycValidated) {
@@ -173,7 +169,11 @@ class _DetailContent extends StatelessWidget {
                   onPressed: () => Navigator.of(dialogContext).pop(),
                   child: Text(
                     'Plus tard',
-                    style: _detailText(fontSize: 15, fontWeight: FontWeight.w600, color: const Color(0xFF6B756E)),
+                    style: _detailText(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF6B756E),
+                    ),
                   ),
                 ),
                 TextButton(
@@ -183,7 +183,11 @@ class _DetailContent extends StatelessWidget {
                   },
                   child: Text(
                     'Valider mon profil',
-                    style: _detailText(fontSize: 15, fontWeight: FontWeight.w700, color: const Color(0xFF16A34A)),
+                    style: _detailText(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF16A34A),
+                    ),
                   ),
                 ),
               ],
@@ -502,17 +506,19 @@ class _ItineraryBlock extends StatelessWidget {
     return SizedBox(
       height: 240,
       child: switch (status) {
-        IntercityItineraryStatus.ready when itinerary != null => IntercityItineraryMap(itinerary: itinerary!),
+        IntercityItineraryStatus.ready when itinerary != null => IntercityItineraryMap(
+          itinerary: itinerary!,
+        ),
         IntercityItineraryStatus.failure => const _ItineraryMessage(
-            'Itinéraire routier indisponible pour le moment.',
-          ),
+          'Itinéraire routier indisponible pour le moment.',
+        ),
         IntercityItineraryStatus.idle || IntercityItineraryStatus.loading => const Center(
-            child: SizedBox(
-              width: 26,
-              height: 26,
-              child: CircularProgressIndicator(strokeWidth: 2.4, color: Color(0xFF16A34A)),
-            ),
+          child: SizedBox(
+            width: 26,
+            height: 26,
+            child: CircularProgressIndicator(strokeWidth: 2.4, color: Color(0xFF16A34A)),
           ),
+        ),
         _ => const _ItineraryMessage('Itinéraire routier indisponible pour le moment.'),
       },
     );
@@ -796,16 +802,14 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
                     },
                   );
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(state.subscribeErrorMessage!)),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.subscribeErrorMessage!)));
                 }
               }
             },
             builder: (context, state) {
-              final fieldBorder = _phoneError != null
-                  ? AppColors.error
-                  : const Color(0xFFE7EAE3);
+              final fieldBorder = _phoneError != null ? AppColors.error : const Color(0xFFE7EAE3);
 
               return Column(
                 children: [
@@ -1096,13 +1100,13 @@ class _SubscribeStepperButton extends StatelessWidget {
     final bg = !enabled
         ? const Color(0xFFF1F1EA)
         : filled
-            ? const Color(0xFF16A34A)
-            : Colors.white;
+        ? const Color(0xFF16A34A)
+        : Colors.white;
     final fg = !enabled
         ? const Color(0xFFB7C0B9)
         : filled
-            ? Colors.white
-            : const Color(0xFF101512);
+        ? Colors.white
+        : const Color(0xFF101512);
 
     return Material(
       color: bg,
@@ -1196,10 +1200,7 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
                     child: ListView(
                       padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
                       children: [
-                        _BookingTripSummaryCard(
-                          booking: booking,
-                          announcement: announcement,
-                        ),
+                        _BookingTripSummaryCard(booking: booking, announcement: announcement),
                         const SizedBox(height: 24),
                         _BookingTimeline(booking: booking),
                       ],
@@ -1318,8 +1319,9 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
       ),
     );
     if (confirmed == true && context.mounted) {
-      final reason =
-          reasonController.text.trim().isEmpty ? 'Annulation demandée' : reasonController.text.trim();
+      final reason = reasonController.text.trim().isEmpty
+          ? 'Annulation demandée'
+          : reasonController.text.trim();
       await _cubit.cancelBooking(booking.id, reason);
     }
   }
@@ -1334,9 +1336,7 @@ class _BookingTripSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routeLabel = announcement?.route ?? 'Trajet';
-    final total = announcement == null
-        ? null
-        : announcement!.priceFcfa * booking.seatsRequested;
+    final total = announcement == null ? null : announcement!.priceFcfa * booking.seatsRequested;
     final metaParts = <String>[
       if (announcement != null) formatDayMonth(announcement!.departureDate),
       if (announcement != null) announcement!.formattedDepartureTime,
@@ -1395,43 +1395,36 @@ class _BookingStatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final (label, fg, bg) = switch (status) {
       IntercityBookingStatus.pending => (
-          'En attente',
-          const Color(0xFFB45309),
-          const Color(0xFFFFF7ED),
-        ),
+        'En attente',
+        const Color(0xFFB45309),
+        const Color(0xFFFFF7ED),
+      ),
       IntercityBookingStatus.confirmed || IntercityBookingStatus.pendingPayment => (
-          'Confirmée',
-          const Color(0xFF16A34A),
-          const Color(0xFFEFFAF3),
-        ),
-      IntercityBookingStatus.paid => (
-          'Payée',
-          const Color(0xFF16A34A),
-          const Color(0xFFEFFAF3),
-        ),
+        'Confirmée',
+        const Color(0xFF16A34A),
+        const Color(0xFFEFFAF3),
+      ),
+      IntercityBookingStatus.paid => ('Payée', const Color(0xFF16A34A), const Color(0xFFEFFAF3)),
       IntercityBookingStatus.cancelled => (
-          'Annulée',
-          const Color(0xFFDC2626),
-          const Color(0xFFFEF2F2),
-        ),
+        'Annulée',
+        const Color(0xFFDC2626),
+        const Color(0xFFFEF2F2),
+      ),
       IntercityBookingStatus.expired => (
-          'Expirée',
-          const Color(0xFF6B7280),
-          const Color(0xFFF3F4F6),
-        ),
+        'Expirée',
+        const Color(0xFF6B7280),
+        const Color(0xFFF3F4F6),
+      ),
       IntercityBookingStatus.unknown => (
-          status.label,
-          const Color(0xFF6B7280),
-          const Color(0xFFF3F4F6),
-        ),
+        status.label,
+        const Color(0xFF6B7280),
+        const Color(0xFFF3F4F6),
+      ),
     };
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(999),
-      ),
+      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(999)),
       child: Text(
         label,
         style: _detailText(fontSize: 13, fontWeight: FontWeight.w700, color: fg),
@@ -1467,16 +1460,14 @@ class _BookingTimeline extends StatelessWidget {
     return Column(
       children: [
         for (var i = 0; i < steps.length; i++)
-          _TimelineRow(
-            step: steps[i],
-            isLast: i == steps.length - 1,
-          ),
+          _TimelineRow(step: steps[i], isLast: i == steps.length - 1),
       ],
     );
   }
 
   List<_TimelineStepData> _stepsFor(IntercityBooking booking) {
-    final confirmed = booking.confirmedAt != null ||
+    final confirmed =
+        booking.confirmedAt != null ||
         booking.status == IntercityBookingStatus.confirmed ||
         booking.status == IntercityBookingStatus.pendingPayment ||
         booking.status == IntercityBookingStatus.paid;
@@ -1497,14 +1488,13 @@ class _BookingTimeline extends StatelessWidget {
       if (cancelled)
         _TimelineStepData(
           label: 'Annulée',
-          subtitle: booking.cancelledAt == null ? null : formatRelativeDayTime(booking.cancelledAt!),
+          subtitle: booking.cancelledAt == null
+              ? null
+              : formatRelativeDayTime(booking.cancelledAt!),
           visual: _TimelineStepVisual.cancelled,
         )
       else if (paid)
-        const _TimelineStepData(
-          label: 'Payée / terminée',
-          visual: _TimelineStepVisual.done,
-        )
+        const _TimelineStepData(label: 'Payée / terminée', visual: _TimelineStepVisual.done)
       else if (confirmed)
         const _TimelineStepData(
           label: 'Paiement',
@@ -1513,10 +1503,7 @@ class _BookingTimeline extends StatelessWidget {
           accentSubtitle: true,
         )
       else
-        const _TimelineStepData(
-          label: 'Paiement',
-          visual: _TimelineStepVisual.pending,
-        ),
+        const _TimelineStepData(label: 'Paiement', visual: _TimelineStepVisual.pending),
     ];
   }
 }
@@ -1608,45 +1595,39 @@ class _TimelineDot extends StatelessWidget {
   Widget build(BuildContext context) {
     return switch (visual) {
       _TimelineStepVisual.done => Container(
-          width: 28,
-          height: 28,
-          decoration: const BoxDecoration(
-            color: Color(0xFF16A34A),
-            shape: BoxShape.circle,
-          ),
-          alignment: Alignment.center,
-          child: const Icon(Icons.check_rounded, size: 16, color: Colors.white),
-        ),
+        width: 28,
+        height: 28,
+        decoration: const BoxDecoration(color: Color(0xFF16A34A), shape: BoxShape.circle),
+        alignment: Alignment.center,
+        child: const Icon(Icons.check_rounded, size: 16, color: Colors.white),
+      ),
       _TimelineStepVisual.payment => Container(
-          width: 34,
-          height: 34,
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFFBEB),
-            shape: BoxShape.circle,
-            border: Border.all(color: const Color(0xFFEAB308), width: 2),
-          ),
-          alignment: Alignment.center,
-          child: const MotodigoWalletYellowIcon(size: 18),
+        width: 34,
+        height: 34,
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFFBEB),
+          shape: BoxShape.circle,
+          border: Border.all(color: const Color(0xFFEAB308), width: 2),
         ),
+        alignment: Alignment.center,
+        child: const MotodigoWalletYellowIcon(size: 18),
+      ),
       _TimelineStepVisual.cancelled => Container(
-          width: 28,
-          height: 28,
-          decoration: const BoxDecoration(
-            color: Color(0xFFDC2626),
-            shape: BoxShape.circle,
-          ),
-          alignment: Alignment.center,
-          child: const Icon(Icons.close_rounded, size: 16, color: Colors.white),
-        ),
+        width: 28,
+        height: 28,
+        decoration: const BoxDecoration(color: Color(0xFFDC2626), shape: BoxShape.circle),
+        alignment: Alignment.center,
+        child: const Icon(Icons.close_rounded, size: 16, color: Colors.white),
+      ),
       _TimelineStepVisual.pending => Container(
-          width: 28,
-          height: 28,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            border: Border.all(color: const Color(0xFFD8DED6), width: 2),
-          ),
+        width: 28,
+        height: 28,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          border: Border.all(color: const Color(0xFFD8DED6), width: 2),
         ),
+      ),
     };
   }
 }

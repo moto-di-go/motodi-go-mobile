@@ -26,12 +26,8 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     );
     final result = await _repository.list(unreadOnly: filterUnread, page: 0, size: _pageSize);
     result.fold(
-      (failure) => emit(
-        state.copyWith(
-          status: NotificationsStatus.failure,
-          errorMessage: failure.message,
-        ),
-      ),
+      (failure) =>
+          emit(state.copyWith(status: NotificationsStatus.failure, errorMessage: failure.message)),
       (page) => emit(
         state.copyWith(
           status: NotificationsStatus.success,
@@ -54,12 +50,8 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       size: _pageSize,
     );
     result.fold(
-      (failure) => emit(
-        state.copyWith(
-          status: NotificationsStatus.success,
-          errorMessage: failure.message,
-        ),
-      ),
+      (failure) =>
+          emit(state.copyWith(status: NotificationsStatus.success, errorMessage: failure.message)),
       (page) => emit(
         state.copyWith(
           status: NotificationsStatus.success,
@@ -93,17 +85,12 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     );
 
     final result = await _repository.markRead(id);
-    result.fold(
-      (_) => load(),
-      (updated) {
-        if (state.unreadOnly) return;
-        emit(
-          state.copyWith(
-            items: state.items.map((item) => item.id == id ? updated : item).toList(),
-          ),
-        );
-      },
-    );
+    result.fold((_) => load(), (updated) {
+      if (state.unreadOnly) return;
+      emit(
+        state.copyWith(items: state.items.map((item) => item.id == id ? updated : item).toList()),
+      );
+    });
   }
 
   Future<void> markAllRead() async {
@@ -113,8 +100,8 @@ class NotificationsCubit extends Cubit<NotificationsState> {
         items: state.unreadOnly
             ? const <AppNotification>[]
             : state.items
-                .map((item) => item.copyWith(unread: false, readAt: DateTime.now()))
-                .toList(),
+                  .map((item) => item.copyWith(unread: false, readAt: DateTime.now()))
+                  .toList(),
         unreadCount: 0,
       ),
     );

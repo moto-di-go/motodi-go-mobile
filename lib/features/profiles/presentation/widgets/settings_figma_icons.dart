@@ -22,11 +22,7 @@ class MotodigoSettingsBellIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoSettingsBellIcon({
-    super.key,
-    this.size = 22,
-    this.color = const Color(0xFF3C4741),
-  });
+  const MotodigoSettingsBellIcon({super.key, this.size = 22, this.color = const Color(0xFF3C4741)});
 
   @override
   Widget build(BuildContext context) {
@@ -70,11 +66,7 @@ class MotodigoSettingsLockIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoSettingsLockIcon({
-    super.key,
-    this.size = 22,
-    this.color = const Color(0xFF3C4741),
-  });
+  const MotodigoSettingsLockIcon({super.key, this.size = 22, this.color = const Color(0xFF3C4741)});
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +118,12 @@ class _GlobePainter extends CustomPainter {
     _scaled(canvas, size, 24, (canvas) {
       final p = _stroke(color, 1.75);
       canvas.drawCircle(const Offset(12, 12), 9, p);
-      canvas.drawPath(Path()..moveTo(3, 12)..lineTo(21, 12), p);
+      canvas.drawPath(
+        Path()
+          ..moveTo(3, 12)
+          ..lineTo(21, 12),
+        p,
+      );
       canvas.drawPath(
         Path()
           ..moveTo(12, 3)
@@ -241,10 +238,7 @@ class _LockPainter extends CustomPainter {
     _scaled(canvas, size, 24, (canvas) {
       final p = _stroke(color, 1.75);
       canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          const Rect.fromLTWH(5, 11, 14, 10),
-          const Radius.circular(2.5),
-        ),
+        RRect.fromRectAndRadius(const Rect.fromLTWH(5, 11, 14, 10), const Radius.circular(2.5)),
         p,
       );
       canvas.drawPath(

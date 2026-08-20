@@ -104,8 +104,7 @@ class UrbanRideState extends Equatable {
 
   String get selectedPolyline => selectedOption?.polyline ?? estimate?.polyline ?? '';
 
-  List<TrafficLayer> get visibleLayers =>
-      layers.where(layerVisibility.allows).toList();
+  List<TrafficLayer> get visibleLayers => layers.where(layerVisibility.allows).toList();
 
   bool get hasTrafficBanner {
     return visibleLayers.any((layer) {
@@ -198,9 +197,13 @@ class UrbanRideState extends Equatable {
       destinationQuery: destinationQuery ?? this.destinationQuery,
       destinationLabel: destinationLabel ?? this.destinationLabel,
       locating: locating ?? this.locating,
-      locationError: identical(locationError, _unset) ? this.locationError : locationError as String?,
+      locationError: identical(locationError, _unset)
+          ? this.locationError
+          : locationError as String?,
       apiError: identical(apiError, _unset) ? this.apiError : apiError as String?,
-      walletBalance: identical(walletBalance, _unset) ? this.walletBalance : walletBalance as double?,
+      walletBalance: identical(walletBalance, _unset)
+          ? this.walletBalance
+          : walletBalance as double?,
       popularPlaces: popularPlaces ?? this.popularPlaces,
       popularPlacesDemo: popularPlacesDemo ?? this.popularPlacesDemo,
       geocodeResults: geocodeResults ?? this.geocodeResults,
@@ -213,8 +216,9 @@ class UrbanRideState extends Equatable {
       routeOptionsDemo: routeOptionsDemo ?? this.routeOptionsDemo,
       nearby: identical(nearby, _unset) ? this.nearby : nearby as NearbySearchResult?,
       drivers: drivers ?? this.drivers,
-      selectedDriverId:
-          identical(selectedDriverId, _unset) ? this.selectedDriverId : selectedDriverId as String?,
+      selectedDriverId: identical(selectedDriverId, _unset)
+          ? this.selectedDriverId
+          : selectedDriverId as String?,
       filters: filters ?? this.filters,
       draftFilters: draftFilters ?? this.draftFilters,
       layers: layers ?? this.layers,
@@ -222,8 +226,9 @@ class UrbanRideState extends Equatable {
       layerVisibility: layerVisibility ?? this.layerVisibility,
       draftLayerVisibility: draftLayerVisibility ?? this.draftLayerVisibility,
       legendExpanded: legendExpanded ?? this.legendExpanded,
-      selectedIncident:
-          identical(selectedIncident, _unset) ? this.selectedIncident : selectedIncident as TrafficLayer?,
+      selectedIncident: identical(selectedIncident, _unset)
+          ? this.selectedIncident
+          : selectedIncident as TrafficLayer?,
       searching: searching ?? this.searching,
       confirmedLocally: confirmedLocally ?? this.confirmedLocally,
     );
@@ -231,43 +236,43 @@ class UrbanRideState extends Equatable {
 
   @override
   List<Object?> get props => [
-        step,
-        returnTo,
-        center,
-        userPosition,
-        origin,
-        destination,
-        originLabel,
-        destinationQuery,
-        destinationLabel,
-        locating,
-        locationError,
-        apiError,
-        walletBalance,
-        popularPlaces,
-        popularPlacesDemo,
-        geocodeResults,
-        geocodeFailed,
-        geocoding,
-        history,
-        estimate,
-        routeOptions,
-        selectedKind,
-        routeOptionsDemo,
-        nearby,
-        drivers,
-        selectedDriverId,
-        filters,
-        draftFilters,
-        layers,
-        layersFetchedAt,
-        layerVisibility,
-        draftLayerVisibility,
-        legendExpanded,
-        selectedIncident,
-        searching,
-        confirmedLocally,
-      ];
+    step,
+    returnTo,
+    center,
+    userPosition,
+    origin,
+    destination,
+    originLabel,
+    destinationQuery,
+    destinationLabel,
+    locating,
+    locationError,
+    apiError,
+    walletBalance,
+    popularPlaces,
+    popularPlacesDemo,
+    geocodeResults,
+    geocodeFailed,
+    geocoding,
+    history,
+    estimate,
+    routeOptions,
+    selectedKind,
+    routeOptionsDemo,
+    nearby,
+    drivers,
+    selectedDriverId,
+    filters,
+    draftFilters,
+    layers,
+    layersFetchedAt,
+    layerVisibility,
+    draftLayerVisibility,
+    legendExpanded,
+    selectedIncident,
+    searching,
+    confirmedLocally,
+  ];
 }
 
 const Object _unset = Object();

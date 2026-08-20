@@ -33,10 +33,7 @@ class _PlaceholderTabScaffold extends StatelessWidget {
   final String title;
   final String message;
 
-  const _PlaceholderTabScaffold({
-    required this.title,
-    required this.message,
-  });
+  const _PlaceholderTabScaffold({required this.title, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +45,7 @@ class _PlaceholderTabScaffold extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: _tabText(fontSize: 32, fontWeight: FontWeight.w800, height: 1.1),
-              ),
+              Text(title, style: _tabText(fontSize: 32, fontWeight: FontWeight.w800, height: 1.1)),
               Expanded(
                 child: Center(
                   child: Column(

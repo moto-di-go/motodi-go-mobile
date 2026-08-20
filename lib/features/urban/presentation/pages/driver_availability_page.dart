@@ -35,7 +35,9 @@ class _DriverAvailabilityView extends StatelessWidget {
               const SizedBox(height: 8),
               Text(state.sharing ? 'GPS diffuse toutes les 5 secondes' : 'Diffusion GPS arretee'),
               const SizedBox(height: 8),
-              Text('GPS: ${state.gpsOk ? 'OK' : 'inactif'} · Consentement: ${state.gpsConsent ? 'oui' : 'non'}'),
+              Text(
+                'GPS: ${state.gpsOk ? 'OK' : 'inactif'} · Consentement: ${state.gpsConsent ? 'oui' : 'non'}',
+              ),
               if (state.lastSentAt != null) Text('Dernier envoi: ${state.lastSentAt}'),
               if (state.error != null)
                 Padding(
@@ -45,25 +47,25 @@ class _DriverAvailabilityView extends StatelessWidget {
               const SizedBox(height: 24),
               FilledButton(
                 onPressed: () => context.read<DriverAvailabilityCubit>().setAvailability(
-                      'AVAILABLE',
-                      gpsConsent: true,
-                    ),
+                  'AVAILABLE',
+                  gpsConsent: true,
+                ),
                 child: const Text('Passer disponible'),
               ),
               const SizedBox(height: 8),
               OutlinedButton(
                 onPressed: () => context.read<DriverAvailabilityCubit>().setAvailability(
-                      'OCCUPIED',
-                      gpsConsent: true,
-                    ),
+                  'OCCUPIED',
+                  gpsConsent: true,
+                ),
                 child: const Text('Occupe'),
               ),
               const SizedBox(height: 8),
               TextButton(
                 onPressed: () => context.read<DriverAvailabilityCubit>().setAvailability(
-                      'OFFLINE',
-                      gpsConsent: true,
-                    ),
+                  'OFFLINE',
+                  gpsConsent: true,
+                ),
                 child: const Text('Hors ligne'),
               ),
             ],

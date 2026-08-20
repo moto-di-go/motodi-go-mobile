@@ -43,10 +43,7 @@ void main() {
     final result = await repository.loadCurrentDocuments();
 
     expect(result.isLeft(), isTrue);
-    result.fold(
-      (failure) => expect(failure, isA<NetworkFailure>()),
-      (_) => fail('no data'),
-    );
+    result.fold((failure) => expect(failure, isA<NetworkFailure>()), (_) => fail('no data'));
     verifyNever(() => remote.loadCurrentDocuments());
   });
 
@@ -66,9 +63,9 @@ void main() {
 
   test('uploadDocument maps API invalid document error', () async {
     when(() => network.isConnected).thenAnswer((_) async => true);
-    when(() => remote.uploadDocument(any())).thenThrow(
-      const ApiException('KYC_DOCUMENT_INVALID', 'Document invalide'),
-    );
+    when(
+      () => remote.uploadDocument(any()),
+    ).thenThrow(const ApiException('KYC_DOCUMENT_INVALID', 'Document invalide'));
 
     final result = await repository.uploadDocument(_draft());
 
@@ -94,18 +91,13 @@ void main() {
     result.fold((failure) {
       expect(failure, isA<ValidationFailure>());
       expect(failure.code, 'KYC_DOCUMENT_DUPLICATE');
-      expect(
-        failure.message,
-        'Ce fichier a déjà été téléversé. Choisissez-en un autre.',
-      );
+      expect(failure.message, 'Ce fichier a déjà été téléversé. Choisissez-en un autre.');
     }, (_) => fail('no data'));
   });
 
   test('uploadDocument returns parsed upload result', () async {
     when(() => network.isConnected).thenAnswer((_) async => true);
-    when(
-      () => remote.uploadDocument(any()),
-    ).thenAnswer((_) async => _uploadResponse());
+    when(() => remote.uploadDocument(any())).thenAnswer((_) async => _uploadResponse());
 
     final result = await repository.uploadDocument(_draft());
 
@@ -116,26 +108,23 @@ void main() {
     });
   });
 
-  test(
-    'loadCurrentDocuments falls back to default checklist when KYC API is missing',
-    () async {
-      when(() => network.isConnected).thenAnswer((_) async => true);
-      when(
-        () => remote.loadCurrentDocuments(),
-      ).thenThrow(const ApiException('HTTP_404', 'Not Found', statusCode: 404));
-      when(() => local.readSession()).thenAnswer((_) async => _sessionModel());
+  test('loadCurrentDocuments falls back to default checklist when KYC API is missing', () async {
+    when(() => network.isConnected).thenAnswer((_) async => true);
+    when(
+      () => remote.loadCurrentDocuments(),
+    ).thenThrow(const ApiException('HTTP_404', 'Not Found', statusCode: 404));
+    when(() => local.readSession()).thenAnswer((_) async => _sessionModel());
 
-      final result = await repository.loadCurrentDocuments();
+    final result = await repository.loadCurrentDocuments();
 
-      expect(result.isRight(), isTrue);
-      result.fold((_) => fail('no failure'), (bundle) {
-        expect(bundle.profileType, ProfileType.mototaxi);
-        expect(bundle.profileValidationStatus, ValidationStatus.pending);
-        expect(bundle.requirements, hasLength(5));
-        expect(bundle.providedCount, 0);
-      });
-    },
-  );
+    expect(result.isRight(), isTrue);
+    result.fold((_) => fail('no failure'), (bundle) {
+      expect(bundle.profileType, ProfileType.mototaxi);
+      expect(bundle.profileValidationStatus, ValidationStatus.pending);
+      expect(bundle.requirements, hasLength(5));
+      expect(bundle.providedCount, 0);
+    });
+  });
 }
 
 KycFileDraft _draft({
@@ -168,12 +157,7 @@ UploadKycDocumentResponseModel _uploadResponse() {
       'updatedAt': '2026-07-22T08:00:00.000Z',
     },
     'requirements': [
-      {
-        'type': 'CNI',
-        'required': true,
-        'uploaded': true,
-        'latestStatus': 'PENDING_REVIEW',
-      },
+      {'type': 'CNI', 'required': true, 'uploaded': true, 'latestStatus': 'PENDING_REVIEW'},
     ],
   });
 }

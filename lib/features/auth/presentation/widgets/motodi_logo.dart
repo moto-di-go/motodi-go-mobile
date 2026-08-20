@@ -58,10 +58,7 @@ class _MotodiSplashIconPainter extends CustomPainter {
 
     final iconPath = Path()
       ..addRRect(
-        RRect.fromRectAndRadius(
-          const Rect.fromLTWH(22, 8, 86, 86),
-          const Radius.circular(26),
-        ),
+        RRect.fromRectAndRadius(const Rect.fromLTWH(22, 8, 86, 86), const Radius.circular(26)),
       );
     final shadowPaint = Paint()
       ..color = AppColors.primary.withValues(alpha: 0.45)
@@ -70,10 +67,7 @@ class _MotodiSplashIconPainter extends CustomPainter {
 
     final greenPaint = Paint()..color = AppColors.primary;
     canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(22, 8, 86, 86),
-        const Radius.circular(26),
-      ),
+      RRect.fromRectAndRadius(const Rect.fromLTWH(22, 8, 86, 86), const Radius.circular(26)),
       greenPaint,
     );
 

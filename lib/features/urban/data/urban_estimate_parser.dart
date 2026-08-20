@@ -94,21 +94,17 @@ List<RouteOption> resolveRouteOptions({
 }) {
   final api = estimate?.options ?? const <RouteOption>[];
   if (api.isNotEmpty) {
-    final sorted = [...api]..sort(
-        (left, right) => _routeKindOrder
-            .indexOf(left.kind)
-            .compareTo(_routeKindOrder.indexOf(right.kind)),
+    final sorted = [...api]
+      ..sort(
+        (left, right) =>
+            _routeKindOrder.indexOf(left.kind).compareTo(_routeKindOrder.indexOf(right.kind)),
       );
     return sorted;
   }
   return buildMockRouteOptions(origin, destination, estimate);
 }
 
-List<RouteOption> buildMockRouteOptions(
-  LatLng origin,
-  LatLng destination,
-  FareEstimate? estimate,
-) {
+List<RouteOption> buildMockRouteOptions(LatLng origin, LatLng destination, FareEstimate? estimate) {
   final baseDistance = estimate?.distanceKm ?? haversineKm(origin, destination);
   final baseDuration = estimate?.durationMinutes ?? estimateUrbanMinutes(baseDistance);
   final baseAmount = estimate?.amountFcfa ?? (300 + baseDistance * 200).roundToDouble();
@@ -119,10 +115,8 @@ List<RouteOption> buildMockRouteOptions(
       ? estimate!.alternatives.first.polylineWkt
       : toWktLine(bulgedPath(origin, destination, 0.0042));
   final cheapestLine = toWktLine(bulgedPath(origin, destination, -0.0034));
-  final fastestDegraded = estimate?.alternatives.any(
-        (alt) => alt.reason.toUpperCase().contains('DEGRAD'),
-      ) ??
-      false;
+  final fastestDegraded =
+      estimate?.alternatives.any((alt) => alt.reason.toUpperCase().contains('DEGRAD')) ?? false;
 
   return [
     RouteOption(

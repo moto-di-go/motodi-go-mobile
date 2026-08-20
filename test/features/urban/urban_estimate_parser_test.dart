@@ -9,11 +9,7 @@ void main() {
 
   test('parses appliedRulesTrace into breakdown', () {
     const trace = 'base 300 + 4.200km*150, arrondi, night=1, weather=1.150 (precip=2.0mm)';
-    final breakdown = parseAppliedRulesTrace(
-      trace,
-      fallbackTotal: 978,
-      fallbackDistanceKm: 4.2,
-    );
+    final breakdown = parseAppliedRulesTrace(trace, fallbackTotal: 978, fallbackDistanceKm: 4.2);
     expect(breakdown, isNotNull);
     expect(breakdown!.base, 300);
     expect(breakdown.distanceKm, closeTo(4.2, 0.001));
@@ -130,10 +126,7 @@ void main() {
       destination: destination,
     );
     expect(options, hasLength(2));
-    expect(options.map((o) => o.kind), [
-      RouteOptionKind.recommended,
-      RouteOptionKind.fastest,
-    ]);
+    expect(options.map((o) => o.kind), [RouteOptionKind.recommended, RouteOptionKind.fastest]);
     expect(options.every((o) => o.isDemo), isFalse);
   });
 
@@ -146,7 +139,10 @@ void main() {
     expect(estimate.polyline, 'LINESTRING(11.50 3.86, 11.54 3.88)');
     expect(estimate.status, 'PROPOSED');
     expect(estimate.alternatives, hasLength(1));
-    expect(estimate.alternatives.first.polylineWkt, 'LINESTRING(11.50 3.86, 11.52 3.87, 11.54 3.88)');
+    expect(
+      estimate.alternatives.first.polylineWkt,
+      'LINESTRING(11.50 3.86, 11.52 3.87, 11.54 3.88)',
+    );
     expect(estimate.alternatives.first.reason, 'DEGRADED_AVOIDED');
     expect(estimate.options, hasLength(3));
     expect(estimate.options.map((o) => o.kind), [

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -121,7 +121,9 @@ class _IntercityPublishGuardPageState extends State<IntercityPublishGuardPage> {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  state.isEligible ? 'Vous pouvez publier une annonce' : 'Publication non disponible',
+                  state.isEligible
+                      ? 'Vous pouvez publier une annonce'
+                      : 'Publication non disponible',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: AppColors.textPrimary,
@@ -132,7 +134,8 @@ class _IntercityPublishGuardPageState extends State<IntercityPublishGuardPage> {
                 Text(
                   state.isEligible
                       ? 'Renseignez votre trajet, votre véhicule et vos disponibilités.'
-                      : state.eligibilityReason ?? 'Votre profil ne remplit pas encore les conditions requises.',
+                      : state.eligibilityReason ??
+                            'Votre profil ne remplit pas encore les conditions requises.',
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: Color(0xFF8A968C), height: 1.4),
                 ),
@@ -199,7 +202,10 @@ class _VehicleTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(vehicle.type, style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
+                Text(
+                  vehicle.type,
+                  style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.textPrimary),
+                ),
                 const SizedBox(height: 3),
                 Text(
                   '${vehicle.capacity ?? '—'} places · ${vehicle.isUsable ? 'Validé' : vehicle.validationStatus}',
@@ -266,7 +272,9 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
 
   @override
   Widget build(BuildContext context) {
-    final usableVehicles = widget.cubit.state.vehicles.where((vehicle) => vehicle.isUsable).toList();
+    final usableVehicles = widget.cubit.state.vehicles
+        .where((vehicle) => vehicle.isUsable)
+        .toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAF6),
@@ -552,15 +560,18 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
     final draft = CreateAnnouncementDraft(
       departureCity: departure,
       destinationCity: destination,
-      ptRamassage: _ptRamassageController.text.trim().isEmpty ? null : _ptRamassageController.text.trim(),
+      ptRamassage: _ptRamassageController.text.trim().isEmpty
+          ? null
+          : _ptRamassageController.text.trim(),
       departureDate: _date!,
       departureTime:
           '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:00',
       priceFcfa: price,
       totalSeats: _seats,
       vehicle: _vehicle!,
-      instructions:
-          _instructionsController.text.trim().isEmpty ? null : _instructionsController.text.trim(),
+      instructions: _instructionsController.text.trim().isEmpty
+          ? null
+          : _instructionsController.text.trim(),
     );
     context.push(RouteConstants.intercityPreview, extra: (widget.cubit, draft));
   }
@@ -705,12 +716,7 @@ class _CreateTapBox extends StatelessWidget {
   final String? value;
   final String placeholder;
 
-  const _CreateTapBox({
-    required this.onTap,
-    required this.placeholder,
-    this.prefix,
-    this.value,
-  });
+  const _CreateTapBox({required this.onTap, required this.placeholder, this.prefix, this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -803,11 +809,7 @@ class _CreateSeatsStepper extends StatelessWidget {
   final int maxSeats;
   final ValueChanged<int> onChanged;
 
-  const _CreateSeatsStepper({
-    required this.seats,
-    required this.maxSeats,
-    required this.onChanged,
-  });
+  const _CreateSeatsStepper({required this.seats, required this.maxSeats, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -819,15 +821,8 @@ class _CreateSeatsStepper extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _CreateSeatButton(
-            label: '−',
-            enabled: seats > 1,
-            onTap: () => onChanged(seats - 1),
-          ),
-          Text(
-            '$seats',
-            style: _publishText(fontSize: 18, fontWeight: FontWeight.w800),
-          ),
+          _CreateSeatButton(label: '−', enabled: seats > 1, onTap: () => onChanged(seats - 1)),
+          Text('$seats', style: _publishText(fontSize: 18, fontWeight: FontWeight.w800)),
           _CreateSeatButton(
             label: '+',
             enabled: seats < maxSeats,
@@ -844,11 +839,7 @@ class _CreateSeatButton extends StatelessWidget {
   final bool enabled;
   final VoidCallback onTap;
 
-  const _CreateSeatButton({
-    required this.label,
-    required this.enabled,
-    required this.onTap,
-  });
+  const _CreateSeatButton({required this.label, required this.enabled, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -903,9 +894,9 @@ class IntercityPreviewPage extends StatelessWidget {
               }
               if (state.createStatus == IntercityCreateStatus.failure &&
                   state.createErrorMessage != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.createErrorMessage!)),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(state.createErrorMessage!)));
               }
             },
             builder: (context, state) {
@@ -1006,10 +997,7 @@ class IntercityPreviewPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        SecondaryAuthButton(
-                          label: 'Modifier',
-                          onPressed: () => context.pop(),
-                        ),
+                        SecondaryAuthButton(label: 'Modifier', onPressed: () => context.pop()),
                       ],
                     ),
                   ),
@@ -1038,10 +1026,16 @@ class _PreviewRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 100,
-            child: Text(label, style: const TextStyle(color: Color(0xFF8A968C), fontWeight: FontWeight.w700)),
+            child: Text(
+              label,
+              style: const TextStyle(color: Color(0xFF8A968C), fontWeight: FontWeight.w700),
+            ),
           ),
           Expanded(
-            child: Text(value, style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w700)),
+            child: Text(
+              value,
+              style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w700),
+            ),
           ),
         ],
       ),
@@ -1075,10 +1069,7 @@ class IntercityPublishSuccessPage extends StatelessWidget {
                 width: 88,
                 height: 88,
                 alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFDDF5E6),
-                  shape: BoxShape.circle,
-                ),
+                decoration: const BoxDecoration(color: Color(0xFFDDF5E6), shape: BoxShape.circle),
                 child: const Icon(Icons.check_rounded, size: 44, color: Color(0xFF16A34A)),
               ),
               const SizedBox(height: 22),
@@ -1303,43 +1294,43 @@ class _IntercityMyAnnouncementsPageState extends State<IntercityMyAnnouncementsP
                     child: state.isLoadingMine && state.myAnnouncements.isEmpty
                         ? const AppLoading()
                         : filtered.isEmpty
-                            ? ListView(
-                                padding: const EdgeInsets.all(24),
-                                children: [
-                                  const SizedBox(height: 60),
-                                  const Center(child: MotodigoSearchEmptyIcon(size: 96)),
-                                  const SizedBox(height: 20),
-                                  Center(
-                                    child: Text(
-                                      state.myAnnouncements.isEmpty
-                                          ? "Vous n'avez publié aucune annonce"
-                                          : 'Aucune annonce dans ce filtre',
-                                      textAlign: TextAlign.center,
-                                      style: _publishText(fontSize: 16, fontWeight: FontWeight.w700),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : RefreshIndicator(
-                                onRefresh: () => _cubit.loadMyAnnouncements(),
-                                child: ListView.builder(
-                                  padding: const EdgeInsets.fromLTRB(18, 0, 18, 24),
-                                  itemCount: filtered.length,
-                                  itemBuilder: (context, index) {
-                                    final announcement = filtered[index];
-                                    return Padding(
-                                      padding: const EdgeInsets.only(bottom: 14),
-                                      child: _MyAnnouncementCard(
-                                        announcement: announcement,
-                                        onTap: () => context.push(
-                                          RouteConstants.intercityIncomingBookings,
-                                          extra: announcement.id,
-                                        ),
-                                      ),
-                                    );
-                                  },
+                        ? ListView(
+                            padding: const EdgeInsets.all(24),
+                            children: [
+                              const SizedBox(height: 60),
+                              const Center(child: MotodigoSearchEmptyIcon(size: 96)),
+                              const SizedBox(height: 20),
+                              Center(
+                                child: Text(
+                                  state.myAnnouncements.isEmpty
+                                      ? "Vous n'avez publié aucune annonce"
+                                      : 'Aucune annonce dans ce filtre',
+                                  textAlign: TextAlign.center,
+                                  style: _publishText(fontSize: 16, fontWeight: FontWeight.w700),
                                 ),
                               ),
+                            ],
+                          )
+                        : RefreshIndicator(
+                            onRefresh: () => _cubit.loadMyAnnouncements(),
+                            child: ListView.builder(
+                              padding: const EdgeInsets.fromLTRB(18, 0, 18, 24),
+                              itemCount: filtered.length,
+                              itemBuilder: (context, index) {
+                                final announcement = filtered[index];
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 14),
+                                  child: _MyAnnouncementCard(
+                                    announcement: announcement,
+                                    onTap: () => context.push(
+                                      RouteConstants.intercityIncomingBookings,
+                                      extra: announcement.id,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                   ),
                 ],
               );
@@ -1356,11 +1347,7 @@ class _FilterChip extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _FilterChip({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
+  const _FilterChip({required this.label, required this.selected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -1390,14 +1377,14 @@ class _MyAnnouncementCard extends StatelessWidget {
   final IntercityAnnouncement announcement;
   final VoidCallback onTap;
 
-  const _MyAnnouncementCard({
-    required this.announcement,
-    required this.onTap,
-  });
+  const _MyAnnouncementCard({required this.announcement, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    final reserved = (announcement.totalSeats - announcement.remainingSeats).clamp(0, announcement.totalSeats);
+    final reserved = (announcement.totalSeats - announcement.remainingSeats).clamp(
+      0,
+      announcement.totalSeats,
+    );
     final progress = announcement.totalSeats == 0 ? 0.0 : reserved / announcement.totalSeats;
     final isActive = announcement.status == AnnouncementStatus.published;
     final showOccupancy = announcement.status != AnnouncementStatus.cancelled;
@@ -1493,44 +1480,21 @@ class _AnnouncementStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (label, fg, bg) = switch (status) {
-      AnnouncementStatus.published => (
-          'Active',
-          const Color(0xFF16A34A),
-          const Color(0xFFE8F8EE),
-        ),
-      AnnouncementStatus.full => (
-          'Complète',
-          const Color(0xFFB45309),
-          const Color(0xFFFFF7ED),
-        ),
-      AnnouncementStatus.closed => (
-          'Clôturée',
-          const Color(0xFF6B756E),
-          const Color(0xFFEEEEE6),
-        ),
-      AnnouncementStatus.cancelled => (
-          'Annulée',
-          const Color(0xFFDC2626),
-          const Color(0xFFFEF2F2),
-        ),
-      AnnouncementStatus.draft => (
-          'Brouillon',
-          const Color(0xFF6B756E),
-          const Color(0xFFEEEEE6),
-        ),
+      AnnouncementStatus.published => ('Active', const Color(0xFF16A34A), const Color(0xFFE8F8EE)),
+      AnnouncementStatus.full => ('Complète', const Color(0xFFB45309), const Color(0xFFFFF7ED)),
+      AnnouncementStatus.closed => ('Clôturée', const Color(0xFF6B756E), const Color(0xFFEEEEE6)),
+      AnnouncementStatus.cancelled => ('Annulée', const Color(0xFFDC2626), const Color(0xFFFEF2F2)),
+      AnnouncementStatus.draft => ('Brouillon', const Color(0xFF6B756E), const Color(0xFFEEEEE6)),
       AnnouncementStatus.unknown => (
-          status.label,
-          const Color(0xFF6B756E),
-          const Color(0xFFEEEEE6),
-        ),
+        status.label,
+        const Color(0xFF6B756E),
+        const Color(0xFFEEEEE6),
+      ),
     };
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(999),
-      ),
+      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(999)),
       child: Text(
         label,
         style: _publishText(fontSize: 12, fontWeight: FontWeight.w700, color: fg, height: 1.1),
@@ -1619,9 +1583,7 @@ class _IntercityIncomingBookingsPageState extends State<IntercityIncomingBooking
                           ),
                         ),
                         const SizedBox(width: 10),
-                        _IncomingNotifButton(
-                          onTap: () => context.go(RouteConstants.notifications),
-                        ),
+                        _IncomingNotifButton(onTap: () => context.go(RouteConstants.notifications)),
                       ],
                     ),
                   ),
@@ -1630,70 +1592,69 @@ class _IntercityIncomingBookingsPageState extends State<IntercityIncomingBooking
                     child: state.isLoadingIncoming && state.incomingBookings.isEmpty
                         ? const AppLoading()
                         : state.incomingStatus == IntercityIncomingStatus.failure
-                            ? AppErrorView(
-                                message: state.incomingErrorMessage ??
-                                    'Impossible de charger les réservations.',
-                                onRetry: () => _cubit.loadIncomingBookings(widget.announcementId),
-                              )
-                            : state.incomingBookings.isEmpty
-                                ? ListView(
-                                    padding: const EdgeInsets.fromLTRB(28, 48, 28, 28),
-                                    children: [
-                                      const Center(child: MotodigoSearchEmptyIcon(size: 96)),
-                                      const SizedBox(height: 28),
-                                      Text(
-                                        'Aucune réservation',
-                                        textAlign: TextAlign.center,
-                                        style: _publishText(
-                                          fontSize: 26,
-                                          fontWeight: FontWeight.w800,
-                                          height: 1.25,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      Text(
-                                        'Les demandes de places pour cette annonce apparaîtront ici.',
-                                        textAlign: TextAlign.center,
-                                        style: _publishText(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          color: const Color(0xFF54615A),
-                                          height: 1.45,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : RefreshIndicator(
-                                    onRefresh: () =>
-                                        _cubit.loadIncomingBookings(widget.announcementId),
-                                    child: ListView.builder(
-                                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-                                      itemCount: state.incomingBookings.length,
-                                      itemBuilder: (context, index) {
-                                        final booking = state.incomingBookings[index];
-                                        final processing =
-                                            state.processingBookingIds.contains(booking.id);
-                                        final pricePerSeat = announcement?.priceFcfa;
-                                        return Padding(
-                                          padding: const EdgeInsets.only(bottom: 12),
-                                          child: _IncomingBookingCard(
-                                            booking: booking,
-                                            pricePerSeat: pricePerSeat,
-                                            processing: processing,
-                                            onConfirm: booking.status == IntercityBookingStatus.pending
-                                                ? () => _cubit.confirmIncomingBooking(booking.id)
-                                                : null,
-                                            onCancel: booking.status == IntercityBookingStatus.pending
-                                                ? () => _cubit.cancelIncomingBooking(
-                                                      booking.id,
-                                                      'Refusée par le transporteur',
-                                                    )
-                                                : null,
-                                          ),
-                                        );
-                                      },
-                                    ),
+                        ? AppErrorView(
+                            message:
+                                state.incomingErrorMessage ??
+                                'Impossible de charger les réservations.',
+                            onRetry: () => _cubit.loadIncomingBookings(widget.announcementId),
+                          )
+                        : state.incomingBookings.isEmpty
+                        ? ListView(
+                            padding: const EdgeInsets.fromLTRB(28, 48, 28, 28),
+                            children: [
+                              const Center(child: MotodigoSearchEmptyIcon(size: 96)),
+                              const SizedBox(height: 28),
+                              Text(
+                                'Aucune réservation',
+                                textAlign: TextAlign.center,
+                                style: _publishText(
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.w800,
+                                  height: 1.25,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Les demandes de places pour cette annonce apparaîtront ici.',
+                                textAlign: TextAlign.center,
+                                style: _publishText(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF54615A),
+                                  height: 1.45,
+                                ),
+                              ),
+                            ],
+                          )
+                        : RefreshIndicator(
+                            onRefresh: () => _cubit.loadIncomingBookings(widget.announcementId),
+                            child: ListView.builder(
+                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                              itemCount: state.incomingBookings.length,
+                              itemBuilder: (context, index) {
+                                final booking = state.incomingBookings[index];
+                                final processing = state.processingBookingIds.contains(booking.id);
+                                final pricePerSeat = announcement?.priceFcfa;
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: _IncomingBookingCard(
+                                    booking: booking,
+                                    pricePerSeat: pricePerSeat,
+                                    processing: processing,
+                                    onConfirm: booking.status == IntercityBookingStatus.pending
+                                        ? () => _cubit.confirmIncomingBooking(booking.id)
+                                        : null,
+                                    onCancel: booking.status == IntercityBookingStatus.pending
+                                        ? () => _cubit.cancelIncomingBooking(
+                                            booking.id,
+                                            'Refusée par le transporteur',
+                                          )
+                                        : null,
                                   ),
+                                );
+                              },
+                            ),
+                          ),
                   ),
                 ],
               );
@@ -1748,10 +1709,7 @@ class _IncomingNotifButton extends StatelessWidget {
             alignment: Alignment.center,
             clipBehavior: Clip.none,
             children: [
-              CustomPaint(
-                size: Size.square(26),
-                painter: _IncomingBellPainter(Color(0xFF101512)),
-              ),
+              CustomPaint(size: Size.square(26), painter: _IncomingBellPainter(Color(0xFF101512))),
               Positioned(
                 right: 11,
                 top: 10,
@@ -1822,7 +1780,8 @@ class _IncomingBookingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPending = booking.status == IntercityBookingStatus.pending;
-    final isAccepted = booking.status == IntercityBookingStatus.confirmed ||
+    final isAccepted =
+        booking.status == IntercityBookingStatus.confirmed ||
         booking.status == IntercityBookingStatus.pendingPayment ||
         booking.status == IntercityBookingStatus.paid;
     final showPrice = isAccepted && pricePerSeat != null;
@@ -1832,8 +1791,7 @@ class _IncomingBookingCard extends StatelessWidget {
       IntercityBookingStatus.pending => const Color(0xFFFFF7ED),
       IntercityBookingStatus.confirmed ||
       IntercityBookingStatus.pendingPayment ||
-      IntercityBookingStatus.paid =>
-        const Color(0xFFEFFAF3),
+      IntercityBookingStatus.paid => const Color(0xFFEFFAF3),
       IntercityBookingStatus.cancelled => const Color(0xFFFEF2F2),
       IntercityBookingStatus.expired => Colors.white,
       IntercityBookingStatus.unknown => Colors.white,
@@ -1841,15 +1799,15 @@ class _IncomingBookingCard extends StatelessWidget {
     final avatarBg = isPending
         ? const Color(0xFFE8E4D9)
         : isAccepted
-            ? const Color(0xFF16A34A)
-            : booking.status == IntercityBookingStatus.cancelled
-                ? const Color(0xFFFECACA)
-                : const Color(0xFFE7EAE3);
+        ? const Color(0xFF16A34A)
+        : booking.status == IntercityBookingStatus.cancelled
+        ? const Color(0xFFFECACA)
+        : const Color(0xFFE7EAE3);
     final avatarFg = isPending || booking.status == IntercityBookingStatus.expired
         ? const Color(0xFF54615A)
         : booking.status == IntercityBookingStatus.cancelled
-            ? const Color(0xFFDC2626)
-            : Colors.white;
+        ? const Color(0xFFDC2626)
+        : Colors.white;
     final seatsLabel =
         '${booking.seatsRequested} place${booking.seatsRequested > 1 ? 's' : ''} demandée${booking.seatsRequested > 1 ? 's' : ''}';
 
@@ -1970,11 +1928,7 @@ class _IncomingSquareAction extends StatelessWidget {
   final VoidCallback? onTap;
   final Widget child;
 
-  const _IncomingSquareAction({
-    required this.background,
-    required this.onTap,
-    required this.child,
-  });
+  const _IncomingSquareAction({required this.background, required this.onTap, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -1984,11 +1938,7 @@ class _IncomingSquareAction extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: onTap,
-        child: SizedBox(
-          width: 44,
-          height: 44,
-          child: Center(child: child),
-        ),
+        child: SizedBox(width: 44, height: 44, child: Center(child: child)),
       ),
     );
   }
@@ -2003,28 +1953,21 @@ class _IncomingCompactBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final (label, fg, bg) = switch (status) {
       IntercityBookingStatus.cancelled => (
-          'Refusée',
-          const Color(0xFFDC2626),
-          const Color(0xFFFEE2E2),
-        ),
+        'Refusée',
+        const Color(0xFFDC2626),
+        const Color(0xFFFEE2E2),
+      ),
       IntercityBookingStatus.expired => (
-          'Expirée',
-          const Color(0xFF6B756E),
-          const Color(0xFFEEEEE6),
-        ),
-      _ => (
-          status.label,
-          const Color(0xFF6B756E),
-          const Color(0xFFEEEEE6),
-        ),
+        'Expirée',
+        const Color(0xFF6B756E),
+        const Color(0xFFEEEEE6),
+      ),
+      _ => (status.label, const Color(0xFF6B756E), const Color(0xFFEEEEE6)),
     };
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(999),
-      ),
+      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(999)),
       child: Text(
         label,
         style: _publishText(fontSize: 12, fontWeight: FontWeight.w700, color: fg, height: 1.1),

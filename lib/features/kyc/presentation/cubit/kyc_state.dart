@@ -39,8 +39,7 @@ class KycState extends Equatable {
     this.errorCode,
   });
 
-  bool get isLoading =>
-      status == KycStatus.loading || status == KycStatus.uploading;
+  bool get isLoading => status == KycStatus.loading || status == KycStatus.uploading;
   bool get hasBundle => bundle != null;
 
   KycState copyWith({

@@ -18,13 +18,7 @@ class KycCubit extends Cubit<KycState> {
   KycCubit(this._repository) : super(const KycState());
 
   Future<void> load() async {
-    emit(
-      state.copyWith(
-        status: KycStatus.loading,
-        errorMessage: null,
-        errorCode: null,
-      ),
-    );
+    emit(state.copyWith(status: KycStatus.loading, errorMessage: null, errorCode: null));
     final result = await _repository.loadCurrentDocuments();
     result.fold(
       (failure) => emit(
@@ -92,9 +86,7 @@ class KycCubit extends Cubit<KycState> {
     result.fold(
       (failure) => emit(
         state.copyWith(
-          status:
-              failure.code == 'KYC_DOCUMENT_INVALID' ||
-                  failure.code == 'KYC_DOCUMENT_DUPLICATE'
+          status: failure.code == 'KYC_DOCUMENT_INVALID' || failure.code == 'KYC_DOCUMENT_DUPLICATE'
               ? KycStatus.invalidFile
               : KycStatus.failure,
           errorMessage: failure.message,
@@ -106,9 +98,7 @@ class KycCubit extends Cubit<KycState> {
         final nextBundle = state.bundle?.applyUpload(upload);
         emit(
           state.copyWith(
-            status: upload.isComplete
-                ? KycStatus.submitted
-                : KycStatus.uploadSuccess,
+            status: upload.isComplete ? KycStatus.submitted : KycStatus.uploadSuccess,
             uploadResult: upload,
             bundle: nextBundle,
             uploadProgress: 1,

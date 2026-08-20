@@ -7,10 +7,7 @@ class MotodigoHomeGreenIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: const _HomePainter(Color(0xFF16A34A)),
-    );
+    return CustomPaint(size: Size.square(size), painter: const _HomePainter(Color(0xFF16A34A)));
   }
 }
 
@@ -21,10 +18,7 @@ class MotodigoHomeGrayIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: const _HomePainter(Color(0xFF98A29A)),
-    );
+    return CustomPaint(size: Size.square(size), painter: const _HomePainter(Color(0xFF98A29A)));
   }
 }
 
@@ -35,10 +29,7 @@ class MotodigoTrajetGrayIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: const _TrajetPainter(Color(0xFF9AA49B)),
-    );
+    return CustomPaint(size: Size.square(size), painter: const _TrajetPainter(Color(0xFF9AA49B)));
   }
 }
 
@@ -49,10 +40,7 @@ class MotodigoTrajetGreenIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: const _TrajetPainter(Color(0xFF16A34A)),
-    );
+    return CustomPaint(size: Size.square(size), painter: const _TrajetPainter(Color(0xFF16A34A)));
   }
 }
 
@@ -63,10 +51,7 @@ class MotodigoWalletGrayIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: const _WalletPainter(Color(0xFF9AA49B)),
-    );
+    return CustomPaint(size: Size.square(size), painter: const _WalletPainter(Color(0xFF9AA49B)));
   }
 }
 
@@ -77,10 +62,7 @@ class MotodigoWalletGreenIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: const _WalletPainter(Color(0xFF16A34A)),
-    );
+    return CustomPaint(size: Size.square(size), painter: const _WalletPainter(Color(0xFF16A34A)));
   }
 }
 
@@ -91,10 +73,7 @@ class MotodigoNotifGrayIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: const _NotifPainter(Color(0xFF9AA49B)),
-    );
+    return CustomPaint(size: Size.square(size), painter: const _NotifPainter(Color(0xFF9AA49B)));
   }
 }
 
@@ -105,10 +84,7 @@ class MotodigoNotifGreenIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: const _NotifPainter(Color(0xFF16A34A)),
-    );
+    return CustomPaint(size: Size.square(size), painter: const _NotifPainter(Color(0xFF16A34A)));
   }
 }
 
@@ -119,10 +95,7 @@ class MotodigoProfileGrayIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: const _ProfilePainter(Color(0xFF9AA49B)),
-    );
+    return CustomPaint(size: Size.square(size), painter: const _ProfilePainter(Color(0xFF9AA49B)));
   }
 }
 
@@ -133,10 +106,7 @@ class MotodigoProfileGreenIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: const _ProfilePainter(Color(0xFF16A34A)),
-    );
+    return CustomPaint(size: Size.square(size), painter: const _ProfilePainter(Color(0xFF16A34A)));
   }
 }
 
@@ -175,8 +145,7 @@ class _HomePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _HomePainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _HomePainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _TrajetPainter extends CustomPainter {
@@ -210,8 +179,7 @@ class _TrajetPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _TrajetPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _TrajetPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _WalletPainter extends CustomPainter {
@@ -309,8 +277,7 @@ class _WalletPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _WalletPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _WalletPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _NotifPainter extends CustomPainter {
@@ -347,8 +314,7 @@ class _NotifPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _NotifPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _NotifPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _ProfilePainter extends CustomPainter {
@@ -377,8 +343,7 @@ class _ProfilePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _ProfilePainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _ProfilePainter oldDelegate) => oldDelegate.color != color;
 }
 
 Paint _strokePaint(Color color, double width) {

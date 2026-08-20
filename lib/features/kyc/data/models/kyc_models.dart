@@ -117,22 +117,12 @@ class KycDocumentsResponseModel {
     return KycDocumentsResponseModel(
       profileId: json['profileId'] as String? ?? '',
       profileType: ProfileType.fromApi(json['profileType'] as String?),
-      profileValidationStatus: ValidationStatus.fromApi(
-        json['profileValidationStatus'] as String?,
-      ),
+      profileValidationStatus: ValidationStatus.fromApi(json['profileValidationStatus'] as String?),
       requirements: (json['requirements'] as List<dynamic>? ?? [])
-          .map(
-            (value) => KycRequirementModel.fromJson(
-              Map<String, dynamic>.from(value as Map),
-            ),
-          )
+          .map((value) => KycRequirementModel.fromJson(Map<String, dynamic>.from(value as Map)))
           .toList(),
       documents: (json['documents'] as List<dynamic>? ?? [])
-          .map(
-            (value) => KycDocumentModel.fromJson(
-              Map<String, dynamic>.from(value as Map),
-            ),
-          )
+          .map((value) => KycDocumentModel.fromJson(Map<String, dynamic>.from(value as Map)))
           .toList(),
     );
   }
@@ -164,18 +154,10 @@ class UploadKycDocumentResponseModel {
   factory UploadKycDocumentResponseModel.fromJson(Map<String, dynamic> json) {
     return UploadKycDocumentResponseModel(
       profileId: json['profileId'] as String? ?? '',
-      profileValidationStatus: ValidationStatus.fromApi(
-        json['profileValidationStatus'] as String?,
-      ),
-      document: KycDocumentModel.fromJson(
-        Map<String, dynamic>.from(json['document'] as Map),
-      ),
+      profileValidationStatus: ValidationStatus.fromApi(json['profileValidationStatus'] as String?),
+      document: KycDocumentModel.fromJson(Map<String, dynamic>.from(json['document'] as Map)),
       requirements: (json['requirements'] as List<dynamic>? ?? [])
-          .map(
-            (value) => KycRequirementModel.fromJson(
-              Map<String, dynamic>.from(value as Map),
-            ),
-          )
+          .map((value) => KycRequirementModel.fromJson(Map<String, dynamic>.from(value as Map)))
           .toList(),
     );
   }

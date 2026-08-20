@@ -20,10 +20,10 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
     required UrbanLocationSource location,
     this.pollInterval = const Duration(seconds: 8),
     this.searchMinDuration = const Duration(milliseconds: 900),
-  })  : _remote = remote,
-        _history = history,
-        _location = location,
-        super(const UrbanRideState());
+  }) : _remote = remote,
+       _history = history,
+       _location = location,
+       super(const UrbanRideState());
 
   final UrbanRemoteDataSource _remote;
   final UrbanDestinationHistoryStore _history;
@@ -35,39 +35,35 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
   StreamSubscription<UrbanLocationResult>? _locationSub;
 
   Future<void> bootstrap() async {
-    emit(state.copyWith(
-      locating: true,
-      locationError: null,
-      apiError: null,
-      history: _history.load(),
-    ));
-    await Future.wait([
-      _locate(),
-      _loadWallet(),
-      _loadPlaces(),
-      refreshLayers(),
-    ]);
+    emit(
+      state.copyWith(locating: true, locationError: null, apiError: null, history: _history.load()),
+    );
+    await Future.wait([_locate(), _loadWallet(), _loadPlaces(), refreshLayers()]);
   }
 
   Future<void> _locate() async {
     emit(state.copyWith(locating: true));
     final result = await _location.currentPosition();
     if (result.position != null) {
-      emit(state.copyWith(
-        locating: false,
-        userPosition: result.position,
-        origin: result.position,
-        center: result.position,
-        locationError: null,
-      ));
+      emit(
+        state.copyWith(
+          locating: false,
+          userPosition: result.position,
+          origin: result.position,
+          center: result.position,
+          locationError: null,
+        ),
+      );
       _watchLocation();
       await _reverseOrigin(result.position!);
     } else {
-      emit(state.copyWith(
-        locating: false,
-        origin: state.origin ?? kYaoundeCenter,
-        locationError: result.error,
-      ));
+      emit(
+        state.copyWith(
+          locating: false,
+          origin: state.origin ?? kYaoundeCenter,
+          locationError: result.error,
+        ),
+      );
     }
   }
 
@@ -75,11 +71,13 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
     _locationSub?.cancel();
     _locationSub = _location.watchPosition().listen((result) {
       if (isClosed || result.position == null) return;
-      emit(state.copyWith(
-        userPosition: result.position,
-        origin: state.origin ?? result.position,
-        locationError: null,
-      ));
+      emit(
+        state.copyWith(
+          userPosition: result.position,
+          origin: state.origin ?? result.position,
+          locationError: null,
+        ),
+      );
     });
   }
 
@@ -184,12 +182,14 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
 
   void onMapTap(LatLng point) {
     if (state.step == UrbanRideStep.pickDestination) {
-      emit(state.copyWith(
-        destination: point,
-        destinationLabel: 'Point sur la carte',
-        destinationQuery: 'Point sur la carte',
-        center: point,
-      ));
+      emit(
+        state.copyWith(
+          destination: point,
+          destinationLabel: 'Point sur la carte',
+          destinationQuery: 'Point sur la carte',
+          center: point,
+        ),
+      );
       return;
     }
     final hit = nearestLayer(point);
@@ -235,20 +235,28 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
   }
 
   void updateDestinationQuery(String value) {
-    emit(state.copyWith(destinationQuery: value, geocodeFailed: false, geocoding: value.trim().isNotEmpty));
+    emit(
+      state.copyWith(
+        destinationQuery: value,
+        geocodeFailed: false,
+        geocoding: value.trim().isNotEmpty,
+      ),
+    );
     _scheduleGeocode(value);
   }
 
   void clearDestinationQuery() {
     _geocodeDebounce?.cancel();
-    emit(state.copyWith(
-      destinationQuery: '',
-      destinationLabel: '',
-      destination: null,
-      geocodeResults: const [],
-      geocodeFailed: false,
-      geocoding: false,
-    ));
+    emit(
+      state.copyWith(
+        destinationQuery: '',
+        destinationLabel: '',
+        destination: null,
+        geocodeResults: const [],
+        geocodeFailed: false,
+        geocoding: false,
+      ),
+    );
   }
 
   void _scheduleGeocode(String value) {
@@ -265,17 +273,15 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
   Future<void> _geocode(String query) async {
     try {
       final origin = state.origin ?? state.userPosition;
-      final places = await _remote.geocode(
-        query,
-        lat: origin?.latitude,
-        lon: origin?.longitude,
-      );
+      final places = await _remote.geocode(query, lat: origin?.latitude, lon: origin?.longitude);
       if (isClosed || state.destinationQuery.trim() != query) return;
-      emit(state.copyWith(
-        geocodeResults: places ?? const [],
-        geocodeFailed: places == null,
-        geocoding: false,
-      ));
+      emit(
+        state.copyWith(
+          geocodeResults: places ?? const [],
+          geocodeFailed: places == null,
+          geocoding: false,
+        ),
+      );
     } catch (_) {
       if (!isClosed && state.destinationQuery.trim() == query) {
         emit(state.copyWith(geocodeResults: const [], geocodeFailed: true, geocoding: false));
@@ -293,15 +299,22 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
 
   Future<void> selectDestination({required String label, required LatLng point}) async {
     final origin = state.origin ?? state.userPosition ?? kYaoundeCenter;
-    emit(state.copyWith(
-      destination: point,
-      destinationLabel: label,
-      destinationQuery: label,
-      step: UrbanRideStep.calculating,
-      apiError: null,
-    ));
+    emit(
+      state.copyWith(
+        destination: point,
+        destinationLabel: label,
+        destinationQuery: label,
+        step: UrbanRideStep.calculating,
+        apiError: null,
+      ),
+    );
     final history = await _history.add(
-      DestinationHistoryEntry(label: label, lat: point.latitude, lon: point.longitude, savedAt: DateTime.now()),
+      DestinationHistoryEntry(
+        label: label,
+        lat: point.latitude,
+        lon: point.longitude,
+        savedAt: DateTime.now(),
+      ),
     );
     if (!isClosed) emit(state.copyWith(history: history));
     await _estimateRoute(origin, point);
@@ -326,13 +339,15 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
       destination: destination,
     );
     final demo = estimate == null || estimate.options.isEmpty;
-    emit(state.copyWith(
-      estimate: estimate,
-      routeOptions: options,
-      selectedKind: RouteOptionKind.recommended,
-      routeOptionsDemo: demo,
-      step: UrbanRideStep.tripSummary,
-    ));
+    emit(
+      state.copyWith(
+        estimate: estimate,
+        routeOptions: options,
+        selectedKind: RouteOptionKind.recommended,
+        routeOptionsDemo: demo,
+        step: UrbanRideStep.tripSummary,
+      ),
+    );
   }
 
   void openPriceDetail() {
@@ -383,12 +398,14 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
         await Future<void>.delayed(searchMinDuration - elapsed);
       }
       if (isClosed) return;
-      emit(state.copyWith(
-        searching: false,
-        step: UrbanRideStep.empty,
-        apiError: error.toString(),
-        drivers: const [],
-      ));
+      emit(
+        state.copyWith(
+          searching: false,
+          step: UrbanRideStep.empty,
+          apiError: error.toString(),
+          drivers: const [],
+        ),
+      );
     }
   }
 
@@ -398,13 +415,15 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
     final nextStep = silent
         ? state.step
         : (filtered.isEmpty ? UrbanRideStep.empty : UrbanRideStep.results);
-    emit(state.copyWith(
-      nearby: nearby,
-      drivers: filtered,
-      searching: false,
-      step: nextStep,
-      apiError: null,
-    ));
+    emit(
+      state.copyWith(
+        nearby: nearby,
+        drivers: filtered,
+        searching: false,
+        step: nextStep,
+        apiError: null,
+      ),
+    );
     if (_keepsPolling(nextStep)) {
       _startPoll();
     } else {
@@ -430,11 +449,13 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
   }
 
   void openFilters() {
-    emit(state.copyWith(
-      step: UrbanRideStep.filters,
-      returnTo: UrbanRideStep.results,
-      draftFilters: state.filters,
-    ));
+    emit(
+      state.copyWith(
+        step: UrbanRideStep.filters,
+        returnTo: UrbanRideStep.results,
+        draftFilters: state.filters,
+      ),
+    );
   }
 
   void updateDraftFilters(UrbanFilters filters) {
@@ -449,22 +470,29 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
       await searchMototaxis();
       return;
     }
-    final enriched = enrichNearbyDrivers(state.nearby?.items ?? const [], fallbackPrice: state.selectedAmount);
+    final enriched = enrichNearbyDrivers(
+      state.nearby?.items ?? const [],
+      fallbackPrice: state.selectedAmount,
+    );
     final filtered = applyUrbanFilters(enriched, next);
-    emit(state.copyWith(
-      drivers: filtered,
-      searching: false,
-      step: filtered.isEmpty ? UrbanRideStep.empty : UrbanRideStep.results,
-    ));
+    emit(
+      state.copyWith(
+        drivers: filtered,
+        searching: false,
+        step: filtered.isEmpty ? UrbanRideStep.empty : UrbanRideStep.results,
+      ),
+    );
     if (filtered.isNotEmpty) _startPoll();
   }
 
   Future<void> widenRadius() async {
     final widened = (state.filters.radiusKm + 2).clamp(2, 10).toDouble();
-    emit(state.copyWith(
-      filters: state.filters.copyWith(radiusKm: widened),
-      draftFilters: state.draftFilters.copyWith(radiusKm: widened),
-    ));
+    emit(
+      state.copyWith(
+        filters: state.filters.copyWith(radiusKm: widened),
+        draftFilters: state.draftFilters.copyWith(radiusKm: widened),
+      ),
+    );
     await searchMototaxis();
   }
 
@@ -487,11 +515,13 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
   }
 
   void openLayers() {
-    emit(state.copyWith(
-      step: UrbanRideStep.layers,
-      returnTo: state.step == UrbanRideStep.layers ? state.returnTo : state.step,
-      draftLayerVisibility: state.layerVisibility,
-    ));
+    emit(
+      state.copyWith(
+        step: UrbanRideStep.layers,
+        returnTo: state.step == UrbanRideStep.layers ? state.returnTo : state.step,
+        draftLayerVisibility: state.layerVisibility,
+      ),
+    );
   }
 
   void updateDraftLayers(LayerVisibility visibility) {
@@ -503,10 +533,7 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
   }
 
   void applyLayers() {
-    emit(state.copyWith(
-      layerVisibility: state.draftLayerVisibility,
-      step: state.returnTo,
-    ));
+    emit(state.copyWith(layerVisibility: state.draftLayerVisibility, step: state.returnTo));
   }
 
   void toggleLegend() {
@@ -514,11 +541,13 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
   }
 
   void openIncident(TrafficLayer layer) {
-    emit(state.copyWith(
-      selectedIncident: layer,
-      step: UrbanRideStep.incident,
-      returnTo: state.step == UrbanRideStep.incident ? state.returnTo : state.step,
-    ));
+    emit(
+      state.copyWith(
+        selectedIncident: layer,
+        step: UrbanRideStep.incident,
+        returnTo: state.step == UrbanRideStep.incident ? state.returnTo : state.step,
+      ),
+    );
   }
 
   void seeAlternativeFromIncident() {
@@ -532,21 +561,23 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
 
   void resetToHome() {
     _stopPoll();
-    emit(state.copyWith(
-      step: UrbanRideStep.home,
-      destination: null,
-      destinationLabel: '',
-      destinationQuery: '',
-      geocodeResults: const [],
-      geocodeFailed: false,
-      geocoding: false,
-      selectedDriverId: null,
-      nearby: null,
-      drivers: const [],
-      confirmedLocally: false,
-      selectedIncident: null,
-      apiError: null,
-    ));
+    emit(
+      state.copyWith(
+        step: UrbanRideStep.home,
+        destination: null,
+        destinationLabel: '',
+        destinationQuery: '',
+        geocodeResults: const [],
+        geocodeFailed: false,
+        geocoding: false,
+        selectedDriverId: null,
+        nearby: null,
+        drivers: const [],
+        confirmedLocally: false,
+        selectedIncident: null,
+        apiError: null,
+      ),
+    );
   }
 
   bool _keepsPolling(UrbanRideStep step) {
