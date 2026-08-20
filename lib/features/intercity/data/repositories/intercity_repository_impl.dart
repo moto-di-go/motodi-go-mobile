@@ -123,7 +123,11 @@ class IntercityRepositoryImpl implements IntercityRepository {
     int size = 20,
   }) {
     return _guard(() async {
-      final model = await _remoteDataSource.listAnnouncementBookings(announcementId, page: page, size: size);
+      final model = await _remoteDataSource.listAnnouncementBookings(
+        announcementId,
+        page: page,
+        size: size,
+      );
       return model.toEntity();
     });
   }

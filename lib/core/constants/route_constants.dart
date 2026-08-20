@@ -46,6 +46,7 @@ class RouteConstants {
 
   // Intercity
   static const String intercity = '/intercity';
+
   /// Alias historique : ouvre l'onglet Trajets / Annonces.
   static const String intercityMyAnnouncements = '/intercity';
   static const String intercityResults = '/intercity/results';

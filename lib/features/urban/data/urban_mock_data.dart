@@ -17,7 +17,8 @@ const _kDemoNames = ['Jean M.', 'Paul K.', 'Aïcha N.', 'Serge T.', 'Marie B.', 
 const _kDemoBikes = ['Yamaha Crypton', 'Honda Wave', 'Suzuki Address'];
 
 UrbanDriverCard enrichNearbyDriver(NearbyDriver driver, {double? fallbackPrice}) {
-  final hasProfile = (driver.displayName?.trim().isNotEmpty ?? false) &&
+  final hasProfile =
+      (driver.displayName?.trim().isNotEmpty ?? false) &&
       driver.rating != null &&
       (driver.vehicleLabel?.trim().isNotEmpty ?? false);
   final hash = driver.driverProfileId.hashCode.abs();
@@ -32,9 +33,7 @@ UrbanDriverCard enrichNearbyDriver(NearbyDriver driver, {double? fallbackPrice})
   final plate = driver.plate?.trim().isNotEmpty == true
       ? driver.plate!.trim()
       : 'LT ${1000 + hash % 9000} A';
-  final eta = driver.approachDistanceKm <= 0
-      ? 3
-      : estimateUrbanMinutes(driver.approachDistanceKm);
+  final eta = driver.approachDistanceKm <= 0 ? 3 : estimateUrbanMinutes(driver.approachDistanceKm);
   return UrbanDriverCard(
     id: driver.driverProfileId,
     name: name,
@@ -54,9 +53,6 @@ UrbanDriverCard enrichNearbyDriver(NearbyDriver driver, {double? fallbackPrice})
   );
 }
 
-List<UrbanDriverCard> enrichNearbyDrivers(
-  List<NearbyDriver> items, {
-  double? fallbackPrice,
-}) {
+List<UrbanDriverCard> enrichNearbyDrivers(List<NearbyDriver> items, {double? fallbackPrice}) {
   return items.map((item) => enrichNearbyDriver(item, fallbackPrice: fallbackPrice)).toList();
 }

@@ -23,27 +23,18 @@ class AuthFormCubit extends Cubit<AuthFormState> {
   }) async {
     final phoneNumber = CameroonPhoneValidator.normalize(rawPhoneNumber);
     if (phoneNumber == null) {
-      return _fail(
-        'Numéro de téléphone camerounais invalide.',
-        'INVALID_PHONE_NUMBER',
-      );
+      return _fail('Numéro de téléphone camerounais invalide.', 'INVALID_PHONE_NUMBER');
     }
     final normalizedFullName = fullName.trim();
     if (normalizedFullName.length < 10) {
-      return _fail(
-        'Le nom complet doit contenir au moins 10 caractères.',
-        'FULL_NAME_TOO_SHORT',
-      );
+      return _fail('Le nom complet doit contenir au moins 10 caractères.', 'FULL_NAME_TOO_SHORT');
     }
     final passwordError = PasswordValidator.error(password);
     if (passwordError != null) {
       return _fail('Au moins 8 caractères, dont un chiffre.', passwordError);
     }
     if (password != confirmPassword) {
-      return _fail(
-        'Les mots de passe ne correspondent pas.',
-        'PASSWORD_MISMATCH',
-      );
+      return _fail('Les mots de passe ne correspondent pas.', 'PASSWORD_MISMATCH');
     }
     if (!cguAccepted) {
       return _fail('Vous devez accepter les conditions.', 'CGU_REQUIRED');
@@ -84,8 +75,7 @@ class AuthFormCubit extends Cubit<AuthFormState> {
     );
     result.fold(
       (failure) => _fail(failure.message, failure.code),
-      (session) =>
-          emit(state.success(session: session, phoneNumber: phoneNumber)),
+      (session) => emit(state.success(session: session, phoneNumber: phoneNumber)),
     );
   }
 
@@ -97,48 +87,31 @@ class AuthFormCubit extends Cubit<AuthFormState> {
     );
     result.fold(
       (failure) => _fail(failure.message, failure.code),
-      (resendResult) => emit(
-        state.success(
-          resendResult: resendResult,
-          phoneNumber: resendResult.phoneNumber,
-        ),
-      ),
+      (resendResult) =>
+          emit(state.success(resendResult: resendResult, phoneNumber: resendResult.phoneNumber)),
     );
   }
 
-  Future<void> login({
-    required String rawPhoneNumber,
-    required String password,
-  }) async {
+  Future<void> login({required String rawPhoneNumber, required String password}) async {
     final phoneNumber = CameroonPhoneValidator.normalize(rawPhoneNumber);
     if (phoneNumber == null) {
-      return _fail(
-        'Numéro de téléphone camerounais invalide.',
-        'INVALID_PHONE_NUMBER',
-      );
+      return _fail('Numéro de téléphone camerounais invalide.', 'INVALID_PHONE_NUMBER');
     }
     if (password.isEmpty) {
       return _fail('Le mot de passe est requis.', 'PASSWORD_REQUIRED');
     }
     emit(state.loading(phoneNumber: phoneNumber));
-    final result = await _authRepository.login(
-      phoneNumber: phoneNumber,
-      password: password,
-    );
+    final result = await _authRepository.login(phoneNumber: phoneNumber, password: password);
     result.fold(
       (failure) => _fail(failure.message, failure.code),
-      (session) =>
-          emit(state.success(session: session, phoneNumber: phoneNumber)),
+      (session) => emit(state.success(session: session, phoneNumber: phoneNumber)),
     );
   }
 
   Future<void> forgotPassword(String rawPhoneNumber) async {
     final phoneNumber = CameroonPhoneValidator.normalize(rawPhoneNumber);
     if (phoneNumber == null) {
-      return _fail(
-        'Numéro de téléphone camerounais invalide.',
-        'INVALID_PHONE_NUMBER',
-      );
+      return _fail('Numéro de téléphone camerounais invalide.', 'INVALID_PHONE_NUMBER');
     }
     emit(state.loading(phoneNumber: phoneNumber));
     final result = await _authRepository.forgotPassword(phoneNumber);
@@ -162,10 +135,7 @@ class AuthFormCubit extends Cubit<AuthFormState> {
       return _fail('Au moins 8 caractères, dont un chiffre.', passwordError);
     }
     if (password != confirmPassword) {
-      return _fail(
-        'Les mots de passe ne correspondent pas.',
-        'PASSWORD_MISMATCH',
-      );
+      return _fail('Les mots de passe ne correspondent pas.', 'PASSWORD_MISMATCH');
     }
     emit(state.loading(phoneNumber: phoneNumber));
     final result = await _authRepository.resetPassword(
@@ -180,12 +150,6 @@ class AuthFormCubit extends Cubit<AuthFormState> {
   }
 
   void _fail(String message, String? code) {
-    emit(
-      state.copyWith(
-        status: AuthFormStatus.failure,
-        errorMessage: message,
-        errorCode: code,
-      ),
-    );
+    emit(state.copyWith(status: AuthFormStatus.failure, errorMessage: message, errorCode: code));
   }
 }

@@ -15,10 +15,7 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<AuthFormCubit>(),
-      child: const _RegisterView(),
-    );
+    return BlocProvider(create: (_) => getIt<AuthFormCubit>(), child: const _RegisterView());
   }
 }
 
@@ -80,10 +77,7 @@ class _RegisterViewState extends State<_RegisterView> {
               ),
               const SizedBox(height: 12),
               const _RegisterFieldLabel('Mot de passe'),
-              _RegisterPasswordField(
-                controller: _passwordController,
-                hintText: 'mot de passe',
-              ),
+              _RegisterPasswordField(controller: _passwordController, hintText: 'mot de passe'),
               const SizedBox(height: 10),
               const Text(
                 'Au moins 8 caractères, dont un chiffre.',
@@ -100,8 +94,7 @@ class _RegisterViewState extends State<_RegisterView> {
                 hintText: 'mot de passe',
                 hasError: passwordMismatch,
               ),
-              if (state.errorMessage != null &&
-                  state.errorMessage!.isNotEmpty) ...[
+              if (state.errorMessage != null && state.errorMessage!.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 _RegisterInlineError(state.errorMessage!),
               ],
@@ -186,9 +179,7 @@ class _RegisterPhoneInput extends StatelessWidget {
             controller: controller,
             hintText: '6 XX XX XX XX',
             keyboardType: TextInputType.phone,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9 +()-]')),
-            ],
+            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9 +()-]'))],
           ),
         ),
       ],
@@ -219,9 +210,7 @@ class _RegisterTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = hasError
-        ? const Color(0xFFE5484D)
-        : const Color(0xFFDEE2DA);
+    final borderColor = hasError ? const Color(0xFFE5484D) : const Color(0xFFDEE2DA);
     return SizedBox(
       height: 60,
       child: TextField(
@@ -243,10 +232,7 @@ class _RegisterTextField extends StatelessWidget {
           ),
           filled: true,
           fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 26,
-            vertical: 16,
-          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 26, vertical: 16),
           prefixIcon: prefixIcon == null
               ? null
               : SizedBox(
@@ -254,10 +240,7 @@ class _RegisterTextField extends StatelessWidget {
                   height: 60,
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 18),
-                      child: prefixIcon,
-                    ),
+                    child: Padding(padding: const EdgeInsets.only(right: 18), child: prefixIcon),
                   ),
                 ),
           prefixIconConstraints: const BoxConstraints(
@@ -273,10 +256,7 @@ class _RegisterTextField extends StatelessWidget {
                   height: 60,
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: suffixIcon,
-                    ),
+                    child: Padding(padding: const EdgeInsets.only(left: 8), child: suffixIcon),
                   ),
                 ),
           suffixIconConstraints: const BoxConstraints(
@@ -351,11 +331,7 @@ class _RegisterInlineError extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(
-          Icons.warning_amber_rounded,
-          color: Color(0xFFB42318),
-          size: 24,
-        ),
+        const Icon(Icons.warning_amber_rounded, color: Color(0xFFB42318), size: 24),
         const SizedBox(width: 10),
         Expanded(
           child: Text(
@@ -390,20 +366,14 @@ class _TermsAcceptanceRow extends StatelessWidget {
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 140),
             child: accepted
-                ? const MotodigoGpuAcceptedGreenIcon(
-                    key: ValueKey('accepted'),
-                    size: 32,
-                  )
+                ? const MotodigoGpuAcceptedGreenIcon(key: ValueKey('accepted'), size: 32)
                 : Container(
                     key: const ValueKey('pending'),
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      border: Border.all(
-                        color: const Color(0xFFDEE2DA),
-                        width: 1.5,
-                      ),
+                      border: Border.all(color: const Color(0xFFDEE2DA), width: 1.5),
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
@@ -416,18 +386,12 @@ class _TermsAcceptanceRow extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: "Conditions d'utilisation",
-                    style: TextStyle(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w900,
-                    ),
+                    style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900),
                   ),
                   TextSpan(text: ' et la '),
                   TextSpan(
                     text: 'Politique de confidentialité.',
-                    style: TextStyle(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w900,
-                    ),
+                    style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900),
                   ),
                 ],
               ),
@@ -469,18 +433,13 @@ class _RegisterSubmitButton extends StatelessWidget {
           disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.62),
           elevation: 10,
           shadowColor: AppColors.primary.withValues(alpha: 0.34),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(999),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
         ),
         child: isLoading
             ? const SizedBox(
                 width: 26,
                 height: 26,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.7,
-                  color: Colors.white,
-                ),
+                child: CircularProgressIndicator(strokeWidth: 2.7, color: Colors.white),
               )
             : Text(
                 label,

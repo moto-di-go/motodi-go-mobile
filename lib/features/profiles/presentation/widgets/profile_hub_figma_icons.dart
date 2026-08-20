@@ -14,10 +14,7 @@ class MotodigoHubCheckedGreenIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _CheckedGreenPainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _CheckedGreenPainter(color));
   }
 }
 
@@ -25,18 +22,11 @@ class MotodigoHubPeopleIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoHubPeopleIcon({
-    super.key,
-    this.size = 20,
-    this.color = const Color(0xFF3C4741),
-  });
+  const MotodigoHubPeopleIcon({super.key, this.size = 20, this.color = const Color(0xFF3C4741)});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _PeoplePainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _PeoplePainter(color));
   }
 }
 
@@ -44,18 +34,11 @@ class MotodigoHubSettingsIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoHubSettingsIcon({
-    super.key,
-    this.size = 20,
-    this.color = const Color(0xFF3C4741),
-  });
+  const MotodigoHubSettingsIcon({super.key, this.size = 20, this.color = const Color(0xFF3C4741)});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _SettingsPainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _SettingsPainter(color));
   }
 }
 
@@ -71,10 +54,7 @@ class MotodigoHubFolderGrayIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _FolderGrayPainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _FolderGrayPainter(color));
   }
 }
 
@@ -111,8 +91,7 @@ class _CheckedGreenPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _CheckedGreenPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _CheckedGreenPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _PeoplePainter extends CustomPainter {
@@ -166,8 +145,7 @@ class _PeoplePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _PeoplePainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _PeoplePainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _SettingsPainter extends CustomPainter {
@@ -270,8 +248,7 @@ class _SettingsPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _SettingsPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _SettingsPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _FolderGrayPainter extends CustomPainter {
@@ -320,8 +297,7 @@ class _FolderGrayPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _FolderGrayPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _FolderGrayPainter oldDelegate) => oldDelegate.color != color;
 }
 
 Paint _strokePaint(Color color, double width) {

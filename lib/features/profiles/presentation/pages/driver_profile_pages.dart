@@ -15,10 +15,7 @@ class MotoTaxiProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<ProfileCubit>(),
-      child: const _MotoTaxiProfileView(),
-    );
+    return BlocProvider(create: (_) => getIt<ProfileCubit>(), child: const _MotoTaxiProfileView());
   }
 }
 
@@ -90,8 +87,7 @@ class _MotoTaxiProfileViewState extends State<_MotoTaxiProfileView> {
                 controller: _licenseController,
                 hintText: l10n.mototaxiProfileLicenseHint,
               ),
-              if (state.errorMessage != null &&
-                  state.errorMessage!.isNotEmpty) ...[
+              if (state.errorMessage != null && state.errorMessage!.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 Text(
                   state.errorMessage!,
@@ -126,8 +122,7 @@ class _TransporterProfileView extends StatefulWidget {
   const _TransporterProfileView();
 
   @override
-  State<_TransporterProfileView> createState() =>
-      _TransporterProfileViewState();
+  State<_TransporterProfileView> createState() => _TransporterProfileViewState();
 }
 
 class _TransporterProfileViewState extends State<_TransporterProfileView> {
@@ -184,8 +179,7 @@ class _TransporterProfileViewState extends State<_TransporterProfileView> {
                 text: l10n.transporterProfileVehicleKycText,
                 badge: l10n.transporterProfileVehicleSoon,
               ),
-              if (state.errorMessage != null &&
-                  state.errorMessage!.isNotEmpty) ...[
+              if (state.errorMessage != null && state.errorMessage!.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 Text(
                   state.errorMessage!,
@@ -261,10 +255,7 @@ class _DriverTextField extends StatelessWidget {
           ),
           filled: true,
           fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 28,
-            vertical: 16,
-          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(24),
             borderSide: const BorderSide(color: Color(0xFFDEE2DA), width: 1.5),
@@ -314,10 +305,7 @@ class _ZoneSelector extends StatelessWidget {
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
                 ),
-                items: [
-                  for (final zone in zones)
-                    DropdownMenuItem(value: zone, child: Text(zone)),
-                ],
+                items: [for (final zone in zones) DropdownMenuItem(value: zone, child: Text(zone))],
                 onChanged: onChanged,
               ),
             ),
@@ -352,18 +340,13 @@ class _DriverSubmitButton extends StatelessWidget {
           disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.62),
           elevation: 10,
           shadowColor: AppColors.primary.withValues(alpha: 0.34),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(999),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
         ),
         child: isLoading
             ? const SizedBox(
                 width: 26,
                 height: 26,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.7,
-                  color: Colors.white,
-                ),
+                child: CircularProgressIndicator(strokeWidth: 2.7, color: Colors.white),
               )
             : Row(
                 mainAxisSize: MainAxisSize.min,
@@ -398,10 +381,7 @@ class _VehicleKycNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: const _DashedRoundedBorderPainter(
-        color: Color(0xFFDDE3DA),
-        radius: 22,
-      ),
+      painter: const _DashedRoundedBorderPainter(color: Color(0xFFDDE3DA), radius: 22),
       child: Container(
         width: double.infinity,
         constraints: const BoxConstraints(minHeight: 82),
@@ -448,10 +428,7 @@ class _DashedRoundedBorderPainter extends CustomPainter {
   final Color color;
   final double radius;
 
-  const _DashedRoundedBorderPainter({
-    required this.color,
-    required this.radius,
-  });
+  const _DashedRoundedBorderPainter({required this.color, required this.radius});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -460,9 +437,7 @@ class _DashedRoundedBorderPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
     final path = Path()
-      ..addRRect(
-        RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(radius)),
-      );
+      ..addRRect(RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(radius)));
     for (final metric in path.computeMetrics()) {
       var distance = 0.0;
       while (distance < metric.length) {

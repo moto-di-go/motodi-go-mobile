@@ -1,9 +1,6 @@
 import 'package:motodi_go_mobile/features/urban/data/urban_models.dart';
 
-List<UrbanDriverCard> applyUrbanFilters(
-  List<UrbanDriverCard> drivers,
-  UrbanFilters filters,
-) {
+List<UrbanDriverCard> applyUrbanFilters(List<UrbanDriverCard> drivers, UrbanFilters filters) {
   return drivers.where((driver) {
     if (filters.minRating != null && driver.rating < filters.minRating!) {
       return false;

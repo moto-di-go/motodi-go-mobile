@@ -52,7 +52,10 @@ class UrbanTripSummarySheet extends StatelessWidget {
           if (state.routeOptionsDemo) const UrbanDemoBanner(),
           Row(
             children: [
-              _StatCard(label: 'DISTANCE', value: '${state.selectedDistance.toStringAsFixed(1)} km'),
+              _StatCard(
+                label: 'DISTANCE',
+                value: '${state.selectedDistance.toStringAsFixed(1)} km',
+              ),
               const SizedBox(width: 8),
               _StatCard(label: 'DURÉE', value: '${state.selectedDuration} min'),
               const SizedBox(width: 8),
@@ -62,15 +65,9 @@ class UrbanTripSummarySheet extends StatelessWidget {
           const SizedBox(height: 14),
           UrbanTextLink(label: 'Voir le détail du prix', onTap: cubit.openPriceDetail),
           const SizedBox(height: 8),
-          UrbanTextLink(
-            label: 'Comparer les itinéraires',
-            onTap: () => cubit.openRouteOptions(),
-          ),
+          UrbanTextLink(label: 'Comparer les itinéraires', onTap: () => cubit.openRouteOptions()),
           const SizedBox(height: 16),
-          UrbanPrimaryButton(
-            label: 'Rechercher un mototaxi',
-            onPressed: cubit.searchMototaxis,
-          ),
+          UrbanPrimaryButton(label: 'Rechercher un mototaxi', onPressed: cubit.searchMototaxis),
         ],
       ),
     );
@@ -91,21 +88,32 @@ class UrbanPriceDetailSheet extends StatelessWidget {
       child: ListView(
         shrinkWrap: true,
         children: [
-          Text('Détail du prix standardisé', style: urbanText(fontSize: 22, fontWeight: FontWeight.w800)),
+          Text(
+            'Détail du prix standardisé',
+            style: urbanText(fontSize: 22, fontWeight: FontWeight.w800),
+          ),
           const SizedBox(height: 6),
           Text(
             'Tarif réglementé, sans négociation. Le montant affiché est celui appliqué à la course.',
             style: urbanText(fontSize: 14, color: AppColors.textSecondary, height: 1.35),
           ),
-          if (breakdown.isDemo) const Padding(padding: EdgeInsets.only(top: 12), child: UrbanDemoBanner()),
+          if (breakdown.isDemo)
+            const Padding(padding: EdgeInsets.only(top: 12), child: UrbanDemoBanner()),
           const SizedBox(height: 16),
           _PriceLine(label: 'Base', value: formatPriceF(breakdown.base)),
           _PriceLine(
-            label: 'Distance (${breakdown.distanceKm.toStringAsFixed(1)} km × ${formatPriceF(breakdown.pricePerKm)})',
+            label:
+                'Distance (${breakdown.distanceKm.toStringAsFixed(1)} km × ${formatPriceF(breakdown.pricePerKm)})',
             value: formatPriceF(breakdown.distanceAmount),
           ),
-          _PriceLine(label: 'Coefficient nuit', value: '× ${breakdown.nightCoefficient.toStringAsFixed(2)}'),
-          _PriceLine(label: 'Coefficient météo', value: '× ${breakdown.weatherCoefficient.toStringAsFixed(2)}'),
+          _PriceLine(
+            label: 'Coefficient nuit',
+            value: '× ${breakdown.nightCoefficient.toStringAsFixed(2)}',
+          ),
+          _PriceLine(
+            label: 'Coefficient météo',
+            value: '× ${breakdown.weatherCoefficient.toStringAsFixed(2)}',
+          ),
           _PriceLine(label: 'Arrondi', value: formatPriceF(breakdown.rounding)),
           const Divider(height: 28),
           _PriceLine(label: 'Total', value: formatPriceF(breakdown.total), emphasize: true),

@@ -73,18 +73,8 @@ jobs:
       - name: Run tests with coverage
         run: flutter test --coverage --reporter=github
 
-      - name: Vérifier le seuil de couverture (≥ 70 %)
-        run: |
-          python3 << 'EOF'
-          import re, sys
-          content = open('coverage/lcov.info').read()
-          da = re.findall(r'DA:\d+,(\d+)', content)
-          total = len(da)
-          hit = sum(1 for v in da if v != '0')
-          pct = hit * 100 // total if total else 0
-          print('Coverage: {}% ({}/{} lignes)'.format(pct, hit, total))
-          sys.exit(0 if pct >= 60 else 1)
-          EOF
+      - name: Vérifier le seuil de couverture (≥ 60 %)
+        run: python3 scripts/check_coverage.py
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4

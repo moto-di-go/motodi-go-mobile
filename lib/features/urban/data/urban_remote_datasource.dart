@@ -14,10 +14,7 @@ class UrbanRemoteDataSource {
     double? destLat,
     double? destLon,
   }) async {
-    final params = <String, dynamic>{
-      'lat': '$lat',
-      'lon': '$lon',
-    };
+    final params = <String, dynamic>{'lat': '$lat', 'lon': '$lon'};
     if (radiusKm != null) {
       params['radiusKm'] = '$radiusKm';
     }
@@ -58,9 +55,7 @@ class UrbanRemoteDataSource {
   }
 
   Future<List<TrafficLayer>> layers() async {
-    final response = await _client.get<List<dynamic>, List<dynamic>>(
-      Uri.parse('/gis/layers'),
-    );
+    final response = await _client.get<List<dynamic>, List<dynamic>>(Uri.parse('/gis/layers'));
     if (!response.isSuccessful) {
       throw ApiException.fromResponse(response);
     }
@@ -143,16 +138,10 @@ class UrbanRemoteDataSource {
     }
   }
 
-  Future<void> updateAvailability({
-    required String availability,
-    required bool gpsConsent,
-  }) async {
+  Future<void> updateAvailability({required String availability, required bool gpsConsent}) async {
     final response = await _client.patch<Map<String, dynamic>, Map<String, dynamic>>(
       Uri.parse('/drivers/availability'),
-      body: {
-        'availability': availability,
-        'gpsConsent': gpsConsent,
-      },
+      body: {'availability': availability, 'gpsConsent': gpsConsent},
     );
     if (!response.isSuccessful) {
       throw ApiException.fromResponse(response);
@@ -180,10 +169,7 @@ class UrbanRemoteDataSource {
     }
   }
 
-  Future<List<UrbanPlace>?> _getPlaces(
-    String path, {
-    Map<String, dynamic>? parameters,
-  }) async {
+  Future<List<UrbanPlace>?> _getPlaces(String path, {Map<String, dynamic>? parameters}) async {
     try {
       final response = await _client.get<dynamic, dynamic>(
         Uri.parse(path),
@@ -202,9 +188,10 @@ class UrbanRemoteDataSource {
 List<UrbanPlace> parsePlaceList(dynamic body, {bool isDemo = false}) {
   final raw = switch (body) {
     List list => list,
-    Map map => map['items'] as List<dynamic>? ??
-        map['places'] as List<dynamic>? ??
-        (map['label'] != null || map['name'] != null ? [map] : const []),
+    Map map =>
+      map['items'] as List<dynamic>? ??
+          map['places'] as List<dynamic>? ??
+          (map['label'] != null || map['name'] != null ? [map] : const []),
     _ => const <dynamic>[],
   };
   return raw

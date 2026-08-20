@@ -19,8 +19,7 @@ class ApiErrorModel {
     final status = json['status'];
     final statusCode = status is int ? status : int.tryParse('$status');
     final fallbackCode = statusCode == null ? 'UNKNOWN' : 'HTTP_$statusCode';
-    final fallbackMessage =
-        json['message'] as String? ?? json['error'] as String?;
+    final fallbackMessage = json['message'] as String? ?? json['error'] as String?;
     return ApiErrorModel(
       errorCode: json['errorCode'] as String? ?? fallbackCode,
       message: fallbackMessage ?? 'Une erreur est survenue',
@@ -47,16 +46,11 @@ class ApiErrorModel {
           return ApiErrorModel.fromJson(Map<String, dynamic>.from(decoded));
         }
       } catch (_) {
-        return ApiErrorModel(
-          errorCode: 'HTTP_${response.statusCode}',
-          message: body,
-        );
+        return ApiErrorModel(errorCode: 'HTTP_${response.statusCode}', message: body);
       }
     }
     return ApiErrorModel(
-      errorCode: response.statusCode == 401
-          ? 'SESSION_EXPIRED'
-          : 'HTTP_${response.statusCode}',
+      errorCode: response.statusCode == 401 ? 'SESSION_EXPIRED' : 'HTTP_${response.statusCode}',
       message: response.error?.toString() ?? 'Requête impossible.',
     );
   }
@@ -71,11 +65,7 @@ class ApiException implements Exception {
 
   factory ApiException.fromResponse(Response<dynamic> response) {
     final error = ApiErrorModel.fromResponse(response);
-    return ApiException(
-      error.errorCode,
-      error.message,
-      statusCode: response.statusCode,
-    );
+    return ApiException(error.errorCode, error.message, statusCode: response.statusCode);
   }
 
   @override

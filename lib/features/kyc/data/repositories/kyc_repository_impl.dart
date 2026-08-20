@@ -21,21 +21,12 @@ class KycRepositoryImpl implements KycRepository {
   final NetworkInfo _networkInfo;
   final AuthLocalDataSource _authLocalDataSource;
 
-  KycRepositoryImpl(
-    this._remoteDataSource,
-    this._networkInfo,
-    this._authLocalDataSource,
-  );
+  KycRepositoryImpl(this._remoteDataSource, this._networkInfo, this._authLocalDataSource);
 
   @override
   Future<Either<Failure, KycBundle>> loadCurrentDocuments() async {
     if (!await _networkInfo.isConnected) {
-      return left(
-        const NetworkFailure(
-          'Pas de connexion internet.',
-          code: 'NETWORK_OFFLINE',
-        ),
-      );
+      return left(const NetworkFailure('Pas de connexion internet.', code: 'NETWORK_OFFLINE'));
     }
     try {
       final response = await _remoteDataSource.loadCurrentDocuments();
@@ -56,19 +47,11 @@ class KycRepositoryImpl implements KycRepository {
     final validation = KycFileValidation.validate(draft);
     if (!validation.isValid) {
       return left(
-        const ValidationFailure(
-          'Ce fichier ne peut pas etre envoye.',
-          code: 'KYC_FILE_INVALID',
-        ),
+        const ValidationFailure('Ce fichier ne peut pas etre envoye.', code: 'KYC_FILE_INVALID'),
       );
     }
     if (!await _networkInfo.isConnected) {
-      return left(
-        const NetworkFailure(
-          'Pas de connexion internet.',
-          code: 'NETWORK_OFFLINE',
-        ),
-      );
+      return left(const NetworkFailure('Pas de connexion internet.', code: 'NETWORK_OFFLINE'));
     }
     try {
       final response = await _remoteDataSource.uploadDocument(
@@ -89,14 +72,8 @@ class KycRepositoryImpl implements KycRepository {
         'KYC_DOCUMENT_INVALID' ||
         'KYC_DOCUMENT_DUPLICATE' ||
         'KYC_FILE_INVALID' ||
-        'VALIDATION_FAILED' => ValidationFailure(
-          error.message,
-          code: error.code,
-        ),
-        'UPLOAD_CANCELLED' => ValidationFailure(
-          error.message,
-          code: error.code,
-        ),
+        'VALIDATION_FAILED' => ValidationFailure(error.message, code: error.code),
+        'UPLOAD_CANCELLED' => ValidationFailure(error.message, code: error.code),
         _ => ServerFailure(error.message, code: error.code),
       };
     }
@@ -117,10 +94,7 @@ class KycRepositoryImpl implements KycRepository {
       profileId: active.id,
       profileType: active.type,
       profileValidationStatus: active.validationStatus,
-      requirements: _defaultRequirements(
-        active.type,
-        active.validationStatus,
-      ),
+      requirements: _defaultRequirements(active.type, active.validationStatus),
       documents: const [],
     );
   }
@@ -134,14 +108,9 @@ class KycRepositoryImpl implements KycRepository {
         error.code == 'UNKNOWN';
   }
 
-  List<KycRequirement> _defaultRequirements(
-    ProfileType profileType,
-    ValidationStatus status,
-  ) {
+  List<KycRequirement> _defaultRequirements(ProfileType profileType, ValidationStatus status) {
     final uploaded = status == ValidationStatus.validated;
-    final latestStatus = uploaded
-        ? KycDocumentStatus.accepted
-        : KycDocumentStatus.missing;
+    final latestStatus = uploaded ? KycDocumentStatus.accepted : KycDocumentStatus.missing;
     final types = <KycDocumentType>[
       KycDocumentType.cni,
       if (profileType != ProfileType.passenger) ...[

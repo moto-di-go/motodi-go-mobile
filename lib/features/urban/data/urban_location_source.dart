@@ -17,10 +17,7 @@ abstract class UrbanLocationSource {
 }
 
 class GeolocatorLocationSource implements UrbanLocationSource {
-  static const _settings = LocationSettings(
-    accuracy: LocationAccuracy.high,
-    distanceFilter: 8,
-  );
+  static const _settings = LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 8);
 
   @override
   Future<UrbanLocationResult> currentPosition() async {
@@ -49,9 +46,11 @@ class GeolocatorLocationSource implements UrbanLocationSource {
           sink.add(UrbanLocationResult(position: LatLng(position.latitude, position.longitude)));
         },
         handleError: (error, stack, sink) {
-          sink.add(const UrbanLocationResult(
-            error: 'GPS indisponible. Mode dégradé : sélection manuelle sur la carte.',
-          ));
+          sink.add(
+            const UrbanLocationResult(
+              error: 'GPS indisponible. Mode dégradé : sélection manuelle sur la carte.',
+            ),
+          );
         },
       ),
     );

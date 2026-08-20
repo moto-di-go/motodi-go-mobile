@@ -10,6 +10,14 @@ analyzer:
     - '**/*.config.dart'
     - '**/*.chopper.dart'
     - 'lib/l10n/app_localizations*.dart'
+    # Flutter 3.47+ réécrit ce fichier au `pub get` si ces dossiers manquent.
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
 
 linter:
   rules:

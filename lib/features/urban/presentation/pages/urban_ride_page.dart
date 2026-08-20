@@ -63,7 +63,9 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
           backgroundColor: AppColors.background,
           body: Stack(
             children: [
-              Positioned.fill(child: UrbanVectorMap(state: state, cubit: cubit)),
+              Positioned.fill(
+                child: UrbanVectorMap(state: state, cubit: cubit),
+              ),
               SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
@@ -152,16 +154,17 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
                       padding: const EdgeInsets.all(10),
                       child: Text(
                         state.locationError!,
-                        style: urbanText(fontSize: 13, fontWeight: FontWeight.w700, color: const Color(0xFF8B6509)),
+                        style: urbanText(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF8B6509),
+                        ),
                       ),
                     ),
                   ),
                 ),
               if (_sheetOpen(state))
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: _stepSheet(context, state, cubit),
-                ),
+                Align(alignment: Alignment.bottomCenter, child: _stepSheet(context, state, cubit)),
             ],
           ),
         );
@@ -185,10 +188,10 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
       UrbanRideStep.results => UrbanResultsSheet(state: state, cubit: cubit),
       UrbanRideStep.filters => UrbanFiltersSheet(state: state, cubit: cubit),
       UrbanRideStep.empty => UrbanEmptySheet(
-          cubit: cubit,
-          error: state.apiError,
-          onIntercity: () => context.go(RouteConstants.intercity),
-        ),
+        cubit: cubit,
+        error: state.apiError,
+        onIntercity: () => context.go(RouteConstants.intercity),
+      ),
       UrbanRideStep.driverDetail => UrbanDriverDetailSheet(state: state, cubit: cubit),
       UrbanRideStep.confirm => UrbanConfirmSheet(state: state, cubit: cubit),
       UrbanRideStep.confirmed => UrbanConfirmedSheet(cubit: cubit),
@@ -197,18 +200,19 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
       UrbanRideStep.compareRoutes => UrbanCompareSheet(state: state, cubit: cubit),
       UrbanRideStep.routeOptions => UrbanRouteOptionsSheet(state: state, cubit: cubit),
       UrbanRideStep.pickDestination => UrbanBottomSheet(
-          child: UrbanPrimaryButton(
-            label: 'Valider cette destination',
-            onPressed: state.destination == null ? null : cubit.confirmPickedDestination,
-          ),
+        child: UrbanPrimaryButton(
+          label: 'Valider cette destination',
+          onPressed: state.destination == null ? null : cubit.confirmPickedDestination,
         ),
+      ),
       _ => const SizedBox.shrink(),
     };
   }
 
   void _showMenu(BuildContext context) {
     final session = context.read<SessionCubit>().state;
-    final hasDriver = session.session?.profiles.any(
+    final hasDriver =
+        session.session?.profiles.any(
           (profile) =>
               profile.type == ProfileType.mototaxi ||
               profile.type == ProfileType.transporter ||
@@ -225,7 +229,10 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
             children: [
               ListTile(
                 leading: const Icon(Icons.swap_horiz_rounded),
-                title: Text('Changer de profil', style: urbanText(fontSize: 16, fontWeight: FontWeight.w800)),
+                title: Text(
+                  'Changer de profil',
+                  style: urbanText(fontSize: 16, fontWeight: FontWeight.w800),
+                ),
                 onTap: () {
                   Navigator.pop(sheetContext);
                   _showProfileSwitcher(context);
@@ -233,7 +240,10 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
               ),
               ListTile(
                 leading: const Icon(Icons.person_outline_rounded),
-                title: Text('Mon profil', style: urbanText(fontSize: 16, fontWeight: FontWeight.w800)),
+                title: Text(
+                  'Mon profil',
+                  style: urbanText(fontSize: 16, fontWeight: FontWeight.w800),
+                ),
                 onTap: () {
                   Navigator.pop(sheetContext);
                   context.go(RouteConstants.profile);
@@ -242,7 +252,10 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
               if (hasDriver)
                 ListTile(
                   leading: const Icon(Icons.two_wheeler_rounded),
-                  title: Text('Disponibilité conducteur', style: urbanText(fontSize: 16, fontWeight: FontWeight.w800)),
+                  title: Text(
+                    'Disponibilité conducteur',
+                    style: urbanText(fontSize: 16, fontWeight: FontWeight.w800),
+                  ),
                   onTap: () {
                     Navigator.pop(sheetContext);
                     context.push(RouteConstants.driverAvailability);
@@ -250,7 +263,14 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
                 ),
               ListTile(
                 leading: const Icon(Icons.logout_rounded, color: AppColors.error),
-                title: Text('Se déconnecter', style: urbanText(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.error)),
+                title: Text(
+                  'Se déconnecter',
+                  style: urbanText(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.error,
+                  ),
+                ),
                 onTap: () {
                   Navigator.pop(sheetContext);
                   _showLogoutSheet(context);
@@ -285,7 +305,10 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(l10n.profileSwitcherTitle, style: urbanText(fontSize: 26, fontWeight: FontWeight.w800)),
+                    Text(
+                      l10n.profileSwitcherTitle,
+                      style: urbanText(fontSize: 26, fontWeight: FontWeight.w800),
+                    ),
                     const SizedBox(height: 16),
                     if (state.status == ProfileStatus.loading)
                       const Center(child: CircularProgressIndicator())
@@ -342,7 +365,10 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
                 },
               ),
               const SizedBox(height: 10),
-              SecondaryAuthButton(label: 'Annuler', onPressed: () => Navigator.of(sheetContext).pop()),
+              SecondaryAuthButton(
+                label: 'Annuler',
+                onPressed: () => Navigator.of(sheetContext).pop(),
+              ),
             ],
           ),
         );
@@ -428,7 +454,11 @@ class _SearchPill extends StatelessWidget {
             const SizedBox(width: 10),
             Text(
               'Où allez-vous ?',
-              style: urbanText(fontSize: 17, fontWeight: FontWeight.w700, color: AppColors.textSecondary),
+              style: urbanText(
+                fontSize: 17,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textSecondary,
+              ),
             ),
           ],
         ),
@@ -460,7 +490,10 @@ class _ModeToggle extends StatelessWidget {
                 color: AppColors.primary,
                 borderRadius: BorderRadius.circular(999),
               ),
-              child: Text('Mototaxi', style: urbanText(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white)),
+              child: Text(
+                'Mototaxi',
+                style: urbanText(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white),
+              ),
             ),
           ),
           Expanded(
@@ -469,7 +502,10 @@ class _ModeToggle extends StatelessWidget {
               child: Container(
                 height: 46,
                 alignment: Alignment.center,
-                child: Text('Interurbain', style: urbanText(fontSize: 15, fontWeight: FontWeight.w800)),
+                child: Text(
+                  'Interurbain',
+                  style: urbanText(fontSize: 15, fontWeight: FontWeight.w800),
+                ),
               ),
             ),
           ),
