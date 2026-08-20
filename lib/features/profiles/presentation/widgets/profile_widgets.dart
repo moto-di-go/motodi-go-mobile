@@ -69,6 +69,8 @@ class ProfileChoiceCard extends StatelessWidget {
   final VoidCallback onTap;
   final bool showAction;
   final bool compact;
+  final bool showStatusDot;
+  final Widget? footer;
 
   const ProfileChoiceCard({
     super.key,
@@ -78,15 +80,14 @@ class ProfileChoiceCard extends StatelessWidget {
     required this.onTap,
     this.showAction = false,
     this.compact = false,
+    this.showStatusDot = true,
+    this.footer,
   });
 
   @override
   Widget build(BuildContext context) {
     final status =
-        profile?.validationStatus ??
-        (type == ProfileType.passenger
-            ? ValidationStatus.validated
-            : ValidationStatus.pending);
+        profile?.validationStatus ?? ValidationStatus.pending;
     final active = profile?.active ?? false;
     final iconColor = selected ? AppColors.primary : const Color(0xFF3C4741);
     final borderRadius = compact ? 18.0 : 24.0;
@@ -112,74 +113,84 @@ class ProfileChoiceCard extends StatelessWidget {
               width: selected ? (compact ? 2 : 2.5) : 1.3,
             ),
           ),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                width: iconSize,
-                height: iconSize,
-                decoration: BoxDecoration(
-                  color: selected
-                      ? const Color(0xFFDFF5E8)
-                      : const Color(0xFFF1F2ED),
-                  borderRadius: BorderRadius.circular(iconRadius),
-                ),
-                child: Center(
-                  child: ProfileTypeIcon(
-                    type: type,
-                    color: iconColor,
-                    size: compact ? 24 : 32,
-                  ),
-                ),
-              ),
-              SizedBox(width: compact ? 14 : 22),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      profileLabel(type),
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: AppColors.textPrimary,
-                        fontSize: compact ? 21 : 25,
-                        fontWeight: FontWeight.w900,
-                        height: 1.05,
+              Row(
+                children: [
+                  Container(
+                    width: iconSize,
+                    height: iconSize,
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? const Color(0xFFDFF5E8)
+                          : const Color(0xFFF1F2ED),
+                      borderRadius: BorderRadius.circular(iconRadius),
+                    ),
+                    child: Center(
+                      child: ProfileTypeIcon(
+                        type: type,
+                        color: iconColor,
+                        size: compact ? 24 : 32,
                       ),
                     ),
-                    SizedBox(height: compact ? 6 : 8),
-                    StatusBadge(
-                      status: status,
-                      active: active,
-                      compact: compact,
+                  ),
+                  SizedBox(width: compact ? 14 : 22),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          profileLabel(type),
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: AppColors.textPrimary,
+                            fontSize: compact ? 21 : 25,
+                            fontWeight: FontWeight.w900,
+                            height: 1.05,
+                          ),
+                        ),
+                        SizedBox(height: compact ? 6 : 8),
+                        StatusBadge(
+                          status: status,
+                          active: active,
+                          compact: compact,
+                          showDot: showStatusDot,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  if (selected)
+                    CircleAvatar(
+                      radius: compact ? 22 : 24,
+                      backgroundColor: AppColors.primary,
+                      child: const Icon(
+                        Icons.check_rounded,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    )
+                  else if (showAction)
+                    Text(
+                      'Utiliser',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: AppColors.primary,
+                        fontSize: compact ? 19 : null,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    )
+                  else
+                    const Icon(
+                      Icons.chevron_right_rounded,
+                      color: Color(0xFFB7C0B8),
+                      size: 38,
+                    ),
+                ],
               ),
-              if (selected)
-                CircleAvatar(
-                  radius: compact ? 24 : 24,
-                  backgroundColor: AppColors.primary,
-                  child: const Icon(
-                    Icons.check_rounded,
-                    color: Colors.white,
-                    size: 34,
-                  ),
-                )
-              else if (showAction)
-                Text(
-                  'Utiliser',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppColors.primary,
-                    fontSize: compact ? 19 : null,
-                    fontWeight: FontWeight.w900,
-                  ),
-                )
-              else
-                const Icon(
-                  Icons.chevron_right_rounded,
-                  color: Color(0xFFB7C0B8),
-                  size: 38,
-                ),
+              if (footer != null) ...[
+                const SizedBox(height: 12),
+                footer!,
+              ],
             ],
           ),
         ),
@@ -221,19 +232,21 @@ class StatusBadge extends StatelessWidget {
   final ValidationStatus status;
   final bool active;
   final bool compact;
+  final bool showDot;
 
   const StatusBadge({
     super.key,
     required this.status,
     this.active = false,
     this.compact = false,
+    this.showDot = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final color = statusColor(status);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: showDot ? 12 : 10, vertical: 5),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(18),
@@ -241,8 +254,10 @@ class StatusBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          CircleAvatar(radius: 4, backgroundColor: color),
-          const SizedBox(width: 8),
+          if (showDot) ...[
+            CircleAvatar(radius: 4, backgroundColor: color),
+            const SizedBox(width: 8),
+          ],
           Text(
             compact
                 ? compactStatusLabel(status, active: active)

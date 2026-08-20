@@ -14,8 +14,10 @@ import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_an
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_booking.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_booking_cubit.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/authenticated_network_image.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_itinerary_map.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_figma_icons.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_formatters.dart';
+import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
 
 final RegExp _kPhonePattern = RegExp(r'^\+237[6-9]\d{8}$');
 
@@ -98,7 +100,11 @@ class _IntercityDetailPageState extends State<IntercityDetailPage> {
                   onRetry: () => _cubit.loadDetail(widget.announcementId),
                 );
               }
-              return _DetailContent(announcement: announcement);
+              return _DetailContent(
+                announcement: announcement,
+                itineraryStatus: state.itineraryStatus,
+                itinerary: state.itinerary,
+              );
             },
           ),
         ),
@@ -109,12 +115,20 @@ class _IntercityDetailPageState extends State<IntercityDetailPage> {
 
 class _DetailContent extends StatelessWidget {
   final IntercityAnnouncement announcement;
+  final IntercityItineraryStatus itineraryStatus;
+  final IntercityItinerary? itinerary;
 
-  const _DetailContent({required this.announcement});
+  const _DetailContent({
+    required this.announcement,
+    required this.itineraryStatus,
+    this.itinerary,
+  });
 
   @override
   Widget build(BuildContext context) {
     final profiles = getIt<SessionCubit>().state.session?.profiles ?? const [];
+    final activeProfile = getIt<SessionCubit>().state.activeProfile;
+    final kycValidated = activeProfile?.validationStatus == ValidationStatus.validated;
     final ownedByMe = profiles.any((profile) => profile.id == announcement.publisherProfileId);
     final hasSeats = !ownedByMe && announcement.hasSeatsAvailable && announcement.status.isActive;
     final agency = announcement.publisherDisplayName?.trim().isNotEmpty == true
@@ -132,6 +146,62 @@ class _DetailContent extends StatelessWidget {
         : hasSeats
             ? 'Souscrire'
             : 'Complet';
+
+    void openSubscribe() {
+      if (!kycValidated) {
+        showDialog<void>(
+          context: context,
+          builder: (dialogContext) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              title: Text(
+                'Validation requise',
+                style: _detailText(fontSize: 20, fontWeight: FontWeight.w800),
+              ),
+              content: Text(
+                'Validez votre pièce d’identité (CNI) pour souscrire à un trajet interurbain.',
+                style: _detailText(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF54615A),
+                  height: 1.4,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: Text(
+                    'Plus tard',
+                    style: _detailText(fontSize: 15, fontWeight: FontWeight.w600, color: const Color(0xFF6B756E)),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop();
+                    context.push(RouteConstants.kyc);
+                  },
+                  child: Text(
+                    'Valider mon profil',
+                    style: _detailText(fontSize: 15, fontWeight: FontWeight.w700, color: const Color(0xFF16A34A)),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+        return;
+      }
+      context.push(
+        RouteConstants.intercitySubscribe,
+        extra: IntercitySubscribeArgs(
+          announcementId: announcement.id,
+          route: announcement.route,
+          pricePerSeat: announcement.priceFcfa,
+          maxSeats: announcement.remainingSeats,
+        ),
+      );
+    }
 
     return Column(
       children: [
@@ -357,6 +427,18 @@ class _DetailContent extends StatelessWidget {
               ),
               const SizedBox(height: 22),
               Text(
+                'ITINÉRAIRE',
+                style: _detailText(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF7A857E),
+                  letterSpacing: 1.1,
+                ),
+              ),
+              const SizedBox(height: 10),
+              _ItineraryBlock(status: itineraryStatus, itinerary: itinerary),
+              const SizedBox(height: 22),
+              Text(
                 "POLITIQUE D'ANNULATION",
                 style: _detailText(
                   fontSize: 13,
@@ -387,17 +469,7 @@ class _DetailContent extends StatelessWidget {
             shadowColor: const Color(0x8C16A34A),
             child: InkWell(
               borderRadius: BorderRadius.circular(999),
-              onTap: hasSeats
-                  ? () => context.push(
-                        RouteConstants.intercitySubscribe,
-                        extra: IntercitySubscribeArgs(
-                          announcementId: announcement.id,
-                          route: announcement.route,
-                          pricePerSeat: announcement.priceFcfa,
-                          maxSeats: announcement.remainingSeats,
-                        ),
-                      )
-                  : null,
+              onTap: hasSeats ? openSubscribe : null,
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 20),
@@ -415,6 +487,63 @@ class _DetailContent extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ItineraryBlock extends StatelessWidget {
+  final IntercityItineraryStatus status;
+  final IntercityItinerary? itinerary;
+
+  const _ItineraryBlock({required this.status, this.itinerary});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 240,
+      child: switch (status) {
+        IntercityItineraryStatus.ready when itinerary != null => IntercityItineraryMap(itinerary: itinerary!),
+        IntercityItineraryStatus.failure => const _ItineraryMessage(
+            'Itinéraire routier indisponible pour le moment.',
+          ),
+        IntercityItineraryStatus.idle || IntercityItineraryStatus.loading => const Center(
+            child: SizedBox(
+              width: 26,
+              height: 26,
+              child: CircularProgressIndicator(strokeWidth: 2.4, color: Color(0xFF16A34A)),
+            ),
+          ),
+        _ => const _ItineraryMessage('Itinéraire routier indisponible pour le moment.'),
+      },
+    );
+  }
+}
+
+class _ItineraryMessage extends StatelessWidget {
+  final String text;
+  const _ItineraryMessage(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.center,
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 1, color: Color(0xFFE7EAE3)),
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: _detailText(
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+          color: const Color(0xFF54615A),
+        ),
+      ),
     );
   }
 }
@@ -616,9 +745,61 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
               }
               if (state.subscribeStatus == IntercitySubscribeStatus.failure &&
                   state.subscribeErrorMessage != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.subscribeErrorMessage!)),
-                );
+                if (state.subscribeErrorCode == 'BOOKING_KYC_REQUIRED') {
+                  showDialog<void>(
+                    context: context,
+                    builder: (dialogContext) {
+                      return AlertDialog(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                        title: Text(
+                          'Validation requise',
+                          style: _detailText(fontSize: 20, fontWeight: FontWeight.w800),
+                        ),
+                        content: Text(
+                          state.subscribeErrorMessage!,
+                          style: _detailText(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF54615A),
+                            height: 1.4,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(dialogContext).pop(),
+                            child: Text(
+                              'Fermer',
+                              style: _detailText(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF6B756E),
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(dialogContext).pop();
+                              context.push(RouteConstants.kyc);
+                            },
+                            child: Text(
+                              'Valider mon profil',
+                              style: _detailText(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF16A34A),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.subscribeErrorMessage!)),
+                  );
+                }
               }
             },
             builder: (context, state) {

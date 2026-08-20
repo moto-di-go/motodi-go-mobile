@@ -117,6 +117,7 @@ dependencies:
   geolocator: ^14.0.2
   connectivity_plus: ^6.1.5
   flutter_map: ^8.3.1
+  maplibre_gl: ^0.22.0
   latlong2: ^0.10.1
   nfc_manager: ^4.2.1
 
@@ -164,6 +165,7 @@ flutter:
     - assets/images/
     - assets/fonts/
     - assets/i18n/
+    - assets/map/
     - .env
 
 #  fonts:

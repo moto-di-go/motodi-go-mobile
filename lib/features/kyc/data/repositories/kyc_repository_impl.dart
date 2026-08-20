@@ -108,7 +108,8 @@ class KycRepositoryImpl implements KycRepository {
     final session = (await _authLocalDataSource.readSession())?.toEntity();
     final active = session?.activeProfile;
     if (active == null ||
-        (active.type != ProfileType.mototaxi &&
+        (active.type != ProfileType.passenger &&
+            active.type != ProfileType.mototaxi &&
             active.type != ProfileType.transporter)) {
       return null;
     }
@@ -143,11 +144,13 @@ class KycRepositoryImpl implements KycRepository {
         : KycDocumentStatus.missing;
     final types = <KycDocumentType>[
       KycDocumentType.cni,
-      KycDocumentType.profilePhoto,
-      KycDocumentType.driverLicense,
-      KycDocumentType.vehicleRegistration,
-      KycDocumentType.insurance,
-      if (profileType == ProfileType.transporter) KycDocumentType.vehiclePhoto,
+      if (profileType != ProfileType.passenger) ...[
+        KycDocumentType.profilePhoto,
+        KycDocumentType.driverLicense,
+        KycDocumentType.vehicleRegistration,
+        KycDocumentType.insurance,
+        if (profileType == ProfileType.transporter) KycDocumentType.vehiclePhoto,
+      ],
     ];
     return types.map((type) {
       return KycRequirement(

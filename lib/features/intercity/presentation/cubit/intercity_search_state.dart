@@ -11,7 +11,6 @@ class IntercitySearchState extends Equatable {
   final bool hasMore;
   final String? errorMessage;
   final String? errorCode;
-  final bool showMap;
 
   const IntercitySearchState({
     this.status = IntercitySearchStatus.initial,
@@ -22,7 +21,6 @@ class IntercitySearchState extends Equatable {
     this.hasMore = false,
     this.errorMessage,
     this.errorCode,
-    this.showMap = false,
   });
 
   bool get isLoading => status == IntercitySearchStatus.loading;
@@ -38,7 +36,6 @@ class IntercitySearchState extends Equatable {
     bool? hasMore,
     String? errorMessage,
     String? errorCode,
-    bool? showMap,
   }) {
     return IntercitySearchState(
       status: status ?? this.status,
@@ -49,7 +46,6 @@ class IntercitySearchState extends Equatable {
       hasMore: hasMore ?? this.hasMore,
       errorMessage: errorMessage,
       errorCode: errorCode,
-      showMap: showMap ?? this.showMap,
     );
   }
 
@@ -63,6 +59,5 @@ class IntercitySearchState extends Equatable {
     hasMore,
     errorMessage,
     errorCode,
-    showMap,
   ];
 }

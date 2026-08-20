@@ -59,7 +59,7 @@ class KycStatusPage extends StatelessWidget {
             if (state.status == KycStatus.failure) {
               return _KycScaffold(
                 title: 'Validation du profil',
-                showBack: false,
+                showBack: true,
                 child: AppErrorView(
                   message: state.errorMessage ?? 'Chargement KYC impossible.',
                   onRetry: () => context.read<KycCubit>().load(),
@@ -68,13 +68,13 @@ class KycStatusPage extends StatelessWidget {
             }
             return const _KycScaffold(
               title: 'Validation du profil',
-              showBack: false,
+              showBack: true,
               child: AppLoading(),
             );
           }
           return _KycScaffold(
             title: 'Validation du profil',
-            showBack: false,
+            showBack: true,
             bottom: _KycBottomButton(
               label: 'Continuer la validation',
               onPressed: () => context.go(RouteConstants.kycDocuments),

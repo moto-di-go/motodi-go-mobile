@@ -56,6 +56,14 @@ import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity
     as _i183;
 import 'package:motodi_go_mobile/features/kyc/data/datasources/kyc_remote_datasource.dart'
     as _i29;
+import 'package:motodi_go_mobile/features/notifications/data/datasources/notification_remote_datasource.dart'
+    as _i812;
+import 'package:motodi_go_mobile/features/notifications/data/repositories/notification_repository_impl.dart'
+    as _i813;
+import 'package:motodi_go_mobile/features/notifications/domain/repositories/notification_repository.dart'
+    as _i814;
+import 'package:motodi_go_mobile/features/notifications/presentation/cubit/notifications_cubit.dart'
+    as _i815;
 import 'package:motodi_go_mobile/features/kyc/data/repositories/kyc_repository_impl.dart'
     as _i356;
 import 'package:motodi_go_mobile/features/kyc/domain/repositories/kyc_repository.dart'
@@ -113,6 +121,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i558.FlutterSecureStorage>(),
       ),
     );
+    gh.lazySingleton<_i812.NotificationRemoteDataSource>(
+      () => _i812.NotificationRemoteDataSourceImpl(gh<_i31.ChopperClient>()),
+    );
     gh.lazySingleton<_i992.AuthLocalDataSource>(
       () => _i992.AuthLocalDataSourceImpl(
         gh<_i558.FlutterSecureStorage>(),
@@ -135,6 +146,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i992.AuthLocalDataSource>(),
       ),
     );
+    gh.lazySingleton<_i814.NotificationRepository>(
+      () => _i813.NotificationRepositoryImpl(
+        gh<_i812.NotificationRemoteDataSource>(),
+        gh<_i247.NetworkInfo>(),
+      ),
+    );
     gh.lazySingleton<_i802.ProfileRepository>(
       () => _i278.ProfileRepositoryImpl(
         gh<_i525.ProfileRemoteDataSource>(),
@@ -155,8 +172,14 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.factory<_i657.KycCubit>(() => _i657.KycCubit(gh<_i9.KycRepository>()));
+    gh.factory<_i815.NotificationsCubit>(
+      () => _i815.NotificationsCubit(gh<_i814.NotificationRepository>()),
+    );
     gh.factory<_i741.IntercityBookingCubit>(
-      () => _i741.IntercityBookingCubit(gh<_i1053.IntercityRepository>()),
+      () => _i741.IntercityBookingCubit(
+        gh<_i1053.IntercityRepository>(),
+        gh<_i31.ChopperClient>(),
+      ),
     );
     gh.factory<_i183.IntercitySearchCubit>(
       () => _i183.IntercitySearchCubit(gh<_i1053.IntercityRepository>()),

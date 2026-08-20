@@ -188,6 +188,8 @@ class IntercityRepositoryImpl implements IntercityRepository {
         'BOOKING_NOT_CANCELLABLE' => ValidationFailure(error.message, code: error.code),
         'SESSION_EXPIRED' ||
         'BOOKING_FORBIDDEN' ||
+        'BOOKING_KYC_REQUIRED' ||
+        'BOOKING_OWN_ANNOUNCEMENT' ||
         'PROFILE_NOT_ALLOWED' => AuthFailure(error.message, code: error.code),
         _ => ServerFailure(error.message, code: error.code),
       };

@@ -12,7 +12,7 @@ plugins {
 
 android {
     // TODO: [TEMPLATE] Remplacer par votre applicationId (ex: com.votreentreprise.votreapp)
-    namespace = "com.yourcompany.yourapp"
+    namespace = "com.motodigo.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -43,8 +43,8 @@ android {
 
     defaultConfig {
         // TODO: [TEMPLATE] Remplacer par votre applicationId
-        applicationId = "com.yourcompany.yourapp"
-        minSdk = flutter.minSdkVersion
+        applicationId = "com.motodigo.app"
+        minSdk = maxOf(flutter.minSdkVersion, 23)
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
