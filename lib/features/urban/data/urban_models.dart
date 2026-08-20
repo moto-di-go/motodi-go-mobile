@@ -86,11 +86,7 @@ class NearbySearchResult {
   final String? emptyReason;
   final double radiusKm;
 
-  const NearbySearchResult({
-    required this.items,
-    this.emptyReason,
-    required this.radiusKm,
-  });
+  const NearbySearchResult({required this.items, this.emptyReason, required this.radiusKm});
 
   factory NearbySearchResult.fromJson(Map<String, dynamic> json) {
     final rawItems = json['items'] as List<dynamic>? ?? const [];
@@ -133,14 +129,16 @@ class FareBreakdown extends Equatable {
   factory FareBreakdown.fromJson(Map<String, dynamic> json, {double? fallbackTotal}) {
     final distanceKm = _readDouble(json, const ['distanceKm']) ?? 0;
     final pricePerKm = _readDouble(json, const ['pricePerKmFcfa', 'pricePerKm', 'perKm']) ?? 0;
-    final distanceAmount = _readDouble(json, const ['distanceAmountFcfa', 'distanceAmount']) ??
+    final distanceAmount =
+        _readDouble(json, const ['distanceAmountFcfa', 'distanceAmount']) ??
         (distanceKm * pricePerKm);
     return FareBreakdown(
       base: _readDouble(json, const ['baseFcfa', 'base', 'baseFare']) ?? 0,
       distanceKm: distanceKm,
       pricePerKm: pricePerKm,
       distanceAmount: distanceAmount,
-      nightCoefficient: _readDouble(json, const ['nightMultiplier', 'nightCoefficient', 'night']) ?? 1,
+      nightCoefficient:
+          _readDouble(json, const ['nightMultiplier', 'nightCoefficient', 'night']) ?? 1,
       weatherCoefficient:
           _readDouble(json, const ['weatherMultiplier', 'weatherCoefficient', 'weather']) ?? 1,
       nightWeatherApplicable: _readBool(json, const ['nightWeatherApplicable']) ?? false,
@@ -152,17 +150,17 @@ class FareBreakdown extends Equatable {
 
   @override
   List<Object?> get props => [
-        base,
-        distanceKm,
-        pricePerKm,
-        distanceAmount,
-        nightCoefficient,
-        weatherCoefficient,
-        nightWeatherApplicable,
-        rounding,
-        total,
-        isDemo,
-      ];
+    base,
+    distanceKm,
+    pricePerKm,
+    distanceAmount,
+    nightCoefficient,
+    weatherCoefficient,
+    nightWeatherApplicable,
+    rounding,
+    total,
+    isDemo,
+  ];
 }
 
 class RouteOption extends Equatable {
@@ -221,8 +219,16 @@ class RouteOption extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [kind, label, distanceKm, durationMinutes, amountFcfa, polyline, degraded, isDemo];
+  List<Object?> get props => [
+    kind,
+    label,
+    distanceKm,
+    durationMinutes,
+    amountFcfa,
+    polyline,
+    degraded,
+    isDemo,
+  ];
 }
 
 RouteOptionKind parseRouteOptionKind(String? raw) {
@@ -235,16 +241,16 @@ RouteOptionKind parseRouteOptionKind(String? raw) {
 
 extension RouteOptionKindX on RouteOptionKind {
   String get defaultLabel => switch (this) {
-        RouteOptionKind.recommended => 'Conseillé',
-        RouteOptionKind.fastest => 'Plus rapide',
-        RouteOptionKind.cheapest => 'Moins cher',
-      };
+    RouteOptionKind.recommended => 'Conseillé',
+    RouteOptionKind.fastest => 'Plus rapide',
+    RouteOptionKind.cheapest => 'Moins cher',
+  };
 
   String get apiValue => switch (this) {
-        RouteOptionKind.recommended => 'RECOMMENDED',
-        RouteOptionKind.fastest => 'FASTEST',
-        RouteOptionKind.cheapest => 'CHEAPEST',
-      };
+    RouteOptionKind.recommended => 'RECOMMENDED',
+    RouteOptionKind.fastest => 'FASTEST',
+    RouteOptionKind.cheapest => 'CHEAPEST',
+  };
 }
 
 class RouteAlternative {
@@ -437,10 +443,9 @@ class UrbanPlace extends Equatable {
   });
 
   factory UrbanPlace.fromJson(Map<String, dynamic> json, {bool isDemo = false}) {
-    final lat = (json['lat'] as num?)?.toDouble() ??
-        (json['latitude'] as num?)?.toDouble() ??
-        0;
-    final lon = (json['lon'] as num?)?.toDouble() ??
+    final lat = (json['lat'] as num?)?.toDouble() ?? (json['latitude'] as num?)?.toDouble() ?? 0;
+    final lon =
+        (json['lon'] as num?)?.toDouble() ??
         (json['lng'] as num?)?.toDouble() ??
         (json['longitude'] as num?)?.toDouble() ??
         0;
@@ -475,11 +480,11 @@ class DestinationHistoryEntry extends Equatable {
   LatLng get point => LatLng(lat, lon);
 
   Map<String, dynamic> toJson() => {
-        'label': label,
-        'lat': lat,
-        'lon': lon,
-        'savedAt': savedAt.toIso8601String(),
-      };
+    'label': label,
+    'lat': lat,
+    'lon': lon,
+    'savedAt': savedAt.toIso8601String(),
+  };
 
   factory DestinationHistoryEntry.fromJson(Map<String, dynamic> json) {
     return DestinationHistoryEntry(
@@ -559,22 +564,22 @@ class UrbanDriverCard extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        rating,
-        tripCount,
-        vehicleLabel,
-        plate,
-        documentsVerified,
-        cniVerified,
-        etaMinutes,
-        priceFcfa,
-        availability,
-        lat,
-        lon,
-        approachDistanceKm,
-        profileIsDemo,
-      ];
+    id,
+    name,
+    rating,
+    tripCount,
+    vehicleLabel,
+    plate,
+    documentsVerified,
+    cniVerified,
+    etaMinutes,
+    priceFcfa,
+    availability,
+    lat,
+    lon,
+    approachDistanceKm,
+    profileIsDemo,
+  ];
 }
 
 class UrbanFilters extends Equatable {
@@ -600,7 +605,9 @@ class UrbanFilters extends Equatable {
       radiusKm: radiusKm ?? this.radiusKm,
       minRating: identical(minRating, _sentinel) ? this.minRating : minRating as double?,
       immediateOnly: immediateOnly ?? this.immediateOnly,
-      maxPriceFcfa: identical(maxPriceFcfa, _sentinel) ? this.maxPriceFcfa : maxPriceFcfa as double?,
+      maxPriceFcfa: identical(maxPriceFcfa, _sentinel)
+          ? this.maxPriceFcfa
+          : maxPriceFcfa as double?,
     );
   }
 

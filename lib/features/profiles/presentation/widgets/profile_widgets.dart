@@ -86,8 +86,7 @@ class ProfileChoiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final status =
-        profile?.validationStatus ?? ValidationStatus.pending;
+    final status = profile?.validationStatus ?? ValidationStatus.pending;
     final active = profile?.active ?? false;
     final iconColor = selected ? AppColors.primary : const Color(0xFF3C4741);
     final borderRadius = compact ? 18.0 : 24.0;
@@ -122,17 +121,11 @@ class ProfileChoiceCard extends StatelessWidget {
                     width: iconSize,
                     height: iconSize,
                     decoration: BoxDecoration(
-                      color: selected
-                          ? const Color(0xFFDFF5E8)
-                          : const Color(0xFFF1F2ED),
+                      color: selected ? const Color(0xFFDFF5E8) : const Color(0xFFF1F2ED),
                       borderRadius: BorderRadius.circular(iconRadius),
                     ),
                     child: Center(
-                      child: ProfileTypeIcon(
-                        type: type,
-                        color: iconColor,
-                        size: compact ? 24 : 32,
-                      ),
+                      child: ProfileTypeIcon(type: type, color: iconColor, size: compact ? 24 : 32),
                     ),
                   ),
                   SizedBox(width: compact ? 14 : 22),
@@ -164,11 +157,7 @@ class ProfileChoiceCard extends StatelessWidget {
                     CircleAvatar(
                       radius: compact ? 22 : 24,
                       backgroundColor: AppColors.primary,
-                      child: const Icon(
-                        Icons.check_rounded,
-                        color: Colors.white,
-                        size: 30,
-                      ),
+                      child: const Icon(Icons.check_rounded, color: Colors.white, size: 30),
                     )
                   else if (showAction)
                     Text(
@@ -180,17 +169,10 @@ class ProfileChoiceCard extends StatelessWidget {
                       ),
                     )
                   else
-                    const Icon(
-                      Icons.chevron_right_rounded,
-                      color: Color(0xFFB7C0B8),
-                      size: 38,
-                    ),
+                    const Icon(Icons.chevron_right_rounded, color: Color(0xFFB7C0B8), size: 38),
                 ],
               ),
-              if (footer != null) ...[
-                const SizedBox(height: 12),
-                footer!,
-              ],
+              if (footer != null) ...[const SizedBox(height: 12), footer!],
             ],
           ),
         ),
@@ -204,25 +186,14 @@ class ProfileTypeIcon extends StatelessWidget {
   final Color color;
   final double size;
 
-  const ProfileTypeIcon({
-    super.key,
-    required this.type,
-    required this.color,
-    this.size = 32,
-  });
+  const ProfileTypeIcon({super.key, required this.type, required this.color, this.size = 32});
 
   @override
   Widget build(BuildContext context) {
     return switch (type) {
-      ProfileType.passenger => MotodigoProfilePersonIcon(
-        size: size,
-        color: color,
-      ),
+      ProfileType.passenger => MotodigoProfilePersonIcon(size: size, color: color),
       ProfileType.mototaxi => MotodigoMototaxiIcon(size: size, color: color),
-      ProfileType.transporter => MotodigoTransporterIcon(
-        size: size,
-        color: color,
-      ),
+      ProfileType.transporter => MotodigoTransporterIcon(size: size, color: color),
       _ => Icon(profileIcon(type), color: color, size: size),
     };
   }

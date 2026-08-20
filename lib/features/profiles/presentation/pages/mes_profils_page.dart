@@ -61,14 +61,14 @@ class _MesProfilsView extends StatelessWidget {
             if (state.isSaved) {
               await context.read<SessionCubit>().refreshAfterProfileChange();
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Profil activé')),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('Profil activé')));
               }
             } else if (state.status == ProfileStatus.failure && state.errorMessage != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.errorMessage!)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
             }
           },
           builder: (context, state) {
@@ -135,7 +135,11 @@ class _MesProfilsView extends StatelessWidget {
                     ),
                     child: Text(
                       '+ Ajouter un profil',
-                      style: _mineText(fontSize: 17, fontWeight: FontWeight.w700, color: Colors.white),
+                      style: _mineText(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
@@ -191,10 +195,7 @@ class _BackButton extends StatelessWidget {
         width: 44,
         height: 44,
         alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          color: Color(0xFFF1F1EA),
-          shape: BoxShape.circle,
-        ),
+        decoration: const BoxDecoration(color: Color(0xFFF1F1EA), shape: BoxShape.circle),
         child: const Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: Color(0xFF101512)),
       ),
     );

@@ -77,9 +77,7 @@ void main() {
     return MaterialApp(theme: AppTheme.lightTheme(), home: child);
   }
 
-  testWidgets('documents page renders sections, add action and rejection', (
-    tester,
-  ) async {
+  testWidgets('documents page renders sections, add action and rejection', (tester) async {
     await tester.pumpWidget(buildApp(const KycDocumentsPage()));
     await tester.pumpAndSettle();
 
@@ -100,9 +98,7 @@ void main() {
     expect(find.text('Importer un PDF'), findsOneWidget);
   });
 
-  testWidgets('preview page renders selected PDF before upload', (
-    tester,
-  ) async {
+  testWidgets('preview page renders selected PDF before upload', (tester) async {
     await tester.pumpWidget(buildApp(KycPreviewPage(draft: _draft())));
 
     expect(find.text('Aperçu du document'), findsOneWidget);
@@ -117,26 +113,17 @@ void main() {
     final validation = KycFileValidation.validate(draft);
 
     await tester.pumpWidget(
-      buildApp(
-        KycInvalidFilePage(args: KycInvalidFileArgs(validation: validation)),
-      ),
+      buildApp(KycInvalidFilePage(args: KycInvalidFileArgs(validation: validation))),
     );
 
     expect(find.text('Fichier invalide'), findsOneWidget);
-    expect(
-      find.textContaining('Ce fichier ne peut pas etre envoye'),
-      findsOneWidget,
-    );
+    expect(find.textContaining('Ce fichier ne peut pas etre envoye'), findsOneWidget);
     expect(find.textContaining('Taille trop grande'), findsOneWidget);
     expect(find.text('Choisir un autre fichier'), findsOneWidget);
   });
 
-  testWidgets('upload success, submitted, rejected and verified pages render', (
-    tester,
-  ) async {
-    await tester.pumpWidget(
-      buildApp(KycUploadSuccessPage(result: _uploadResult())),
-    );
+  testWidgets('upload success, submitted, rejected and verified pages render', (tester) async {
+    await tester.pumpWidget(buildApp(KycUploadSuccessPage(result: _uploadResult())));
     expect(find.text('Document envoye'), findsOneWidget);
     expect(find.textContaining('en attente de verification'), findsOneWidget);
 
@@ -147,9 +134,7 @@ void main() {
     expect(find.text('Voir mes documents'), findsOneWidget);
     expect(find.text("Retour à l'accueil"), findsOneWidget);
 
-    await tester.pumpWidget(
-      buildApp(KycRejectedDocumentPage(document: _rejectedInsurance())),
-    );
+    await tester.pumpWidget(buildApp(KycRejectedDocumentPage(document: _rejectedInsurance())));
     expect(find.text('Document rejete'), findsOneWidget);
     expect(find.text('Assurance rejetee'), findsOneWidget);
     expect(find.textContaining('document est illisible'), findsOneWidget);
@@ -180,51 +165,41 @@ void main() {
     expect(find.text('Ouvrir le statut KYC'), findsOneWidget);
   });
 
-  testWidgets(
-    'status page switches between required, in progress and history',
-    (tester) async {
-      kycRepository = _FakeKycRepository(_completePendingBundle());
-      await getIt.reset();
-      getIt.registerFactory<KycCubit>(() => KycCubit(kycRepository));
+  testWidgets('status page switches between required, in progress and history', (tester) async {
+    kycRepository = _FakeKycRepository(_completePendingBundle());
+    await getIt.reset();
+    getIt.registerFactory<KycCubit>(() => KycCubit(kycRepository));
 
-      await tester.pumpWidget(buildApp(const KycStatusPage()));
-      await tester.pumpAndSettle();
+    await tester.pumpWidget(buildApp(const KycStatusPage()));
+    await tester.pumpAndSettle();
 
-      expect(find.text('Statut global'), findsOneWidget);
-      expect(find.text('5 / 5 documents fournis'), findsOneWidget);
+    expect(find.text('Statut global'), findsOneWidget);
+    expect(find.text('5 / 5 documents fournis'), findsOneWidget);
 
-      await tester.tap(find.text('En cours'));
-      await tester.pumpAndSettle();
+    await tester.tap(find.text('En cours'));
+    await tester.pumpAndSettle();
 
-      expect(find.text('Dossier soumis'), findsOneWidget);
-      expect(find.text('Verification en cours'), findsOneWidget);
+    expect(find.text('Dossier soumis'), findsOneWidget);
+    expect(find.text('Verification en cours'), findsOneWidget);
 
-      await tester.tap(find.text('Historique'));
-      await tester.pumpAndSettle();
+    await tester.tap(find.text('Historique'));
+    await tester.pumpAndSettle();
 
-      expect(find.text('Carte nationale d\'identite'), findsOneWidget);
-      expect(find.text('Validé'), findsWidgets);
-    },
-  );
+    expect(find.text('Carte nationale d\'identite'), findsOneWidget);
+    expect(find.text('Validé'), findsWidgets);
+  });
 
-  testWidgets('router shows home for unvalidated driver profiles', (
-    tester,
-  ) async {
+  testWidgets('router shows home for unvalidated driver profiles', (tester) async {
     final authRepository = _MockAuthRepository();
     final sessionCubit = SessionCubit(authRepository)
-      ..setAuthenticated(
-        _session(ProfileType.mototaxi, ValidationStatus.pending),
-      );
+      ..setAuthenticated(_session(ProfileType.mototaxi, ValidationStatus.pending));
     addTearDown(sessionCubit.close);
 
     final router = createAppRouter(sessionCubit)..go(RouteConstants.home);
     await tester.pumpWidget(
       BlocProvider.value(
         value: sessionCubit,
-        child: MaterialApp.router(
-          theme: AppTheme.lightTheme(),
-          routerConfig: router,
-        ),
+        child: MaterialApp.router(theme: AppTheme.lightTheme(), routerConfig: router),
       ),
     );
     await tester.pumpAndSettle();
@@ -240,24 +215,17 @@ void main() {
     expect(find.text('Dossier en cours de\nvérification'), findsOneWidget);
   });
 
-  testWidgets('router lets validated driver profiles reach driver features', (
-    tester,
-  ) async {
+  testWidgets('router lets validated driver profiles reach driver features', (tester) async {
     final authRepository = _MockAuthRepository();
     final sessionCubit = SessionCubit(authRepository)
-      ..setAuthenticated(
-        _session(ProfileType.mototaxi, ValidationStatus.validated),
-      );
+      ..setAuthenticated(_session(ProfileType.mototaxi, ValidationStatus.validated));
     addTearDown(sessionCubit.close);
 
     final router = createAppRouter(sessionCubit)..go(RouteConstants.home);
     await tester.pumpWidget(
       BlocProvider.value(
         value: sessionCubit,
-        child: MaterialApp.router(
-          theme: AppTheme.lightTheme(),
-          routerConfig: router,
-        ),
+        child: MaterialApp.router(theme: AppTheme.lightTheme(), routerConfig: router),
       ),
     );
     await tester.pumpAndSettle();
@@ -267,9 +235,7 @@ void main() {
   });
 }
 
-KycBundle _kycBundle({
-  ValidationStatus validationStatus = ValidationStatus.pending,
-}) {
+KycBundle _kycBundle({ValidationStatus validationStatus = ValidationStatus.pending}) {
   return KycBundle(
     profileId: 'profile-1',
     profileType: ProfileType.mototaxi,
@@ -421,17 +387,13 @@ KycDocument _rejectedInsurance() {
     fileName: 'assurance.jpg',
     mimeType: 'image/jpeg',
     sizeBytes: 1_800_000,
-    rejectionReason:
-        "le document est illisible et la date de validite n'apparait pas.",
+    rejectionReason: "le document est illisible et la date de validite n'apparait pas.",
     uploadedAt: null,
     updatedAt: null,
   );
 }
 
-KycFileDraft _draft({
-  String fileName = 'carte-grise.pdf',
-  int sizeBytes = 2_200_000,
-}) {
+KycFileDraft _draft({String fileName = 'carte-grise.pdf', int sizeBytes = 2_200_000}) {
   return KycFileDraft(
     documentType: KycDocumentType.vehicleRegistration,
     path: '/tmp/$fileName',
@@ -468,12 +430,7 @@ AuthSession _session(ProfileType type, ValidationStatus validationStatus) {
     phoneNumber: '+237699000000',
     roles: [type],
     profiles: [
-      ProfileSummary(
-        id: 'profile-1',
-        type: type,
-        validationStatus: validationStatus,
-        active: true,
-      ),
+      ProfileSummary(id: 'profile-1', type: type, validationStatus: validationStatus, active: true),
     ],
     activeProfileId: 'profile-1',
     activeProfileType: type,

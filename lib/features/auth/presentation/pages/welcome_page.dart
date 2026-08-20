@@ -71,18 +71,12 @@ class WelcomePage extends StatelessWidget {
                     TextSpan(text: 'En continuant, vous acceptez nos '),
                     TextSpan(
                       text: "Conditions\nd'utilisation",
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700),
                     ),
                     TextSpan(text: ' et notre '),
                     TextSpan(
                       text: 'Politique de confidentialité.',
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700),
                     ),
                   ],
                 ),
@@ -143,11 +137,7 @@ class _WelcomeActionButton extends StatelessWidget {
                 label,
                 overflow: TextOverflow.fade,
                 softWrap: false,
-                style: TextStyle(
-                  color: foregroundColor,
-                  fontSize: 26,
-                  fontWeight: FontWeight.w800,
-                ),
+                style: TextStyle(color: foregroundColor, fontSize: 26, fontWeight: FontWeight.w800),
               ),
             ),
           ],

@@ -40,10 +40,7 @@ class _UrbanVectorMapState extends State<UrbanVectorMap> {
       color: const Color(0xFFE7EEE6),
       child: ml.MapLibreMap(
         styleString: UrbanMapStyle.url,
-        initialCameraPosition: ml.CameraPosition(
-          target: _toMl(state.center),
-          zoom: 14,
-        ),
+        initialCameraPosition: ml.CameraPosition(target: _toMl(state.center), zoom: 14),
         compassEnabled: false,
         rotateGesturesEnabled: true,
         tiltGesturesEnabled: false,
@@ -85,9 +82,7 @@ class _UrbanVectorMapState extends State<UrbanVectorMap> {
     }
     if (force || _lastCenter != state.center) {
       _lastCenter = state.center;
-      await controller.animateCamera(
-        ml.CameraUpdate.newLatLngZoom(_toMl(state.center), 14),
-      );
+      await controller.animateCamera(ml.CameraUpdate.newLatLngZoom(_toMl(state.center), 14));
     }
   }
 
@@ -123,7 +118,9 @@ class _UrbanVectorMapState extends State<UrbanVectorMap> {
       );
     }
     if (state.step == UrbanRideStep.compareRoutes) {
-      for (final option in state.routeOptions.where((item) => item.kind == RouteOptionKind.fastest)) {
+      for (final option in state.routeOptions.where(
+        (item) => item.kind == RouteOptionKind.fastest,
+      )) {
         final points = parseWktLine(option.polyline);
         if (points.length < 2) continue;
         await controller.addLine(
@@ -209,10 +206,10 @@ class _UrbanVectorMapState extends State<UrbanVectorMap> {
       'DAMAGED_ROAD' => const Color(0xFFEF4444),
       'ALTERNATIVE_ROUTE' => const Color(0xFF3B82F6),
       _ => switch (layer.severity.toUpperCase()) {
-          'CRITICAL' || 'HIGH' => const Color(0xFFEF4444),
-          'MEDIUM' => const Color(0xFFF59E0B),
-          _ => const Color(0xFFFBBF24),
-        },
+        'CRITICAL' || 'HIGH' => const Color(0xFFEF4444),
+        'MEDIUM' => const Color(0xFFF59E0B),
+        _ => const Color(0xFFFBBF24),
+      },
     };
   }
 

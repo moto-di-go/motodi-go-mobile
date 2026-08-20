@@ -19,10 +19,7 @@ class PassengerProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<ProfileCubit>(),
-      child: const _PassengerProfileView(),
-    );
+    return BlocProvider(create: (_) => getIt<ProfileCubit>(), child: const _PassengerProfileView());
   }
 }
 
@@ -40,9 +37,7 @@ class _PassengerProfileViewState extends State<_PassengerProfileView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final localeCode = AppLocalizations.of(
-      context,
-    )?.localeName.split('_').first;
+    final localeCode = AppLocalizations.of(context)?.localeName.split('_').first;
     _language = localeCode == 'en' ? 'en' : 'fr';
   }
 
@@ -110,9 +105,7 @@ class _PassengerProfileViewState extends State<_PassengerProfileView> {
                 onChanged: (value) async {
                   if (value == null) return;
                   setState(() => _language = value);
-                  await AppLocaleController.of(
-                    context,
-                  ).setLocale(Locale(value));
+                  await AppLocaleController.of(context).setLocale(Locale(value));
                 },
               ),
               const SizedBox(height: 28),
@@ -124,8 +117,7 @@ class _PassengerProfileViewState extends State<_PassengerProfileView> {
                 controller: _emergencyController,
                 hintText: l10n.passenger_profile_emergency_hint,
               ),
-              if (state.errorMessage != null &&
-                  state.errorMessage!.isNotEmpty) ...[
+              if (state.errorMessage != null && state.errorMessage!.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 Text(
                   state.errorMessage!,
@@ -239,10 +231,7 @@ class _EmergencyPhoneInput extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
 
-  const _EmergencyPhoneInput({
-    required this.controller,
-    required this.hintText,
-  });
+  const _EmergencyPhoneInput({required this.controller, required this.hintText});
 
   @override
   Widget build(BuildContext context) {
@@ -275,9 +264,7 @@ class _EmergencyPhoneInput extends StatelessWidget {
             child: TextField(
               controller: controller,
               keyboardType: TextInputType.phone,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9 +()-]')),
-              ],
+              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9 +()-]'))],
               style: const TextStyle(
                 color: AppColors.textPrimary,
                 fontSize: 20,
@@ -292,23 +279,14 @@ class _EmergencyPhoneInput extends StatelessWidget {
                 ),
                 filled: true,
                 fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 28,
-                  vertical: 16,
-                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
-                  borderSide: const BorderSide(
-                    color: Color(0xFFDEE2DA),
-                    width: 1.5,
-                  ),
+                  borderSide: const BorderSide(color: Color(0xFFDEE2DA), width: 1.5),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
-                  borderSide: const BorderSide(
-                    color: AppColors.primary,
-                    width: 1.8,
-                  ),
+                  borderSide: const BorderSide(color: AppColors.primary, width: 1.8),
                 ),
               ),
             ),
@@ -343,18 +321,13 @@ class _PassengerSubmitButton extends StatelessWidget {
           disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.62),
           elevation: 10,
           shadowColor: AppColors.primary.withValues(alpha: 0.34),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(999),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
         ),
         child: isLoading
             ? const SizedBox(
                 width: 26,
                 height: 26,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.7,
-                  color: Colors.white,
-                ),
+                child: CircularProgressIndicator(strokeWidth: 2.7, color: Colors.white),
               )
             : Text(
                 label,

@@ -12,18 +12,8 @@ void main() {
       'profileType': 'MOTOTAXI',
       'profileValidationStatus': 'PENDING',
       'requirements': [
-        {
-          'type': 'CNI',
-          'required': true,
-          'uploaded': true,
-          'latestStatus': 'ACCEPTED',
-        },
-        {
-          'type': 'INSURANCE',
-          'required': true,
-          'uploaded': false,
-          'latestStatus': 'REJECTED',
-        },
+        {'type': 'CNI', 'required': true, 'uploaded': true, 'latestStatus': 'ACCEPTED'},
+        {'type': 'INSURANCE', 'required': true, 'uploaded': false, 'latestStatus': 'REJECTED'},
       ],
       'documents': [
         {

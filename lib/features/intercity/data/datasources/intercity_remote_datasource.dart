@@ -27,7 +27,11 @@ abstract class IntercityRemoteDataSource {
     required String contactPhone,
   });
 
-  Future<BookingPageModel> listAnnouncementBookings(String announcementId, {int page = 0, int size = 20});
+  Future<BookingPageModel> listAnnouncementBookings(
+    String announcementId, {
+    int page = 0,
+    int size = 20,
+  });
 
   Future<BookingPageModel> listMyBookings({int page = 0, int size = 20});
 

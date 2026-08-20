@@ -20,21 +20,13 @@ class MotodigoMototaxiIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoMototaxiIcon({
-    super.key,
-    this.size = 30,
-    this.color = const Color(0xFF3C4741),
-  });
+  const MotodigoMototaxiIcon({super.key, this.size = 30, this.color = const Color(0xFF3C4741)});
 
-  const MotodigoMototaxiIcon.green({super.key, this.size = 30})
-    : color = const Color(0xFF16A34A);
+  const MotodigoMototaxiIcon.green({super.key, this.size = 30}) : color = const Color(0xFF16A34A);
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _MototaxiPainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _MototaxiPainter(color));
   }
 }
 
@@ -42,21 +34,14 @@ class MotodigoTransporterIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoTransporterIcon({
-    super.key,
-    this.size = 30,
-    this.color = const Color(0xFF3C4741),
-  });
+  const MotodigoTransporterIcon({super.key, this.size = 30, this.color = const Color(0xFF3C4741)});
 
   const MotodigoTransporterIcon.green({super.key, this.size = 30})
     : color = const Color(0xFF16A34A);
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _TransporterPainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _TransporterPainter(color));
   }
 }
 
@@ -64,18 +49,11 @@ class MotodigoNetworkGrayIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoNetworkGrayIcon({
-    super.key,
-    this.size = 28,
-    this.color = const Color(0xFF8A968C),
-  });
+  const MotodigoNetworkGrayIcon({super.key, this.size = 28, this.color = const Color(0xFF8A968C)});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _NetworkPainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _NetworkPainter(color));
   }
 }
 
@@ -91,10 +69,7 @@ class MotodigoWarningYellowIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _WarningPainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _WarningPainter(color));
   }
 }
 
@@ -110,10 +85,7 @@ class MotodigoLocalisationGrayIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _LocalisationPainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: _LocalisationPainter(color));
   }
 }
 
@@ -121,11 +93,7 @@ class MotodigoUploadGrayIcon extends StatelessWidget {
   final double size;
   final Color color;
 
-  const MotodigoUploadGrayIcon({
-    super.key,
-    this.size = 28,
-    this.color = const Color(0xFF98A29A),
-  });
+  const MotodigoUploadGrayIcon({super.key, this.size = 28, this.color = const Color(0xFF98A29A)});
 
   @override
   Widget build(BuildContext context) {
@@ -159,8 +127,7 @@ class _PersonPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _PersonPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _PersonPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _MototaxiPainter extends CustomPainter {
@@ -189,8 +156,7 @@ class _MototaxiPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _MototaxiPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _MototaxiPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _TransporterPainter extends CustomPainter {
@@ -248,8 +214,7 @@ class _TransporterPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _TransporterPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _TransporterPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _NetworkPainter extends CustomPainter {
@@ -286,8 +251,7 @@ class _NetworkPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _NetworkPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _NetworkPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _WarningPainter extends CustomPainter {
@@ -306,17 +270,12 @@ class _WarningPainter extends CustomPainter {
           ..lineTo(9.5, 9.5),
         paint,
       );
-      canvas.drawLine(
-        const Offset(9.5, 6.33325),
-        const Offset(9.50792, 6.33325),
-        paint,
-      );
+      canvas.drawLine(const Offset(9.5, 6.33325), const Offset(9.50792, 6.33325), paint);
     });
   }
 
   @override
-  bool shouldRepaint(covariant _WarningPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _WarningPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _LocalisationPainter extends CustomPainter {
@@ -344,8 +303,7 @@ class _LocalisationPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _LocalisationPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _LocalisationPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _UploadPainter extends CustomPainter {
@@ -386,8 +344,7 @@ class _UploadPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _UploadPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _UploadPainter oldDelegate) => oldDelegate.color != color;
 }
 
 Paint _strokePaint(Color color, double width) {

@@ -30,11 +30,7 @@ void main() {
     expect: () => [
       isA<AuthFormState>()
           .having((state) => state.status, 'status', AuthFormStatus.failure)
-          .having(
-            (state) => state.errorCode,
-            'errorCode',
-            'INVALID_PHONE_NUMBER',
-          ),
+          .having((state) => state.errorCode, 'errorCode', 'INVALID_PHONE_NUMBER'),
     ],
     verify: (_) {
       verifyNever(
@@ -62,11 +58,7 @@ void main() {
     expect: () => [
       isA<AuthFormState>()
           .having((state) => state.status, 'status', AuthFormStatus.failure)
-          .having(
-            (state) => state.errorCode,
-            'errorCode',
-            'FULL_NAME_TOO_SHORT',
-          ),
+          .having((state) => state.errorCode, 'errorCode', 'FULL_NAME_TOO_SHORT'),
     ],
     verify: (_) {
       verifyNever(
@@ -94,11 +86,7 @@ void main() {
     expect: () => [
       isA<AuthFormState>()
           .having((state) => state.status, 'status', AuthFormStatus.failure)
-          .having(
-            (state) => state.errorCode,
-            'errorCode',
-            'FULL_NAME_TOO_SHORT',
-          ),
+          .having((state) => state.errorCode, 'errorCode', 'FULL_NAME_TOO_SHORT'),
     ],
   );
 
@@ -133,10 +121,7 @@ void main() {
       cguAccepted: true,
     ),
     expect: () => [
-      const AuthFormState(
-        status: AuthFormStatus.loading,
-        phoneNumber: '+237678901234',
-      ),
+      const AuthFormState(status: AuthFormStatus.loading, phoneNumber: '+237678901234'),
       AuthFormState(
         status: AuthFormStatus.success,
         phoneNumber: '+237678901234',
@@ -184,10 +169,7 @@ void main() {
       password: 'password1',
     ),
     expect: () => [
-      const AuthFormState(
-        status: AuthFormStatus.loading,
-        phoneNumber: '+237678901234',
-      ),
+      const AuthFormState(status: AuthFormStatus.loading, phoneNumber: '+237678901234'),
       AuthFormState(
         status: AuthFormStatus.success,
         phoneNumber: '+237678901234',
@@ -200,27 +182,16 @@ void main() {
     'login maps repository failure to form failure',
     build: () {
       when(
-        () => repository.login(
-          phoneNumber: '+237678901234',
-          password: 'bad-password',
-        ),
+        () => repository.login(phoneNumber: '+237678901234', password: 'bad-password'),
       ).thenAnswer(
-        (_) async => left(
-          const AuthFailure(
-            'Numero ou mot de passe incorrect.',
-            code: 'AUTH_INVALID',
-          ),
-        ),
+        (_) async =>
+            left(const AuthFailure('Numero ou mot de passe incorrect.', code: 'AUTH_INVALID')),
       );
       return AuthFormCubit(repository);
     },
-    act: (cubit) =>
-        cubit.login(rawPhoneNumber: '678901234', password: 'bad-password'),
+    act: (cubit) => cubit.login(rawPhoneNumber: '678901234', password: 'bad-password'),
     expect: () => [
-      const AuthFormState(
-        status: AuthFormStatus.loading,
-        phoneNumber: '+237678901234',
-      ),
+      const AuthFormState(status: AuthFormStatus.loading, phoneNumber: '+237678901234'),
       const AuthFormState(
         status: AuthFormStatus.failure,
         phoneNumber: '+237678901234',

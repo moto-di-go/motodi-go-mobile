@@ -54,12 +54,14 @@ class DriverAvailabilityCubit extends Cubit<DriverAvailabilityState> {
   Future<void> setAvailability(String availability, {required bool gpsConsent}) async {
     try {
       await _remote.updateAvailability(availability: availability, gpsConsent: gpsConsent);
-      emit(state.copyWith(
-        availability: availability,
-        gpsConsent: gpsConsent,
-        sharing: availability == 'AVAILABLE' && gpsConsent,
-        clearError: true,
-      ));
+      emit(
+        state.copyWith(
+          availability: availability,
+          gpsConsent: gpsConsent,
+          sharing: availability == 'AVAILABLE' && gpsConsent,
+          clearError: true,
+        ),
+      );
       if (state.sharing) {
         await _startSharing();
       } else {
@@ -74,7 +76,13 @@ class DriverAvailabilityCubit extends Cubit<DriverAvailabilityState> {
   Future<void> _startSharing() async {
     final permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
-      emit(state.copyWith(error: 'Permission GPS refusee. Diffusion arretee.', sharing: false, gpsOk: false));
+      emit(
+        state.copyWith(
+          error: 'Permission GPS refusee. Diffusion arretee.',
+          sharing: false,
+          gpsOk: false,
+        ),
+      );
       return;
     }
     emit(state.copyWith(gpsOk: true, sharing: true, clearError: true));

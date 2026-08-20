@@ -9,7 +9,8 @@ double haversineKm(LatLng a, LatLng b) {
   const earth = 6371.0;
   final dLat = _rad(b.latitude - a.latitude);
   final dLon = _rad(b.longitude - a.longitude);
-  final h = sin(dLat / 2) * sin(dLat / 2) +
+  final h =
+      sin(dLat / 2) * sin(dLat / 2) +
       cos(_rad(a.latitude)) * cos(_rad(b.latitude)) * sin(dLon / 2) * sin(dLon / 2);
   return earth * 2 * atan2(sqrt(h), sqrt(1 - h));
 }

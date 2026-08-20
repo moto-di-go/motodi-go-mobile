@@ -24,10 +24,7 @@ class AppLocaleController extends ChangeNotifier {
     notifyListeners();
 
     final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(
-      PreferenceKeys.preferredLocale,
-      locale.languageCode,
-    );
+    await preferences.setString(PreferenceKeys.preferredLocale, locale.languageCode);
   }
 
   static AppLocaleController of(BuildContext context) {
@@ -38,9 +35,6 @@ class AppLocaleController extends ChangeNotifier {
 }
 
 class AppLocaleScope extends InheritedNotifier<AppLocaleController> {
-  const AppLocaleScope({
-    super.key,
-    required AppLocaleController controller,
-    required super.child,
-  }) : super(notifier: controller);
+  const AppLocaleScope({super.key, required AppLocaleController controller, required super.child})
+    : super(notifier: controller);
 }

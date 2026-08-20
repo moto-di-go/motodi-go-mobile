@@ -15,11 +15,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthLocalDataSource _localDataSource;
   final NetworkInfo _networkInfo;
 
-  AuthRepositoryImpl(
-    this._remoteDataSource,
-    this._localDataSource,
-    this._networkInfo,
-  );
+  AuthRepositoryImpl(this._remoteDataSource, this._localDataSource, this._networkInfo);
 
   @override
   Future<Either<Failure, AuthSession?>> bootstrapSession() async {
@@ -27,9 +23,7 @@ class AuthRepositoryImpl implements AuthRepository {
     if (session == null) return right(null);
     if (session.isRefreshTokenExpired) {
       await _localDataSource.clearSession();
-      return left(
-        const AuthFailure('Session expirée.', code: 'SESSION_EXPIRED'),
-      );
+      return left(const AuthFailure('Session expirée.', code: 'SESSION_EXPIRED'));
     }
     if (!session.isAccessTokenExpired) {
       if (!await _networkInfo.isConnected) return right(session);
@@ -51,12 +45,7 @@ class AuthRepositoryImpl implements AuthRepository {
     String locale = 'fr-CM',
   }) async {
     if (!await _networkInfo.isConnected) {
-      return left(
-        const NetworkFailure(
-          'Pas de connexion internet.',
-          code: 'NETWORK_OFFLINE',
-        ),
-      );
+      return left(const NetworkFailure('Pas de connexion internet.', code: 'NETWORK_OFFLINE'));
     }
     try {
       final result = await _remoteDataSource.register(
@@ -80,12 +69,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
   }) async {
     if (!await _networkInfo.isConnected) {
-      return left(
-        const NetworkFailure(
-          'Pas de connexion internet.',
-          code: 'NETWORK_OFFLINE',
-        ),
-      );
+      return left(const NetworkFailure('Pas de connexion internet.', code: 'NETWORK_OFFLINE'));
     }
     try {
       await _remoteDataSource.verifyOtp(
@@ -93,10 +77,7 @@ class AuthRepositoryImpl implements AuthRepository {
         code: code,
         purpose: 'REGISTRATION',
       );
-      final session = await _remoteDataSource.login(
-        phoneNumber: phoneNumber,
-        password: password,
-      );
+      final session = await _remoteDataSource.login(phoneNumber: phoneNumber, password: password);
       await _localDataSource.saveSession(session);
       await _localDataSource.saveLastPhoneNumber(phoneNumber);
       return right(session.toEntity());
@@ -111,18 +92,10 @@ class AuthRepositoryImpl implements AuthRepository {
     required String purpose,
   }) async {
     if (!await _networkInfo.isConnected) {
-      return left(
-        const NetworkFailure(
-          'Pas de connexion internet.',
-          code: 'NETWORK_OFFLINE',
-        ),
-      );
+      return left(const NetworkFailure('Pas de connexion internet.', code: 'NETWORK_OFFLINE'));
     }
     try {
-      final result = await _remoteDataSource.resendOtp(
-        phoneNumber: phoneNumber,
-        purpose: purpose,
-      );
+      final result = await _remoteDataSource.resendOtp(phoneNumber: phoneNumber, purpose: purpose);
       return right(result.toEntity());
     } catch (e) {
       return left(_failureFromException(e));
@@ -135,18 +108,10 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
   }) async {
     if (!await _networkInfo.isConnected) {
-      return left(
-        const NetworkFailure(
-          'Pas de connexion internet.',
-          code: 'NETWORK_OFFLINE',
-        ),
-      );
+      return left(const NetworkFailure('Pas de connexion internet.', code: 'NETWORK_OFFLINE'));
     }
     try {
-      final session = await _remoteDataSource.login(
-        phoneNumber: phoneNumber,
-        password: password,
-      );
+      final session = await _remoteDataSource.login(phoneNumber: phoneNumber, password: password);
       await _localDataSource.saveSession(session);
       await _localDataSource.saveLastPhoneNumber(phoneNumber);
       return right(session.toEntity());
@@ -158,24 +123,15 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, AuthSession>> refreshSession() async {
     if (!await _networkInfo.isConnected) {
-      return left(
-        const NetworkFailure(
-          'Pas de connexion internet.',
-          code: 'NETWORK_OFFLINE',
-        ),
-      );
+      return left(const NetworkFailure('Pas de connexion internet.', code: 'NETWORK_OFFLINE'));
     }
     final refreshToken = await _localDataSource.readRefreshToken();
     if (refreshToken == null) {
       await _localDataSource.clearSession();
-      return left(
-        const AuthFailure('Session expirée.', code: 'SESSION_EXPIRED'),
-      );
+      return left(const AuthFailure('Session expirée.', code: 'SESSION_EXPIRED'));
     }
     try {
-      final session = await _remoteDataSource.refresh(
-        refreshToken: refreshToken,
-      );
+      final session = await _remoteDataSource.refresh(refreshToken: refreshToken);
       await _localDataSource.saveSession(session);
       return right(session.toEntity());
     } catch (e) {
@@ -202,12 +158,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> forgotPassword(String phoneNumber) async {
     if (!await _networkInfo.isConnected) {
-      return left(
-        const NetworkFailure(
-          'Pas de connexion internet.',
-          code: 'NETWORK_OFFLINE',
-        ),
-      );
+      return left(const NetworkFailure('Pas de connexion internet.', code: 'NETWORK_OFFLINE'));
     }
     try {
       await _remoteDataSource.forgotPassword(phoneNumber);
@@ -225,12 +176,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String newPassword,
   }) async {
     if (!await _networkInfo.isConnected) {
-      return left(
-        const NetworkFailure(
-          'Pas de connexion internet.',
-          code: 'NETWORK_OFFLINE',
-        ),
-      );
+      return left(const NetworkFailure('Pas de connexion internet.', code: 'NETWORK_OFFLINE'));
     }
     try {
       await _remoteDataSource.resetPassword(
@@ -255,25 +201,18 @@ class AuthRepositoryImpl implements AuthRepository {
   bool readOnboardingSeen() => _localDataSource.readOnboardingSeen();
 
   @override
-  Future<void> saveOnboardingSeen(bool value) =>
-      _localDataSource.saveOnboardingSeen(value);
+  Future<void> saveOnboardingSeen(bool value) => _localDataSource.saveOnboardingSeen(value);
 
   Failure _failureFromException(Object error) {
     if (error is ApiException) {
       return switch (error.code) {
-        'AUTH_INVALID' ||
-        'SESSION_EXPIRED' => AuthFailure(error.message, code: error.code),
+        'AUTH_INVALID' || 'SESSION_EXPIRED' => AuthFailure(error.message, code: error.code),
         'OTP_INVALID' ||
         'OTP_RATE_LIMITED' ||
         'PHONE_ALREADY_EXISTS' ||
-        'INVALID_PHONE_NUMBER' => ValidationFailure(
-          error.message,
-          code: error.code,
-        ),
-        'PASSWORD_RESET_INVALID' || 'VALIDATION_FAILED' => ValidationFailure(
-          error.message,
-          code: error.code,
-        ),
+        'INVALID_PHONE_NUMBER' => ValidationFailure(error.message, code: error.code),
+        'PASSWORD_RESET_INVALID' ||
+        'VALIDATION_FAILED' => ValidationFailure(error.message, code: error.code),
         _ => ServerFailure(error.message, code: error.code),
       };
     }

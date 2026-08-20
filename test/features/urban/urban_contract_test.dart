@@ -62,7 +62,10 @@ void main() {
     expect(layer.updatedAt, DateTime.parse('2026-08-15T09:00:00Z'));
     expect(layer.fresh, isTrue);
     expect(layer.isStale(DateTime.parse('2026-08-15T10:00:00Z')), isFalse);
-    expect(layer.freshnessLabel(DateTime.parse('2026-08-15T09:12:00Z')), 'Mis à jour il y a 12 min');
+    expect(
+      layer.freshnessLabel(DateTime.parse('2026-08-15T09:12:00Z')),
+      'Mis à jour il y a 12 min',
+    );
 
     final stale = TrafficLayer.fromJson({
       'id': '55555555-5555-5555-5555-555555555555',

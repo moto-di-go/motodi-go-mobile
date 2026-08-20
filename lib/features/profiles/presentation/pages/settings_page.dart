@@ -36,9 +36,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _shareLocationEnabled = false;
 
   void _soon() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Bientôt disponible')),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Bientôt disponible')));
   }
 
   void _showLogoutSheet() {
@@ -49,10 +47,7 @@ class _SettingsPageState extends State<SettingsPage> {
         return Container(
           margin: const EdgeInsets.all(12),
           padding: const EdgeInsets.fromLTRB(24, 20, 24, 28),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(28),
-          ),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(28)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -107,8 +102,8 @@ class _SettingsPageState extends State<SettingsPage> {
     return ListenableBuilder(
       listenable: localeController,
       builder: (context, _) {
-        final langCode = localeController.locale?.languageCode ??
-            Localizations.localeOf(context).languageCode;
+        final langCode =
+            localeController.locale?.languageCode ?? Localizations.localeOf(context).languageCode;
         final isFr = langCode != 'en';
 
         return Scaffold(
@@ -298,12 +293,7 @@ class _SettingsRow extends StatelessWidget {
   final Widget trailing;
   final VoidCallback? onTap;
 
-  const _SettingsRow({
-    required this.icon,
-    required this.title,
-    required this.trailing,
-    this.onTap,
-  });
+  const _SettingsRow({required this.icon, required this.title, required this.trailing, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -338,11 +328,7 @@ class _LanguageSegment extends StatelessWidget {
   final VoidCallback onFr;
   final VoidCallback onEn;
 
-  const _LanguageSegment({
-    required this.isFr,
-    required this.onFr,
-    required this.onEn,
-  });
+  const _LanguageSegment({required this.isFr, required this.onFr, required this.onEn});
 
   @override
   Widget build(BuildContext context) {
@@ -369,11 +355,7 @@ class _SegmentChip extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _SegmentChip({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
+  const _SegmentChip({required this.label, required this.selected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

@@ -45,9 +45,7 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-              const SnackBar(
-                content: Text('Impossible de continuer pour le moment.'),
-              ),
+              const SnackBar(content: Text('Impossible de continuer pour le moment.')),
             );
         }
       },
@@ -85,11 +83,8 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
                 ),
                 const SizedBox(height: 42),
                 if (state.status == ProfileStatus.loading)
-                  const Expanded(
-                    child: Center(child: CircularProgressIndicator()),
-                  )
-                else if (state.status == ProfileStatus.failure &&
-                    state.profiles.isEmpty)
+                  const Expanded(child: Center(child: CircularProgressIndicator()))
+                else if (state.status == ProfileStatus.failure && state.profiles.isEmpty)
                   const Expanded(
                     child: Center(
                       child: Text(
@@ -115,8 +110,7 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
                           type: type,
                           profile: _profileOf(state.profiles, type),
                           selected: state.selectedType == type,
-                          onTap: () =>
-                              context.read<ProfileCubit>().selectType(type),
+                          onTap: () => context.read<ProfileCubit>().selectType(type),
                         ),
                         const SizedBox(height: 16),
                       ],
@@ -168,10 +162,7 @@ class _ProfileContinueButton extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onPressed;
 
-  const _ProfileContinueButton({
-    required this.isLoading,
-    required this.onPressed,
-  });
+  const _ProfileContinueButton({required this.isLoading, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -186,28 +177,19 @@ class _ProfileContinueButton extends StatelessWidget {
           disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.62),
           elevation: 10,
           shadowColor: AppColors.primary.withValues(alpha: 0.34),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(999),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
         ),
         child: isLoading
             ? const SizedBox(
                 width: 26,
                 height: 26,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.7,
-                  color: Colors.white,
-                ),
+                child: CircularProgressIndicator(strokeWidth: 2.7, color: Colors.white),
               )
             : const Text(
                 'Continuer',
                 overflow: TextOverflow.fade,
                 softWrap: false,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 26,
-                  fontWeight: FontWeight.w800,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w800),
               ),
       ),
     );

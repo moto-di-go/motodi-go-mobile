@@ -22,11 +22,9 @@ class KycBundle extends Equatable {
   });
 
   int get requiredCount => requirements.where((item) => item.required).length;
-  int get providedCount =>
-      requirements.where((item) => item.required && item.uploaded).length;
+  int get providedCount => requirements.where((item) => item.required && item.uploaded).length;
   bool get isComplete => requiredCount > 0 && providedCount == requiredCount;
-  double get completionRatio =>
-      requiredCount == 0 ? 0 : providedCount / requiredCount;
+  double get completionRatio => requiredCount == 0 ? 0 : providedCount / requiredCount;
   bool get hasRejectedDocument =>
       documents.any((item) => item.status == KycDocumentStatus.rejected);
 
@@ -43,10 +41,7 @@ class KycBundle extends Equatable {
       profileType: profileType,
       profileValidationStatus: result.profileValidationStatus,
       requirements: result.requirements,
-      documents: [
-        result.document,
-        ...documents.where((item) => item.id != result.document.id),
-      ],
+      documents: [result.document, ...documents.where((item) => item.id != result.document.id)],
     );
   }
 
@@ -73,15 +68,8 @@ class KycUploadResult extends Equatable {
     required this.requirements,
   });
 
-  bool get isComplete => requirements
-      .where((item) => item.required)
-      .every((item) => item.uploaded);
+  bool get isComplete => requirements.where((item) => item.required).every((item) => item.uploaded);
 
   @override
-  List<Object?> get props => [
-    profileId,
-    profileValidationStatus,
-    document,
-    requirements,
-  ];
+  List<Object?> get props => [profileId, profileValidationStatus, document, requirements];
 }

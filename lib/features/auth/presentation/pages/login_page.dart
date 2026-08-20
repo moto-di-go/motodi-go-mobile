@@ -15,10 +15,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<AuthFormCubit>(),
-      child: const _LoginView(),
-    );
+    return BlocProvider(create: (_) => getIt<AuthFormCubit>(), child: const _LoginView());
   }
 }
 
@@ -36,8 +33,7 @@ class _LoginViewState extends State<_LoginView> {
   @override
   void initState() {
     super.initState();
-    _phoneController.text =
-        context.read<SessionCubit>().state.lastPhoneNumber ?? '';
+    _phoneController.text = context.read<SessionCubit>().state.lastPhoneNumber ?? '';
   }
 
   @override
@@ -94,8 +90,7 @@ class _LoginViewState extends State<_LoginView> {
                   height: 1.55,
                 ),
               ),
-              if (state.errorMessage != null &&
-                  state.errorMessage!.isNotEmpty) ...[
+              if (state.errorMessage != null && state.errorMessage!.isNotEmpty) ...[
                 const SizedBox(height: 34),
                 _LoginErrorBanner(state.errorMessage!),
               ],
@@ -190,9 +185,7 @@ class _LoginPhoneInput extends StatelessWidget {
             controller: controller,
             hintText: '6 XX XX XX XX',
             keyboardType: TextInputType.phone,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9 +()-]')),
-            ],
+            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9 +()-]'))],
           ),
         ),
       ],
@@ -242,10 +235,7 @@ class _LoginTextField extends StatelessWidget {
           ),
           filled: true,
           fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 26,
-            vertical: 16,
-          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 26, vertical: 16),
           prefixIcon: prefixIcon == null
               ? null
               : SizedBox(
@@ -253,10 +243,7 @@ class _LoginTextField extends StatelessWidget {
                   height: 60,
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 18),
-                      child: prefixIcon,
-                    ),
+                    child: Padding(padding: const EdgeInsets.only(right: 18), child: prefixIcon),
                   ),
                 ),
           prefixIconConstraints: const BoxConstraints(
@@ -272,10 +259,7 @@ class _LoginTextField extends StatelessWidget {
                   height: 60,
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: suffixIcon,
-                    ),
+                    child: Padding(padding: const EdgeInsets.only(left: 8), child: suffixIcon),
                   ),
                 ),
           suffixIconConstraints: const BoxConstraints(
@@ -369,11 +353,7 @@ class _LoginFooter extends StatelessWidget {
   final VoidCallback onLogin;
   final VoidCallback onRegister;
 
-  const _LoginFooter({
-    required this.isLoading,
-    required this.onLogin,
-    required this.onRegister,
-  });
+  const _LoginFooter({required this.isLoading, required this.onLogin, required this.onRegister});
 
   @override
   Widget build(BuildContext context) {
@@ -388,23 +368,16 @@ class _LoginFooter extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
-              disabledBackgroundColor: AppColors.primary.withValues(
-                alpha: 0.62,
-              ),
+              disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.62),
               elevation: 10,
               shadowColor: AppColors.primary.withValues(alpha: 0.34),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(999),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
             ),
             child: isLoading
                 ? const SizedBox(
                     width: 26,
                     height: 26,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.7,
-                      color: Colors.white,
-                    ),
+                    child: CircularProgressIndicator(strokeWidth: 2.7, color: Colors.white),
                   )
                 : const Text(
                     'Se connecter',
@@ -427,19 +400,12 @@ class _LoginFooter extends StatelessWidget {
               children: [
                 TextSpan(
                   text: 'Créer un compte',
-                  style: TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w900,
-                  ),
+                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900),
                 ),
               ],
             ),
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Color(0xFF8A968C),
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-            ),
+            style: TextStyle(color: Color(0xFF8A968C), fontSize: 18, fontWeight: FontWeight.w800),
           ),
         ),
       ],

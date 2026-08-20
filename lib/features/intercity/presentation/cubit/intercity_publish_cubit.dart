@@ -25,7 +25,10 @@ class IntercityPublishCubit extends Cubit<IntercityPublishState> {
   // valide et qu'au moins un vehicule est disponible.
   Future<void> checkEligibility() async {
     emit(
-      state.copyWith(eligibilityStatus: IntercityEligibilityStatus.checking, eligibilityReason: null),
+      state.copyWith(
+        eligibilityStatus: IntercityEligibilityStatus.checking,
+        eligibilityReason: null,
+      ),
     );
     final profileResult = await _profileRepository.currentProfile();
     final eligibility = await profileResult.fold<Future<(bool, String?)>>(
@@ -38,17 +41,14 @@ class IntercityPublishCubit extends Cubit<IntercityPublishState> {
           return (false, 'Votre profil doit être validé avant de publier une annonce.');
         }
         final vehiclesResult = await _repository.listMyVehicles();
-        return vehiclesResult.fold(
-          (failure) => (false, failure.message),
-          (vehicles) {
-            emit(state.copyWith(vehiclesStatus: IntercityVehiclesStatus.success, vehicles: vehicles));
-            final usable = vehicles.where((vehicle) => vehicle.isUsable).toList();
-            if (usable.isEmpty) {
-              return (false, 'Ajoutez un véhicule validé à votre profil pour publier une annonce.');
-            }
-            return (true, null);
-          },
-        );
+        return vehiclesResult.fold((failure) => (false, failure.message), (vehicles) {
+          emit(state.copyWith(vehiclesStatus: IntercityVehiclesStatus.success, vehicles: vehicles));
+          final usable = vehicles.where((vehicle) => vehicle.isUsable).toList();
+          if (usable.isEmpty) {
+            return (false, 'Ajoutez un véhicule validé à votre profil pour publier une annonce.');
+          }
+          return (true, null);
+        });
       },
     );
     final (isEligible, reason) = eligibility;
@@ -63,7 +63,9 @@ class IntercityPublishCubit extends Cubit<IntercityPublishState> {
   }
 
   Future<void> loadVehicles() async {
-    emit(state.copyWith(vehiclesStatus: IntercityVehiclesStatus.loading, vehiclesErrorMessage: null));
+    emit(
+      state.copyWith(vehiclesStatus: IntercityVehiclesStatus.loading, vehiclesErrorMessage: null),
+    );
     final result = await _repository.listMyVehicles();
     result.fold(
       (failure) => emit(
@@ -116,7 +118,10 @@ class IntercityPublishCubit extends Cubit<IntercityPublishState> {
         ),
       ),
       (announcement) => emit(
-        state.copyWith(createStatus: IntercityCreateStatus.success, createdAnnouncement: announcement),
+        state.copyWith(
+          createStatus: IntercityCreateStatus.success,
+          createdAnnouncement: announcement,
+        ),
       ),
     );
   }
@@ -182,7 +187,11 @@ class IntercityPublishCubit extends Cubit<IntercityPublishState> {
       ),
     );
     final announcementResult = await _repository.getAnnouncement(announcementId);
-    final bookingsResult = await _repository.listAnnouncementBookings(announcementId, page: 0, size: _pageSize);
+    final bookingsResult = await _repository.listAnnouncementBookings(
+      announcementId,
+      page: 0,
+      size: _pageSize,
+    );
 
     announcementResult.fold(
       (failure) => emit(
@@ -225,11 +234,7 @@ class IntercityPublishCubit extends Cubit<IntercityPublishState> {
       );
       return true;
     });
-    emit(
-      state.copyWith(
-        processingBookingIds: {...state.processingBookingIds}..remove(bookingId),
-      ),
-    );
+    emit(state.copyWith(processingBookingIds: {...state.processingBookingIds}..remove(bookingId)));
     return success;
   }
 
@@ -246,11 +251,7 @@ class IntercityPublishCubit extends Cubit<IntercityPublishState> {
       );
       return true;
     });
-    emit(
-      state.copyWith(
-        processingBookingIds: {...state.processingBookingIds}..remove(bookingId),
-      ),
-    );
+    emit(state.copyWith(processingBookingIds: {...state.processingBookingIds}..remove(bookingId)));
     return success;
   }
 }

@@ -24,13 +24,7 @@ class KycFileDraft extends Equatable {
   double get sizeMb => sizeBytes / (1024 * 1024);
 
   @override
-  List<Object?> get props => [
-    documentType,
-    path,
-    fileName,
-    mimeType,
-    sizeBytes,
-  ];
+  List<Object?> get props => [documentType, path, fileName, mimeType, sizeBytes];
 }
 
 enum KycFileIssue { tooLarge, empty, unsupportedFormat, unreadable }
@@ -38,11 +32,7 @@ enum KycFileIssue { tooLarge, empty, unsupportedFormat, unreadable }
 class KycFileValidation extends Equatable {
   static const int maxSizeBytes = 5 * 1024 * 1024;
   static const allowedExtensions = {'jpg', 'jpeg', 'png', 'pdf'};
-  static const allowedMimeTypes = {
-    'image/jpeg',
-    'image/png',
-    'application/pdf',
-  };
+  static const allowedMimeTypes = {'image/jpeg', 'image/png', 'application/pdf'};
 
   final KycFileDraft draft;
   final List<KycFileIssue> issues;

@@ -30,10 +30,7 @@ class MotodigoPasswordGrayIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: const _LockPainter(Color(0xFF8A968C)),
-    );
+    return CustomPaint(size: Size.square(size), painter: const _LockPainter(Color(0xFF8A968C)));
   }
 }
 
@@ -44,10 +41,7 @@ class MotodigoWrongPasswordRedIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: const _LockPainter(Color(0xFFE5484D)),
-    );
+    return CustomPaint(size: Size.square(size), painter: const _LockPainter(Color(0xFFE5484D)));
   }
 }
 
@@ -87,10 +81,7 @@ class MotodigoGpuAcceptedGreenIcon extends StatelessWidget {
 class _FlagCmrPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final outer = RRect.fromRectAndRadius(
-      Offset.zero & size,
-      Radius.circular(size.height * 0.18),
-    );
+    final outer = RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(size.height * 0.18));
     canvas.save();
     canvas.clipRRect(outer);
 
@@ -99,15 +90,9 @@ class _FlagCmrPainter extends CustomPainter {
     paint.color = const Color(0xFF178A44);
     canvas.drawRect(Rect.fromLTWH(0, 0, stripeWidth, size.height), paint);
     paint.color = const Color(0xFFE5484D);
-    canvas.drawRect(
-      Rect.fromLTWH(stripeWidth, 0, stripeWidth, size.height),
-      paint,
-    );
+    canvas.drawRect(Rect.fromLTWH(stripeWidth, 0, stripeWidth, size.height), paint);
     paint.color = const Color(0xFFF5C518);
-    canvas.drawRect(
-      Rect.fromLTWH(stripeWidth * 2, 0, stripeWidth, size.height),
-      paint,
-    );
+    canvas.drawRect(Rect.fromLTWH(stripeWidth * 2, 0, stripeWidth, size.height), paint);
     canvas.restore();
 
     final borderPaint = Paint()
@@ -177,8 +162,7 @@ class _LockPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _LockPainter oldDelegate) =>
-      oldDelegate.color != color;
+  bool shouldRepaint(covariant _LockPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _EyePainter extends CustomPainter {

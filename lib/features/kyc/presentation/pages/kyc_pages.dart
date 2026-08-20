@@ -106,10 +106,7 @@ class KycDocumentsPage extends StatelessWidget {
                 ),
               );
             }
-            return const _KycScaffold(
-              title: 'Mes documents',
-              child: AppLoading(),
-            );
+            return const _KycScaffold(title: 'Mes documents', child: AppLoading());
           }
           return _KycScaffold(
             title: 'Mes documents',
@@ -148,10 +145,7 @@ class _KycStatusContentState extends State<_KycStatusContent> {
         ),
         const SizedBox(height: 24),
         switch (_selectedTab) {
-          _KycStatusTabKind.required => _KycRequiredStatusView(
-            bundle: bundle,
-            percent: percent,
-          ),
+          _KycStatusTabKind.required => _KycRequiredStatusView(bundle: bundle, percent: percent),
           _KycStatusTabKind.inProgress => _KycInProgressView(bundle: bundle),
           _KycStatusTabKind.history => _KycHistoryView(bundle: bundle),
         },
@@ -209,11 +203,7 @@ class _KycStatusTab extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _KycStatusTab({
-    required this.label,
-    this.selected = false,
-    required this.onTap,
-  });
+  const _KycStatusTab({required this.label, this.selected = false, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -231,11 +221,7 @@ class _KycStatusTab extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x17000000),
-                      blurRadius: 8,
-                      offset: Offset(0, 3),
-                    ),
+                    BoxShadow(color: Color(0x17000000), blurRadius: 8, offset: Offset(0, 3)),
                   ],
                 )
               : null,
@@ -289,8 +275,7 @@ class _KycInProgressView extends StatelessWidget {
     if (!_hasSubmittedBundleInProgress(bundle)) {
       return const _KycEmptyState(
         title: 'Aucun dossier soumis',
-        message:
-            'Tous les documents requis doivent etre fournis avant le suivi de verification.',
+        message: 'Tous les documents requis doivent etre fournis avant le suivi de verification.',
       );
     }
     final submittedAt = _latestSubmittedAt(bundle);
@@ -323,11 +308,10 @@ class _KycInProgressView extends StatelessWidget {
                   children: [
                     Text(
                       'Dossier soumis',
-                      style: Theme.of(context).textTheme.headlineSmall
-                          ?.copyWith(
-                            color: AppColors.textPrimary,
-                            fontWeight: FontWeight.w900,
-                          ),
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -393,8 +377,7 @@ class _KycHistoryView extends StatelessWidget {
     if (decisions.isEmpty) {
       return const _KycEmptyState(
         title: 'Aucun historique',
-        message:
-            'Les dossiers valides ou rejetes apparaitront ici apres decision admin.',
+        message: 'Les dossiers valides ou rejetes apparaitront ici apres decision admin.',
       );
     }
 
@@ -418,9 +401,7 @@ class _KycHistoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final rejected = document.status == KycDocumentStatus.rejected;
     final color = rejected ? const Color(0xFFC62828) : AppColors.primary;
-    final background = rejected
-        ? const Color(0xFFFDE3E3)
-        : const Color(0xFFDFF5E8);
+    final background = rejected ? const Color(0xFFFDE3E3) : const Color(0xFFDFF5E8);
     final date = document.updatedAt ?? document.uploadedAt;
     return Container(
       width: double.infinity,
@@ -435,10 +416,7 @@ class _KycHistoryTile extends StatelessWidget {
           Container(
             width: 54,
             height: 54,
-            decoration: BoxDecoration(
-              color: background,
-              borderRadius: BorderRadius.circular(16),
-            ),
+            decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(16)),
             child: Icon(
               rejected ? Icons.close_rounded : Icons.check_rounded,
               color: color,
@@ -474,11 +452,7 @@ class _KycHistoryTile extends StatelessWidget {
           ),
           Text(
             rejected ? 'Rejeté' : 'Validé',
-            style: TextStyle(
-              color: color,
-              fontSize: 17,
-              fontWeight: FontWeight.w900,
-            ),
+            style: TextStyle(color: color, fontSize: 17, fontWeight: FontWeight.w900),
           ),
         ],
       ),
@@ -574,9 +548,7 @@ class _KycTimelineStep extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                    color: active || warning
-                        ? AppColors.textPrimary
-                        : AppColors.textSecondary,
+                    color: active || warning ? AppColors.textPrimary : AppColors.textSecondary,
                     fontSize: 21,
                     fontWeight: FontWeight.w900,
                   ),
@@ -585,9 +557,7 @@ class _KycTimelineStep extends StatelessWidget {
                 Text(
                   subtitle,
                   style: TextStyle(
-                    color: warning
-                        ? const Color(0xFF8A6410)
-                        : AppColors.textTertiary,
+                    color: warning ? const Color(0xFF8A6410) : AppColors.textTertiary,
                     fontSize: 17,
                     fontWeight: FontWeight.w800,
                   ),
@@ -723,9 +693,7 @@ class _KycStatusRequirementRow extends StatelessWidget {
             overflow: TextOverflow.fade,
             softWrap: false,
             style: TextStyle(
-              color: _isMissingStatus(status)
-                  ? const Color(0xFF54615A)
-                  : AppColors.textPrimary,
+              color: _isMissingStatus(status) ? const Color(0xFF54615A) : AppColors.textPrimary,
               fontSize: 18,
               fontWeight: FontWeight.w800,
             ),
@@ -758,11 +726,7 @@ class _KycStatusRequirementIcon extends StatelessWidget {
         height: 32,
         child: DecoratedBox(
           decoration: BoxDecoration(shape: BoxShape.circle),
-          child: Icon(
-            Icons.check_circle_outline,
-            color: AppColors.primary,
-            size: 32,
-          ),
+          child: Icon(Icons.check_circle_outline, color: AppColors.primary, size: 32),
         ),
       );
     }
@@ -808,19 +772,14 @@ class KycPreviewPage extends StatelessWidget {
           _KycBottomButton(
             label: 'Envoyer',
             leading: const MotodigoUploadWhiteIcon(size: 21),
-            onPressed: () =>
-                context.push(RouteConstants.kycUploading, extra: selectedDraft),
+            onPressed: () => context.push(RouteConstants.kycUploading, extra: selectedDraft),
           ),
           const SizedBox(height: 12),
           TextButton(
             onPressed: () => context.go(RouteConstants.kycDocuments),
             child: const Text(
               'Reprendre',
-              style: TextStyle(
-                color: Color(0xFF54615A),
-                fontSize: 15,
-                fontWeight: FontWeight.w800,
-              ),
+              style: TextStyle(color: Color(0xFF54615A), fontSize: 15, fontWeight: FontWeight.w800),
             ),
           ),
         ],
@@ -861,31 +820,24 @@ class _KycUploadingPageState extends State<KycUploadingPage> {
     return BlocProvider(
       create: (_) {
         final cubit = getIt<KycCubit>();
-        WidgetsBinding.instance.addPostFrameCallback(
-          (_) => cubit.uploadDraft(draft),
-        );
+        WidgetsBinding.instance.addPostFrameCallback((_) => cubit.uploadDraft(draft));
         return cubit;
       },
       child: BlocConsumer<KycCubit, KycState>(
         listener: (context, state) async {
-          if (state.status == KycStatus.uploadSuccess ||
-              state.status == KycStatus.submitted) {
+          if (state.status == KycStatus.uploadSuccess || state.status == KycStatus.submitted) {
             final sessionCubit = context.read<SessionCubit>();
             await sessionCubit.refreshAfterProfileChange();
             if (context.mounted) {
               if (state.status == KycStatus.submitted) {
                 context.go(RouteConstants.kycSubmitted);
               } else {
-                context.go(
-                  RouteConstants.kycUploadSuccess,
-                  extra: state.uploadResult,
-                );
+                context.go(RouteConstants.kycUploadSuccess, extra: state.uploadResult);
               }
             }
             return;
           }
-          if (state.status == KycStatus.invalidFile &&
-              state.fileValidation != null) {
+          if (state.status == KycStatus.invalidFile && state.fileValidation != null) {
             context.go(
               RouteConstants.kycInvalid,
               extra: KycInvalidFileArgs(
@@ -904,9 +856,7 @@ class _KycUploadingPageState extends State<KycUploadingPage> {
                 onPressed: () => context.go(RouteConstants.kycDocuments),
               ),
               child: AppErrorView(
-                message:
-                    state.errorMessage ??
-                    "L'envoi du document a echoue. Reessayez.",
+                message: state.errorMessage ?? "L'envoi du document a echoue. Reessayez.",
                 onRetry: () => context.read<KycCubit>().uploadDraft(draft),
               ),
             );
@@ -972,11 +922,7 @@ class _KycUploadingPageState extends State<KycUploadingPage> {
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.lock_outline_rounded,
-                          color: AppColors.primary,
-                          size: 15,
-                        ),
+                        Icon(Icons.lock_outline_rounded, color: AppColors.primary, size: 15),
                         SizedBox(width: 7),
                         Text(
                           'Chiffrement et envoi sécurisé',
@@ -1014,8 +960,7 @@ class KycUploadSuccessPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final documentType =
-        result?.document.type.shortLabel.toLowerCase() ?? 'document';
+    final documentType = result?.document.type.shortLabel.toLowerCase() ?? 'document';
     return Scaffold(
       backgroundColor: const Color(0x99000000),
       body: SafeArea(
@@ -1034,11 +979,7 @@ class KycUploadSuccessPage extends StatelessWidget {
                 const CircleAvatar(
                   radius: 52,
                   backgroundColor: AppColors.primaryLight,
-                  child: Icon(
-                    Icons.check_rounded,
-                    color: AppColors.primary,
-                    size: 64,
-                  ),
+                  child: Icon(Icons.check_rounded, color: AppColors.primary, size: 64),
                 ),
                 const SizedBox(height: 30),
                 Text(
@@ -1086,9 +1027,7 @@ class KycInvalidFilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final validation = args?.validation;
-    final issues =
-        validation?.issues ??
-        const <KycFileIssue>[KycFileIssue.unsupportedFormat];
+    final issues = validation?.issues ?? const <KycFileIssue>[KycFileIssue.unsupportedFormat];
     return _KycScaffold(
       title: 'Fichier invalide',
       bottom: PrimaryAuthButton(
@@ -1110,11 +1049,7 @@ class KycInvalidFilePage extends StatelessWidget {
               child: CircleAvatar(
                 radius: 46,
                 backgroundColor: Color(0xFFFBE0E1),
-                child: Icon(
-                  Icons.close_rounded,
-                  color: Color(0xFFC62828),
-                  size: 54,
-                ),
+                child: Icon(Icons.close_rounded, color: Color(0xFFC62828), size: 54),
               ),
             ),
           ),
@@ -1130,10 +1065,7 @@ class KycInvalidFilePage extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(
-                  Icons.warning_amber_rounded,
-                  color: Color(0xFFC62828),
-                ),
+                const Icon(Icons.warning_amber_rounded, color: Color(0xFFC62828)),
                 const SizedBox(width: 14),
                 Expanded(
                   child: Text(
@@ -1151,11 +1083,7 @@ class KycInvalidFilePage extends StatelessWidget {
           ),
           const SizedBox(height: 26),
           for (final issue in _allIssueRows(issues, validation)) ...[
-            _IssueRow(
-              issue: issue.issue,
-              passed: issue.passed,
-              detail: issue.detail,
-            ),
+            _IssueRow(issue: issue.issue, passed: issue.passed, detail: issue.detail),
             const SizedBox(height: 18),
           ],
         ],
@@ -1180,14 +1108,9 @@ class _KycCancelUploadButton extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.textSecondary,
           side: const BorderSide(color: Color(0xFFDEE2DA), width: 1.2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(999),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
         ),
-        child: Text(
-          label,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
-        ),
+        child: Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800)),
       ),
     );
   }
@@ -1242,26 +1165,16 @@ class KycSubmittedPage extends StatelessWidget {
             TextSpan(
               children: [
                 TextSpan(
-                  text:
-                      'Nos équipes examinent vos documents.\nDélai indicatif : ',
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  text: 'Nos équipes examinent vos documents.\nDélai indicatif : ',
+                  style: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w500),
                 ),
                 TextSpan(
                   text: '24 à 48 h',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w900,
-                  ),
+                  style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w900),
                 ),
                 TextSpan(
                   text: '.',
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w500),
                 ),
               ],
             ),
@@ -1288,10 +1201,7 @@ class KycSubmittedPage extends StatelessWidget {
             marker: CircleAvatar(
               radius: 20,
               backgroundColor: Color(0xFFEFF1EC),
-              child: MotodigoFolderCheckedWhiteIcon(
-                size: 21,
-                color: Color(0xFF9BA69E),
-              ),
+              child: MotodigoFolderCheckedWhiteIcon(size: 21, color: Color(0xFF9BA69E)),
             ),
             title: 'Décision',
             subtitle: 'En attente',
@@ -1322,12 +1232,8 @@ class _SubmittedTimelineStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleColor = active || warning
-        ? AppColors.textPrimary
-        : AppColors.textSecondary;
-    final subtitleColor = warning
-        ? const Color(0xFF8A6410)
-        : const Color(0xFF8A968C);
+    final titleColor = active || warning ? AppColors.textPrimary : AppColors.textSecondary;
+    final subtitleColor = warning ? const Color(0xFF8A6410) : const Color(0xFF8A968C);
     final lineColor = active ? AppColors.primary : const Color(0xFFE4E7E1);
     return IntrinsicHeight(
       child: Row(
@@ -1338,8 +1244,7 @@ class _SubmittedTimelineStep extends StatelessWidget {
             child: Column(
               children: [
                 SizedBox(width: 42, height: 42, child: Center(child: marker)),
-                if (!last)
-                  Expanded(child: Container(width: 2, color: lineColor)),
+                if (!last) Expanded(child: Container(width: 2, color: lineColor)),
               ],
             ),
           ),
@@ -1408,8 +1313,7 @@ class KycRejectedDocumentPage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           TextButton(
-            onPressed: () =>
-                launchUrl(Uri.parse('mailto:support@motodigo.com')),
+            onPressed: () => launchUrl(Uri.parse('mailto:support@motodigo.com')),
             child: const Text('Contacter le support'),
           ),
         ],
@@ -1444,12 +1348,11 @@ class KycRejectedDocumentPage extends StatelessWidget {
                       const SizedBox(height: 12),
                       Text(
                         'Motif : ${selected.rejectionReason ?? 'Document non conforme.'}',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              color: const Color(0xFFC62828),
-                              height: 1.45,
-                              fontWeight: FontWeight.w800,
-                            ),
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: const Color(0xFFC62828),
+                          height: 1.45,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     ],
                   ),
@@ -1464,18 +1367,11 @@ class KycRejectedDocumentPage extends StatelessWidget {
             tilePadding: const EdgeInsets.symmetric(horizontal: 18),
             collapsedBackgroundColor: const Color(0xFFF1F2ED),
             backgroundColor: const Color(0xFFF1F2ED),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
-            ),
-            collapsedShape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
             title: const Text(
               'Voir les consignes detaillees',
-              style: TextStyle(
-                fontWeight: FontWeight.w900,
-                color: AppColors.textSecondary,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w900, color: AppColors.textSecondary),
             ),
             children: const [
               Padding(
@@ -1513,11 +1409,7 @@ class KycVerifiedPage extends StatelessWidget {
             child: CircleAvatar(
               radius: 48,
               backgroundColor: AppColors.primary,
-              child: Icon(
-                Icons.verified_user_outlined,
-                color: Colors.white,
-                size: 58,
-              ),
+              child: Icon(Icons.verified_user_outlined, color: Colors.white, size: 58),
             ),
           ),
           const SizedBox(height: 34),
@@ -1530,17 +1422,11 @@ class KycVerifiedPage extends StatelessWidget {
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.check_circle_outline_rounded,
-                  color: AppColors.primary,
-                ),
+                Icon(Icons.check_circle_outline_rounded, color: AppColors.primary),
                 SizedBox(width: 8),
                 Text(
                   'Profil verifie',
-                  style: TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w900,
-                  ),
+                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900),
                 ),
               ],
             ),
@@ -1624,19 +1510,13 @@ class KycNotificationDetailPage extends StatelessWidget {
                         const CircleAvatar(
                           radius: 34,
                           backgroundColor: AppColors.primary,
-                          child: Icon(
-                            Icons.verified_user_outlined,
-                            color: Colors.white,
-                          ),
+                          child: Icon(Icons.verified_user_outlined, color: Colors.white),
                         ),
                         const SizedBox(width: 18),
                         Expanded(
                           child: Text(
                             "Moto'di Go\n${notification.title}",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 18,
-                            ),
+                            style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
                           ),
                         ),
                       ],
@@ -1683,29 +1563,24 @@ class KycNotificationDetailPage extends StatelessWidget {
                             const SizedBox(height: 20),
                             Text(
                               notification.title,
-                              style: Theme.of(context).textTheme.headlineLarge
-                                  ?.copyWith(
-                                    color: AppColors.textPrimary,
-                                    fontWeight: FontWeight.w900,
-                                  ),
+                              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w900,
+                              ),
                             ),
                             const SizedBox(height: 22),
                             Text(
                               notification.body,
-                              style: Theme.of(context).textTheme.titleLarge
-                                  ?.copyWith(
-                                    color: AppColors.textSecondary,
-                                    height: 1.55,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                color: AppColors.textSecondary,
+                                height: 1.55,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                             const SizedBox(height: 28),
                             Row(
                               children: [
-                                const Icon(
-                                  Icons.schedule_rounded,
-                                  color: AppColors.textTertiary,
-                                ),
+                                const Icon(Icons.schedule_rounded, color: AppColors.textTertiary),
                                 const SizedBox(width: 10),
                                 Text(
                                   _formatDate(notification.occurredAt),
@@ -1752,10 +1627,7 @@ class _DocumentsList extends StatelessWidget {
         currentSection = requirement.type.sectionLabel;
         children.add(
           Padding(
-            padding: EdgeInsets.only(
-              top: children.isEmpty ? 0 : 30,
-              bottom: 20,
-            ),
+            padding: EdgeInsets.only(top: children.isEmpty ? 0 : 30, bottom: 20),
             child: Text(
               _documentSectionLabel(requirement.type),
               style: const TextStyle(
@@ -1779,10 +1651,7 @@ class _DocumentsList extends StatelessWidget {
               : () => context.push(RouteConstants.kycRejected, extra: document),
         ),
       );
-      final isLastInSection = _isLastRequirementInSection(
-        bundle.requirements,
-        requirement,
-      );
+      final isLastInSection = _isLastRequirementInSection(bundle.requirements, requirement);
       if (!isLastInSection) {
         children.add(
           const Padding(
@@ -1792,10 +1661,7 @@ class _DocumentsList extends StatelessWidget {
         );
       }
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
-    );
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 }
 
@@ -1805,12 +1671,7 @@ class _KycScaffold extends StatelessWidget {
   final Widget? bottom;
   final bool showBack;
 
-  const _KycScaffold({
-    this.title,
-    required this.child,
-    this.bottom,
-    this.showBack = true,
-  });
+  const _KycScaffold({this.title, required this.child, this.bottom, this.showBack = true});
 
   @override
   Widget build(BuildContext context) {
@@ -1822,8 +1683,7 @@ class _KycScaffold extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (title != null || showBack)
-                _KycHeader(title: title, showBack: showBack),
+              if (title != null || showBack) _KycHeader(title: title, showBack: showBack),
               if (title != null || showBack) const SizedBox(height: 30),
               child,
             ],
@@ -1832,10 +1692,7 @@ class _KycScaffold extends StatelessWidget {
       ),
       bottomNavigationBar: bottom == null
           ? null
-          : SafeArea(
-              minimum: const EdgeInsets.fromLTRB(28, 8, 28, 24),
-              child: bottom!,
-            ),
+          : SafeArea(minimum: const EdgeInsets.fromLTRB(28, 8, 28, 24), child: bottom!),
     );
   }
 }
@@ -1863,9 +1720,7 @@ class _KycBottomButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
           elevation: 10,
           shadowColor: backgroundColor.withValues(alpha: 0.22),
         ),
@@ -1878,10 +1733,7 @@ class _KycBottomButton extends StatelessWidget {
                 label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 16.5,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: const TextStyle(fontSize: 16.5, fontWeight: FontWeight.w900),
               ),
             ),
           ],
@@ -1907,17 +1759,11 @@ class _KycHeader extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             child: InkWell(
               borderRadius: BorderRadius.circular(24),
-              onTap: () => context.canPop()
-                  ? context.pop()
-                  : context.go(RouteConstants.home),
+              onTap: () => context.canPop() ? context.pop() : context.go(RouteConstants.home),
               child: const SizedBox(
                 width: 56,
                 height: 56,
-                child: Icon(
-                  Icons.arrow_back_rounded,
-                  color: AppColors.textPrimary,
-                  size: 30,
-                ),
+                child: Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary, size: 30),
               ),
             ),
           ),
@@ -1984,9 +1830,7 @@ class _DocumentListTile extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: rejected
-                        ? const Color(0xFFC62828)
-                        : const Color(0xFF8A968C),
+                    color: rejected ? const Color(0xFFC62828) : const Color(0xFF8A968C),
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                     height: 1.1,
@@ -2048,10 +1892,7 @@ class _DocumentListIcon extends StatelessWidget {
     return Container(
       width: 44,
       height: 44,
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(14),
-      ),
+      decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(14)),
       child: Center(
         child: _DocumentListGlyph(type: type, status: status, color: iconColor),
       ),
@@ -2064,11 +1905,7 @@ class _DocumentListGlyph extends StatelessWidget {
   final KycDocumentStatus status;
   final Color color;
 
-  const _DocumentListGlyph({
-    required this.type,
-    required this.status,
-    required this.color,
-  });
+  const _DocumentListGlyph({required this.type, required this.status, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -2083,16 +1920,14 @@ class _DocumentListGlyph extends StatelessWidget {
     return switch (type) {
       KycDocumentType.cni => const MotodigoCniGreenIcon(size: 22),
       KycDocumentType.profilePhoto => const MotodigoPictureGreenIcon(size: 22),
-      KycDocumentType.vehiclePhoto => status == KycDocumentStatus.accepted
-          ? const MotodigoPictureGreenIcon(size: 22)
-          : MotodigoPictureGrayIcon(size: 22, color: color),
+      KycDocumentType.vehiclePhoto =>
+        status == KycDocumentStatus.accepted
+            ? const MotodigoPictureGreenIcon(size: 22)
+            : MotodigoPictureGrayIcon(size: 22, color: color),
       KycDocumentType.vehicleRegistration ||
       KycDocumentType.insurance ||
       KycDocumentType.driverLicense ||
-      KycDocumentType.unknown => MotodigoFileLeftGrayIcon(
-        size: 22,
-        color: color,
-      ),
+      KycDocumentType.unknown => MotodigoFileLeftGrayIcon(size: 22, color: color),
     };
   }
 }
@@ -2112,9 +1947,7 @@ class _DocumentAddButton extends StatelessWidget {
         label: const Text('Ajouter'),
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 13),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(999),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
           textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900),
         ),
       ),
@@ -2138,12 +1971,7 @@ class _DocumentStatusPill extends StatelessWidget {
       ),
       child: Text(
         _statusLabel(status),
-        style: TextStyle(
-          color: color,
-          fontSize: 12.5,
-          fontWeight: FontWeight.w900,
-          height: 1,
-        ),
+        style: TextStyle(color: color, fontSize: 12.5, fontWeight: FontWeight.w900, height: 1),
       ),
     );
   }
@@ -2164,12 +1992,7 @@ class _PreviewFrame extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
-          colors: [
-            Color(0xFFEDEDE6),
-            Color(0xFFEDEDE6),
-            Color(0xFFF5F5EF),
-            Color(0xFFF5F5EF),
-          ],
+          colors: [Color(0xFFEDEDE6), Color(0xFFEDEDE6), Color(0xFFF5F5EF), Color(0xFFF5F5EF)],
         ),
         border: Border.all(color: const Color(0xFFE1E1D9)),
         borderRadius: BorderRadius.circular(18),
@@ -2184,8 +2007,7 @@ class _PreviewFrame extends StatelessWidget {
                   ? Image.file(
                       File(draft.path),
                       fit: BoxFit.contain,
-                      errorBuilder: (_, _, _) =>
-                          _PreviewPlaceholder(draft: draft),
+                      errorBuilder: (_, _, _) => _PreviewPlaceholder(draft: draft),
                     )
                   : _PreviewPlaceholder(draft: draft),
             ),
@@ -2308,11 +2130,7 @@ class _SelectedFileCard extends StatelessWidget {
           const CircleAvatar(
             radius: 13,
             backgroundColor: AppColors.primaryLight,
-            child: Icon(
-              Icons.check_rounded,
-              color: AppColors.primary,
-              size: 18,
-            ),
+            child: Icon(Icons.check_rounded, color: AppColors.primary, size: 18),
           ),
         ],
       ),
@@ -2378,10 +2196,7 @@ class _DocumentIcon extends StatelessWidget {
     return Container(
       width: 58,
       height: 58,
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(18),
-      ),
+      decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(18)),
       child: Icon(
         status == KycDocumentStatus.rejected
             ? Icons.warning_amber_rounded
@@ -2416,11 +2231,7 @@ class _IssueRowData {
   final bool passed;
   final String detail;
 
-  const _IssueRowData({
-    required this.issue,
-    required this.passed,
-    required this.detail,
-  });
+  const _IssueRowData({required this.issue, required this.passed, required this.detail});
 }
 
 class _IssueRow extends StatelessWidget {
@@ -2428,11 +2239,7 @@ class _IssueRow extends StatelessWidget {
   final bool passed;
   final String detail;
 
-  const _IssueRow({
-    required this.issue,
-    required this.passed,
-    required this.detail,
-  });
+  const _IssueRow({required this.issue, required this.passed, required this.detail});
 
   @override
   Widget build(BuildContext context) {
@@ -2458,10 +2265,7 @@ class _IssueRow extends StatelessWidget {
   }
 }
 
-Future<void> _openUploadSourceSheet(
-  BuildContext context,
-  KycDocumentType type,
-) async {
+Future<void> _openUploadSourceSheet(BuildContext context, KycDocumentType type) async {
   final draft = await showModalBottomSheet<KycFileDraft>(
     context: context,
     isScrollControlled: true,
@@ -2473,10 +2277,7 @@ Future<void> _openUploadSourceSheet(
   if (validation.isValid) {
     context.push(RouteConstants.kycPreview, extra: draft);
   } else {
-    context.push(
-      RouteConstants.kycInvalid,
-      extra: KycInvalidFileArgs(validation: validation),
-    );
+    context.push(RouteConstants.kycInvalid, extra: KycInvalidFileArgs(validation: validation));
   }
 }
 
@@ -2535,29 +2336,23 @@ class _UploadSourceSheet extends StatelessWidget {
                 icon: const MotodigoCameraGreenIcon(size: 28),
                 title: 'Prendre une photo',
                 subtitle: 'Utiliser la caméra',
-                onTap: () async => Navigator.of(
-                  context,
-                ).pop(await _pickImage(type, ImageSource.camera)),
+                onTap: () async =>
+                    Navigator.of(context).pop(await _pickImage(type, ImageSource.camera)),
               ),
               const SizedBox(height: 14),
               _UploadOption(
                 icon: const MotodigoPictureGreenIcon(size: 28),
                 title: 'Choisir dans la galerie',
                 subtitle: 'Photos existantes',
-                onTap: () async => Navigator.of(
-                  context,
-                ).pop(await _pickImage(type, ImageSource.gallery)),
+                onTap: () async =>
+                    Navigator.of(context).pop(await _pickImage(type, ImageSource.gallery)),
               ),
               const SizedBox(height: 14),
               _UploadOption(
-                icon: const MotodigoFileLeftGrayIcon(
-                  size: 28,
-                  color: AppColors.primary,
-                ),
+                icon: const MotodigoFileLeftGrayIcon(size: 28, color: AppColors.primary),
                 title: 'Importer un PDF',
                 subtitle: 'Depuis vos fichiers',
-                onTap: () async =>
-                    Navigator.of(context).pop(await _pickPdf(type)),
+                onTap: () async => Navigator.of(context).pop(await _pickPdf(type)),
               ),
             ],
           ),
@@ -2636,11 +2431,7 @@ class _UploadOption extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(
-                Icons.chevron_right_rounded,
-                color: AppColors.textTertiary,
-                size: 30,
-              ),
+              const Icon(Icons.chevron_right_rounded, color: AppColors.textTertiary, size: 30),
             ],
           ),
         ),
@@ -2649,16 +2440,11 @@ class _UploadOption extends StatelessWidget {
   }
 }
 
-Future<KycFileDraft?> _pickImage(
-  KycDocumentType type,
-  ImageSource source,
-) async {
+Future<KycFileDraft?> _pickImage(KycDocumentType type, ImageSource source) async {
   final file = await ImagePicker().pickImage(source: source, imageQuality: 88);
   if (file == null) return null;
   final size = await file.length();
-  final name = file.name.isEmpty
-      ? '${type.apiValue.toLowerCase()}.jpg'
-      : file.name;
+  final name = file.name.isEmpty ? '${type.apiValue.toLowerCase()}.jpg' : file.name;
   return KycFileDraft(
     documentType: type,
     path: file.path,
@@ -2685,10 +2471,7 @@ Future<KycFileDraft?> _pickPdf(KycDocumentType type) async {
   );
 }
 
-List<_IssueRowData> _allIssueRows(
-  List<KycFileIssue> issues,
-  KycFileValidation? validation,
-) {
+List<_IssueRowData> _allIssueRows(List<KycFileIssue> issues, KycFileValidation? validation) {
   final size = validation?.draft.sizeBytes ?? 0;
   final extension = validation?.draft.extension ?? '';
   return [
@@ -2701,29 +2484,21 @@ List<_IssueRowData> _allIssueRows(
     ),
     _IssueRowData(
       issue: KycFileIssue.unreadable,
-      passed:
-          !issues.contains(KycFileIssue.unreadable) &&
-          !issues.contains(KycFileIssue.empty),
+      passed: !issues.contains(KycFileIssue.unreadable) && !issues.contains(KycFileIssue.empty),
       detail: 'Document lisible et non vide',
     ),
     _IssueRowData(
       issue: KycFileIssue.unsupportedFormat,
       passed: !issues.contains(KycFileIssue.unsupportedFormat),
-      detail: extension.isEmpty
-          ? 'Format accepte (JPG, PNG, PDF)'
-          : 'Format accepte ($extension)',
+      detail: extension.isEmpty ? 'Format accepte (JPG, PNG, PDF)' : 'Format accepte ($extension)',
     ),
   ];
 }
 
-bool _isLastRequirementInSection(
-  List<KycRequirement> requirements,
-  KycRequirement requirement,
-) {
+bool _isLastRequirementInSection(List<KycRequirement> requirements, KycRequirement requirement) {
   final index = requirements.indexOf(requirement);
   if (index < 0 || index == requirements.length - 1) return true;
-  return requirements[index + 1].type.sectionLabel !=
-      requirement.type.sectionLabel;
+  return requirements[index + 1].type.sectionLabel != requirement.type.sectionLabel;
 }
 
 String _documentSectionLabel(KycDocumentType type) {
@@ -2768,8 +2543,7 @@ String _documentSubtitle(KycDocument? document, KycDocumentStatus status) {
     KycDocumentStatus.pendingReview ||
     KycDocumentStatus.uploaded ||
     KycDocumentStatus.encrypted => 'En cours de vérification',
-    KycDocumentStatus.accepted =>
-      'Ajouté le ${_formatShortDate(document?.uploadedAt)}',
+    KycDocumentStatus.accepted => 'Ajouté le ${_formatShortDate(document?.uploadedAt)}',
     KycDocumentStatus.expired => 'Document expiré',
     KycDocumentStatus.missing || KycDocumentStatus.unknown => 'Document requis',
   };
@@ -2845,16 +2619,13 @@ Color _kycStatusChecklistColor(KycDocumentStatus status) {
     KycDocumentStatus.pendingReview ||
     KycDocumentStatus.uploaded ||
     KycDocumentStatus.encrypted => const Color(0xFF8A6410),
-    KycDocumentStatus.rejected ||
-    KycDocumentStatus.expired => const Color(0xFFC62828),
-    KycDocumentStatus.missing ||
-    KycDocumentStatus.unknown => const Color(0xFF98A29A),
+    KycDocumentStatus.rejected || KycDocumentStatus.expired => const Color(0xFFC62828),
+    KycDocumentStatus.missing || KycDocumentStatus.unknown => const Color(0xFF98A29A),
   };
 }
 
 bool _isMissingStatus(KycDocumentStatus status) {
-  return status == KycDocumentStatus.missing ||
-      status == KycDocumentStatus.unknown;
+  return status == KycDocumentStatus.missing || status == KycDocumentStatus.unknown;
 }
 
 bool _hasSubmittedBundleInProgress(KycBundle bundle) {
@@ -2889,9 +2660,7 @@ Color _statusColor(KycDocumentStatus status) {
     KycDocumentStatus.pendingReview => const Color(0xFF9B6B0B),
     KycDocumentStatus.rejected => const Color(0xFFC62828),
     KycDocumentStatus.expired => const Color(0xFFC62828),
-    KycDocumentStatus.uploaded ||
-    KycDocumentStatus.encrypted => AppColors.primary,
-    KycDocumentStatus.missing ||
-    KycDocumentStatus.unknown => AppColors.textTertiary,
+    KycDocumentStatus.uploaded || KycDocumentStatus.encrypted => AppColors.primary,
+    KycDocumentStatus.missing || KycDocumentStatus.unknown => AppColors.textTertiary,
   };
 }

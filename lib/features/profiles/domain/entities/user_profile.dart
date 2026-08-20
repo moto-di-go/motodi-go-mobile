@@ -42,11 +42,7 @@ class TransporterProfileDetails extends Equatable {
   final String? companyName;
   final String? vehicleId;
 
-  const TransporterProfileDetails({
-    this.permitNumber,
-    this.companyName,
-    this.vehicleId,
-  });
+  const TransporterProfileDetails({this.permitNumber, this.companyName, this.vehicleId});
 
   @override
   List<Object?> get props => [permitNumber, companyName, vehicleId];

@@ -21,8 +21,8 @@ class IntercityBookingCubit extends Cubit<IntercityBookingState> {
   static const _pageSize = 20;
 
   IntercityBookingCubit(this._repository, ChopperClient client)
-      : _urbanRemote = UrbanRemoteDataSource(client),
-        super(const IntercityBookingState());
+    : _urbanRemote = UrbanRemoteDataSource(client),
+      super(const IntercityBookingState());
 
   Future<void> loadDetail(String announcementId) async {
     emit(
@@ -142,7 +142,10 @@ class IntercityBookingCubit extends Cubit<IntercityBookingState> {
     if (loadMore && (!state.myBookingsHasMore || state.isMyBookingsLoading)) return;
     final nextPage = loadMore ? state.myBookingsPage + 1 : 0;
     emit(
-      state.copyWith(myBookingsStatus: IntercityBookingsStatus.loading, myBookingsErrorMessage: null),
+      state.copyWith(
+        myBookingsStatus: IntercityBookingsStatus.loading,
+        myBookingsErrorMessage: null,
+      ),
     );
     final result = await _repository.listMyBookings(page: nextPage, size: _pageSize);
     result.fold(

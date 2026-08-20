@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -97,11 +97,7 @@ class _IntercityHubViewState extends State<_IntercityHubView> {
                 children: [
                   Text(
                     'Trajets',
-                    style: _resultsText(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w800,
-                      height: 1.1,
-                    ),
+                    style: _resultsText(fontSize: 32, fontWeight: FontWeight.w800, height: 1.1),
                   ),
                   const SizedBox(height: 16),
                   _SegmentedToggle(
@@ -119,10 +115,7 @@ class _IntercityHubViewState extends State<_IntercityHubView> {
                       departureController: _departureController,
                       destinationController: _destinationController,
                     )
-                  : BlocProvider.value(
-                      value: _bookingCubit,
-                      child: const _MyBookingsTab(),
-                    ),
+                  : BlocProvider.value(value: _bookingCubit, child: const _MyBookingsTab()),
             ),
           ],
         ),
@@ -495,11 +488,7 @@ class _MyBookingsTab extends StatelessWidget {
               Text(
                 'Aucune réservation',
                 textAlign: TextAlign.center,
-                style: _resultsText(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w800,
-                  height: 1.25,
-                ),
+                style: _resultsText(fontSize: 26, fontWeight: FontWeight.w800, height: 1.25),
               ),
               const SizedBox(height: 12),
               Text(
@@ -633,43 +622,36 @@ class _MyBookingStatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final (label, fg, bg) = switch (status) {
       IntercityBookingStatus.pending => (
-          'En attente',
-          const Color(0xFFB45309),
-          const Color(0xFFFFF7ED),
-        ),
+        'En attente',
+        const Color(0xFFB45309),
+        const Color(0xFFFFF7ED),
+      ),
       IntercityBookingStatus.confirmed || IntercityBookingStatus.pendingPayment => (
-          'Confirmée',
-          const Color(0xFF16A34A),
-          const Color(0xFFE8F8EE),
-        ),
-      IntercityBookingStatus.paid => (
-          'Payée',
-          const Color(0xFF16A34A),
-          const Color(0xFFE8F8EE),
-        ),
+        'Confirmée',
+        const Color(0xFF16A34A),
+        const Color(0xFFE8F8EE),
+      ),
+      IntercityBookingStatus.paid => ('Payée', const Color(0xFF16A34A), const Color(0xFFE8F8EE)),
       IntercityBookingStatus.cancelled => (
-          'Annulée',
-          const Color(0xFFDC2626),
-          const Color(0xFFFEF2F2),
-        ),
+        'Annulée',
+        const Color(0xFFDC2626),
+        const Color(0xFFFEF2F2),
+      ),
       IntercityBookingStatus.expired => (
-          'Expirée',
-          const Color(0xFF6B756E),
-          const Color(0xFFEEEEE6),
-        ),
+        'Expirée',
+        const Color(0xFF6B756E),
+        const Color(0xFFEEEEE6),
+      ),
       IntercityBookingStatus.unknown => (
-          status.label,
-          const Color(0xFF6B756E),
-          const Color(0xFFEEEEE6),
-        ),
+        status.label,
+        const Color(0xFF6B756E),
+        const Color(0xFFEEEEE6),
+      ),
     };
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(999),
-      ),
+      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(999)),
       child: Text(
         label,
         style: _resultsText(fontSize: 12, fontWeight: FontWeight.w700, color: fg, height: 1.1),
@@ -722,17 +704,17 @@ class _IntercityResultsPageState extends State<IntercityResultsPage> {
         },
         builder: (context, state) {
           if (state.isEmptyResult || _redirectingToEmpty) {
-            return const Scaffold(
-              backgroundColor: Color(0xFFFAFAF6),
-              body: AppLoading(),
-            );
+            return const Scaffold(backgroundColor: Color(0xFFFAFAF6), body: AppLoading());
           }
 
           final routeTitle = state.filters.hasRoute
               ? '${state.filters.departureCity ?? 'Partout'} → ${state.filters.destinationCity ?? 'Partout'}'
               : 'Résultats';
-          final dateLabel = state.filters.date != null ? formatDayMonth(state.filters.date!) : 'Toutes dates';
-          final countLabel = '${state.results.length} annonce${state.results.length > 1 ? 's' : ''} · $dateLabel';
+          final dateLabel = state.filters.date != null
+              ? formatDayMonth(state.filters.date!)
+              : 'Toutes dates';
+          final countLabel =
+              '${state.results.length} annonce${state.results.length > 1 ? 's' : ''} · $dateLabel';
 
           return Scaffold(
             backgroundColor: const Color(0xFFFAFAF6),
@@ -808,9 +790,9 @@ class _IntercityResultsPageState extends State<IntercityResultsPage> {
                                 onTap: ownedByMe
                                     ? null
                                     : () => context.push(
-                                          RouteConstants.intercityDetail,
-                                          extra: announcement.id,
-                                        ),
+                                        RouteConstants.intercityDetail,
+                                        extra: announcement.id,
+                                      ),
                               ),
                             );
                           },
@@ -1017,8 +999,7 @@ class IntercityEmptyResultsPage extends StatelessWidget {
           final to = filters.destinationCity?.trim().isNotEmpty == true
               ? filters.destinationCity!
               : 'Partout';
-          final datePart =
-              filters.date != null ? ' le ${formatDayMonthLong(filters.date!)}' : '';
+          final datePart = filters.date != null ? ' le ${formatDayMonthLong(filters.date!)}' : '';
 
           // Toujours les 3 CTA Figma (indépendamment des filtres actifs).
           final actions = <_EmptyAction>[
@@ -1027,14 +1008,8 @@ class IntercityEmptyResultsPage extends StatelessWidget {
               primary: true,
               onTap: () => _changeDate(context),
             ),
-            _EmptyAction(
-              label: 'Élargir le budget',
-              onTap: () => _widenBudget(context),
-            ),
-            _EmptyAction(
-              label: 'Retirer le pt. ramassage',
-              onTap: () => _dropPtRamassage(context),
-            ),
+            _EmptyAction(label: 'Élargir le budget', onTap: () => _widenBudget(context)),
+            _EmptyAction(label: 'Retirer le pt. ramassage', onTap: () => _dropPtRamassage(context)),
           ];
 
           final subtitleStyle = _resultsText(
@@ -1183,7 +1158,8 @@ class IntercityEmptyResultsPage extends StatelessWidget {
   }
 
   Future<void> _dropPtRamassage(BuildContext context) async {
-    if (cubit.state.filters.ptRamassage == null || cubit.state.filters.ptRamassage!.trim().isEmpty) {
+    if (cubit.state.filters.ptRamassage == null ||
+        cubit.state.filters.ptRamassage!.trim().isEmpty) {
       cubit.updateFilters((f) => f.copyWith(clearDate: true, clearTimeSlot: true));
       await cubit.search();
       if (!context.mounted) return;
@@ -1218,11 +1194,7 @@ class _EmptyAction {
   final bool primary;
   final VoidCallback onTap;
 
-  const _EmptyAction({
-    required this.label,
-    required this.onTap,
-    this.primary = false,
-  });
+  const _EmptyAction({required this.label, required this.onTap, this.primary = false});
 }
 
 class _EmptyActionButton extends StatelessWidget {

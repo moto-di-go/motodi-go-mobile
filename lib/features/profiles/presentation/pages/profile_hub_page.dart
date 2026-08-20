@@ -121,13 +121,15 @@ class _ProfileHubView extends StatelessWidget {
               }
 
               final rawName = active?.displayName.trim() ?? '';
-              final displayName =
-                  rawName.isNotEmpty && !_looksLikePhone(rawName) ? rawName : 'Mon profil';
+              final displayName = rawName.isNotEmpty && !_looksLikePhone(rawName)
+                  ? rawName
+                  : 'Mon profil';
               final phoneRaw = session.session?.phoneNumber ?? session.lastPhoneNumber ?? '';
               final phone = phoneRaw.isNotEmpty ? _formatPhone(phoneRaw) : '';
               // La session est la source de vérité après un switch de profil.
               final type = sessionActive?.type ?? active?.type ?? ProfileType.passenger;
-              final status = sessionActive?.validationStatus ??
+              final status =
+                  sessionActive?.validationStatus ??
                   active?.validationStatus ??
                   ValidationStatus.pending;
               final initials = _initialsFrom(
@@ -162,7 +164,11 @@ class _ProfileHubView extends StatelessWidget {
                               displayName,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: _hubText(fontSize: 22, fontWeight: FontWeight.w800, height: 1.15),
+                              style: _hubText(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                                height: 1.15,
+                              ),
                             ),
                             if (phone.isNotEmpty) ...[
                               const SizedBox(height: 6),
@@ -194,13 +200,9 @@ class _ProfileHubView extends StatelessWidget {
                   const SizedBox(height: 28),
                   Row(
                     children: [
-                      Expanded(
-                        child: _ActiveProfileCard(typeLabel: profileLabel(type)),
-                      ),
+                      Expanded(child: _ActiveProfileCard(typeLabel: profileLabel(type))),
                       const SizedBox(width: 12),
-                      Expanded(
-                        child: _KycStatusCard(status: status),
-                      ),
+                      Expanded(child: _KycStatusCard(status: status)),
                     ],
                   ),
                   const SizedBox(height: 22),
@@ -226,9 +228,9 @@ class _ProfileHubView extends StatelessWidget {
                     height: 56,
                     child: OutlinedButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Bientôt disponible')),
-                        );
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(const SnackBar(content: Text('Bientôt disponible')));
                       },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFF101512),
@@ -287,10 +289,7 @@ class _InitialsAvatar extends StatelessWidget {
       width: 72,
       height: 72,
       alignment: Alignment.center,
-      decoration: const BoxDecoration(
-        color: Color(0xFF16A34A),
-        shape: BoxShape.circle,
-      ),
+      decoration: const BoxDecoration(color: Color(0xFF16A34A), shape: BoxShape.circle),
       child: Text(
         initials,
         style: _hubText(
@@ -324,7 +323,11 @@ class _ActiveProfileCard extends StatelessWidget {
         children: [
           Text(
             'Profil actif',
-            style: _hubText(fontSize: 13, fontWeight: FontWeight.w500, color: const Color(0xFF8A968C)),
+            style: _hubText(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF8A968C),
+            ),
           ),
           const Spacer(),
           Row(
@@ -371,7 +374,11 @@ class _KycStatusCard extends StatelessWidget {
         children: [
           Text(
             'Statut KYC',
-            style: _hubText(fontSize: 13, fontWeight: FontWeight.w500, color: const Color(0xFF8A968C)),
+            style: _hubText(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF8A968C),
+            ),
           ),
           const Spacer(),
           if (isVerified)
@@ -395,7 +402,11 @@ class _KycStatusCard extends StatelessWidget {
                   const SizedBox(width: 7),
                   Text(
                     label,
-                    style: _hubText(fontSize: 15, fontWeight: FontWeight.w700, color: const Color(0xFF16A34A)),
+                    style: _hubText(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF16A34A),
+                    ),
                   ),
                 ],
               ),
@@ -430,11 +441,7 @@ class _MenuCard extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
 
-  const _MenuCard({
-    required this.icon,
-    required this.title,
-    required this.onTap,
-  });
+  const _MenuCard({required this.icon, required this.title, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -455,10 +462,7 @@ class _MenuCard extends StatelessWidget {
               SizedBox(width: 28, height: 28, child: Center(child: icon)),
               const SizedBox(width: 14),
               Expanded(
-                child: Text(
-                  title,
-                  style: _hubText(fontSize: 17, fontWeight: FontWeight.w600),
-                ),
+                child: Text(title, style: _hubText(fontSize: 17, fontWeight: FontWeight.w600)),
               ),
               const Icon(Icons.chevron_right_rounded, color: Color(0xFFC2C8C0), size: 26),
             ],

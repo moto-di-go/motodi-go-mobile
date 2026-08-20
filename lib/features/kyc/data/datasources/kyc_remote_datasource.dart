@@ -28,14 +28,11 @@ class KycRemoteDataSourceImpl implements KycRemoteDataSource {
 
   @override
   Future<KycDocumentsResponseModel> loadCurrentDocuments() async {
-    final response = await _client
-        .get<Map<String, dynamic>, Map<String, dynamic>>(
-          Uri.parse('/kyc/documents'),
-        );
-    if (!response.isSuccessful) throw ApiException.fromResponse(response);
-    return KycDocumentsResponseModel.fromJson(
-      response.body ?? <String, dynamic>{},
+    final response = await _client.get<Map<String, dynamic>, Map<String, dynamic>>(
+      Uri.parse('/kyc/documents'),
     );
+    if (!response.isSuccessful) throw ApiException.fromResponse(response);
+    return KycDocumentsResponseModel.fromJson(response.body ?? <String, dynamic>{});
   }
 
   @override
@@ -46,11 +43,7 @@ class KycRemoteDataSourceImpl implements KycRemoteDataSource {
   }) async {
     final token = await _secureStorage.read(key: AuthStorageKeys.accessToken);
     if (token == null || token.isEmpty) {
-      throw const ApiException(
-        'SESSION_EXPIRED',
-        'Session expiree.',
-        statusCode: 401,
-      );
+      throw const ApiException('SESSION_EXPIRED', 'Session expiree.', statusCode: 401);
     }
 
     final dio = Dio(
@@ -77,17 +70,17 @@ class KycRemoteDataSourceImpl implements KycRemoteDataSource {
         cancelToken: cancelToken,
         onSendProgress: onProgress,
       );
-      return UploadKycDocumentResponseModel.fromJson(
-        response.data ?? <String, dynamic>{},
-      );
+      return UploadKycDocumentResponseModel.fromJson(response.data ?? <String, dynamic>{});
     } on DioException catch (error) {
       throw _apiException(error);
     }
   }
 
   String _baseUrl() {
-    return (dotenv.env['API_BASE_URL'] ?? 'http://10.0.2.2:8080/api/v1')
-        .replaceFirst(RegExp(r'/$'), '');
+    return (dotenv.env['API_BASE_URL'] ?? 'http://10.0.2.2:8080/api/v1').replaceFirst(
+      RegExp(r'/$'),
+      '',
+    );
   }
 
   ApiException _apiException(DioException error) {
@@ -95,19 +88,11 @@ class KycRemoteDataSourceImpl implements KycRemoteDataSource {
     final data = response?.data;
     if (data is Map<String, dynamic>) {
       final apiError = ApiErrorModel.fromJson(data);
-      return ApiException(
-        apiError.errorCode,
-        apiError.message,
-        statusCode: response?.statusCode,
-      );
+      return ApiException(apiError.errorCode, apiError.message, statusCode: response?.statusCode);
     }
     if (data is Map) {
       final apiError = ApiErrorModel.fromJson(Map<String, dynamic>.from(data));
-      return ApiException(
-        apiError.errorCode,
-        apiError.message,
-        statusCode: response?.statusCode,
-      );
+      return ApiException(apiError.errorCode, apiError.message, statusCode: response?.statusCode);
     }
     if (CancelToken.isCancel(error)) {
       return const ApiException('UPLOAD_CANCELLED', 'Envoi annule.');

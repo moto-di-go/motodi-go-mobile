@@ -91,7 +91,11 @@ class IntercitySearchCubit extends Cubit<IntercitySearchState> {
     if (!state.hasMore || state.isLoadingMore || state.isLoading) return;
     emit(state.copyWith(status: IntercitySearchStatus.loadingMore));
     final nextPage = state.page + 1;
-    final result = await _repository.searchAnnouncements(state.filters, page: nextPage, size: _pageSize);
+    final result = await _repository.searchAnnouncements(
+      state.filters,
+      page: nextPage,
+      size: _pageSize,
+    );
     result.fold(
       (failure) => emit(
         state.copyWith(

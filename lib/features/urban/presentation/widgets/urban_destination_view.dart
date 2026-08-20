@@ -59,10 +59,7 @@ class _UrbanDestinationViewState extends State<UrbanDestinationView> {
                     onPressed: cubit.back,
                     icon: const Icon(Icons.arrow_back_rounded, size: 26),
                   ),
-                  Text(
-                    'Destination',
-                    style: urbanText(fontSize: 26, fontWeight: FontWeight.w800),
-                  ),
+                  Text('Destination', style: urbanText(fontSize: 26, fontWeight: FontWeight.w800)),
                 ],
               ),
             ),
@@ -143,8 +140,15 @@ class _UrbanDestinationViewState extends State<UrbanDestinationView> {
                   itemBuilder: (context, index) {
                     final entry = state.history[index];
                     return ActionChip(
-                      avatar: const Icon(Icons.schedule_rounded, size: 16, color: AppColors.textSecondary),
-                      label: Text(entry.label, style: urbanText(fontSize: 13, fontWeight: FontWeight.w700)),
+                      avatar: const Icon(
+                        Icons.schedule_rounded,
+                        size: 16,
+                        color: AppColors.textSecondary,
+                      ),
+                      label: Text(
+                        entry.label,
+                        style: urbanText(fontSize: 13, fontWeight: FontWeight.w700),
+                      ),
                       backgroundColor: Colors.white,
                       side: const BorderSide(color: AppColors.outline),
                       onPressed: () => cubit.selectHistory(entry),
@@ -168,7 +172,14 @@ class _UrbanDestinationViewState extends State<UrbanDestinationView> {
                   ),
                   if (state.visiblePlacesDemo) ...[
                     const SizedBox(width: 8),
-                    Text('Démo', style: urbanText(fontSize: 12, fontWeight: FontWeight.w800, color: AppColors.accent)),
+                    Text(
+                      'Démo',
+                      style: urbanText(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.accent,
+                      ),
+                    ),
                   ],
                 ],
               ),
@@ -187,33 +198,39 @@ class _UrbanDestinationViewState extends State<UrbanDestinationView> {
                       itemBuilder: (context, index) => const _PlaceSkeleton(),
                     )
                   : ListView.separated(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-                itemCount: state.visiblePlaces.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 8),
-                itemBuilder: (context, index) {
-                  final place = state.visiblePlaces[index];
-                  final km = place.distanceKm ?? haversineKm(origin, place.point);
-                  final minutes = estimateUrbanMinutes(km);
-                  final subtitle = place.subtitle?.trim().isNotEmpty == true
-                      ? '${place.subtitle} · ${km.toStringAsFixed(1)} km'
-                      : '${km.toStringAsFixed(1)} km · ~$minutes min';
-                  return ListTile(
-                    onTap: () => cubit.selectPopularPlace(place),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                    tileColor: Colors.white,
-                    leading: const CircleAvatar(
-                      backgroundColor: Color(0xFFEFFAF3),
-                      child: Icon(Icons.location_on_outlined, color: AppColors.primary),
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                      itemCount: state.visiblePlaces.length,
+                      separatorBuilder: (_, _) => const SizedBox(height: 8),
+                      itemBuilder: (context, index) {
+                        final place = state.visiblePlaces[index];
+                        final km = place.distanceKm ?? haversineKm(origin, place.point);
+                        final minutes = estimateUrbanMinutes(km);
+                        final subtitle = place.subtitle?.trim().isNotEmpty == true
+                            ? '${place.subtitle} · ${km.toStringAsFixed(1)} km'
+                            : '${km.toStringAsFixed(1)} km · ~$minutes min';
+                        return ListTile(
+                          onTap: () => cubit.selectPopularPlace(place),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                          tileColor: Colors.white,
+                          leading: const CircleAvatar(
+                            backgroundColor: Color(0xFFEFFAF3),
+                            child: Icon(Icons.location_on_outlined, color: AppColors.primary),
+                          ),
+                          title: Text(
+                            place.label,
+                            style: urbanText(fontSize: 16, fontWeight: FontWeight.w800),
+                          ),
+                          subtitle: Text(
+                            subtitle,
+                            style: urbanText(fontSize: 13, color: AppColors.textSecondary),
+                          ),
+                          trailing: const Icon(
+                            Icons.chevron_right_rounded,
+                            color: Color(0xFF9CA7A0),
+                          ),
+                        );
+                      },
                     ),
-                    title: Text(place.label, style: urbanText(fontSize: 16, fontWeight: FontWeight.w800)),
-                    subtitle: Text(
-                      subtitle,
-                      style: urbanText(fontSize: 13, color: AppColors.textSecondary),
-                    ),
-                    trailing: const Icon(Icons.chevron_right_rounded, color: Color(0xFF9CA7A0)),
-                  );
-                },
-              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
@@ -251,10 +268,7 @@ class _PlaceSkeleton extends StatelessWidget {
     return Container(
       height: 72,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-      ),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18)),
       child: Row(
         children: [
           Container(
