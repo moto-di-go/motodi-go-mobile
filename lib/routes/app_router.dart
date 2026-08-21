@@ -18,8 +18,13 @@ import 'package:motodi_go_mobile/features/example/presentation/pages/example_det
 import 'package:motodi_go_mobile/features/example/presentation/pages/example_list_page.dart';
 import 'package:motodi_go_mobile/features/home/presentation/pages/home_page.dart';
 import 'package:motodi_go_mobile/features/home/presentation/pages/main_shell.dart';
-import 'package:motodi_go_mobile/features/home/presentation/pages/placeholder_tab_pages.dart';
 import 'package:motodi_go_mobile/features/notifications/presentation/pages/notifications_page.dart';
+import 'package:motodi_go_mobile/features/wallet/domain/entities/wallet.dart';
+import 'package:motodi_go_mobile/features/wallet/presentation/pages/deposit_page.dart';
+import 'package:motodi_go_mobile/features/wallet/presentation/pages/deposit_status_page.dart';
+import 'package:motodi_go_mobile/features/wallet/presentation/pages/pay_booking_page.dart';
+import 'package:motodi_go_mobile/features/wallet/presentation/pages/receipt_page.dart';
+import 'package:motodi_go_mobile/features/wallet/presentation/pages/wallet_page.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_announcement.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_publish_cubit.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity_search_cubit.dart';
@@ -37,6 +42,7 @@ import 'package:motodi_go_mobile/features/profiles/presentation/pages/passenger_
 import 'package:motodi_go_mobile/features/profiles/presentation/pages/profile_hub_page.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/pages/profile_selection_page.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/pages/settings_page.dart';
+import 'package:motodi_go_mobile/features/trips/presentation/pages/trip_track_page.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/pages/driver_availability_page.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/pages/urban_map_page.dart';
 
@@ -207,6 +213,10 @@ GoRouter createAppRouter(SessionCubit sessionCubit) {
         path: RouteConstants.driverAvailability,
         builder: (context, state) => const DriverAvailabilityPage(),
       ),
+      GoRoute(
+        path: RouteConstants.tripTrack,
+        builder: (context, state) => TripTrackPage(tripId: state.pathParameters['id']!),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => MainShell(navigationShell: navigationShell),
         branches: [
@@ -246,10 +256,12 @@ GoRouter createAppRouter(SessionCubit sessionCubit) {
                         IntercitySubscribePage(args: state.extra as IntercitySubscribeArgs),
                   ),
                   GoRoute(
-                    path: 'booking',
+                    path: 'booking/:id',
                     parentNavigatorKey: rootNavigatorKey,
-                    builder: (context, state) =>
-                        IntercityBookingStatusPage(bookingId: state.extra as String),
+                    builder: (context, state) {
+                      final id = state.pathParameters['id'] ?? state.extra as String?;
+                      return IntercityBookingStatusPage(bookingId: id!);
+                    },
                   ),
                   GoRoute(
                     path: 'publish/guard',
@@ -292,7 +304,49 @@ GoRouter createAppRouter(SessionCubit sessionCubit) {
             routes: [
               GoRoute(
                 path: RouteConstants.wallet,
-                builder: (context, state) => const WalletTabPage(),
+                builder: (context, state) => const WalletPage(),
+                routes: [
+                  GoRoute(
+                    path: 'deposit',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => const DepositPage(),
+                    routes: [
+                      GoRoute(
+                        path: ':id',
+                        parentNavigatorKey: rootNavigatorKey,
+                        builder: (context, state) =>
+                            DepositStatusPage(depositId: state.pathParameters['id']!),
+                      ),
+                    ],
+                  ),
+                  GoRoute(
+                    path: 'pay/:bookingId',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) {
+                      final bookingId = state.pathParameters['bookingId']!;
+                      final extra = state.extra;
+                      if (extra is PayBookingArgs) {
+                        return PayBookingPage(
+                          bookingId: extra.bookingId,
+                          expectedAmount: extra.amount,
+                          label: extra.label,
+                        );
+                      }
+                      if (extra is double) {
+                        return PayBookingPage(bookingId: bookingId, expectedAmount: extra);
+                      }
+                      return PayBookingPage(bookingId: bookingId);
+                    },
+                  ),
+                  GoRoute(
+                    path: 'receipt/:id',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => ReceiptPage(
+                      receiptId: state.pathParameters['id']!,
+                      receipt: state.extra is WalletReceipt ? state.extra as WalletReceipt : null,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

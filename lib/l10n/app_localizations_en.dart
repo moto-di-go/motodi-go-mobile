@@ -72,7 +72,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auth_already_account => 'Already have an account?';
 
   @override
-  String get errors_network => 'No internet connection. Please check your network.';
+  String get errors_network =>
+      'No internet connection. Please check your network.';
 
   @override
   String get errors_server => 'Server error. Please try again later.';

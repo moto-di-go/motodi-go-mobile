@@ -56,20 +56,20 @@ import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity
     as _i183;
 import 'package:motodi_go_mobile/features/kyc/data/datasources/kyc_remote_datasource.dart'
     as _i29;
-import 'package:motodi_go_mobile/features/notifications/data/datasources/notification_remote_datasource.dart'
-    as _i812;
-import 'package:motodi_go_mobile/features/notifications/data/repositories/notification_repository_impl.dart'
-    as _i813;
-import 'package:motodi_go_mobile/features/notifications/domain/repositories/notification_repository.dart'
-    as _i814;
-import 'package:motodi_go_mobile/features/notifications/presentation/cubit/notifications_cubit.dart'
-    as _i815;
 import 'package:motodi_go_mobile/features/kyc/data/repositories/kyc_repository_impl.dart'
     as _i356;
 import 'package:motodi_go_mobile/features/kyc/domain/repositories/kyc_repository.dart'
     as _i9;
 import 'package:motodi_go_mobile/features/kyc/presentation/cubit/kyc_cubit.dart'
     as _i657;
+import 'package:motodi_go_mobile/features/notifications/data/datasources/notification_remote_datasource.dart'
+    as _i537;
+import 'package:motodi_go_mobile/features/notifications/data/repositories/notification_repository_impl.dart'
+    as _i838;
+import 'package:motodi_go_mobile/features/notifications/domain/repositories/notification_repository.dart'
+    as _i851;
+import 'package:motodi_go_mobile/features/notifications/presentation/cubit/notifications_cubit.dart'
+    as _i284;
 import 'package:motodi_go_mobile/features/profiles/data/datasources/profile_remote_datasource.dart'
     as _i525;
 import 'package:motodi_go_mobile/features/profiles/data/repositories/profile_repository_impl.dart'
@@ -78,6 +78,28 @@ import 'package:motodi_go_mobile/features/profiles/domain/repositories/profile_r
     as _i802;
 import 'package:motodi_go_mobile/features/profiles/presentation/cubit/profile_cubit.dart'
     as _i747;
+import 'package:motodi_go_mobile/features/trips/data/datasources/trip_remote_datasource.dart'
+    as _i912;
+import 'package:motodi_go_mobile/features/trips/data/datasources/trip_sse_client.dart'
+    as _i913;
+import 'package:motodi_go_mobile/features/trips/data/repositories/trip_repository_impl.dart'
+    as _i914;
+import 'package:motodi_go_mobile/features/trips/domain/repositories/trip_repository.dart'
+    as _i915;
+import 'package:motodi_go_mobile/features/trips/presentation/cubit/trip_track_cubit.dart'
+    as _i916;
+import 'package:motodi_go_mobile/features/wallet/data/datasources/wallet_remote_datasource.dart'
+    as _i317;
+import 'package:motodi_go_mobile/features/wallet/data/repositories/wallet_repository_impl.dart'
+    as _i238;
+import 'package:motodi_go_mobile/features/wallet/domain/repositories/wallet_repository.dart'
+    as _i707;
+import 'package:motodi_go_mobile/features/wallet/presentation/cubit/deposit_cubit.dart'
+    as _i448;
+import 'package:motodi_go_mobile/features/wallet/presentation/cubit/pay_booking_cubit.dart'
+    as _i953;
+import 'package:motodi_go_mobile/features/wallet/presentation/cubit/wallet_cubit.dart'
+    as _i111;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -92,9 +114,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.prefs,
       preResolve: true,
     );
-    gh.lazySingleton<_i435.NotificationService>(
-      () => _i435.NotificationService(),
-    );
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => registerModule.secureStorage,
     );
@@ -105,6 +124,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1016.ExampleRemoteDataSource>(
       () => _i1016.ExampleRemoteDataSource(),
+    );
+    gh.lazySingleton<_i317.WalletRemoteDataSource>(
+      () => _i317.WalletRemoteDataSourceImpl(gh<_i31.ChopperClient>()),
     );
     gh.lazySingleton<_i753.AuthRemoteDataSource>(
       () => _i753.AuthRemoteDataSourceImpl(gh<_i31.ChopperClient>()),
@@ -121,8 +143,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i558.FlutterSecureStorage>(),
       ),
     );
-    gh.lazySingleton<_i812.NotificationRemoteDataSource>(
-      () => _i812.NotificationRemoteDataSourceImpl(gh<_i31.ChopperClient>()),
+    gh.lazySingleton<_i537.NotificationRemoteDataSource>(
+      () => _i537.NotificationRemoteDataSourceImpl(gh<_i31.ChopperClient>()),
+    );
+    gh.lazySingleton<_i912.TripRemoteDataSource>(
+      () => _i912.TripRemoteDataSourceImpl(gh<_i31.ChopperClient>()),
+    );
+    gh.lazySingleton<_i913.TripSseClient>(
+      () => _i913.TripSseClient(gh<_i558.FlutterSecureStorage>()),
+    );
+    gh.lazySingleton<_i435.NotificationService>(
+      () => _i435.NotificationService(gh<_i31.ChopperClient>()),
     );
     gh.lazySingleton<_i992.AuthLocalDataSource>(
       () => _i992.AuthLocalDataSourceImpl(
@@ -139,17 +170,23 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i247.NetworkInfo>(),
       ),
     );
+    gh.lazySingleton<_i851.NotificationRepository>(
+      () => _i838.NotificationRepositoryImpl(
+        gh<_i537.NotificationRemoteDataSource>(),
+        gh<_i247.NetworkInfo>(),
+      ),
+    );
+    gh.lazySingleton<_i915.TripRepository>(
+      () => _i914.TripRepositoryImpl(
+        gh<_i912.TripRemoteDataSource>(),
+        gh<_i247.NetworkInfo>(),
+      ),
+    );
     gh.lazySingleton<_i9.KycRepository>(
       () => _i356.KycRepositoryImpl(
         gh<_i29.KycRemoteDataSource>(),
         gh<_i247.NetworkInfo>(),
         gh<_i992.AuthLocalDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i814.NotificationRepository>(
-      () => _i813.NotificationRepositoryImpl(
-        gh<_i812.NotificationRemoteDataSource>(),
-        gh<_i247.NetworkInfo>(),
       ),
     );
     gh.lazySingleton<_i802.ProfileRepository>(
@@ -171,9 +208,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i247.NetworkInfo>(),
       ),
     );
-    gh.factory<_i657.KycCubit>(() => _i657.KycCubit(gh<_i9.KycRepository>()));
-    gh.factory<_i815.NotificationsCubit>(
-      () => _i815.NotificationsCubit(gh<_i814.NotificationRepository>()),
+    gh.factory<_i284.NotificationsCubit>(
+      () => _i284.NotificationsCubit(gh<_i851.NotificationRepository>()),
+    );
+    gh.lazySingleton<_i707.WalletRepository>(
+      () => _i238.WalletRepositoryImpl(
+        gh<_i317.WalletRemoteDataSource>(),
+        gh<_i247.NetworkInfo>(),
+      ),
     );
     gh.factory<_i741.IntercityBookingCubit>(
       () => _i741.IntercityBookingCubit(
@@ -181,8 +223,24 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i31.ChopperClient>(),
       ),
     );
+    gh.factory<_i657.KycCubit>(() => _i657.KycCubit(gh<_i9.KycRepository>()));
     gh.factory<_i183.IntercitySearchCubit>(
       () => _i183.IntercitySearchCubit(gh<_i1053.IntercityRepository>()),
+    );
+    gh.factory<_i448.DepositCubit>(
+      () => _i448.DepositCubit(gh<_i707.WalletRepository>()),
+    );
+    gh.factory<_i953.PayBookingCubit>(
+      () => _i953.PayBookingCubit(gh<_i707.WalletRepository>()),
+    );
+    gh.factory<_i111.WalletCubit>(
+      () => _i111.WalletCubit(gh<_i707.WalletRepository>()),
+    );
+    gh.factory<_i916.TripTrackCubit>(
+      () => _i916.TripTrackCubit(
+        gh<_i915.TripRepository>(),
+        gh<_i913.TripSseClient>(),
+      ),
     );
     gh.factory<_i1051.IntercityPublishCubit>(
       () => _i1051.IntercityPublishCubit(

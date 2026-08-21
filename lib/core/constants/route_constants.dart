@@ -40,9 +40,17 @@ class RouteConstants {
   static const String profile = '/profile';
   static const String settings = '/settings';
   static const String wallet = '/wallet';
+  static const String walletDeposit = '/wallet/deposit';
+  static const String walletDepositStatus = '/wallet/deposit/:id';
+  static const String walletPay = '/wallet/pay/:bookingId';
+  static const String walletReceipt = '/wallet/receipt/:id';
   static const String notifications = '/notifications';
   static const String urbanMap = '/urban/map';
   static const String driverAvailability = '/urban/driver';
+
+  static String walletDepositStatusPath(String id) => '/wallet/deposit/$id';
+  static String walletPayPath(String bookingId) => '/wallet/pay/$bookingId';
+  static String walletReceiptPath(String id) => '/wallet/receipt/$id';
 
   // Intercity
   static const String intercity = '/intercity';
@@ -53,12 +61,18 @@ class RouteConstants {
   static const String intercityEmpty = '/intercity/empty';
   static const String intercityDetail = '/intercity/detail';
   static const String intercitySubscribe = '/intercity/subscribe';
-  static const String intercityBooking = '/intercity/booking';
+  static const String intercityBooking = '/intercity/booking/:id';
   static const String intercityPublishGuard = '/intercity/publish/guard';
   static const String intercityCreate = '/intercity/publish/create';
   static const String intercityPreview = '/intercity/publish/preview';
   static const String intercityPublishSuccess = '/intercity/publish/success';
   static const String intercityIncomingBookings = '/intercity/publish/incoming';
+
+  // Trips / suivi live
+  static const String tripTrack = '/trips/:id/track';
+
+  static String intercityBookingPath(String id) => '/intercity/booking/$id';
+  static String tripTrackPath(String id) => '/trips/$id/track';
 
   // Feature d'exemple conservee pour les tests template existants.
   static const String exampleList = '/examples';

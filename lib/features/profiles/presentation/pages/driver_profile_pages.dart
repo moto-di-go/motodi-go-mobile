@@ -6,6 +6,7 @@ import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_scaffold.dart';
+import 'package:motodi_go_mobile/features/intercity/presentation/widgets/city_autocomplete_field.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/cubit/profile_cubit.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_figma_icons.dart';
 import 'package:motodi_go_mobile/l10n/app_localizations.dart';
@@ -29,12 +30,13 @@ class _MotoTaxiProfileView extends StatefulWidget {
 class _MotoTaxiProfileViewState extends State<_MotoTaxiProfileView> {
   final _nameController = TextEditingController(text: '');
   final _licenseController = TextEditingController();
-  String _zone = 'Bastos, Yaoundé';
+  final _zoneController = TextEditingController(text: 'Bastos, Yaoundé');
 
   @override
   void dispose() {
     _nameController.dispose();
     _licenseController.dispose();
+    _zoneController.dispose();
     super.dispose();
   }
 
@@ -54,7 +56,7 @@ class _MotoTaxiProfileViewState extends State<_MotoTaxiProfileView> {
             isLoading: state.isLoading,
             onPressed: () => context.read<ProfileCubit>().createMotoTaxi(
               displayName: _nameController.text,
-              operatingZone: _zone,
+              operatingZone: _zoneController.text.trim(),
               licenseNumber: _licenseController.text.trim().isEmpty
                   ? null
                   : _licenseController.text.trim(),
@@ -72,11 +74,37 @@ class _MotoTaxiProfileViewState extends State<_MotoTaxiProfileView> {
               ),
               const SizedBox(height: 28),
               _DriverFieldLabel(l10n.mototaxiProfileZoneLabel),
-              _ZoneSelector(
-                value: _zone,
-                onChanged: (value) {
-                  if (value != null) setState(() => _zone = value);
-                },
+              CityAutocompleteField(
+                controller: _zoneController,
+                hint: 'Ex : Bastos, Yaoundé',
+                kind: null,
+                suggestionIcon: Icons.place_outlined,
+                minHeight: 56,
+                boxDecoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xFFE7EAE3)),
+                ),
+                boxPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                textStyle: const TextStyle(
+                  color: Color(0xFF101512),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+                decoration: const InputDecoration(
+                  isDense: true,
+                  filled: false,
+                  fillColor: Colors.transparent,
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(vertical: 14),
+                  hintStyle: TextStyle(
+                    color: Color(0xFFB0B8B1),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
               const SizedBox(height: 28),
               _DriverFieldLabel(
@@ -270,52 +298,6 @@ class _DriverTextField extends StatelessWidget {
   }
 }
 
-class _ZoneSelector extends StatelessWidget {
-  final String value;
-  final ValueChanged<String?> onChanged;
-
-  const _ZoneSelector({required this.value, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    const zones = ['Bastos, Yaoundé', 'Mvan, Yaoundé', 'Akwa, Douala'];
-
-    return Container(
-      height: 60,
-      padding: const EdgeInsets.only(left: 30, right: 22),
-      decoration: _driverFieldDecoration(),
-      child: Row(
-        children: [
-          const MotodigoLocalisationGrayIcon(size: 28),
-          const SizedBox(width: 22),
-          Expanded(
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: value,
-                isExpanded: true,
-                icon: const Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: Color(0xFF8A968C),
-                  size: 34,
-                ),
-                dropdownColor: Colors.white,
-                borderRadius: BorderRadius.circular(18),
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                ),
-                items: [for (final zone in zones) DropdownMenuItem(value: zone, child: Text(zone))],
-                onChanged: onChanged,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _DriverSubmitButton extends StatelessWidget {
   final String label;
   final bool isLoading;
@@ -451,14 +433,6 @@ class _DashedRoundedBorderPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _DashedRoundedBorderPainter oldDelegate) =>
       oldDelegate.color != color || oldDelegate.radius != radius;
-}
-
-BoxDecoration _driverFieldDecoration() {
-  return BoxDecoration(
-    color: Colors.white,
-    border: Border.all(color: const Color(0xFFDEE2DA), width: 1.5),
-    borderRadius: BorderRadius.circular(24),
-  );
 }
 
 Future<void> _onSaved(BuildContext context, ProfileState state) async {
