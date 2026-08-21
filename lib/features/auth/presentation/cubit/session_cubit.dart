@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:motodi_go_mobile/core/error/failure.dart';
+import 'package:motodi_go_mobile/core/services/notification_service.dart';
+import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/domain/entities/auth_session.dart';
 import 'package:motodi_go_mobile/features/auth/domain/repositories/auth_repository.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/profile_summary.dart';
@@ -42,6 +44,7 @@ class SessionCubit extends Cubit<SessionState> {
           emit(state.copyWith(status: SessionStatus.unauthenticated));
         } else {
           emit(state.copyWith(status: SessionStatus.authenticated, session: session));
+          _registerFcmToken();
         }
       },
     );
@@ -61,6 +64,7 @@ class SessionCubit extends Cubit<SessionState> {
         errorMessage: null,
       ),
     );
+    _registerFcmToken();
   }
 
   Future<void> refreshAfterProfileChange() async {
@@ -92,6 +96,11 @@ class SessionCubit extends Cubit<SessionState> {
         errorMessage: message ?? 'Session expirée.',
       ),
     );
+  }
+
+  /// After login / OTP / cold-start session restore — register FCM token (see docs/FIREBASE_SETUP.md).
+  void _registerFcmToken() {
+    unawaited(getIt<NotificationService>().registerTokenWithBackend());
   }
 }
 

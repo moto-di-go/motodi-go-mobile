@@ -17,6 +17,7 @@ import 'package:motodi_go_mobile/features/intercity/presentation/widgets/city_au
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/authenticated_network_image.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_figma_icons.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_formatters.dart';
+import 'package:motodi_go_mobile/features/urban/data/urban_models.dart';
 import 'package:share_plus/share_plus.dart';
 
 TextStyle _publishText({
@@ -242,6 +243,7 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
   final _ptRamassageController = TextEditingController();
   final _priceController = TextEditingController();
   final _instructionsController = TextEditingController();
+  UrbanPlace? _departurePlace;
   DateTime? _date;
   TimeOfDay? _time;
   IntercityVehicle? _vehicle;
@@ -296,75 +298,102 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
             ),
             Expanded(
               child: ListView(
+                clipBehavior: Clip.none,
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: _CreateLabeledField(
-                          label: 'Départ',
-                          child: CityAutocompleteField(
-                            controller: _departureController,
-                            hint: 'Yaoundé',
-                            minHeight: 56,
-                            boxDecoration: _createFieldDecoration(),
-                            boxPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                            textStyle: _publishText(fontSize: 16, fontWeight: FontWeight.w700),
-                            decoration: InputDecoration(
-                              isDense: true,
-                              filled: false,
-                              fillColor: Colors.transparent,
-                              border: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                              hintStyle: _publishText(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFFB0B8B1),
-                              ),
-                            ),
-                          ),
+                  _CreateLabeledField(
+                    label: 'Départ',
+                    child: CityAutocompleteField(
+                      controller: _departureController,
+                      hint: 'Yaoundé',
+                      minHeight: 56,
+                      boxDecoration: _createFieldDecoration(),
+                      boxPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      textStyle: _publishText(fontSize: 16, fontWeight: FontWeight.w700),
+                      onPlaceSelected: (place) {
+                        setState(() {
+                          _departurePlace = place;
+                          if (place == null) {
+                            // Ville changée à la main : le ramassage doit être resaisi.
+                            _ptRamassageController.clear();
+                          }
+                        });
+                      },
+                      decoration: InputDecoration(
+                        isDense: true,
+                        filled: false,
+                        fillColor: Colors.transparent,
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                        hintStyle: _publishText(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFFB0B8B1),
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _CreateLabeledField(
-                          label: 'Destination',
-                          child: CityAutocompleteField(
-                            controller: _destinationController,
-                            hint: 'Douala',
-                            minHeight: 56,
-                            boxDecoration: _createFieldDecoration(),
-                            boxPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                            textStyle: _publishText(fontSize: 16, fontWeight: FontWeight.w700),
-                            decoration: InputDecoration(
-                              isDense: true,
-                              filled: false,
-                              fillColor: Colors.transparent,
-                              border: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                              hintStyle: _publishText(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFFB0B8B1),
-                              ),
-                            ),
-                          ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _CreateLabeledField(
+                    label: 'Destination',
+                    child: CityAutocompleteField(
+                      controller: _destinationController,
+                      hint: 'Douala',
+                      minHeight: 56,
+                      boxDecoration: _createFieldDecoration(),
+                      boxPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      textStyle: _publishText(fontSize: 16, fontWeight: FontWeight.w700),
+                      decoration: InputDecoration(
+                        isDense: true,
+                        filled: false,
+                        fillColor: Colors.transparent,
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                        hintStyle: _publishText(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFFB0B8B1),
                         ),
                       ),
-                    ],
+                    ),
                   ),
                   const SizedBox(height: 16),
                   _CreateLabeledField(
                     label: 'Pt. Ramassage',
-                    child: _CreateTextBox(
+                    child: CityAutocompleteField(
                       controller: _ptRamassageController,
-                      hint: 'Bonanjo',
-                      prefix: const MotodigoMapPinIcon(size: 20, color: Color(0xFF8A968C)),
+                      hint: _departurePlace == null
+                          ? 'Choisir d\'abord la ville de départ'
+                          : 'Ex : quartier, carrefour…',
+                      kind: null,
+                      suggestionIcon: Icons.place_outlined,
+                      requireBias: true,
+                      biasLat: _departurePlace?.point.latitude,
+                      biasLon: _departurePlace?.point.longitude,
+                      missingBiasMessage: 'Choisissez d\'abord une ville de départ',
+                      minHeight: 56,
+                      leading: const MotodigoMapPinIcon(size: 20, color: Color(0xFF8A968C)),
+                      boxDecoration: _createFieldDecoration(),
+                      boxPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      textStyle: _publishText(fontSize: 16, fontWeight: FontWeight.w700),
+                      decoration: InputDecoration(
+                        isDense: true,
+                        filled: false,
+                        fillColor: Colors.transparent,
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                        hintStyle: _publishText(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFFB0B8B1),
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -639,7 +668,6 @@ class _CreateLabeledField extends StatelessWidget {
 class _CreateTextBox extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
-  final Widget? prefix;
   final Widget? suffix;
   final int maxLines;
   final double? minHeight;
@@ -649,7 +677,6 @@ class _CreateTextBox extends StatelessWidget {
   const _CreateTextBox({
     required this.controller,
     required this.hint,
-    this.prefix,
     this.suffix,
     this.maxLines = 1,
     this.minHeight,
@@ -662,19 +689,12 @@ class _CreateTextBox extends StatelessWidget {
     return Container(
       width: double.infinity,
       constraints: BoxConstraints(minHeight: minHeight ?? 56),
-      padding: EdgeInsets.fromLTRB(prefix != null ? 14 : 16, 4, suffix != null ? 14 : 16, 4),
+      padding: EdgeInsets.fromLTRB(16, 4, suffix != null ? 14 : 16, 4),
       alignment: maxLines == 1 ? Alignment.centerLeft : Alignment.topLeft,
       decoration: _createFieldDecoration(),
       child: Row(
         crossAxisAlignment: maxLines == 1 ? CrossAxisAlignment.center : CrossAxisAlignment.start,
         children: [
-          if (prefix != null) ...[
-            Padding(
-              padding: EdgeInsets.only(top: maxLines == 1 ? 0 : 14),
-              child: prefix!,
-            ),
-            const SizedBox(width: 10),
-          ],
           Expanded(
             child: TextField(
               controller: controller,

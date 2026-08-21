@@ -39,6 +39,8 @@ Ou manuellement :
 
 ### Étape 2 — Firebase
 
+Voir le checklist détaillé : [`docs/FIREBASE_SETUP.md`](FIREBASE_SETUP.md).
+
 ```bash
 # 1. Installer FlutterFire CLI
 dart pub global activate flutterfire_cli
@@ -46,10 +48,12 @@ dart pub global activate flutterfire_cli
 # 2. Configurer Firebase (crée google-services.json et GoogleService-Info.plist)
 flutterfire configure --project=VOTRE_PROJET_FIREBASE
 
-# 3. Ces fichiers sont dans .gitignore — NE JAMAIS les commiter
+# 3. Ou copier le template : lib/firebase_options.dart.example → lib/firebase_options.dart
+# 4. Ces fichiers plateforme sont dans .gitignore — NE JAMAIS les commiter
+# 5. Décommenter les plugins google-services dans android/*.gradle.kts
 ```
 
-Décommenter dans `lib/main.dart` :
+Dans `lib/main.dart`, préférer :
 ```dart
 await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;

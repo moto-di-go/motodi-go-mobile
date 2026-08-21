@@ -15,6 +15,8 @@ class ProfileSummary extends Equatable {
     required this.active,
   });
 
+  bool get isValidated => validationStatus == ValidationStatus.validated;
+
   @override
   List<Object?> get props => [id, type, validationStatus, active];
 }

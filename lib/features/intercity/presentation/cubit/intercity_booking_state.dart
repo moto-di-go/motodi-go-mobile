@@ -35,6 +35,7 @@ class IntercityBookingState extends Equatable {
 
   final IntercityBookingsStatus myBookingsStatus;
   final List<IntercityBooking> myBookings;
+  final Map<String, IntercityAnnouncement> myBookingAnnouncements;
   final int myBookingsPage;
   final bool myBookingsHasMore;
   final String? myBookingsErrorMessage;
@@ -56,6 +57,7 @@ class IntercityBookingState extends Equatable {
     this.subscribeErrorCode,
     this.myBookingsStatus = IntercityBookingsStatus.initial,
     this.myBookings = const [],
+    this.myBookingAnnouncements = const {},
     this.myBookingsPage = 0,
     this.myBookingsHasMore = false,
     this.myBookingsErrorMessage,
@@ -81,6 +83,7 @@ class IntercityBookingState extends Equatable {
     String? subscribeErrorCode,
     IntercityBookingsStatus? myBookingsStatus,
     List<IntercityBooking>? myBookings,
+    Map<String, IntercityAnnouncement>? myBookingAnnouncements,
     int? myBookingsPage,
     bool? myBookingsHasMore,
     String? myBookingsErrorMessage,
@@ -101,6 +104,7 @@ class IntercityBookingState extends Equatable {
       subscribeErrorCode: subscribeErrorCode,
       myBookingsStatus: myBookingsStatus ?? this.myBookingsStatus,
       myBookings: myBookings ?? this.myBookings,
+      myBookingAnnouncements: myBookingAnnouncements ?? this.myBookingAnnouncements,
       myBookingsPage: myBookingsPage ?? this.myBookingsPage,
       myBookingsHasMore: myBookingsHasMore ?? this.myBookingsHasMore,
       myBookingsErrorMessage: myBookingsErrorMessage,
@@ -123,6 +127,7 @@ class IntercityBookingState extends Equatable {
     subscribeErrorCode,
     myBookingsStatus,
     myBookings,
+    myBookingAnnouncements,
     myBookingsPage,
     myBookingsHasMore,
     myBookingsErrorMessage,

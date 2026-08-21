@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +14,7 @@ import 'package:motodi_go_mobile/core/services/notification_service.dart';
 import 'package:motodi_go_mobile/core/theme/app_theme.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:motodi_go_mobile/features/kyc/presentation/pages/kyc_pages.dart';
 import 'package:motodi_go_mobile/l10n/app_localizations.dart';
 import 'package:motodi_go_mobile/routes/app_router.dart';
 
@@ -60,13 +63,44 @@ class _AppState extends State<App> {
   Future<void> _initializeNotifications() async {
     try {
       if (Firebase.apps.isEmpty) {
+        // Prefer DefaultFirebaseOptions after `flutterfire configure`
+        // (copy lib/firebase_options.dart.example → lib/firebase_options.dart).
+        // See docs/FIREBASE_SETUP.md
         await Firebase.initializeApp();
       }
       await getIt<NotificationService>().initialize(
         onKycDecision: (payload) {
+          unawaited(_handleKycDecision(payload));
+        },
+        onDeepLink: (link) {
           final context = rootNavigatorKey.currentContext;
-          if (context != null) {
-            context.go(RouteConstants.kycNotification, extra: payload);
+          if (context == null) return;
+          switch (link.kind) {
+            case NotificationDeepLinkKind.kyc:
+              unawaited(_sessionCubit.refreshAfterProfileChange());
+              break;
+            case NotificationDeepLinkKind.booking:
+              if (link.bookingId != null) {
+                context.push(RouteConstants.intercityBookingPath(link.bookingId!));
+              } else {
+                context.go(RouteConstants.intercity);
+              }
+            case NotificationDeepLinkKind.payment:
+              if (link.bookingId != null) {
+                context.push(RouteConstants.walletPayPath(link.bookingId!));
+              } else {
+                context.go(RouteConstants.wallet);
+              }
+            case NotificationDeepLinkKind.trip:
+              if (link.tripId != null) {
+                context.push(RouteConstants.tripTrackPath(link.tripId!));
+              } else if (link.bookingId != null) {
+                context.push(RouteConstants.intercityBookingPath(link.bookingId!));
+              }
+            case NotificationDeepLinkKind.wallet:
+              context.go(RouteConstants.wallet);
+            case NotificationDeepLinkKind.unknown:
+              break;
           }
         },
       );
@@ -74,6 +108,14 @@ class _AppState extends State<App> {
       if (kDebugMode) {
         debugPrint('Notifications disabled: $error');
       }
+    }
+  }
+
+  Future<void> _handleKycDecision(KycNotificationPayload payload) async {
+    await _sessionCubit.refreshAfterProfileChange();
+    final context = rootNavigatorKey.currentContext;
+    if (context != null && context.mounted) {
+      context.go(RouteConstants.kycNotification, extra: payload);
     }
   }
 

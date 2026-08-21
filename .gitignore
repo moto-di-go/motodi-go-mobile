@@ -49,6 +49,14 @@ coverage/
 # Android local properties
 android/local.properties
 
+# Heap dumps / crash dumps (never commit)
+*.hprof
+*.hprof.*
+
+# Firebase CLI local logs
+firebase-debug.log
+firebase-debug.*.log
+
 # Pub cache
 .pub-cache/
 .pub/

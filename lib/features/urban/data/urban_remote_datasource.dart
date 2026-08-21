@@ -1,4 +1,5 @@
 import 'package:chopper/chopper.dart';
+import 'package:flutter/foundation.dart';
 import 'package:motodi_go_mobile/features/auth/data/models/api_error_model.dart';
 import 'package:motodi_go_mobile/features/urban/data/urban_models.dart';
 
@@ -175,11 +176,24 @@ class UrbanRemoteDataSource {
         Uri.parse(path),
         parameters: parameters ?? const <String, dynamic>{},
       );
+      debugPrint('[UrbanRemote] GET $path params=$parameters → ${response.statusCode}');
       if (response.statusCode == 404 || !response.isSuccessful) {
+        if (response.statusCode == 403) {
+          throw const ApiException(
+            'ACCESS_DENIED',
+            'Accès refusé à la recherche de lieux',
+            statusCode: 403,
+          );
+        }
         return null;
       }
-      return parsePlaceList(response.body);
-    } catch (_) {
+      final places = parsePlaceList(response.body);
+      debugPrint('[UrbanRemote] parsed ${places.length} places');
+      return places;
+    } on ApiException {
+      rethrow;
+    } catch (e) {
+      debugPrint('[UrbanRemote] GET $path failed: $e');
       return null;
     }
   }

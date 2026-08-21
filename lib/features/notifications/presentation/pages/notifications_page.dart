@@ -269,11 +269,27 @@ class _NotificationsBody extends StatelessWidget {
       return;
     }
     if (notification.type == AppNotificationType.payment) {
-      context.go(RouteConstants.wallet);
+      if (notification.bookingId != null && notification.bookingId!.isNotEmpty) {
+        context.push(RouteConstants.walletPayPath(notification.bookingId!));
+      } else {
+        context.go(RouteConstants.wallet);
+      }
       return;
     }
-    if (notification.bookingId != null ||
-        notification.type == AppNotificationType.subscription ||
+    if (notification.tripId != null && notification.tripId!.isNotEmpty) {
+      context.push(RouteConstants.tripTrackPath(notification.tripId!));
+      return;
+    }
+    if (notification.type == AppNotificationType.statusChange &&
+        notification.metadata['tripId'] != null) {
+      context.push(RouteConstants.tripTrackPath(notification.metadata['tripId'].toString()));
+      return;
+    }
+    if (notification.bookingId != null && notification.bookingId!.isNotEmpty) {
+      context.push(RouteConstants.intercityBookingPath(notification.bookingId!));
+      return;
+    }
+    if (notification.type == AppNotificationType.subscription ||
         notification.type == AppNotificationType.confirmation ||
         notification.type == AppNotificationType.cancellation ||
         notification.type == AppNotificationType.departureReminder ||
