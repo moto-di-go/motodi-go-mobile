@@ -13,9 +13,10 @@ ExampleModel _$ExampleModelFromJson(Map<String, dynamic> json) => ExampleModel(
   createdAt: DateTime.parse(json['created_at'] as String),
 );
 
-Map<String, dynamic> _$ExampleModelToJson(ExampleModel instance) => <String, dynamic>{
-  'id': instance.id,
-  'title': instance.title,
-  'description': instance.description,
-  'created_at': instance.createdAt.toIso8601String(),
-};
+Map<String, dynamic> _$ExampleModelToJson(ExampleModel instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'description': instance.description,
+      'created_at': instance.createdAt.toIso8601String(),
+    };

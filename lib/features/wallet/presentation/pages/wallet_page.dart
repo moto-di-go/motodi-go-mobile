@@ -5,6 +5,9 @@ import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/core/widgets/app_error_view.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
+import 'package:motodi_go_mobile/features/nfc/domain/entities/nfc_entities.dart';
+import 'package:motodi_go_mobile/features/nfc/domain/repositories/nfc_repository.dart';
+import 'package:motodi_go_mobile/features/nfc/presentation/widgets/nfc_widgets.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_bottom_sheet.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/cubit/wallet_cubit.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/widgets/wallet_widgets.dart';
@@ -89,6 +92,23 @@ class _WalletBody extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(22, 0, 22, 28),
           children: [
             if (state.isFrozen) const WalletFrozenBanner(),
+            FutureBuilder<List<PendingNfcPayment>>(
+              future: getIt<NfcRepository>().listPending(),
+              builder: (context, snap) {
+                final pending = (snap.data ?? const [])
+                    .where(
+                      (e) =>
+                          e.syncStatus == NfcSyncStatus.localStored ||
+                          e.syncStatus == NfcSyncStatus.pendingSync ||
+                          e.syncStatus == NfcSyncStatus.conflict,
+                    )
+                    .length;
+                return PendingSyncCard(
+                  pendingCount: pending,
+                  onTap: () => context.push(RouteConstants.nfcPending),
+                );
+              },
+            ),
             Container(
               padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
               decoration: BoxDecoration(
@@ -152,12 +172,31 @@ class _WalletBody extends StatelessWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   child: WalletActionButton(
-                    label: 'Historique',
+                    label: 'Paiement NFC',
+                    icon: Icons.nfc_rounded,
+                    onTap: canAct ? () => context.push(RouteConstants.nfcEligibility) : null,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: WalletActionButton(
+                    label: 'Histororique',
                     icon: Icons.history_rounded,
                     onTap: () {
-                      // La liste est déjà sur cet écran ; on force un refresh.
                       context.read<WalletCubit>().refresh();
                     },
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: WalletActionButton(
+                    label: 'Recevoir NFC',
+                    icon: Icons.phone_android_rounded,
+                    onTap: () => context.push(RouteConstants.nfcReceive),
                   ),
                 ),
               ],

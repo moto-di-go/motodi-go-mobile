@@ -15,6 +15,7 @@ import 'package:motodi_go_mobile/core/theme/app_theme.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:motodi_go_mobile/features/kyc/presentation/pages/kyc_pages.dart';
+import 'package:motodi_go_mobile/features/offline/presentation/cubit/connectivity_cubit.dart';
 import 'package:motodi_go_mobile/l10n/app_localizations.dart';
 import 'package:motodi_go_mobile/routes/app_router.dart';
 
@@ -40,6 +41,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late final SessionCubit _sessionCubit;
+  late final ConnectivityCubit _connectivityCubit;
   late final GoRouter _router;
   late final AppLocaleController _localeController;
 
@@ -48,6 +50,7 @@ class _AppState extends State<App> {
     super.initState();
     _localeController = AppLocaleController()..load();
     _sessionCubit = getIt<SessionCubit>();
+    _connectivityCubit = getIt<ConnectivityCubit>();
     _router = createAppRouter(_sessionCubit);
     _sessionCubit.bootstrap();
     _initializeNotifications();
@@ -123,8 +126,11 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return AppLocaleScope(
       controller: _localeController,
-      child: BlocProvider.value(
-        value: _sessionCubit,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: _sessionCubit),
+          BlocProvider.value(value: _connectivityCubit),
+        ],
         child: AnimatedBuilder(
           animation: _localeController,
           builder: (context, _) {
