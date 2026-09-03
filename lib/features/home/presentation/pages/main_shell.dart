@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:motodi_go_mobile/features/home/presentation/widgets/app_bottom_navigation.dart';
+import 'package:motodi_go_mobile/features/offline/presentation/widgets/offline_widgets.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/profile_type.dart';
 
 /// Shell principal : conserve la tab bar sur Accueil / Trajets|Annonces / Wallet / Notifs / Profil.
@@ -25,7 +26,12 @@ class MainShell extends StatelessWidget {
         final type = state.activeProfile?.type ?? ProfileType.passenger;
         return Scaffold(
           backgroundColor: AppColors.background,
-          body: navigationShell,
+          body: Column(
+            children: [
+              const OfflineBanner(),
+              Expanded(child: navigationShell),
+            ],
+          ),
           bottomNavigationBar: AppBottomNavigation(
             selectedIndex: navigationShell.currentIndex,
             tripsTabLabel: usesAnnouncementsTab(type) ? 'Annonces' : 'Trajets',

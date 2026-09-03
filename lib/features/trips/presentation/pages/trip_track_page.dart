@@ -157,34 +157,37 @@ class _CompletedTripView extends StatelessWidget {
               ),
             ],
             const Spacer(),
-            if (trip.bookingId != null) ...[
-              Material(
-                color: const Color(0xFF16A34A),
+            Material(
+              color: const Color(0xFF16A34A),
+              borderRadius: BorderRadius.circular(999),
+              child: InkWell(
                 borderRadius: BorderRadius.circular(999),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(999),
-                  onTap: () => context.push(RouteConstants.walletReceiptPath(trip.bookingId!)),
-                  child: Container(
-                    height: 56,
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Voir le reçu',
-                      style: _trackText(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      ),
+                onTap: () {
+                  final rated = trip.driverProfileId ?? trip.transporterProfileId;
+                  context.push(RouteConstants.tripRatePath(trip.id), extra: rated);
+                },
+                child: Container(
+                  height: 56,
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Noter',
+                    style: _trackText(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
-            ],
+            ),
+            const SizedBox(height: 12),
             OutlinedButton(
               onPressed: () {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(const SnackBar(content: Text('La notation arrive bientôt.')));
+                if (trip.bookingId != null) {
+                  context.push(RouteConstants.walletReceiptPath(trip.bookingId!));
+                } else {
+                  context.push(RouteConstants.receipts);
+                }
               },
               style: OutlinedButton.styleFrom(
                 foregroundColor: const Color(0xFF101512),
@@ -193,13 +196,13 @@ class _CompletedTripView extends StatelessWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
               ),
               child: Text(
-                'Noter le trajet',
+                'Voir reçu',
                 style: _trackText(fontSize: 17, fontWeight: FontWeight.w700),
               ),
             ),
             const SizedBox(height: 12),
             TextButton(
-              onPressed: () => context.go(RouteConstants.intercity),
+              onPressed: () => context.go(RouteConstants.tripsHistory),
               child: Text(
                 'Retour à l’historique',
                 style: _trackText(

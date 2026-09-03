@@ -162,8 +162,25 @@ class _PayBookingView extends StatelessWidget {
             isLoading: state.status == PayBookingStatus.paying,
             onPressed: state.canPay ? () => context.read<PayBookingCubit>().confirmPay() : null,
           ),
+          const SizedBox(height: 10),
+          TextButton(
+            onPressed: () => context.push(
+              RouteConstants.nfcPayWithQuery(
+                amount: state.expectedAmount,
+                bookingId: bookingId,
+              ),
+            ),
+            child: Text(
+              'Payer via NFC (hors-ligne)',
+              style: walletText(
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
           if (state.hasInsufficientBalance) ...[
-            const SizedBox(height: 10),
+            const SizedBox(height: 4),
             TextButton(
               onPressed: () => context.push(RouteConstants.walletDeposit),
               child: Text(

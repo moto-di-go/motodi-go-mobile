@@ -219,6 +219,30 @@ class _ProfileHubView extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   _MenuCard(
+                    icon: const Icon(Icons.history_rounded, size: 22, color: Color(0xFF5B6760)),
+                    title: 'Historique des trajets',
+                    onTap: () => context.push(RouteConstants.tripsHistory),
+                  ),
+                  const SizedBox(height: 10),
+                  _MenuCard(
+                    icon: const Icon(Icons.receipt_long_rounded, size: 22, color: Color(0xFF5B6760)),
+                    title: 'Mes reçus',
+                    onTap: () => context.push(RouteConstants.receipts),
+                  ),
+                  const SizedBox(height: 10),
+                  _MenuCard(
+                    icon: const Icon(Icons.support_agent_rounded, size: 22, color: Color(0xFF5B6760)),
+                    title: 'Support',
+                    onTap: () => context.push(RouteConstants.support),
+                  ),
+                  const SizedBox(height: 10),
+                  _MenuCard(
+                    icon: const Icon(Icons.cloud_off_rounded, size: 22, color: Color(0xFF5B6760)),
+                    title: 'Mode hors-ligne',
+                    onTap: () => context.push(RouteConstants.offline),
+                  ),
+                  const SizedBox(height: 10),
+                  _MenuCard(
                     icon: const MotodigoHubSettingsIcon(size: 20),
                     title: 'Paramètres',
                     onTap: () => context.push(RouteConstants.settings),

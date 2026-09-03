@@ -215,9 +215,18 @@ class IntercityBookingCubit extends Cubit<IntercityBookingState> {
 
   Future<bool> cancelBooking(String bookingId, String reason) async {
     final result = await _repository.cancelBooking(bookingId, reason);
-    return result.fold((failure) => false, (booking) {
-      emit(state.copyWith(bookingStatus: IntercityBookingsStatus.success, booking: booking));
-      return true;
-    });
+    return result.fold(
+      (failure) {
+        if (failure.code == 'OFFLINE_QUEUED') {
+          emit(state.copyWith(bookingStatus: IntercityBookingsStatus.success));
+          return true;
+        }
+        return false;
+      },
+      (booking) {
+        emit(state.copyWith(bookingStatus: IntercityBookingsStatus.success, booking: booking));
+        return true;
+      },
+    );
   }
 }
