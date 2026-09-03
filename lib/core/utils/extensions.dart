@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:motodi_go_mobile/core/l10n/app_texts.dart';
 import 'package:motodi_go_mobile/l10n/app_localizations.dart';
 
 // Rôle : Extensions utilitaires globales sur les types Flutter/Dart.
@@ -16,4 +17,6 @@ extension ContextExtensions on BuildContext {
 extension StringExtensions on String {
   String get capitalize => isEmpty ? this : '${this[0].toUpperCase()}${substring(1)}';
   bool get isEmail => RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}').hasMatch(this);
+  String tr(BuildContext context, {Map<String, String> placeholders = const {}}) =>
+      translateAppText(context, this, placeholders: placeholders);
 }

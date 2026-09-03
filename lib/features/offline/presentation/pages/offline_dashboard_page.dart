@@ -7,6 +7,7 @@ import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/offline/domain/entities/offline_entities.dart';
 import 'package:motodi_go_mobile/features/offline/domain/repositories/offline_repository.dart';
 import 'package:motodi_go_mobile/features/offline/presentation/cubit/connectivity_cubit.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/offline/presentation/widgets/offline_widgets.dart';
 
 class OfflineDashboardPage extends StatefulWidget {
@@ -54,7 +55,7 @@ class _OfflineDashboardPageState extends State<OfflineDashboardPage> {
                   _BackBtn(onTap: () => context.pop()),
                   const SizedBox(width: 12),
                   Text(
-                    'Mode hors-ligne',
+                    'Mode hors-ligne'.tr(context),
                     style: offlineText(fontSize: 28, fontWeight: FontWeight.w800),
                   ),
                 ],
@@ -63,9 +64,9 @@ class _OfflineDashboardPageState extends State<OfflineDashboardPage> {
               BlocBuilder<ConnectivityCubit, ConnectivityState>(
                 builder: (context, state) {
                   final label = switch (state.status) {
-                    ConnectivityStatus.online => 'En ligne',
-                    ConnectivityStatus.offline => 'Hors-ligne',
-                    ConnectivityStatus.weakNetwork => 'Réseau faible',
+                    ConnectivityStatus.online => 'En ligne'.tr(context),
+                    ConnectivityStatus.offline => 'Hors-ligne'.tr(context),
+                    ConnectivityStatus.weakNetwork => 'Réseau faible'.tr(context),
                   };
                   return Container(
                     padding: const EdgeInsets.all(18),
@@ -86,7 +87,9 @@ class _OfflineDashboardPageState extends State<OfflineDashboardPage> {
                         if (_pending > 0) ...[
                           const SizedBox(height: 8),
                           Text(
-                            '$_pending opération(s) en attente de synchronisation',
+                            Localizations.localeOf(context).languageCode == 'en'
+                            ? '$_pending operation(s) awaiting sync'
+                            : '$_pending opération(s) en attente de synchronisation',
                             style: offlineText(fontSize: 13, color: const Color(0xFF8B6509)),
                           ),
                         ],
@@ -102,26 +105,26 @@ class _OfflineDashboardPageState extends State<OfflineDashboardPage> {
               const SizedBox(height: 22),
               _DashTile(
                 icon: Icons.map_rounded,
-                title: 'Cartes hors-ligne',
-                subtitle: 'Douala, Yaoundé, axe',
+                title: 'Cartes hors-ligne'.tr(context),
+                subtitle: 'Douala, Yaoundé, axe'.tr(context),
                 onTap: () => context.push(RouteConstants.offlineMaps),
               ),
               _DashTile(
                 icon: Icons.queue_rounded,
-                title: 'File d’opérations',
-                subtitle: '$_pending en attente',
+                title: 'File d’opérations'.tr(context),
+                subtitle: Localizations.localeOf(context).languageCode == 'en' ? '$_pending pending' : '$_pending en attente',
                 onTap: () => context.push(RouteConstants.offlineQueue),
               ),
               _DashTile(
                 icon: Icons.sync_rounded,
-                title: 'Synchroniser',
-                subtitle: 'Envoyer le lot au serveur',
+                title: 'Synchroniser'.tr(context),
+                subtitle: 'Envoyer le lot au serveur'.tr(context),
                 onTap: () => context.push(RouteConstants.offlineSync),
               ),
               _DashTile(
                 icon: Icons.tune_rounded,
-                title: 'Paramètres cache',
-                subtitle: 'Limite et nettoyage',
+                title: 'Paramètres cache'.tr(context),
+                subtitle: 'Limite et nettoyage'.tr(context),
                 onTap: () => context.push(RouteConstants.offlineSettings),
               ),
             ],

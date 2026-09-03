@@ -8,6 +8,7 @@ import 'package:motodi_go_mobile/core/widgets/sync_status_chip.dart';
 import 'package:motodi_go_mobile/features/nfc/domain/entities/nfc_entities.dart';
 import 'package:motodi_go_mobile/features/nfc/presentation/widgets/nfc_widgets.dart';
 import 'package:motodi_go_mobile/features/offline/domain/entities/offline_entities.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/offline/presentation/cubit/connectivity_cubit.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_bottom_sheet.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/widgets/wallet_widgets.dart';
@@ -27,6 +28,7 @@ TextStyle offlineText({
 }
 
 String formatLastSync(DateTime? at) {
+  // Note: caller should translate via .tr(context) if needed
   if (at == null) return 'Jamais synchronisé';
   final local = at.toLocal();
   final hh = local.hour.toString().padLeft(2, '0');
@@ -55,19 +57,19 @@ class OfflineBanner extends StatelessWidget {
             const Color(0xFF101512),
             Colors.white,
             Icons.cloud_off_rounded,
-            'Hors-ligne',
+            'Hors-ligne'.tr(context),
           ),
           ConnectivityStatus.weakNetwork => (
             const Color(0xFF8B6509),
             Colors.white,
             Icons.signal_cellular_connected_no_internet_4_bar_rounded,
-            'Réseau faible',
+            'Réseau faible'.tr(context),
           ),
           ConnectivityStatus.online => (
             const Color(0xFF8B6509),
             Colors.white,
             Icons.sync_rounded,
-            state.isSyncing ? 'Synchronisation…' : 'Synchronisation en attente',
+            state.isSyncing ? 'Synchronisation…'.tr(context) : 'Synchronisation en attente'.tr(context),
           ),
         };
 
@@ -215,7 +217,7 @@ class DownloadMapAreaCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            area.downloaded ? 'Téléchargé sur cet appareil' : 'Pack cartographique PMTiles / MBTiles',
+            area.downloaded ? 'Téléchargé sur cet appareil'.tr(context) : 'Pack cartographique PMTiles / MBTiles'.tr(context),
             style: offlineText(fontSize: 13, color: AppColors.textSecondary),
           ),
           if (downloading) ...[
@@ -247,7 +249,7 @@ class DownloadMapAreaCard extends StatelessWidget {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
                     ),
                     child: Text(
-                      downloading ? 'Téléchargement…' : 'Télécharger',
+                      downloading ? 'Téléchargement…'.tr(context) : 'Télécharger'.tr(context),
                       style: offlineText(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white),
                     ),
                   ),
@@ -263,7 +265,7 @@ class DownloadMapAreaCard extends StatelessWidget {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
                     ),
                     child: Text(
-                      'Supprimer',
+                      'Supprimer'.tr(context),
                       style: offlineText(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.error),
                     ),
                   ),
@@ -296,7 +298,7 @@ class StorageUsageBar extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Stockage hors-ligne',
+                'Stockage hors-ligne'.tr(context),
                 style: offlineText(fontSize: 15, fontWeight: FontWeight.w800),
               ),
               const Spacer(),
@@ -363,7 +365,7 @@ Future<void> showOfflineInfoSheet(BuildContext context, {required String title, 
           const SizedBox(height: 10),
           Text(body, style: walletText(fontSize: 14, color: AppColors.textSecondary, height: 1.4)),
           const SizedBox(height: 16),
-          UrbanPrimaryButton(label: 'Compris', onPressed: () => Navigator.of(ctx).pop()),
+          UrbanPrimaryButton(label: 'Compris'.tr(context), onPressed: () => Navigator.of(ctx).pop()),
         ],
       ),
     ),

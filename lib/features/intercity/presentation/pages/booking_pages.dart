@@ -21,12 +21,14 @@ import 'package:motodi_go_mobile/features/intercity/presentation/widgets/interci
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_formatters.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/pages/pay_booking_page.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 final RegExp _kPhonePattern = RegExp(r'^\+237[6-9]\d{8}$');
 
-const _kDefaultInstructions =
+// These are translated inline via .tr(context) where used.
+const _kDefaultInstructionsFr =
     'Présentez-vous 15 min avant le départ, point de rendez-vous carrefour Mvan.';
-const _kDefaultCancellationPolicy = "Remboursable jusqu'à 24 h avant le départ.";
+const _kDefaultCancellationPolicyFr = "Remboursable jusqu'à 24 h avant le départ.";
 
 TextStyle _detailText({
   double fontSize = 14,
@@ -99,7 +101,7 @@ class _IntercityDetailPageState extends State<IntercityDetailPage> {
               final announcement = state.announcement;
               if (announcement == null) {
                 return AppErrorView(
-                  message: state.detailErrorMessage ?? "Impossible de charger l'annonce.",
+                  message: state.detailErrorMessage ?? "Impossible de charger l'annonce.".tr(context),
                   onRetry: () => _cubit.loadDetail(widget.announcementId),
                 );
               }
@@ -159,11 +161,11 @@ class _DetailContentState extends State<_DetailContent> {
               backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               title: Text(
-                'Validation requise',
+                'Validation requise'.tr(context),
                 style: _detailText(fontSize: 20, fontWeight: FontWeight.w800),
               ),
               content: Text(
-                'Validez votre pièce d’identité (CNI) pour souscrire à un trajet interurbain.',
+                'Validez votre pièce d’identité (CNI) pour souscrire à un trajet interurbain.'.tr(context),
                 style: _detailText(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
@@ -175,7 +177,7 @@ class _DetailContentState extends State<_DetailContent> {
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop(),
                   child: Text(
-                    'Plus tard',
+                    'Plus tard'.tr(context),
                     style: _detailText(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
@@ -189,7 +191,7 @@ class _DetailContentState extends State<_DetailContent> {
                     context.push(RouteConstants.kyc);
                   },
                   child: Text(
-                    'Valider mon profil',
+                    'Valider mon profil'.tr(context),
                     style: _detailText(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
@@ -233,16 +235,16 @@ class _DetailContentState extends State<_DetailContent> {
         : 'Transporteur';
     final ptRamassage = announcement.ptRamassage?.trim();
     final metaParts = <String>[
-      '${formatDayMonth(announcement.departureDate)} ${announcement.departureDate.year}',
+      '${formatDayMonth(announcement.departureDate, context: context)} ${announcement.departureDate.year}',
       announcement.formattedDepartureTime,
       if (ptRamassage != null && ptRamassage.isNotEmpty) 'Pt. Ramassage $ptRamassage',
     ];
     final metaLine = metaParts.join(' · ');
     final ctaLabel = ownedByMe
-        ? 'Émis par vous'
+        ? 'Émis par vous'.tr(context)
         : hasSeats
-        ? (_checkingKyc ? 'Vérification…' : 'Souscrire')
-        : 'Complet';
+        ? (_checkingKyc ? 'Vérification…'.tr(context) : 'Souscrire'.tr(context))
+        : 'Complet'.tr(context);
 
     return Column(
       children: [
@@ -253,7 +255,7 @@ class _DetailContentState extends State<_DetailContent> {
               _DetailBackButton(onTap: () => context.pop()),
               const SizedBox(width: 14),
               Text(
-                'Détail du trajet',
+                'Détail du trajet'.tr(context),
                 style: _detailText(fontSize: 22, fontWeight: FontWeight.w800),
               ),
             ],
@@ -383,8 +385,8 @@ class _DetailContentState extends State<_DetailContent> {
                           const SizedBox(height: 4),
                           Text(
                             announcement.publisherVerified
-                                ? 'Transporteur vérifié'
-                                : 'Transporteur',
+                                ? 'Transporteur vérifié'.tr(context)
+                                : 'Transporteur'.tr(context),
                             style: _detailText(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -421,7 +423,9 @@ class _DetailContentState extends State<_DetailContent> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              '${announcement.remainingSeats} restante${announcement.remainingSeats > 1 ? 's' : ''}',
+                              Localizations.localeOf(context).languageCode == 'en'
+                              ? '${announcement.remainingSeats} remaining'
+                              : '${announcement.remainingSeats} restante${announcement.remainingSeats > 1 ? 's' : ''}',
                               textAlign: TextAlign.center,
                               style: _detailText(
                                 fontSize: 18,
@@ -431,7 +435,7 @@ class _DetailContentState extends State<_DetailContent> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Places',
+                              'Places'.tr(context),
                               textAlign: TextAlign.center,
                               style: _detailText(
                                 fontSize: 14,
@@ -448,7 +452,7 @@ class _DetailContentState extends State<_DetailContent> {
               ),
               const SizedBox(height: 22),
               Text(
-                'CONSIGNES',
+                'CONSIGNES'.tr(context),
                 style: _detailText(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -458,7 +462,7 @@ class _DetailContentState extends State<_DetailContent> {
               ),
               const SizedBox(height: 10),
               Text(
-                _kDefaultInstructions,
+                _kDefaultInstructionsFr.tr(context),
                 style: _detailText(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
@@ -468,7 +472,7 @@ class _DetailContentState extends State<_DetailContent> {
               ),
               const SizedBox(height: 22),
               Text(
-                'ITINÉRAIRE',
+                'ITINÉRAIRE'.tr(context),
                 style: _detailText(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -480,7 +484,7 @@ class _DetailContentState extends State<_DetailContent> {
               _ItineraryBlock(status: itineraryStatus, itinerary: itinerary),
               const SizedBox(height: 22),
               Text(
-                "POLITIQUE D'ANNULATION",
+                "POLITIQUE D'ANNULATION".tr(context),
                 style: _detailText(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -490,7 +494,7 @@ class _DetailContentState extends State<_DetailContent> {
               ),
               const SizedBox(height: 10),
               Text(
-                _kDefaultCancellationPolicy,
+                _kDefaultCancellationPolicyFr.tr(context),
                 style: _detailText(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
@@ -546,8 +550,8 @@ class _ItineraryBlock extends StatelessWidget {
         IntercityItineraryStatus.ready when itinerary != null => IntercityItineraryMap(
           itinerary: itinerary!,
         ),
-        IntercityItineraryStatus.failure => const _ItineraryMessage(
-          'Itinéraire routier indisponible pour le moment.',
+        IntercityItineraryStatus.failure => _ItineraryMessage(
+          'Itinéraire routier indisponible pour le moment.'.tr(context),
         ),
         IntercityItineraryStatus.idle || IntercityItineraryStatus.loading => const Center(
           child: SizedBox(
@@ -556,7 +560,7 @@ class _ItineraryBlock extends StatelessWidget {
             child: CircularProgressIndicator(strokeWidth: 2.4, color: Color(0xFF16A34A)),
           ),
         ),
-        _ => const _ItineraryMessage('Itinéraire routier indisponible pour le moment.'),
+        _ => _ItineraryMessage('Itinéraire routier indisponible pour le moment.'.tr(context)),
       },
     );
   }
@@ -666,7 +670,7 @@ class _VehiclePhotoCard extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                '$capacity places',
+                Localizations.localeOf(context).languageCode == 'en' ? '$capacity seats' : '$capacity places',
                 textAlign: TextAlign.center,
                 style: _detailText(
                   fontSize: 14,
@@ -770,7 +774,8 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
   Widget build(BuildContext context) {
     final unitPrice = widget.args.pricePerSeat;
     final total = unitPrice * _seats;
-    final placesLabel = '$_seats place${_seats > 1 ? 's' : ''}';
+    final _isEn = Localizations.localeOf(context).languageCode == 'en';
+    final placesLabel = _isEn ? '$_seats seat${_seats > 1 ? 's' : ''}' : '$_seats place${_seats > 1 ? 's' : ''}';
 
     return BlocProvider.value(
       value: _cubit,
@@ -795,7 +800,7 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
                         backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         title: Text(
-                          'Validation requise',
+                          'Validation requise'.tr(context),
                           style: _detailText(fontSize: 20, fontWeight: FontWeight.w800),
                         ),
                         content: Text(
@@ -811,7 +816,7 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
                           TextButton(
                             onPressed: () => Navigator.of(dialogContext).pop(),
                             child: Text(
-                              'Fermer',
+                              'Fermer'.tr(context),
                               style: _detailText(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
@@ -825,7 +830,7 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
                               context.push(RouteConstants.kyc);
                             },
                             child: Text(
-                              'Valider mon profil',
+                              'Valider mon profil'.tr(context),
                               style: _detailText(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w700,
@@ -856,7 +861,7 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
                         _SubscribeBackButton(onTap: () => context.pop()),
                         const SizedBox(width: 14),
                         Text(
-                          'Souscrire',
+                          'Souscrire'.tr(context),
                           style: _detailText(fontSize: 28, fontWeight: FontWeight.w800),
                         ),
                       ],
@@ -870,7 +875,7 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
                           children: [
                             Expanded(
                               child: Text(
-                                'Nombre de places',
+                                'Nombre de places'.tr(context),
                                 style: _detailText(fontSize: 20, fontWeight: FontWeight.w700),
                               ),
                             ),
@@ -898,7 +903,7 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
                         ),
                         const SizedBox(height: 32),
                         Text(
-                          'Numéro de contact',
+                          'Numéro de contact'.tr(context),
                           style: _detailText(fontSize: 18, fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(height: 12),
@@ -1018,7 +1023,7 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      'Total',
+                                      'Total'.tr(context),
                                       style: _detailText(fontSize: 18, fontWeight: FontWeight.w800),
                                     ),
                                   ),
@@ -1060,7 +1065,7 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
                                   ),
                                 )
                               : Text(
-                                  'Confirmer la demande',
+                                  'Confirmer la demande'.tr(context),
                                   style: _detailText(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w700,
@@ -1083,7 +1088,7 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
   void _submit(BuildContext context) {
     final phone = '+237${_phoneController.text.trim()}';
     if (!_kPhonePattern.hasMatch(phone)) {
-      setState(() => _phoneError = 'Numéro invalide. Format attendu : +237 6/7/8/9XXXXXXXX');
+      setState(() => _phoneError = 'Numéro invalide. Format attendu : +237 6/7/8/9XXXXXXXX'.tr(context));
       return;
     }
     setState(() => _phoneError = null);
@@ -1218,8 +1223,8 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
         SnackBar(
           content: Text(
             remaining.inMinutes <= 1
-                ? 'Votre place expire dans moins d’une minute.'
-                : 'Votre place expire dans ${remaining.inMinutes} min.',
+                ? 'Votre place expire dans moins d’une minute.'.tr(context)
+                : Localizations.localeOf(context).languageCode == 'en' ? 'Your seat expires in ${remaining.inMinutes} min.' : 'Votre place expire dans ${remaining.inMinutes} min.',
           ),
           backgroundColor: const Color(0xFFB45309),
         ),
@@ -1242,7 +1247,7 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
               final booking = state.booking;
               if (booking == null) {
                 return AppErrorView(
-                  message: state.bookingErrorMessage ?? 'Réservation introuvable.',
+                  message: state.bookingErrorMessage ?? 'Réservation introuvable.'.tr(context),
                   onRetry: () => _cubit.loadBooking(widget.bookingId),
                 );
               }
@@ -1262,7 +1267,7 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
                         _DetailBackButton(onTap: () => context.pop()),
                         const SizedBox(width: 14),
                         Text(
-                          'Ma réservation',
+                          'Ma réservation'.tr(context),
                           style: _detailText(fontSize: 22, fontWeight: FontWeight.w800),
                         ),
                       ],
@@ -1281,7 +1286,7 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
                             state.itinerary != null) ...[
                           const SizedBox(height: 14),
                           Text(
-                            'APERÇU DU TRAJET',
+                            'APERÇU DU TRAJET'.tr(context),
                             style: _detailText(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
@@ -1344,27 +1349,27 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Annuler cette réservation ?',
+                'Annuler cette réservation ?'.tr(context),
                 style: _detailText(fontSize: 20, fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: reasonController,
                 maxLength: 300,
-                decoration: const InputDecoration(
-                  hintText: "Motif de l'annulation",
+                decoration: InputDecoration(
+                  hintText: "Motif de l'annulation".tr(context),
                   border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 16),
               PrimaryAuthButton(
-                label: 'Confirmer',
+                label: 'Confirmer'.tr(context),
                 backgroundColor: AppColors.error,
                 onPressed: () => Navigator.of(sheetContext).pop(true),
               ),
               const SizedBox(height: 10),
               SecondaryAuthButton(
-                label: 'Retour',
+                label: 'Retour'.tr(context),
                 onPressed: () => Navigator.of(sheetContext).pop(false),
               ),
             ],
@@ -1374,7 +1379,7 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
     );
     if (confirmed == true && context.mounted) {
       final reason = reasonController.text.trim().isEmpty
-          ? 'Annulation demandée'
+          ? 'Annulation demandée'.tr(context)
           : reasonController.text.trim();
       await _cubit.cancelBooking(booking.id, reason);
     }
@@ -1414,12 +1419,12 @@ class _PaymentLockBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Place verrouillée',
+                  'Place verrouillée'.tr(context),
                   style: _detailText(fontSize: 15, fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  remaining == Duration.zero ? 'Délai de paiement expiré' : 'Expire dans $label',
+                  remaining == Duration.zero ? 'Délai de paiement expiré'.tr(context) : '${Localizations.localeOf(context).languageCode == "en" ? "Expires in" : "Expire dans"} $label',
                   style: _detailText(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -1522,7 +1527,7 @@ class _BookingActions extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 alignment: Alignment.center,
                 child: Text(
-                  'Payer maintenant',
+                  'Payer maintenant'.tr(context),
                   style: _detailText(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -1546,7 +1551,7 @@ class _BookingActions extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 18),
                 alignment: Alignment.center,
                 child: Text(
-                  'Suivre le trajet',
+                  'Suivre le trajet'.tr(context),
                   style: _detailText(
                     fontSize: 17,
                     fontWeight: FontWeight.w700,
@@ -1568,7 +1573,7 @@ class _BookingActions extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
             ),
             child: Text(
-              'Voir le reçu',
+              'Voir le reçu'.tr(context),
               style: _detailText(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
@@ -1589,7 +1594,7 @@ class _BookingActions extends StatelessWidget {
                 side: const BorderSide(color: Color(0xFFDDE3DA), width: 1.5),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
               ),
-              child: Text('Annuler', style: _detailText(fontSize: 16, fontWeight: FontWeight.w700)),
+              child: Text('Annuler'.tr(context), style: _detailText(fontSize: 16, fontWeight: FontWeight.w700)),
             ),
           ),
           const SizedBox(height: 12),
@@ -1597,7 +1602,7 @@ class _BookingActions extends StatelessWidget {
         TextButton(
           onPressed: () => context.go(RouteConstants.home),
           child: Text(
-            "Retour à l'accueil",
+            "Retour à l'accueil".tr(context),
             style: _detailText(
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -1621,9 +1626,9 @@ class _BookingTripSummaryCard extends StatelessWidget {
     final routeLabel = announcement?.route ?? 'Trajet';
     final total = announcement == null ? null : announcement!.priceFcfa * booking.seatsRequested;
     final metaParts = <String>[
-      if (announcement != null) formatDayMonth(announcement!.departureDate),
+      if (announcement != null) formatDayMonth(announcement!.departureDate, context: context),
       if (announcement != null) announcement!.formattedDepartureTime,
-      '${booking.seatsRequested} place${booking.seatsRequested > 1 ? 's' : ''}',
+      Localizations.localeOf(context).languageCode == 'en' ? '${booking.seatsRequested} seat${booking.seatsRequested > 1 ? 's' : ''}' : '${booking.seatsRequested} place${booking.seatsRequested > 1 ? 's' : ''}',
       if (total != null) formatPriceF(total),
     ];
 
@@ -1678,23 +1683,23 @@ class _BookingStatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final (label, fg, bg) = switch (status) {
       IntercityBookingStatus.pending => (
-        'En attente',
+        'En attente'.tr(context),
         const Color(0xFFB45309),
         const Color(0xFFFFF7ED),
       ),
       IntercityBookingStatus.confirmed || IntercityBookingStatus.pendingPayment => (
-        'Confirmée',
+        'Confirmée'.tr(context),
         const Color(0xFF16A34A),
         const Color(0xFFEFFAF3),
       ),
-      IntercityBookingStatus.paid => ('Payée', const Color(0xFF16A34A), const Color(0xFFEFFAF3)),
+      IntercityBookingStatus.paid => ('Payée'.tr(context), const Color(0xFF16A34A), const Color(0xFFEFFAF3)),
       IntercityBookingStatus.cancelled => (
-        'Annulée',
+        'Annulée'.tr(context),
         const Color(0xFFDC2626),
         const Color(0xFFFEF2F2),
       ),
       IntercityBookingStatus.expired => (
-        'Expirée',
+        'Expirée'.tr(context),
         const Color(0xFF6B7280),
         const Color(0xFFF3F4F6),
       ),
@@ -1740,7 +1745,7 @@ class _BookingTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final steps = _stepsFor(booking, announcement);
+    final steps = _stepsFor(context, booking, announcement);
     return Column(
       children: [
         for (var i = 0; i < steps.length; i++)
@@ -1749,7 +1754,7 @@ class _BookingTimeline extends StatelessWidget {
     );
   }
 
-  List<_TimelineStepData> _stepsFor(IntercityBooking booking, IntercityAnnouncement? announcement) {
+  List<_TimelineStepData> _stepsFor(BuildContext context, IntercityBooking booking, IntercityAnnouncement? announcement) {
     final locked =
         booking.confirmedAt != null ||
         booking.status == IntercityBookingStatus.confirmed ||
@@ -1764,35 +1769,35 @@ class _BookingTimeline extends StatelessWidget {
     final expired = booking.status == IntercityBookingStatus.expired;
     final departureLabel = announcement == null
         ? null
-        : '${formatDayMonth(announcement.departureDate)} · ${announcement.formattedDepartureTime}';
+        : '${formatDayMonth(announcement.departureDate, context: context)} · ${announcement.formattedDepartureTime}';
 
     return [
       _TimelineStepData(
-        label: 'Demande créée',
-        subtitle: booking.requestedAt == null ? null : formatRelativeDayTime(booking.requestedAt!),
+        label: 'Demande créée'.tr(context),
+        subtitle: booking.requestedAt == null ? null : formatRelativeDayTime(booking.requestedAt!, context: context),
         visual: _TimelineStepVisual.done,
       ),
       _TimelineStepData(
-        label: 'Place verrouillée',
+        label: 'Place verrouillée'.tr(context),
         subtitle: booking.confirmedAt == null
-            ? (locked ? 'Place réservée' : 'En attente du transporteur')
-            : formatRelativeDayTime(booking.confirmedAt!),
+            ? (locked ? 'Place réservée'.tr(context) : 'En attente du transporteur'.tr(context))
+            : formatRelativeDayTime(booking.confirmedAt!, context: context),
         visual: locked ? _TimelineStepVisual.done : _TimelineStepVisual.pending,
       ),
       if (cancelled || expired)
         _TimelineStepData(
-          label: cancelled ? 'Annulée' : 'Expirée',
+          label: cancelled ? 'Annulée'.tr(context) : 'Expirée'.tr(context),
           subtitle: booking.cancelledAt == null
               ? null
-              : formatRelativeDayTime(booking.cancelledAt!),
+              : formatRelativeDayTime(booking.cancelledAt!, context: context),
           visual: _TimelineStepVisual.cancelled,
         )
       else ...[
         _TimelineStepData(
-          label: 'Paiement demandé',
+          label: 'Paiement demandé'.tr(context),
           subtitle: paymentRequested
-              ? 'À régler via Wallet avant le départ'
-              : 'Après confirmation du transporteur',
+              ? 'À régler via Wallet avant le départ'.tr(context)
+              : 'Après confirmation du transporteur'.tr(context),
           visual: paid
               ? _TimelineStepVisual.done
               : paymentRequested
@@ -1801,18 +1806,18 @@ class _BookingTimeline extends StatelessWidget {
           accentSubtitle: paymentRequested && !paid,
         ),
         _TimelineStepData(
-          label: 'Paiement confirmé',
-          subtitle: paid ? 'Wallet · payé' : null,
+          label: 'Paiement confirmé'.tr(context),
+          subtitle: paid ? 'Wallet · payé'.tr(context) : null,
           visual: paid ? _TimelineStepVisual.done : _TimelineStepVisual.pending,
         ),
         _TimelineStepData(
-          label: 'Départ prévu',
+          label: 'Départ prévu'.tr(context),
           subtitle: departureLabel,
           visual: paid ? _TimelineStepVisual.done : _TimelineStepVisual.pending,
         ),
         _TimelineStepData(
-          label: 'Trajet terminé',
-          subtitle: booking.tripId != null ? 'Suivi disponible' : null,
+          label: 'Trajet terminé'.tr(context),
+          subtitle: booking.tripId != null ? 'Suivi disponible'.tr(context) : null,
           visual: _TimelineStepVisual.pending,
         ),
       ],

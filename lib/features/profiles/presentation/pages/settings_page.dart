@@ -7,6 +7,7 @@ import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/l10n/app_locale_controller.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_buttons.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/settings_figma_icons.dart';
 
 TextStyle _settingsText({
@@ -36,7 +37,9 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _shareLocationEnabled = false;
 
   void _soon() {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Bientôt disponible')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Bientôt disponible'.tr(context))),
+    );
   }
 
   void _showLogoutSheet() {
@@ -58,13 +61,15 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               const SizedBox(height: 26),
               Text(
-                'Se déconnecter ?',
+                'Se déconnecter ?'.tr(context),
                 textAlign: TextAlign.center,
                 style: _settingsText(fontSize: 28, fontWeight: FontWeight.w900),
               ),
               const SizedBox(height: 16),
               Text(
-                'Vous devrez saisir à nouveau votre numéro et votre mot de passe pour vous reconnecter.',
+                'Vous devrez saisir à nouveau votre numéro et votre mot de passe pour vous reconnecter.'.tr(
+                  context,
+                ),
                 textAlign: TextAlign.center,
                 style: _settingsText(
                   fontSize: 16,
@@ -75,7 +80,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               const SizedBox(height: 34),
               PrimaryAuthButton(
-                label: 'Se déconnecter',
+                label: 'Se déconnecter'.tr(context),
                 backgroundColor: const Color(0xFFDC2626),
                 onPressed: () async {
                   Navigator.of(sheetContext).pop();
@@ -85,7 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               const SizedBox(height: 14),
               SecondaryAuthButton(
-                label: 'Annuler',
+                label: 'Annuler'.tr(context),
                 onPressed: () => Navigator.of(sheetContext).pop(),
               ),
             ],
@@ -134,19 +139,19 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      'Paramètres',
+                      'Paramètres'.tr(context),
                       style: _settingsText(fontSize: 28, fontWeight: FontWeight.w800),
                     ),
                   ],
                 ),
                 const SizedBox(height: 28),
-                const _SectionLabel('PRÉFÉRENCES'),
+                _SectionLabel('PRÉFÉRENCES'.tr(context)),
                 const SizedBox(height: 10),
                 _SettingsGroup(
                   children: [
                     _SettingsRow(
                       icon: const MotodigoSettingsGlobeIcon(size: 22),
-                      title: 'Langue',
+                      title: 'Langue'.tr(context),
                       trailing: _LanguageSegment(
                         isFr: isFr,
                         onFr: () => localeController.setLocale(const Locale('fr')),
@@ -155,7 +160,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     _SettingsRow(
                       icon: const MotodigoSettingsBellIcon(size: 22),
-                      title: 'Notifications',
+                      title: 'Notifications'.tr(context),
                       trailing: _SettingsSwitch(
                         value: _notificationsEnabled,
                         onChanged: (v) => setState(() => _notificationsEnabled = v),
@@ -164,21 +169,21 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
                 const SizedBox(height: 22),
-                const _SectionLabel('CONFIDENTIALITÉ'),
+                _SectionLabel('CONFIDENTIALITÉ'.tr(context)),
                 const SizedBox(height: 10),
                 _SettingsGroup(
                   children: [
                     _SettingsRow(
                       icon: const MotodigoSettingsCrosshairIcon(size: 22),
-                      title: 'Partager ma localisation',
+                      title: 'Partager ma localisation'.tr(context),
                       trailing: _SettingsSwitch(
                         value: _shareLocationEnabled,
                         onChanged: (v) => setState(() => _shareLocationEnabled = v),
                       ),
                     ),
-                    const _SettingsRow(
+                    _SettingsRow(
                       icon: MotodigoSettingsShieldIcon(size: 22),
-                      title: 'Confidentialité des données',
+                      title: 'Confidentialité des données'.tr(context),
                       trailing: Icon(
                         Icons.chevron_right_rounded,
                         color: Color(0xFFC2C8C0),
@@ -189,13 +194,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
                 const SizedBox(height: 22),
-                const _SectionLabel('TRAJETS & AIDE'),
+                _SectionLabel('TRAJETS & AIDE'.tr(context)),
                 const SizedBox(height: 10),
                 _SettingsGroup(
                   children: [
                     _SettingsRow(
                       icon: const Icon(Icons.history_rounded, size: 22, color: Color(0xFF5B6760)),
-                      title: 'Historique des trajets',
+                      title: 'Historique des trajets'.tr(context),
                       trailing: const Icon(
                         Icons.chevron_right_rounded,
                         color: Color(0xFFC2C8C0),
@@ -205,7 +210,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     _SettingsRow(
                       icon: const Icon(Icons.support_agent_rounded, size: 22, color: Color(0xFF5B6760)),
-                      title: 'Support',
+                      title: 'Support'.tr(context),
                       trailing: const Icon(
                         Icons.chevron_right_rounded,
                         color: Color(0xFFC2C8C0),
@@ -215,7 +220,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     _SettingsRow(
                       icon: const Icon(Icons.confirmation_number_outlined, size: 22, color: Color(0xFF5B6760)),
-                      title: 'Mes tickets support',
+                      title: 'Mes tickets support'.tr(context),
                       trailing: const Icon(
                         Icons.chevron_right_rounded,
                         color: Color(0xFFC2C8C0),
@@ -226,13 +231,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
                 const SizedBox(height: 22),
-                const _SectionLabel('HORS-LIGNE'),
+                _SectionLabel('HORS-LIGNE'.tr(context)),
                 const SizedBox(height: 10),
                 _SettingsGroup(
                   children: [
                     _SettingsRow(
                       icon: const Icon(Icons.cloud_off_rounded, size: 22, color: Color(0xFF5B6760)),
-                      title: 'Mode hors-ligne',
+                      title: 'Mode hors-ligne'.tr(context),
                       trailing: const Icon(
                         Icons.chevron_right_rounded,
                         color: Color(0xFFC2C8C0),
@@ -242,7 +247,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     _SettingsRow(
                       icon: const Icon(Icons.map_rounded, size: 22, color: Color(0xFF5B6760)),
-                      title: 'Cartes hors-ligne',
+                      title: 'Cartes hors-ligne'.tr(context),
                       trailing: const Icon(
                         Icons.chevron_right_rounded,
                         color: Color(0xFFC2C8C0),
@@ -252,7 +257,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     _SettingsRow(
                       icon: const Icon(Icons.tune_rounded, size: 22, color: Color(0xFF5B6760)),
-                      title: 'Cache & synchronisation',
+                      title: 'Cache & synchronisation'.tr(context),
                       trailing: const Icon(
                         Icons.chevron_right_rounded,
                         color: Color(0xFFC2C8C0),
@@ -263,13 +268,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
                 const SizedBox(height: 22),
-                const _SectionLabel('SÉCURITÉ'),
+                _SectionLabel('SÉCURITÉ'.tr(context)),
                 const SizedBox(height: 10),
                 _SettingsGroup(
                   children: [
                     _SettingsRow(
                       icon: const MotodigoSettingsLockIcon(size: 22),
-                      title: 'Changer mon mot de passe',
+                      title: 'Changer mon mot de passe'.tr(context),
                       trailing: const Icon(
                         Icons.chevron_right_rounded,
                         color: Color(0xFFC2C8C0),
@@ -294,7 +299,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           const MotodigoSettingsLogoutIcon(size: 22),
                           const SizedBox(width: 10),
                           Text(
-                            'Se déconnecter',
+                            'Se déconnecter'.tr(context),
                             style: _settingsText(
                               fontSize: 17,
                               fontWeight: FontWeight.w700,

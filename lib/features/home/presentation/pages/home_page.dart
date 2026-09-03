@@ -12,6 +12,7 @@ import 'package:motodi_go_mobile/features/profiles/presentation/cubit/profile_cu
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_widgets.dart';
 import 'package:motodi_go_mobile/features/home/presentation/widgets/home_figma_icons.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/pages/urban_ride_page.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/l10n/app_localizations.dart';
 
 class HomePage extends StatelessWidget {
@@ -80,7 +81,9 @@ class HomePage extends StatelessWidget {
                 if (!isLocked) _PassengerReadyCard(type: type),
                 const SizedBox(height: 38),
                 Text(
-                  type == ProfileType.passenger ? 'FONCTIONS PASSAGER' : 'FONCTIONS CONDUCTEUR',
+                  (type == ProfileType.passenger ? 'FONCTIONS PASSAGER' : 'FONCTIONS CONDUCTEUR').tr(
+                    context,
+                  ),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: const Color(0xFF9CA7A0),
                     fontWeight: FontWeight.w900,
@@ -91,15 +94,19 @@ class HomePage extends StatelessWidget {
                 if (type != ProfileType.passenger) ...[
                   _FeatureTile(
                     icon: Icons.tune_rounded,
-                    title: 'Passer en ligne',
-                    subtitle: isLocked ? 'Disponible après validation' : 'Disponible maintenant',
+                    title: 'Passer en ligne'.tr(context),
+                    subtitle: (isLocked ? 'Disponible après validation' : 'Disponible maintenant').tr(
+                      context,
+                    ),
                     locked: isLocked,
                     onTap: isLocked ? null : () => context.push(RouteConstants.driverAvailability),
                   ),
                   _FeatureTile(
                     icon: Icons.bookmark_border_rounded,
-                    title: 'Publier une annonce',
-                    subtitle: isLocked ? 'Disponible après validation' : 'Créer une offre',
+                    title: 'Publier une annonce'.tr(context),
+                    subtitle: (isLocked ? 'Disponible après validation' : 'Créer une offre').tr(
+                      context,
+                    ),
                     locked: isLocked,
                     onTap: isLocked
                         ? null
@@ -107,15 +114,19 @@ class HomePage extends StatelessWidget {
                   ),
                   _FeatureTile(
                     icon: Icons.list_alt_rounded,
-                    title: 'Mes annonces',
-                    subtitle: isLocked ? 'Disponible après validation' : 'Gérer vos trajets',
+                    title: 'Mes annonces'.tr(context),
+                    subtitle: (isLocked ? 'Disponible après validation' : 'Gérer vos trajets').tr(
+                      context,
+                    ),
                     locked: isLocked,
                     onTap: isLocked ? null : () => context.go(RouteConstants.intercity),
                   ),
                   _FeatureTile(
                     icon: Icons.my_location_rounded,
-                    title: 'Partager ma position',
-                    subtitle: isLocked ? 'Disponible après validation' : 'GPS conducteur',
+                    title: 'Partager ma position'.tr(context),
+                    subtitle: (isLocked ? 'Disponible après validation' : 'GPS conducteur').tr(
+                      context,
+                    ),
                     locked: isLocked,
                     onTap: isLocked ? null : () => context.push(RouteConstants.driverAvailability),
                   ),
@@ -193,7 +204,7 @@ class HomePage extends StatelessWidget {
                           onTap: () {
                             if (profile.validationStatus == ValidationStatus.suspended) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Ce profil est suspendu.')),
+                                SnackBar(content: Text('Ce profil est suspendu.'.tr(context))),
                               );
                               return;
                             }
@@ -238,7 +249,7 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 26),
               Text(
-                'Se déconnecter ?',
+                'Se déconnecter ?'.tr(context),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                   color: AppColors.textPrimary,
@@ -247,7 +258,9 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Vous devrez saisir à nouveau votre numéro et votre mot de passe pour vous reconnecter.',
+                'Vous devrez saisir à nouveau votre numéro et votre mot de passe pour vous reconnecter.'.tr(
+                  context,
+                ),
                 textAlign: TextAlign.center,
                 style: Theme.of(
                   context,
@@ -255,7 +268,7 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 34),
               PrimaryAuthButton(
-                label: 'Se déconnecter',
+                label: 'Se déconnecter'.tr(context),
                 backgroundColor: AppColors.error,
                 onPressed: () async {
                   Navigator.of(sheetContext).pop();
@@ -265,7 +278,7 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 14),
               SecondaryAuthButton(
-                label: 'Annuler',
+                label: 'Annuler'.tr(context),
                 onPressed: () => Navigator.of(sheetContext).pop(),
               ),
             ],
@@ -312,7 +325,7 @@ class _PendingValidationCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Profil en attente de validation',
+                      'Profil en attente de validation'.tr(context),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: AppColors.textPrimary,
                         fontWeight: FontWeight.w900,
@@ -327,14 +340,14 @@ class _PendingValidationCard extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'Prochaine étape : fournir vos documents pour activer vos fonctions conducteur.',
+            'Prochaine étape : fournir vos documents pour activer vos fonctions conducteur.'.tr(context),
             style: Theme.of(
               context,
             ).textTheme.titleLarge?.copyWith(color: const Color(0xFF8B6509), height: 1.42),
           ),
           const SizedBox(height: 24),
           PrimaryAuthButton(
-            label: 'Voir mon dossier',
+            label: 'Voir mon dossier'.tr(context),
             leadingIcon: Icons.description_outlined,
             backgroundColor: AppColors.textPrimary,
             onPressed: () => context.go(RouteConstants.kycSubmitted),
@@ -366,7 +379,7 @@ class _PendingProfileBadge extends StatelessWidget {
           CircleAvatar(radius: 5, backgroundColor: color),
           const SizedBox(width: 9),
           Text(
-            '${profileLabel(type)} · ${_homeStatusLabel(status)}',
+            '${profileLabel(type)} · ${_homeStatusLabel(context, status)}',
             style: TextStyle(color: color, fontSize: 16, fontWeight: FontWeight.w900, height: 1),
           ),
         ],
@@ -375,14 +388,14 @@ class _PendingProfileBadge extends StatelessWidget {
   }
 }
 
-String _homeStatusLabel(ValidationStatus status) {
+String _homeStatusLabel(BuildContext context, ValidationStatus status) {
   return switch (status) {
-    ValidationStatus.pending => 'En attente',
-    ValidationStatus.rejected => 'Rejeté',
-    ValidationStatus.suspended => 'Suspendu',
-    ValidationStatus.draft => 'Brouillon',
-    ValidationStatus.validated => 'Validé',
-    ValidationStatus.unknown => 'Statut inconnu',
+    ValidationStatus.pending => 'En attente'.tr(context),
+    ValidationStatus.rejected => 'Rejeté'.tr(context),
+    ValidationStatus.suspended => 'Suspendu'.tr(context),
+    ValidationStatus.draft => 'Brouillon'.tr(context),
+    ValidationStatus.validated => 'Validé'.tr(context),
+    ValidationStatus.unknown => 'Statut inconnu'.tr(context),
   };
 }
 
@@ -413,15 +426,15 @@ class _PassengerReadyCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${profileLabel(type)} actif',
+                  '${profileLabel(type)} ${'actif'.tr(context)}',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
                 const SizedBox(height: 6),
-                const Text(
-                  'Vous pouvez utiliser les fonctions disponibles.',
+                Text(
+                  'Vous pouvez utiliser les fonctions disponibles.'.tr(context),
                   style: TextStyle(color: Color(0xFF5B6760), fontWeight: FontWeight.w700),
                 ),
               ],

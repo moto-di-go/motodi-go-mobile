@@ -105,6 +105,12 @@ GoRouter createAppRouter(SessionCubit sessionCubit) {
         return location == RouteConstants.sessionExpired ? null : RouteConstants.sessionExpired;
       }
 
+      if (session.isGuest) {
+        if (authEntryRoutes.contains(location)) return null;
+        if (location == RouteConstants.splash) return RouteConstants.home;
+        return null;
+      }
+
       if (!session.isAuthenticated) {
         if (location == RouteConstants.splash) {
           return session.onboardingSeen ? RouteConstants.welcome : RouteConstants.onboarding;

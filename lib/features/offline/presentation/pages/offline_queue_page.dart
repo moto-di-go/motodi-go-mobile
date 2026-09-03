@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/offline/presentation/cubit/offline_queue_cubit.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/offline/presentation/widgets/offline_widgets.dart';
 
 class OfflineQueuePage extends StatelessWidget {
@@ -48,7 +49,7 @@ class _OfflineQueueView extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    'File d’opérations',
+                    'File d’opérations'.tr(context),
                     style: offlineText(fontSize: 26, fontWeight: FontWeight.w800),
                   ),
                 ],
@@ -63,7 +64,7 @@ class _OfflineQueueView extends StatelessWidget {
                   if (state.operations.isEmpty) {
                     return Center(
                       child: Text(
-                        'Aucune opération en file',
+                        'Aucune opération en file'.tr(context),
                         style: offlineText(fontSize: 15, color: AppColors.textSecondary),
                       ),
                     );

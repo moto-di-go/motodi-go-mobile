@@ -8,6 +8,7 @@ import 'package:motodi_go_mobile/core/widgets/rating_stars.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/post/domain/entities/post_entities.dart';
 import 'package:motodi_go_mobile/features/post/presentation/cubit/rating_cubit.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/post/presentation/widgets/post_ui.dart';
 
 class RateTripPage extends StatelessWidget {
@@ -58,7 +59,7 @@ class _RateTripView extends StatelessWidget {
             backgroundColor: AppColors.background,
             body: SafeArea(
               child: AppErrorView(
-                message: state.errorMessage ?? 'Impossible de charger la notation.',
+                message: state.errorMessage ?? 'Impossible de charger la notation.'.tr(context),
                 onRetry: () => context.read<RatingCubit>().load(state.tripId ?? ''),
               ),
             ),
@@ -77,7 +78,7 @@ class _RateTripView extends StatelessWidget {
                       PostBackButton(onTap: () => context.pop()),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: Text('Noter le trajet', style: postText(fontSize: 26, fontWeight: FontWeight.w800)),
+                        child: Text('Noter le trajet'.tr(context), style: postText(fontSize: 26, fontWeight: FontWeight.w800)),
                       ),
                     ],
                   ),
@@ -95,7 +96,7 @@ class _RateTripView extends StatelessWidget {
                         const SizedBox(height: 22),
                       ],
                       Text(
-                        'Comment s’est passé le trajet ?',
+                        'Comment s’est passé le trajet ?'.tr(context),
                         textAlign: TextAlign.center,
                         style: postText(fontSize: 22, fontWeight: FontWeight.w800),
                       ),
@@ -105,7 +106,7 @@ class _RateTripView extends StatelessWidget {
                         onChanged: context.read<RatingCubit>().setStars,
                       ),
                       const SizedBox(height: 28),
-                      Text('Tags (optionnel)', style: postText(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
+                      Text('Tags (optionnel)'.tr(context), style: postText(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
                       const SizedBox(height: 10),
                       Wrap(
                         spacing: 8,
@@ -135,14 +136,14 @@ class _RateTripView extends StatelessWidget {
                         }).toList(),
                       ),
                       const SizedBox(height: 22),
-                      Text('Commentaire (optionnel)', style: postText(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
+                      Text('Commentaire (optionnel)'.tr(context), style: postText(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
                       const SizedBox(height: 8),
                       TextField(
                         maxLines: 4,
                         maxLength: 1000,
                         onChanged: context.read<RatingCubit>().setComment,
                         decoration: InputDecoration(
-                          hintText: 'Partagez votre expérience…',
+                          hintText: 'Partagez votre expérience…'.tr(context),
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
@@ -172,7 +173,7 @@ class _RateTripView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(22, 0, 22, 20),
                   child: PostPrimaryButton(
-                    label: 'Envoyer',
+                    label: 'Envoyer'.tr(context),
                     isLoading: state.status == RatingViewStatus.submitting,
                     onPressed: state.canSubmit || state.status == RatingViewStatus.submitting
                         ? () => context.read<RatingCubit>().submit()
@@ -211,26 +212,26 @@ class RatingSuccessPage extends StatelessWidget {
               ),
               const SizedBox(height: 22),
               Text(
-                'Merci pour votre avis !',
+                'Merci pour votre avis !'.tr(context),
                 textAlign: TextAlign.center,
                 style: postText(fontSize: 28, fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 10),
               Text(
-                'Votre note aide la communauté MOTO’DI GO à voyager en confiance.',
+                'Votre note aide la communauté MOTO’DI GO à voyager en confiance.'.tr(context),
                 textAlign: TextAlign.center,
                 style: postText(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.textSecondary, height: 1.4),
               ),
               const Spacer(),
               PostPrimaryButton(
-                label: 'Voir l’historique',
+                label: 'Voir l’historique'.tr(context),
                 onPressed: () => context.go(RouteConstants.tripsHistory),
               ),
               const SizedBox(height: 12),
               TextButton(
                 onPressed: () => context.go(RouteConstants.home),
                 child: Text(
-                  'Retour à l’accueil',
+                  'Retour à l’accueil'.tr(context),
                   style: postText(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.primary),
                 ),
               ),
@@ -258,28 +259,28 @@ class RatingImpossiblePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final (title, body, icon) = switch (reason) {
       RatingImpossibleReason.notCompleted => (
-        'Notation indisponible',
-        message ?? 'Le trajet doit être terminé avant de pouvoir le noter.',
+        'Notation indisponible'.tr(context),
+        message ?? 'Le trajet doit être terminé avant de pouvoir le noter.'.tr(context),
         Icons.hourglass_empty_rounded,
       ),
       RatingImpossibleReason.alreadyRated => (
-        'Déjà noté',
-        message ?? 'Vous avez déjà envoyé une note pour ce trajet.',
+        'Déjà noté'.tr(context),
+        message ?? 'Vous avez déjà envoyé une note pour ce trajet.'.tr(context),
         Icons.star_rounded,
       ),
       RatingImpossibleReason.forbidden => (
-        'Accès refusé',
-        message ?? 'Vous n’êtes pas autorisé à noter ce trajet.',
+        'Accès refusé'.tr(context),
+        message ?? 'Vous n’êtes pas autorisé à noter ce trajet.'.tr(context),
         Icons.lock_outline_rounded,
       ),
       RatingImpossibleReason.notFound => (
-        'Trajet introuvable',
-        message ?? 'Ce trajet n’existe pas ou n’est plus accessible.',
+        'Trajet introuvable'.tr(context),
+        message ?? 'Ce trajet n’existe pas ou n’est plus accessible.'.tr(context),
         Icons.search_off_rounded,
       ),
       RatingImpossibleReason.noRatee => (
-        'Notation impossible',
-        message ?? 'Impossible d’identifier le profil à noter.',
+        'Notation impossible'.tr(context),
+        message ?? 'Impossible d’identifier le profil à noter.'.tr(context),
         Icons.person_off_outlined,
       ),
     };
@@ -314,7 +315,7 @@ class RatingImpossiblePage extends StatelessWidget {
               ),
               const Spacer(),
               PostPrimaryButton(
-                label: 'Voir l’historique',
+                label: 'Voir l’historique'.tr(context),
                 onPressed: () => context.go(RouteConstants.tripsHistory),
               ),
               if (tripId != null) ...[
@@ -322,7 +323,7 @@ class RatingImpossiblePage extends StatelessWidget {
                 TextButton(
                   onPressed: () => context.push(RouteConstants.support, extra: SupportContext(tripId: tripId)),
                   child: Text(
-                    'Contacter le support',
+                    'Contacter le support'.tr(context),
                     style: postText(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.primary),
                   ),
                 ),

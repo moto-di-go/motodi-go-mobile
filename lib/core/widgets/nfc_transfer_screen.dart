@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/widgets/wallet_widgets.dart';
 
 /// Écran plein pour émettre un jeton (QR principal ; hint NFC Android optionnel).
@@ -55,7 +56,7 @@ class NfcTransferScreen extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    expired ? 'Expiré' : '$mm:$ss',
+                    expired ? 'Expiré'.tr(context) : '$mm:$ss',
                     style: walletText(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
@@ -66,7 +67,7 @@ class NfcTransferScreen extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                useQr ? 'Montrez ce QR au conducteur' : 'Approchez votre téléphone',
+                useQr ? 'Montrez ce QR au conducteur'.tr(context) : 'Approchez votre téléphone'.tr(context),
                 textAlign: TextAlign.center,
                 style: walletText(fontSize: 24, fontWeight: FontWeight.w800, color: Colors.white),
               ),
@@ -80,8 +81,8 @@ class NfcTransferScreen extends StatelessWidget {
               Text(
                 statusMessage ??
                     (useQr
-                        ? 'Le paiement sera synchronisé plus tard. Ce n’est pas encore confirmé.'
-                        : 'Émission NFC limitée — le QR reste le mode fiable.'),
+                        ? 'Le paiement sera synchronisé plus tard. Ce n’est pas encore confirmé.'.tr(context)
+                        : 'Émission NFC limitée — le QR reste le mode fiable.'.tr(context)),
                 textAlign: TextAlign.center,
                 style: walletText(fontSize: 14, color: Colors.white70, height: 1.4),
               ),
@@ -118,7 +119,7 @@ class NfcTransferScreen extends StatelessWidget {
               else
                 Center(
                   child: Text(
-                    'Jeton expiré',
+                    'Jeton expiré'.tr(context),
                     style: walletText(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.error),
                   ),
                 ),
@@ -127,7 +128,7 @@ class NfcTransferScreen extends StatelessWidget {
                 TextButton(
                   onPressed: onTryNfc,
                   child: Text(
-                    'Essayer d’écrire sur un tag NFC',
+                    'Essayer d’écrire sur un tag NFC'.tr(context),
                     style: walletText(fontSize: 13, color: Colors.white70),
                   ),
                 ),
@@ -135,7 +136,7 @@ class NfcTransferScreen extends StatelessWidget {
                 TextButton(
                   onPressed: onSwitchToQr,
                   child: Text(
-                    'Afficher le QR à la place',
+                    'Afficher le QR à la place'.tr(context),
                     style: walletText(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.secondary),
                   ),
                 ),
@@ -145,7 +146,7 @@ class NfcTransferScreen extends StatelessWidget {
                   await Clipboard.setData(ClipboardData(text: signedToken));
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Jeton copié')),
+                      SnackBar(content: Text('Jeton copié'.tr(context))),
                     );
                   }
                 },
@@ -156,7 +157,7 @@ class NfcTransferScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                 ),
                 icon: const Icon(Icons.copy_rounded),
-                label: Text('Copier le jeton', style: walletText(fontWeight: FontWeight.w700, color: Colors.white)),
+                label: Text('Copier le jeton'.tr(context), style: walletText(fontWeight: FontWeight.w700, color: Colors.white)),
               ),
             ],
           ),

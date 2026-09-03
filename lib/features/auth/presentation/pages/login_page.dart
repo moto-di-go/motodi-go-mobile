@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/auth_form_cubit.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
@@ -57,7 +58,7 @@ class _LoginViewState extends State<_LoginView> {
       },
       builder: (context, state) {
         return AuthScaffold(
-          title: 'Se connecter',
+          title: 'Se connecter'.tr(context),
           showBack: true,
           padding: const EdgeInsets.fromLTRB(22, 20, 22, 24),
           bottom: _LoginFooter(
@@ -72,7 +73,7 @@ class _LoginViewState extends State<_LoginView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Content de vous revoir',
+                'Content de vous revoir'.tr(context),
                 style: Theme.of(context).textTheme.displaySmall?.copyWith(
                   color: AppColors.textPrimary,
                   fontSize: 32,
@@ -82,7 +83,7 @@ class _LoginViewState extends State<_LoginView> {
               ),
               const SizedBox(height: 22),
               Text(
-                'Connectez-vous avec votre numéro camerounais.',
+                'Connectez-vous avec votre numéro camerounais.'.tr(context),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: const Color(0xFF54615A),
                   fontSize: 22,
@@ -95,10 +96,10 @@ class _LoginViewState extends State<_LoginView> {
                 _LoginErrorBanner(state.errorMessage!),
               ],
               const SizedBox(height: 34),
-              const _LoginFieldLabel('Numéro de téléphone'),
+              _LoginFieldLabel('Numéro de téléphone'.tr(context)),
               _LoginPhoneInput(controller: _phoneController),
               const SizedBox(height: 28),
-              const _LoginFieldLabel('Mot de passe'),
+              _LoginFieldLabel('Mot de passe'.tr(context)),
               _LoginPasswordField(controller: _passwordController),
               const SizedBox(height: 14),
               Align(
@@ -111,8 +112,8 @@ class _LoginViewState extends State<_LoginView> {
                     minimumSize: const Size(0, 40),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child: const Text(
-                    'Mot de passe oublié ?',
+                  child: Text(
+                    'Mot de passe oublié ?'.tr(context),
                     style: TextStyle(
                       color: AppColors.primary,
                       fontSize: 18,
@@ -298,11 +299,11 @@ class _LoginPasswordFieldState extends State<_LoginPasswordField> {
   Widget build(BuildContext context) {
     return _LoginTextField(
       controller: widget.controller,
-      hintText: 'mot de passe',
+      hintText: 'mot de passe'.tr(context),
       obscureText: _obscure,
       prefixIcon: const MotodigoPasswordGrayIcon(),
       suffixIcon: IconButton(
-        tooltip: _obscure ? 'Afficher' : 'Masquer',
+        tooltip: (_obscure ? 'Afficher' : 'Masquer').tr(context),
         padding: EdgeInsets.zero,
         constraints: const BoxConstraints.tightFor(width: 42, height: 42),
         onPressed: () => setState(() => _obscure = !_obscure),
@@ -379,8 +380,8 @@ class _LoginFooter extends StatelessWidget {
                     height: 26,
                     child: CircularProgressIndicator(strokeWidth: 2.7, color: Colors.white),
                   )
-                : const Text(
-                    'Se connecter',
+                : Text(
+                    'Se connecter'.tr(context),
                     overflow: TextOverflow.fade,
                     softWrap: false,
                     style: TextStyle(
@@ -394,12 +395,12 @@ class _LoginFooter extends StatelessWidget {
         const SizedBox(height: 20),
         TextButton(
           onPressed: onRegister,
-          child: const Text.rich(
+          child: Text.rich(
             TextSpan(
-              text: 'Pas encore de compte ? ',
+              text: 'Pas encore de compte ? '.tr(context),
               children: [
                 TextSpan(
-                  text: 'Créer un compte',
+                  text: 'Créer un compte'.tr(context),
                   style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900),
                 ),
               ],

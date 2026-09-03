@@ -6,6 +6,7 @@ import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/data/models/api_error_model.dart';
 import 'package:motodi_go_mobile/features/urban/data/urban_models.dart';
 import 'package:motodi_go_mobile/features/urban/data/urban_remote_datasource.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 class CityAutocompleteField extends StatefulWidget {
   final TextEditingController controller;
@@ -170,12 +171,12 @@ class _CityAutocompleteFieldState extends State<CityAutocompleteField> {
               .timeout(const Duration(seconds: 8)) ??
           const <UrbanPlace>[];
     } on TimeoutException {
-      error = 'Recherche trop lente';
+      error = Localizations.localeOf(context).languageCode == 'en' ? 'Search too slow' : 'Recherche trop lente';
     } on ApiException catch (e) {
       error = e.message;
       debugPrint('[CityAutocomplete] api error: $e');
     } catch (e) {
-      error = 'Recherche indisponible';
+      error = Localizations.localeOf(context).languageCode == 'en' ? 'Search unavailable' : 'Recherche indisponible';
       debugPrint('[CityAutocomplete] error: $e');
     }
 
@@ -314,7 +315,7 @@ class _CityAutocompleteFieldState extends State<CityAutocompleteField> {
         ] else if (showEmpty) ...[
           const SizedBox(height: 8),
           Text(
-            _error ?? 'Aucun lieu trouvé',
+            _error ?? 'Aucun lieu trouvé'.tr(context),
             style: const TextStyle(
               color: Color(0xFF8A968C),
               fontSize: 13,

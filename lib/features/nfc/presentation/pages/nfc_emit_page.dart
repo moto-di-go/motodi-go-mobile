@@ -7,6 +7,7 @@ import 'package:motodi_go_mobile/core/widgets/app_error_view.dart';
 import 'package:motodi_go_mobile/core/widgets/nfc_transfer_screen.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/nfc/presentation/cubit/nfc_emit_cubit.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_bottom_sheet.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/widgets/wallet_widgets.dart';
 
@@ -44,7 +45,7 @@ class _NfcEmitView extends StatelessWidget {
             backgroundColor: AppColors.background,
             body: SafeArea(
               child: AppErrorView(
-                message: state.errorMessage ?? 'Jeton introuvable.',
+                message: state.errorMessage ?? 'Jeton introuvable.'.tr(context),
                 onRetry: () => context.read<NfcEmitCubit>().load(tokenId),
               ),
             ),
@@ -60,22 +61,22 @@ class _NfcEmitView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text('Jeton expiré', style: walletText(fontSize: 28, fontWeight: FontWeight.w800)),
+                    Text('Jeton expiré'.tr(context), style: walletText(fontSize: 28, fontWeight: FontWeight.w800)),
                     const SizedBox(height: 12),
                     Text(
-                      'Ce jeton ne peut plus être utilisé. Préparez-en un nouveau ou payez via wallet.',
+                      'Ce jeton ne peut plus être utilisé. Préparez-en un nouveau ou payez via wallet.'.tr(context),
                       style: walletText(fontSize: 15, color: AppColors.textSecondary, height: 1.4),
                     ),
                     const Spacer(),
                     UrbanPrimaryButton(
-                      label: 'Nouveau jeton NFC',
+                      label: 'Nouveau jeton NFC'.tr(context),
                       onPressed: () => context.pushReplacement(RouteConstants.nfcPay),
                     ),
                     const SizedBox(height: 10),
                     TextButton(
                       onPressed: () => context.go(RouteConstants.wallet),
                       child: Text(
-                        'Payer via wallet',
+                        'Payer via wallet'.tr(context),
                         style: walletText(fontWeight: FontWeight.w700, color: AppColors.primary),
                       ),
                     ),

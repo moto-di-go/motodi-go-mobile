@@ -9,6 +9,7 @@ import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_botto
 import 'package:motodi_go_mobile/features/wallet/domain/entities/wallet.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/cubit/deposit_cubit.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/widgets/wallet_widgets.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 class DepositStatusPage extends StatelessWidget {
   final String depositId;
@@ -50,7 +51,7 @@ class _DepositStatusView extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          'Suivi du dépôt',
+                          'Suivi du dépôt'.tr(context),
                           style: walletText(fontSize: 26, fontWeight: FontWeight.w800, height: 1.1),
                         ),
                       ),
@@ -90,28 +91,28 @@ class _StatusContent extends StatelessWidget {
     final (icon, title, subtitle, color) = switch (status) {
       PaymentStatus.confirmed => (
         Icons.check_circle_rounded,
-        'Recharge confirmée',
-        'Votre solde a été crédité avec succès.',
+        'Recharge confirmée'.tr(context),
+        'Votre solde a été crédité avec succès.'.tr(context),
         AppColors.primary,
       ),
       PaymentStatus.failed => (
         Icons.cancel_rounded,
-        'Recharge échouée',
+        'Recharge échouée'.tr(context),
         deposit.failureReason?.isNotEmpty == true
             ? deposit.failureReason!
-            : 'Le paiement Mobile Money n’a pas abouti.',
+            : 'Le paiement Mobile Money n’a pas abouti.'.tr(context),
         AppColors.error,
       ),
       PaymentStatus.expired => (
         Icons.timer_off_rounded,
-        'Recharge expirée',
-        'Le délai de confirmation Mobile Money est dépassé.',
+        'Recharge expirée'.tr(context),
+        'Le délai de confirmation Mobile Money est dépassé.'.tr(context),
         AppColors.error,
       ),
       _ => (
         Icons.hourglass_top_rounded,
-        'En attente de confirmation',
-        'Validez le paiement sur votre téléphone. Actualisez dans quelques secondes.',
+        'En attente de confirmation'.tr(context),
+        'Validez le paiement sur votre téléphone. Actualisez dans quelques secondes.'.tr(context),
         AppColors.secondary,
       ),
     };
@@ -156,7 +157,7 @@ class _StatusContent extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            'Statut',
+                            'Statut'.tr(context),
                             style: walletText(fontSize: 14, color: AppColors.textSecondary),
                           ),
                           const Spacer(),
@@ -165,22 +166,22 @@ class _StatusContent extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       _row(
-                        'Montant',
+                        'Montant'.tr(context),
                         formatWalletAmount(deposit.amount, currency: deposit.currency),
                       ),
-                      _row('Opérateur', deposit.provider?.labelFr ?? '—'),
-                      _row('Téléphone', deposit.payerPhone ?? '—'),
-                      _row('Référence', deposit.externalReference ?? deposit.id),
-                      _row('Initié', formatWalletTime(deposit.initiatedAt)),
+                      _row('Opérateur'.tr(context), deposit.provider?.labelFr.tr(context) ?? '—'),
+                      _row('Téléphone'.tr(context), deposit.payerPhone ?? '—'),
+                      _row('Référence'.tr(context), deposit.externalReference ?? deposit.id),
+                      _row('Initié'.tr(context), formatWalletTime(deposit.initiatedAt)),
                       if (deposit.confirmedAt != null)
-                        _row('Confirmé', formatWalletTime(deposit.confirmedAt)),
+                        _row('Confirmé'.tr(context), formatWalletTime(deposit.confirmedAt)),
                     ],
                   ),
                 ),
                 if (status.isPending) ...[
                   const SizedBox(height: 16),
                   Text(
-                    'Astuce : le statut se met à jour automatiquement toutes les 5 secondes.',
+                    'Astuce : le statut se met à jour automatiquement toutes les 5 secondes.'.tr(context),
                     textAlign: TextAlign.center,
                     style: walletText(
                       fontSize: 12,
@@ -195,13 +196,13 @@ class _StatusContent extends StatelessWidget {
           ),
           if (status.isPending)
             UrbanPrimaryButton(
-              label: 'Actualiser',
+              label: 'Actualiser'.tr(context),
               isLoading: isRefreshing,
               onPressed: () => context.read<DepositCubit>().refreshStatus(),
             )
           else
             UrbanPrimaryButton(
-              label: 'Retour au wallet',
+              label: 'Retour au wallet'.tr(context),
               onPressed: () => context.go(RouteConstants.wallet),
             ),
           if (status == PaymentStatus.failed || status == PaymentStatus.expired) ...[
@@ -209,7 +210,7 @@ class _StatusContent extends StatelessWidget {
             TextButton(
               onPressed: () => context.pushReplacement(RouteConstants.walletDeposit),
               child: Text(
-                'Réessayer une recharge',
+                'Réessayer une recharge'.tr(context),
                 style: walletText(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,

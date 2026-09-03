@@ -55,6 +55,10 @@ class SessionCubit extends Cubit<SessionState> {
     emit(state.copyWith(onboardingSeen: true));
   }
 
+  void continueAsGuest() {
+    emit(state.copyWith(status: SessionStatus.guest, session: null, errorMessage: null));
+  }
+
   void setAuthenticated(AuthSession session) {
     emit(
       state.copyWith(

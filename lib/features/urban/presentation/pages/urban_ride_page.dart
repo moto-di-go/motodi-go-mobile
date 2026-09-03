@@ -1,9 +1,11 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:motodi_go_mobile/core/widgets/guest_action_blocker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_buttons.dart';
@@ -100,7 +102,7 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
                         child: Padding(
                           padding: const EdgeInsets.all(14),
                           child: Text(
-                            'Touchez la carte pour poser la destination',
+                            'Touchez la carte pour poser la destination'.tr(context),
                             style: urbanText(fontSize: 14, fontWeight: FontWeight.w700),
                           ),
                         ),
@@ -184,7 +186,7 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
       UrbanRideStep.calculating => UrbanCalculatingSheet(state: state),
       UrbanRideStep.tripSummary => UrbanTripSummarySheet(state: state, cubit: cubit),
       UrbanRideStep.priceDetail => UrbanPriceDetailSheet(state: state, cubit: cubit),
-      UrbanRideStep.searching => const UrbanSearchingSheet(),
+      UrbanRideStep.searching => UrbanSearchingSheet(),
       UrbanRideStep.results => UrbanResultsSheet(state: state, cubit: cubit),
       UrbanRideStep.filters => UrbanFiltersSheet(state: state, cubit: cubit),
       UrbanRideStep.empty => UrbanEmptySheet(
@@ -201,8 +203,11 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
       UrbanRideStep.routeOptions => UrbanRouteOptionsSheet(state: state, cubit: cubit),
       UrbanRideStep.pickDestination => UrbanBottomSheet(
         child: UrbanPrimaryButton(
-          label: 'Valider cette destination',
-          onPressed: state.destination == null ? null : cubit.confirmPickedDestination,
+          label: 'Valider cette destination'.tr(context),
+          onPressed: state.destination == null ? null : () {
+            if (!guardGuestAction(context)) return;
+            cubit.confirmPickedDestination();
+          },
         ),
       ),
       _ => const SizedBox.shrink(),
@@ -230,7 +235,7 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
               ListTile(
                 leading: const Icon(Icons.swap_horiz_rounded),
                 title: Text(
-                  'Changer de profil',
+                  'Changer de profil'.tr(context),
                   style: urbanText(fontSize: 16, fontWeight: FontWeight.w800),
                 ),
                 onTap: () {
@@ -241,7 +246,7 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
               ListTile(
                 leading: const Icon(Icons.person_outline_rounded),
                 title: Text(
-                  'Mon profil',
+                  'Mon profil'.tr(context),
                   style: urbanText(fontSize: 16, fontWeight: FontWeight.w800),
                 ),
                 onTap: () {
@@ -253,7 +258,7 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
                 ListTile(
                   leading: const Icon(Icons.two_wheeler_rounded),
                   title: Text(
-                    'Disponibilité conducteur',
+                    'Disponibilité conducteur'.tr(context),
                     style: urbanText(fontSize: 16, fontWeight: FontWeight.w800),
                   ),
                   onTap: () {
@@ -264,7 +269,7 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
               ListTile(
                 leading: const Icon(Icons.logout_rounded, color: AppColors.error),
                 title: Text(
-                  'Se déconnecter',
+                  'Se déconnecter'.tr(context),
                   style: urbanText(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
@@ -323,7 +328,7 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
                           onTap: () {
                             if (profile.validationStatus == ValidationStatus.suspended) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Ce profil est suspendu.')),
+                                SnackBar(content: Text('Ce profil est suspendu.'.tr(context))),
                               );
                               return;
                             }
@@ -353,10 +358,13 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Se déconnecter ?', style: urbanText(fontSize: 24, fontWeight: FontWeight.w800)),
+              Text(
+                'Se déconnecter ?'.tr(context),
+                style: urbanText(fontSize: 24, fontWeight: FontWeight.w800),
+              ),
               const SizedBox(height: 18),
               PrimaryAuthButton(
-                label: 'Se déconnecter',
+                label: 'Se déconnecter'.tr(context),
                 backgroundColor: AppColors.error,
                 onPressed: () async {
                   Navigator.of(sheetContext).pop();
@@ -366,7 +374,7 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
               ),
               const SizedBox(height: 10),
               SecondaryAuthButton(
-                label: 'Annuler',
+                label: 'Annuler'.tr(context),
                 onPressed: () => Navigator.of(sheetContext).pop(),
               ),
             ],
@@ -453,7 +461,7 @@ class _SearchPill extends StatelessWidget {
             const Icon(Icons.search_rounded, color: AppColors.textSecondary),
             const SizedBox(width: 10),
             Text(
-              'Où allez-vous ?',
+              'Où allez-vous ?'.tr(context),
               style: urbanText(
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
@@ -491,7 +499,7 @@ class _ModeToggle extends StatelessWidget {
                 borderRadius: BorderRadius.circular(999),
               ),
               child: Text(
-                'Mototaxi',
+                'Mototaxi'.tr(context),
                 style: urbanText(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white),
               ),
             ),
@@ -503,7 +511,7 @@ class _ModeToggle extends StatelessWidget {
                 height: 46,
                 alignment: Alignment.center,
                 child: Text(
-                  'Interurbain',
+                  'Interurbain'.tr(context),
                   style: urbanText(fontSize: 15, fontWeight: FontWeight.w800),
                 ),
               ),

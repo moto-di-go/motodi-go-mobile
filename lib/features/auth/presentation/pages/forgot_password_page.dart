@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/auth_form_cubit.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/pages/auth_route_args.dart';
@@ -46,20 +47,20 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
       },
       builder: (context, state) {
         return AuthScaffold(
-          title: 'Réinitialiser',
+          title: 'Réinitialiser'.tr(context),
           showBack: true,
           bottom: PrimaryAuthButton(
-            label: 'Envoyer le code',
+            label: 'Envoyer le code'.tr(context),
             isLoading: state.isLoading,
             onPressed: () => context.read<AuthFormCubit>().forgotPassword(_phoneController.text),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const _ResetStepper(step: 1, label: 'Étape 1 sur 4 · Numéro'),
+              _ResetStepper(step: 1, label: 'Étape 1 sur 4 · Numéro'.tr(context)),
               const SizedBox(height: 36),
               Text(
-                'Quel est votre numéro ?',
+                'Quel est votre numéro ?'.tr(context),
                 style: Theme.of(context).textTheme.displaySmall?.copyWith(
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.w900,
@@ -67,13 +68,13 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
               ),
               const SizedBox(height: 22),
               Text(
-                'Nous vous enverrons un code de vérification par SMS.',
+                'Nous vous enverrons un code de vérification par SMS.'.tr(context),
                 style: Theme.of(
                   context,
                 ).textTheme.headlineSmall?.copyWith(color: const Color(0xFF5B6760), height: 1.45),
               ),
               const SizedBox(height: 40),
-              const FieldLabel('Numéro de téléphone'),
+              FieldLabel('Numéro de téléphone'.tr(context)),
               CameroonPhoneInput(controller: _phoneController),
               InlineError(state.errorMessage),
             ],
@@ -93,13 +94,13 @@ class ResetOtpPage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (args == null) {
       return AuthScaffold(
-        title: 'Réinitialiser',
+        title: 'Réinitialiser'.tr(context),
         showBack: true,
         bottom: PrimaryAuthButton(
-          label: 'Envoyer le code',
+          label: 'Envoyer le code'.tr(context),
           onPressed: () => context.go(RouteConstants.forgotPassword),
         ),
-        child: const Text('Saisissez votre numéro pour recevoir un code.'),
+        child: Text('Saisissez votre numéro pour recevoir un code.'.tr(context)),
       );
     }
     return BlocProvider(
@@ -132,16 +133,16 @@ class _ResetOtpViewState extends State<_ResetOtpView> {
     return BlocBuilder<AuthFormCubit, AuthFormState>(
       builder: (context, state) {
         return AuthScaffold(
-          title: 'Réinitialiser',
+          title: 'Réinitialiser'.tr(context),
           showBack: true,
           bottom: PrimaryAuthButton(
-            label: 'Vérifier',
+            label: 'Vérifier'.tr(context),
             isLoading: state.isLoading,
             onPressed: () {
               if (_codeController.text.length != 6) {
                 ScaffoldMessenger.of(
                   context,
-                ).showSnackBar(const SnackBar(content: Text('Entrez le code à 6 chiffres.')));
+                ).showSnackBar(SnackBar(content: Text('Entrez le code à 6 chiffres.'.tr(context))));
                 return;
               }
               context.go(
@@ -156,10 +157,10 @@ class _ResetOtpViewState extends State<_ResetOtpView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const _ResetStepper(step: 2, label: 'Étape 2 sur 4 · Vérification'),
+              _ResetStepper(step: 2, label: 'Étape 2 sur 4 · Vérification'.tr(context)),
               const SizedBox(height: 36),
               Text(
-                'Entrez le code',
+                'Entrez le code'.tr(context),
                 style: Theme.of(context).textTheme.displaySmall?.copyWith(
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.w900,
@@ -167,7 +168,10 @@ class _ResetOtpViewState extends State<_ResetOtpView> {
               ),
               const SizedBox(height: 22),
               Text(
-                'Code envoyé au ${widget.args.phoneNumber}.',
+                'Code envoyé au {phone}.'.tr(
+                  context,
+                  placeholders: {'phone': widget.args.phoneNumber},
+                ),
                 style: Theme.of(
                   context,
                 ).textTheme.headlineSmall?.copyWith(color: const Color(0xFF5B6760)),
@@ -175,9 +179,9 @@ class _ResetOtpViewState extends State<_ResetOtpView> {
               const SizedBox(height: 34),
               OtpCodeField(controller: _codeController),
               const SizedBox(height: 26),
-              const Center(
+              Center(
                 child: Text(
-                  'Expire dans  0:52',
+                  'Expire dans  0:52'.tr(context),
                   style: TextStyle(
                     color: Color(0xFF92A099),
                     fontSize: 18,
@@ -203,13 +207,13 @@ class NewPasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (args?.code == null) {
       return AuthScaffold(
-        title: 'Réinitialiser',
+        title: 'Réinitialiser'.tr(context),
         showBack: true,
         bottom: PrimaryAuthButton(
-          label: 'Retour',
+          label: 'Retour'.tr(context),
           onPressed: () => context.go(RouteConstants.forgotPassword),
         ),
-        child: const Text('Relancez la récupération pour obtenir un code.'),
+        child: Text('Relancez la récupération pour obtenir un code.'.tr(context)),
       );
     }
     return BlocProvider(
@@ -247,10 +251,10 @@ class _NewPasswordViewState extends State<_NewPasswordView> {
       },
       builder: (context, state) {
         return AuthScaffold(
-          title: 'Réinitialiser',
+          title: 'Réinitialiser'.tr(context),
           showBack: true,
           bottom: PrimaryAuthButton(
-            label: 'Réinitialiser',
+            label: 'Réinitialiser'.tr(context),
             isLoading: state.isLoading,
             onPressed: () => context.read<AuthFormCubit>().resetPassword(
               phoneNumber: widget.args.phoneNumber,
@@ -262,22 +266,22 @@ class _NewPasswordViewState extends State<_NewPasswordView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const _ResetStepper(step: 3, label: 'Étape 3 sur 4 · Nouveau mot de passe'),
+              _ResetStepper(step: 3, label: 'Étape 3 sur 4 · Nouveau mot de passe'.tr(context)),
               const SizedBox(height: 36),
               Text(
-                'Nouveau mot de passe',
+                'Nouveau mot de passe'.tr(context),
                 style: Theme.of(context).textTheme.displaySmall?.copyWith(
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.w900,
                 ),
               ),
               const SizedBox(height: 36),
-              const FieldLabel('Mot de passe'),
+              FieldLabel('Mot de passe'.tr(context)),
               PasswordTextField(controller: _passwordController, hintText: 'Yaounde2024'),
               const SizedBox(height: 18),
               const _StrengthMeter(),
               const SizedBox(height: 28),
-              const FieldLabel('Confirmer le mot de passe'),
+              FieldLabel('Confirmer le mot de passe'.tr(context)),
               PasswordTextField(controller: _confirmController, hintText: '••••••••••'),
               InlineError(state.errorMessage),
             ],
@@ -316,7 +320,7 @@ class PasswordResetSuccessPage extends StatelessWidget {
               ),
               const SizedBox(height: 56),
               Text(
-                'Mot de passe modifié',
+                'Mot de passe modifié'.tr(context),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.displaySmall?.copyWith(
                   color: AppColors.textPrimary,
@@ -325,7 +329,7 @@ class PasswordResetSuccessPage extends StatelessWidget {
               ),
               const SizedBox(height: 28),
               Text(
-                'Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.',
+                'Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.'.tr(context),
                 textAlign: TextAlign.center,
                 style: Theme.of(
                   context,
@@ -333,7 +337,7 @@ class PasswordResetSuccessPage extends StatelessWidget {
               ),
               const Spacer(flex: 5),
               PrimaryAuthButton(
-                label: 'Se connecter',
+                label: 'Se connecter'.tr(context),
                 onPressed: () => context.go(RouteConstants.login),
               ),
             ],
@@ -411,8 +415,8 @@ class _StrengthMeter extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        const Text(
-          'Force : moyenne — ajoutez un caractère spécial.',
+        Text(
+          'Force : moyenne — ajoutez un caractère spécial.'.tr(context),
           style: TextStyle(color: Color(0xFF9B6B0B), fontSize: 16, fontWeight: FontWeight.w800),
         ),
       ],

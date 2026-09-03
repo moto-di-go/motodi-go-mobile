@@ -6,6 +6,7 @@ import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/core/widgets/nfc_status_card.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/nfc/presentation/cubit/nfc_pay_cubit.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_bottom_sheet.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/widgets/wallet_widgets.dart';
 
@@ -87,7 +88,7 @@ class _NfcPayViewState extends State<_NfcPayView> {
                       ),
                       Expanded(
                         child: Text(
-                          'Payer via NFC',
+                          'Payer via NFC'.tr(context),
                           style: walletText(fontSize: 26, fontWeight: FontWeight.w800),
                         ),
                       ),
@@ -98,11 +99,10 @@ class _NfcPayViewState extends State<_NfcPayView> {
                   child: ListView(
                     padding: const EdgeInsets.fromLTRB(22, 12, 22, 24),
                     children: [
-                      const NfcStatusCard(
-                        title: 'Préparer le jeton',
+                      NfcStatusCard(
+                        title: 'Préparer le jeton'.tr(context),
                         subtitle:
-                            'Le jeton est signé côté serveur puis émis hors-ligne. '
-                            'Aucun « paiement confirmé » avant synchronisation.',
+                            'Le jeton est signé côté serveur puis émis hors-ligne. Aucun « paiement confirmé » avant synchronisation.'.tr(context),
                         icon: Icons.contactless_rounded,
                       ),
                       const SizedBox(height: 16),
@@ -110,21 +110,21 @@ class _NfcPayViewState extends State<_NfcPayView> {
                         controller: _amountCtrl,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          labelText: 'Montant (XAF)',
+                          labelText: 'Montant (XAF)'.tr(context),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
                         ),
                       ),
                       if (widget.bookingId != null) ...[
                         const SizedBox(height: 12),
                         Text(
-                          'Réservation · ${widget.bookingId}',
+                          '${'Réservation'.tr(context)} · ${widget.bookingId}',
                           style: walletText(fontSize: 13, color: AppColors.textSecondary),
                         ),
                       ],
                       if (widget.tripId != null) ...[
                         const SizedBox(height: 4),
                         Text(
-                          'Trajet · ${widget.tripId}',
+                          '${'Trajet'.tr(context)} · ${widget.tripId}',
                           style: walletText(fontSize: 13, color: AppColors.textSecondary),
                         ),
                       ],
@@ -147,10 +147,12 @@ class _NfcPayViewState extends State<_NfcPayView> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Prêt', style: walletText(fontSize: 16, fontWeight: FontWeight.w800)),
+                              Text('Prêt'.tr(context), style: walletText(fontSize: 16, fontWeight: FontWeight.w800)),
                               const SizedBox(height: 6),
                               Text(
-                                'Montant ${formatWalletAmount(state.amount ?? 0)} — validez pour obtenir le jeton.',
+                                Localizations.localeOf(context).languageCode == 'en'
+                                    ? 'Amount ${formatWalletAmount(state.amount ?? 0)} — confirm to get the token.'
+                                    : 'Montant ${formatWalletAmount(state.amount ?? 0)} — validez pour obtenir le jeton.',
                                 style: walletText(fontSize: 13, color: AppColors.textSecondary),
                               ),
                             ],
@@ -162,12 +164,12 @@ class _NfcPayViewState extends State<_NfcPayView> {
                         const Center(child: CircularProgressIndicator(color: AppColors.primary))
                       else if (state.status == NfcPayStatus.ready)
                         UrbanPrimaryButton(
-                          label: 'Émettre le jeton',
+                          label: 'Émettre le jeton'.tr(context),
                           onPressed: () => context.read<NfcPayCubit>().issue(),
                         )
                       else
                         UrbanPrimaryButton(
-                          label: 'Préparer NFC',
+                          label: 'Préparer NFC'.tr(context),
                           onPressed: () {
                             final amount = double.tryParse(_amountCtrl.text.trim()) ?? 0;
                             context.read<NfcPayCubit>().prepare(
@@ -188,7 +190,7 @@ class _NfcPayViewState extends State<_NfcPayView> {
                           }
                         },
                         child: Text(
-                          'Payer via wallet',
+                          'Payer via wallet'.tr(context),
                           style: walletText(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,

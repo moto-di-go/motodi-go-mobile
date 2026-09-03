@@ -5,6 +5,7 @@ import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_bottom_sheet.dart';
 import 'package:motodi_go_mobile/features/wallet/domain/entities/wallet.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/widgets/wallet_widgets.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 class ReceiptPage extends StatelessWidget {
   final String receiptId;
@@ -31,7 +32,7 @@ class ReceiptPage extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      'Reçu',
+                      'Reçu'.tr(context),
                       style: walletText(fontSize: 28, fontWeight: FontWeight.w800, height: 1.1),
                     ),
                   ),
@@ -44,7 +45,9 @@ class ReceiptPage extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(32),
                         child: Text(
-                          'Reçu introuvable pour $receiptId.\nRelancez le paiement depuis la réservation.',
+                          Localizations.localeOf(context).languageCode == 'en'
+                              ? 'Receipt not found for $receiptId.\nPlease retry payment from the booking.'
+                              : 'Reçu introuvable pour $receiptId.\nRelancez le paiement depuis la réservation.',
                           textAlign: TextAlign.center,
                           style: walletText(
                             fontSize: 15,
@@ -74,22 +77,22 @@ class ReceiptPage extends StatelessWidget {
                               ),
                               const SizedBox(height: 14),
                               Text(
-                                'Paiement enregistré',
+                                'Paiement enregistré'.tr(context),
                                 style: walletText(fontSize: 22, fontWeight: FontWeight.w800),
                               ),
                               const SizedBox(height: 8),
                               WalletPaymentStatusChip(status: data.status),
                               const SizedBox(height: 22),
-                              _row('N° reçu', data.receiptNumber),
+                              _row('N° reçu'.tr(context), data.receiptNumber),
                               _row(
-                                'Montant',
+                                'Montant'.tr(context),
                                 formatWalletAmount(data.amount, currency: data.currency),
                               ),
-                              _row('Date', formatWalletTime(data.issuedAt)),
-                              _row('Statut', data.status.labelFr),
-                              if (data.bookingId != null) _row('Réservation', data.bookingId!),
+                              _row('Date'.tr(context), formatWalletTime(data.issuedAt)),
+                              _row('Statut'.tr(context), data.status.labelFr.tr(context)),
+                              if (data.bookingId != null) _row('Réservation'.tr(context), data.bookingId!),
                               if (data.pdfUrl != null && data.pdfUrl!.isNotEmpty)
-                                _row('PDF', data.pdfUrl!),
+                                _row('PDF'.tr(context), data.pdfUrl!),
                             ],
                           ),
                         ),
@@ -99,7 +102,7 @@ class ReceiptPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(22, 0, 22, 20),
               child: UrbanPrimaryButton(
-                label: 'Retour au wallet',
+                label: 'Retour au wallet'.tr(context),
                 onPressed: () => context.go(RouteConstants.wallet),
               ),
             ),

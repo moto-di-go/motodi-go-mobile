@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_buttons.dart';
 
@@ -30,7 +31,7 @@ class SessionExpiredPage extends StatelessWidget {
               ),
               const SizedBox(height: 56),
               Text(
-                'Votre session a expiré',
+                'Votre session a expiré'.tr(context),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.displaySmall?.copyWith(
                   color: AppColors.textPrimary,
@@ -39,7 +40,7 @@ class SessionExpiredPage extends StatelessWidget {
               ),
               const SizedBox(height: 26),
               Text(
-                'Pour votre sécurité, veuillez vous reconnecter afin de continuer.',
+                'Pour votre sécurité, veuillez vous reconnecter afin de continuer.'.tr(context),
                 textAlign: TextAlign.center,
                 style: Theme.of(
                   context,
@@ -47,7 +48,7 @@ class SessionExpiredPage extends StatelessWidget {
               ),
               const Spacer(flex: 4),
               PrimaryAuthButton(
-                label: 'Se reconnecter',
+                label: 'Se reconnecter'.tr(context),
                 onPressed: () async {
                   await context.read<SessionCubit>().changeAccount();
                   if (context.mounted) context.go(RouteConstants.login);
@@ -59,8 +60,8 @@ class SessionExpiredPage extends StatelessWidget {
                   await context.read<SessionCubit>().changeAccount();
                   if (context.mounted) context.go(RouteConstants.welcome);
                 },
-                child: const Text(
-                  'Changer de compte',
+                child: Text(
+                  'Changer de compte'.tr(context),
                   style: TextStyle(
                     color: Color(0xFF5B6760),
                     fontWeight: FontWeight.w900,

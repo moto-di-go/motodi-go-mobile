@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_formatters.dart';
 import 'package:motodi_go_mobile/features/wallet/domain/entities/wallet.dart';
 
@@ -59,7 +60,7 @@ class WalletStatusChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(20)),
       child: Text(
-        status.labelFr,
+        status.labelFr.tr(context),
         style: walletText(fontSize: 13, fontWeight: FontWeight.w700, color: fg),
       ),
     );
@@ -85,7 +86,7 @@ class WalletPaymentStatusChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(20)),
       child: Text(
-        status.labelFr,
+        status.labelFr.tr(context),
         style: walletText(fontSize: 13, fontWeight: FontWeight.w700, color: fg),
       ),
     );
@@ -182,7 +183,7 @@ class WalletLedgerTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  entry.type.labelFr,
+                  entry.type.labelFr.tr(context),
                   style: walletText(fontSize: 15, fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 2),

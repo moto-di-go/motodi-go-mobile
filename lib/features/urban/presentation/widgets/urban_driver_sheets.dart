@@ -6,9 +6,10 @@ import 'package:motodi_go_mobile/features/urban/presentation/urban_ride_cubit.da
 import 'package:motodi_go_mobile/features/urban/presentation/urban_ride_state.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_bottom_sheet.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 class UrbanSearchingSheet extends StatelessWidget {
-  const UrbanSearchingSheet({super.key});
+  UrbanSearchingSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class UrbanSearchingSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Recherche des mototaxis…',
+            'Recherche des mototaxis…'.tr(context),
             style: urbanText(fontSize: 20, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 14),
@@ -61,7 +62,7 @@ class UrbanResultsSheet extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  '${state.drivers.length} mototaxis trouvés',
+                  Localizations.localeOf(context).languageCode == 'en' ? '${state.drivers.length} mototaxis found' : '${state.drivers.length} mototaxis trouvés',
                   style: urbanText(fontSize: 20, fontWeight: FontWeight.w800),
                 ),
               ),
@@ -69,7 +70,7 @@ class UrbanResultsSheet extends StatelessWidget {
                 onPressed: cubit.openFilters,
                 icon: const Icon(Icons.tune_rounded, size: 18),
                 label: Text(
-                  'Filtres',
+                  'Filtres'.tr(context),
                   style: urbanText(
                     fontSize: 14,
                     fontWeight: FontWeight.w800,
@@ -80,7 +81,7 @@ class UrbanResultsSheet extends StatelessWidget {
             ],
           ),
           if (state.drivers.any((d) => d.profileIsDemo))
-            const UrbanDemoBanner(message: 'Fiches conducteur : profils de démonstration'),
+            UrbanDemoBanner(message: 'Fiches conducteur : profils de démonstration'.tr(context)),
           SizedBox(
             height: MediaQuery.sizeOf(context).height * 0.32,
             child: ListView.separated(
@@ -107,7 +108,7 @@ class UrbanFiltersSheet extends StatelessWidget {
   final UrbanRideState state;
   final UrbanRideCubit cubit;
 
-  const UrbanFiltersSheet({super.key, required this.state, required this.cubit});
+  UrbanFiltersSheet({super.key, required this.state, required this.cubit});
 
   @override
   Widget build(BuildContext context) {
@@ -117,9 +118,9 @@ class UrbanFiltersSheet extends StatelessWidget {
       child: ListView(
         shrinkWrap: true,
         children: [
-          Text('Filtres', style: urbanText(fontSize: 24, fontWeight: FontWeight.w800)),
+          Text('Filtres'.tr(context), style: urbanText(fontSize: 24, fontWeight: FontWeight.w800)),
           const SizedBox(height: 18),
-          Text('Rayon de recherche', style: urbanText(fontSize: 15, fontWeight: FontWeight.w800)),
+          Text('Rayon de recherche'.tr(context), style: urbanText(fontSize: 15, fontWeight: FontWeight.w800)),
           Slider(
             value: draft.radiusKm.clamp(2, 10),
             min: 2,
@@ -134,13 +135,13 @@ class UrbanFiltersSheet extends StatelessWidget {
             style: urbanText(color: AppColors.textSecondary),
           ),
           const SizedBox(height: 16),
-          Text('Note minimale', style: urbanText(fontSize: 15, fontWeight: FontWeight.w800)),
+          Text('Note minimale'.tr(context), style: urbanText(fontSize: 15, fontWeight: FontWeight.w800)),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             children: [
               _FilterChip(
-                label: 'Toutes',
+                label: 'Toutes'.tr(context),
                 selected: draft.minRating == null,
                 onTap: () => cubit.updateDraftFilters(draft.copyWith(minRating: null)),
               ),
@@ -160,7 +161,7 @@ class UrbanFiltersSheet extends StatelessWidget {
           SwitchListTile.adaptive(
             contentPadding: EdgeInsets.zero,
             title: Text(
-              'Disponibilité immédiate',
+              'Disponibilité immédiate'.tr(context),
               style: urbanText(fontSize: 15, fontWeight: FontWeight.w800),
             ),
             value: draft.immediateOnly,
@@ -168,7 +169,7 @@ class UrbanFiltersSheet extends StatelessWidget {
             onChanged: (value) => cubit.updateDraftFilters(draft.copyWith(immediateOnly: value)),
           ),
           const SizedBox(height: 8),
-          Text('Prix maximum', style: urbanText(fontSize: 15, fontWeight: FontWeight.w800)),
+          Text('Prix maximum'.tr(context), style: urbanText(fontSize: 15, fontWeight: FontWeight.w800)),
           Slider(
             value: (draft.maxPriceFcfa ?? 3000).clamp(400, 5000),
             min: 400,
@@ -179,11 +180,11 @@ class UrbanFiltersSheet extends StatelessWidget {
             onChanged: (value) => cubit.updateDraftFilters(draft.copyWith(maxPriceFcfa: value)),
           ),
           Text(
-            draft.maxPriceFcfa == null ? 'Aucun plafond' : formatPriceF(draft.maxPriceFcfa!),
+            draft.maxPriceFcfa == null ? 'Aucun plafond'.tr(context) : formatPriceF(draft.maxPriceFcfa!),
             style: urbanText(color: AppColors.textSecondary),
           ),
           const SizedBox(height: 18),
-          UrbanPrimaryButton(label: 'Appliquer', onPressed: cubit.applyFilters),
+          UrbanPrimaryButton(label: 'Appliquer'.tr(context), onPressed: cubit.applyFilters),
         ],
       ),
     );
@@ -195,7 +196,7 @@ class UrbanEmptySheet extends StatelessWidget {
   final VoidCallback onIntercity;
   final String? error;
 
-  const UrbanEmptySheet({super.key, required this.cubit, required this.onIntercity, this.error});
+  UrbanEmptySheet({super.key, required this.cubit, required this.onIntercity, this.error});
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +207,7 @@ class UrbanEmptySheet extends StatelessWidget {
           const Icon(Icons.two_wheeler_outlined, size: 48, color: Color(0xFF9CA7A0)),
           const SizedBox(height: 12),
           Text(
-            'Aucun mototaxi disponible',
+            'Aucun mototaxi disponible'.tr(context),
             style: urbanText(fontSize: 22, fontWeight: FontWeight.w800),
           ),
           if (error != null) ...[
@@ -219,12 +220,12 @@ class UrbanEmptySheet extends StatelessWidget {
           ],
           const SizedBox(height: 8),
           Text(
-            'Élargissez le rayon ou modifiez la destination pour relancer la recherche.',
+            'Élargissez le rayon ou modifiez la destination pour relancer la recherche.'.tr(context),
             textAlign: TextAlign.center,
             style: urbanText(fontSize: 15, color: AppColors.textSecondary, height: 1.35),
           ),
           const SizedBox(height: 18),
-          UrbanPrimaryButton(label: 'Élargir le rayon', onPressed: cubit.widenRadius),
+          UrbanPrimaryButton(label: 'Élargir le rayon'.tr(context), onPressed: cubit.widenRadius),
           const SizedBox(height: 10),
           OutlinedButton(
             onPressed: cubit.openDestination,
@@ -233,14 +234,14 @@ class UrbanEmptySheet extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
             ),
             child: Text(
-              'Modifier la destination',
+              'Modifier la destination'.tr(context),
               style: urbanText(fontSize: 16, fontWeight: FontWeight.w800),
             ),
           ),
           const SizedBox(height: 8),
-          UrbanTextLink(label: 'Réessayer', onTap: cubit.searchMototaxis),
+          UrbanTextLink(label: 'Réessayer'.tr(context), onTap: cubit.searchMototaxis),
           const SizedBox(height: 12),
-          UrbanTextLink(label: 'Voir les trajets interurbains', onTap: onIntercity),
+          UrbanTextLink(label: 'Voir les trajets interurbains'.tr(context), onTap: onIntercity),
         ],
       ),
     );
@@ -251,7 +252,7 @@ class UrbanDriverDetailSheet extends StatelessWidget {
   final UrbanRideState state;
   final UrbanRideCubit cubit;
 
-  const UrbanDriverDetailSheet({super.key, required this.state, required this.cubit});
+  UrbanDriverDetailSheet({super.key, required this.state, required this.cubit});
 
   @override
   Widget build(BuildContext context) {
@@ -262,7 +263,7 @@ class UrbanDriverDetailSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (driver.profileIsDemo)
-            const UrbanDemoBanner(message: 'Fiche conducteur — données de démonstration'),
+            UrbanDemoBanner(message: 'Fiche conducteur — données de démonstration'.tr(context)),
           Row(
             children: [
               CircleAvatar(
@@ -284,7 +285,7 @@ class UrbanDriverDetailSheet extends StatelessWidget {
                   children: [
                     Text(driver.name, style: urbanText(fontSize: 22, fontWeight: FontWeight.w800)),
                     Text(
-                      '${driver.rating.toStringAsFixed(1)} · ${driver.tripCount} courses',
+                      Localizations.localeOf(context).languageCode == 'en' ? '${driver.rating.toStringAsFixed(1)} · ${driver.tripCount} trips' : '${driver.rating.toStringAsFixed(1)} · ${driver.tripCount} courses',
                       style: urbanText(fontSize: 14, color: AppColors.textSecondary),
                     ),
                   ],
@@ -296,8 +297,8 @@ class UrbanDriverDetailSheet extends StatelessWidget {
           const SizedBox(height: 16),
           _InfoRow(
             icon: Icons.verified_outlined,
-            label: driver.documentsVerified ? 'Documents vérifiés' : 'Documents en cours',
-            trailing: driver.cniVerified ? 'CNI' : 'CNI — Démo',
+            label: driver.documentsVerified ? 'Documents vérifiés'.tr(context) : 'Documents en cours'.tr(context),
+            trailing: driver.cniVerified ? 'CNI' : 'CNI — Démo'.tr(context),
           ),
           _InfoRow(
             icon: Icons.schedule_rounded,
@@ -311,11 +312,11 @@ class UrbanDriverDetailSheet extends StatelessWidget {
           ),
           _InfoRow(
             icon: Icons.payments_outlined,
-            label: 'Prix estimé',
+            label: 'Prix estimé'.tr(context),
             trailing: formatPriceF(driver.priceFcfa),
           ),
           const SizedBox(height: 16),
-          UrbanPrimaryButton(label: 'Choisir ce mototaxi', onPressed: cubit.chooseSelectedDriver),
+          UrbanPrimaryButton(label: 'Choisir ce mototaxi'.tr(context), onPressed: cubit.chooseSelectedDriver),
         ],
       ),
     );
@@ -326,7 +327,7 @@ class UrbanConfirmSheet extends StatelessWidget {
   final UrbanRideState state;
   final UrbanRideCubit cubit;
 
-  const UrbanConfirmSheet({super.key, required this.state, required this.cubit});
+  UrbanConfirmSheet({super.key, required this.state, required this.cubit});
 
   @override
   Widget build(BuildContext context) {
@@ -336,7 +337,7 @@ class UrbanConfirmSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Confirmer la course', style: urbanText(fontSize: 22, fontWeight: FontWeight.w800)),
+          Text('Confirmer la course'.tr(context), style: urbanText(fontSize: 22, fontWeight: FontWeight.w800)),
           if (state.hasTrafficBanner) ...[
             const SizedBox(height: 12),
             Container(
@@ -347,7 +348,7 @@ class UrbanConfirmSheet extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Text(
-                'Trafic dense sur le trajet. Un itinéraire alternatif est disponible.',
+                'Trafic dense sur le trajet. Un itinéraire alternatif est disponible.'.tr(context),
                 style: urbanText(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -367,11 +368,11 @@ class UrbanConfirmSheet extends StatelessWidget {
             ),
           const SizedBox(height: 8),
           Text(
-            'Intégration paiement/backend à venir',
+            'Intégration paiement/backend à venir'.tr(context),
             style: urbanText(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.accent),
           ),
           const SizedBox(height: 16),
-          UrbanPrimaryButton(label: 'Confirmer ma demande', onPressed: cubit.confirmRide),
+          UrbanPrimaryButton(label: 'Confirmer ma demande'.tr(context), onPressed: cubit.confirmRide),
         ],
       ),
     );
@@ -381,7 +382,7 @@ class UrbanConfirmSheet extends StatelessWidget {
 class UrbanConfirmedSheet extends StatelessWidget {
   final UrbanRideCubit cubit;
 
-  const UrbanConfirmedSheet({super.key, required this.cubit});
+  UrbanConfirmedSheet({super.key, required this.cubit});
 
   @override
   Widget build(BuildContext context) {
@@ -395,15 +396,15 @@ class UrbanConfirmedSheet extends StatelessWidget {
             child: Icon(Icons.check_rounded, color: AppColors.primary, size: 34),
           ),
           const SizedBox(height: 14),
-          Text('Demande enregistrée', style: urbanText(fontSize: 22, fontWeight: FontWeight.w800)),
+          Text('Demande enregistrée'.tr(context), style: urbanText(fontSize: 22, fontWeight: FontWeight.w800)),
           const SizedBox(height: 8),
           Text(
-            'Intégration paiement/backend à venir. Aucun paiement n’a été débité.',
+            'Intégration paiement/backend à venir. Aucun paiement n’a été débité.'.tr(context),
             textAlign: TextAlign.center,
             style: urbanText(fontSize: 14, color: AppColors.textSecondary, height: 1.35),
           ),
           const SizedBox(height: 18),
-          UrbanPrimaryButton(label: 'Retour à l’accueil', onPressed: cubit.resetToHome),
+          UrbanPrimaryButton(label: 'Retour à l’accueil'.tr(context), onPressed: cubit.resetToHome),
         ],
       ),
     );
@@ -457,7 +458,7 @@ class _DriverCard extends StatelessWidget {
                       if (driver.profileIsDemo) ...[
                         const SizedBox(width: 6),
                         Text(
-                          'Démo',
+                          'Démo'.tr(context),
                           style: urbanText(
                             fontSize: 11,
                             fontWeight: FontWeight.w800,
@@ -468,7 +469,9 @@ class _DriverCard extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    '${driver.rating.toStringAsFixed(1)} · ${driver.vehicleLabel} · ${driver.etaMinutes} min · ${driver.isAvailable ? 'Disponible' : driver.availability}',
+                    Localizations.localeOf(context).languageCode == 'en'
+                    ? '${driver.rating.toStringAsFixed(1)} · ${driver.vehicleLabel} · ${driver.etaMinutes} min · ${driver.isAvailable ? 'Available' : driver.availability}'
+                    : '${driver.rating.toStringAsFixed(1)} · ${driver.vehicleLabel} · ${driver.etaMinutes} min · ${driver.isAvailable ? 'Disponible' : driver.availability}',
                     style: urbanText(fontSize: 12, color: AppColors.textSecondary),
                   ),
                 ],
@@ -509,7 +512,7 @@ class _FilterChip extends StatelessWidget {
 
 class _AvailabilityBadge extends StatelessWidget {
   final bool available;
-  const _AvailabilityBadge({required this.available});
+  _AvailabilityBadge({required this.available});
 
   @override
   Widget build(BuildContext context) {
@@ -520,7 +523,7 @@ class _AvailabilityBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        available ? 'Disponible' : 'Occupé',
+        available ? 'Disponible'.tr(context) : 'Occupé'.tr(context),
         style: urbanText(
           fontSize: 12,
           fontWeight: FontWeight.w800,

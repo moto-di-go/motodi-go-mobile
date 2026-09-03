@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/core/widgets/sync_status_chip.dart';
 import 'package:motodi_go_mobile/features/nfc/domain/entities/nfc_entities.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_bottom_sheet.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/widgets/wallet_widgets.dart';
 
@@ -21,13 +22,12 @@ Future<void> showSyncConflictSheet({
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Conflit à résoudre',
+              'Conflit à résoudre'.tr(context),
               style: walletText(fontSize: 22, fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 8),
             Text(
-              'Certaines opérations NFC n’ont pas pu être synchronisées. '
-              'Le paiement n’est pas confirmé tant que le serveur n’a pas consommé le jeton.',
+              'Certaines opérations NFC n’ont pas pu être synchronisées. Le paiement n’est pas confirmé tant que le serveur n’a pas consommé le jeton.'.tr(context),
               style: walletText(fontSize: 14, color: AppColors.textSecondary, height: 1.4),
             ),
             const SizedBox(height: 16),
@@ -62,7 +62,7 @@ Future<void> showSyncConflictSheet({
             ),
             const SizedBox(height: 8),
             UrbanPrimaryButton(
-              label: 'Réessayer plus tard',
+              label: 'Réessayer plus tard'.tr(ctx),
               onPressed: () {
                 Navigator.of(ctx).pop();
                 onRetry?.call();
@@ -104,13 +104,15 @@ class PendingSyncCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'En attente de synchronisation',
+                    'En attente de synchronisation'.tr(context),
                     style: walletText(fontSize: 15, fontWeight: FontWeight.w800),
                   ),
                   Text(
                     pendingCount == 1
-                        ? '1 paiement NFC local'
-                        : '$pendingCount paiements NFC locaux',
+                        ? '1 paiement NFC local'.tr(context)
+                        : Localizations.localeOf(context).languageCode == 'en'
+                            ? '$pendingCount local NFC payments'
+                            : '$pendingCount paiements NFC locaux',
                     style: walletText(fontSize: 12, color: AppColors.textSecondary),
                   ),
                 ],

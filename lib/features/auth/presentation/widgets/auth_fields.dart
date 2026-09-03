@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 class FieldLabel extends StatelessWidget {
   final String text;
@@ -72,7 +73,7 @@ class CameroonPhoneInput extends StatelessWidget {
             keyboardType: TextInputType.phone,
             inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9 +()-]'))],
             style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-            decoration: _inputDecoration(hintText),
+            decoration: _inputDecoration(hintText?.tr(context)),
           ),
         ),
       ],
@@ -103,7 +104,7 @@ class AuthTextField extends StatelessWidget {
       keyboardType: keyboardType,
       maxLength: maxLength,
       style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-      decoration: _inputDecoration(hintText).copyWith(
+      decoration: _inputDecoration(hintText?.tr(context)).copyWith(
         counterText: '',
         prefixIcon: icon == null ? null : Icon(icon, color: const Color(0xFF8F9A91)),
       ),
@@ -130,10 +131,10 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       controller: widget.controller,
       obscureText: _obscure,
       style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-      decoration: _inputDecoration(widget.hintText ?? 'motdepasse').copyWith(
+      decoration: _inputDecoration((widget.hintText ?? 'motdepasse').tr(context)).copyWith(
         prefixIcon: const Icon(Icons.lock_outline_rounded, color: Color(0xFF8F9A91)),
         suffixIcon: IconButton(
-          tooltip: _obscure ? 'Afficher' : 'Masquer',
+          tooltip: (_obscure ? 'Afficher' : 'Masquer').tr(context),
           onPressed: () => setState(() => _obscure = !_obscure),
           icon: Icon(
             _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,

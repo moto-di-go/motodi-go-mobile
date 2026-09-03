@@ -4,11 +4,12 @@ import 'package:motodi_go_mobile/features/intercity/presentation/widgets/interci
 import 'package:motodi_go_mobile/features/urban/presentation/urban_ride_cubit.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/urban_ride_state.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_bottom_sheet.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 class UrbanCalculatingSheet extends StatelessWidget {
   final UrbanRideState state;
 
-  const UrbanCalculatingSheet({super.key, required this.state});
+  UrbanCalculatingSheet({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +18,10 @@ class UrbanCalculatingSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 8),
-          const CircularProgressIndicator(color: AppColors.primary),
+          CircularProgressIndicator(color: AppColors.primary),
           const SizedBox(height: 18),
           Text(
-            "Calcul de l'itinéraire...",
+            "Calcul de l'itinéraire...".tr(context),
             style: urbanText(fontSize: 20, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 8),
@@ -40,7 +41,7 @@ class UrbanTripSummarySheet extends StatelessWidget {
   final UrbanRideState state;
   final UrbanRideCubit cubit;
 
-  const UrbanTripSummarySheet({super.key, required this.state, required this.cubit});
+  UrbanTripSummarySheet({super.key, required this.state, required this.cubit});
 
   @override
   Widget build(BuildContext context) {
@@ -49,25 +50,25 @@ class UrbanTripSummarySheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (state.routeOptionsDemo) const UrbanDemoBanner(),
+          if (state.routeOptionsDemo) UrbanDemoBanner(),
           Row(
             children: [
               _StatCard(
-                label: 'DISTANCE',
+                label: 'DISTANCE'.tr(context),
                 value: '${state.selectedDistance.toStringAsFixed(1)} km',
               ),
               const SizedBox(width: 8),
-              _StatCard(label: 'DURÉE', value: '${state.selectedDuration} min'),
+              _StatCard(label: 'DURÉE'.tr(context), value: '${state.selectedDuration} min'),
               const SizedBox(width: 8),
-              _StatCard(label: 'PRIX', value: formatPriceF(state.selectedAmount)),
+              _StatCard(label: 'PRIX'.tr(context), value: formatPriceF(state.selectedAmount)),
             ],
           ),
           const SizedBox(height: 14),
-          UrbanTextLink(label: 'Voir le détail du prix', onTap: cubit.openPriceDetail),
+          UrbanTextLink(label: 'Voir le détail du prix'.tr(context), onTap: cubit.openPriceDetail),
           const SizedBox(height: 8),
-          UrbanTextLink(label: 'Comparer les itinéraires', onTap: () => cubit.openRouteOptions()),
+          UrbanTextLink(label: 'Comparer les itinéraires'.tr(context), onTap: () => cubit.openRouteOptions()),
           const SizedBox(height: 16),
-          UrbanPrimaryButton(label: 'Rechercher un mototaxi', onPressed: cubit.searchMototaxis),
+          UrbanPrimaryButton(label: 'Rechercher un mototaxi'.tr(context), onPressed: cubit.searchMototaxis),
         ],
       ),
     );
@@ -78,7 +79,7 @@ class UrbanPriceDetailSheet extends StatelessWidget {
   final UrbanRideState state;
   final UrbanRideCubit cubit;
 
-  const UrbanPriceDetailSheet({super.key, required this.state, required this.cubit});
+  UrbanPriceDetailSheet({super.key, required this.state, required this.cubit});
 
   @override
   Widget build(BuildContext context) {
@@ -89,36 +90,37 @@ class UrbanPriceDetailSheet extends StatelessWidget {
         shrinkWrap: true,
         children: [
           Text(
-            'Détail du prix standardisé',
+            'Détail du prix standardisé'.tr(context),
             style: urbanText(fontSize: 22, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 6),
           Text(
-            'Tarif réglementé, sans négociation. Le montant affiché est celui appliqué à la course.',
+            'Tarif réglementé, sans négociation. Le montant affiché est celui appliqué à la course.'.tr(context),
             style: urbanText(fontSize: 14, color: AppColors.textSecondary, height: 1.35),
           ),
           if (breakdown.isDemo)
-            const Padding(padding: EdgeInsets.only(top: 12), child: UrbanDemoBanner()),
+            Padding(padding: const EdgeInsets.only(top: 12), child: UrbanDemoBanner()),
           const SizedBox(height: 16),
-          _PriceLine(label: 'Base', value: formatPriceF(breakdown.base)),
+          _PriceLine(label: 'Base'.tr(context), value: formatPriceF(breakdown.base)),
           _PriceLine(
-            label:
-                'Distance (${breakdown.distanceKm.toStringAsFixed(1)} km × ${formatPriceF(breakdown.pricePerKm)})',
+            label: Localizations.localeOf(context).languageCode == 'en'
+                ? 'Distance (${breakdown.distanceKm.toStringAsFixed(1)} km × ${formatPriceF(breakdown.pricePerKm)})'
+                : 'Distance (${breakdown.distanceKm.toStringAsFixed(1)} km × ${formatPriceF(breakdown.pricePerKm)})',
             value: formatPriceF(breakdown.distanceAmount),
           ),
           _PriceLine(
-            label: 'Coefficient nuit',
+            label: 'Coefficient nuit'.tr(context),
             value: '× ${breakdown.nightCoefficient.toStringAsFixed(2)}',
           ),
           _PriceLine(
-            label: 'Coefficient météo',
+            label: 'Coefficient météo'.tr(context),
             value: '× ${breakdown.weatherCoefficient.toStringAsFixed(2)}',
           ),
-          _PriceLine(label: 'Arrondi', value: formatPriceF(breakdown.rounding)),
-          const Divider(height: 28),
-          _PriceLine(label: 'Total', value: formatPriceF(breakdown.total), emphasize: true),
+          _PriceLine(label: 'Arrondi'.tr(context), value: formatPriceF(breakdown.rounding)),
+          Divider(height: 28),
+          _PriceLine(label: 'Total'.tr(context), value: formatPriceF(breakdown.total), emphasize: true),
           const SizedBox(height: 18),
-          UrbanPrimaryButton(label: 'Rechercher un mototaxi', onPressed: cubit.searchMototaxis),
+          UrbanPrimaryButton(label: 'Rechercher un mototaxi'.tr(context), onPressed: cubit.searchMototaxis),
         ],
       ),
     );

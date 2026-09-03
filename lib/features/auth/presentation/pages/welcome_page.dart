@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/motodi_logo.dart';
 
@@ -20,7 +23,7 @@ class WelcomePage extends StatelessWidget {
             const MotodiLogo(size: 128),
             const SizedBox(height: 0),
             Text(
-              "Bienvenue sur Moto'di Go",
+              "Bienvenue sur Moto'di Go".tr(context),
               style: Theme.of(context).textTheme.displaySmall?.copyWith(
                 color: AppColors.textPrimary,
                 fontSize: 32,
@@ -30,7 +33,8 @@ class WelcomePage extends StatelessWidget {
             ),
             const SizedBox(height: 28),
             Text(
-              'Créez votre compte ou connectez-vous pour trouver un mototaxi, un trajet ou un transporteur vérifié.',
+              'Créez votre compte ou connectez-vous pour trouver un mototaxi, un trajet ou un transporteur vérifié.'
+                  .tr(context),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: const Color(0xFF54615A),
                 fontSize: 20,
@@ -40,7 +44,7 @@ class WelcomePage extends StatelessWidget {
             ),
             const Spacer(),
             _WelcomeActionButton(
-              label: 'Créer un compte',
+              label: 'Créer un compte'.tr(context),
               icon: const _PhoneIcon(),
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
@@ -48,7 +52,7 @@ class WelcomePage extends StatelessWidget {
             ),
             const SizedBox(height: 11),
             _WelcomeActionButton(
-              label: 'Se connecter',
+              label: 'Se connecter'.tr(context),
               icon: const _LockIcon(),
               backgroundColor: Colors.white,
               foregroundColor: AppColors.textPrimary,
@@ -56,11 +60,30 @@ class WelcomePage extends StatelessWidget {
               elevation: 0,
               onPressed: () => context.go(RouteConstants.login),
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 11),
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  context.read<SessionCubit>().continueAsGuest();
+                  context.go(RouteConstants.home);
+                },
+                child: Text(
+                  'Continuer sans se connecter'.tr(context),
+                  style: const TextStyle(
+                    color: Color(0xFF8A968C),
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                    decoration: TextDecoration.underline,
+                    decorationColor: Color(0xFF8A968C),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
             Center(
               child: RichText(
                 textAlign: TextAlign.center,
-                text: const TextSpan(
+                text: TextSpan(
                   style: TextStyle(
                     color: Color(0xFF8A968C),
                     fontSize: 16,
@@ -68,14 +91,14 @@ class WelcomePage extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                   children: [
-                    TextSpan(text: 'En continuant, vous acceptez nos '),
+                    TextSpan(text: 'En continuant, vous acceptez nos '.tr(context)),
                     TextSpan(
-                      text: "Conditions\nd'utilisation",
+                      text: "Conditions\nd'utilisation".tr(context),
                       style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700),
                     ),
-                    TextSpan(text: ' et notre '),
+                    TextSpan(text: ' et notre '.tr(context)),
                     TextSpan(
-                      text: 'Politique de confidentialité.',
+                      text: 'Politique de confidentialité.'.tr(context),
                       style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700),
                     ),
                   ],

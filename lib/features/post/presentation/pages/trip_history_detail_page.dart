@@ -9,6 +9,7 @@ import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_formatters.dart';
 import 'package:motodi_go_mobile/features/post/domain/entities/post_entities.dart';
 import 'package:motodi_go_mobile/features/post/domain/repositories/post_repository.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/post/presentation/widgets/post_ui.dart';
 import 'package:motodi_go_mobile/features/trips/domain/entities/trip.dart';
 import 'package:motodi_go_mobile/features/trips/domain/repositories/trip_repository.dart';
@@ -92,7 +93,7 @@ class _TripHistoryDetailPageState extends State<TripHistoryDetailPage> {
         child: _loading
             ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
             : _error != null
-            ? AppErrorView(message: _error!, onRetry: _load)
+            ? AppErrorView(message: _error!.tr(context), onRetry: _load)
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -103,7 +104,7 @@ class _TripHistoryDetailPageState extends State<TripHistoryDetailPage> {
                         PostBackButton(onTap: () => context.pop()),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: Text('Détail trajet', style: postText(fontSize: 26, fontWeight: FontWeight.w800)),
+                          child: Text('Détail trajet'.tr(context), style: postText(fontSize: 26, fontWeight: FontWeight.w800)),
                         ),
                       ],
                     ),
@@ -123,7 +124,7 @@ class _TripHistoryDetailPageState extends State<TripHistoryDetailPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                _item?.routeLabel ?? _trip?.routeLabel ?? 'Trajet',
+                                _item?.routeLabel ?? _trip?.routeLabel ?? 'Trajet'.tr(context),
                                 style: postText(fontSize: 20, fontWeight: FontWeight.w800),
                               ),
                               const SizedBox(height: 8),
@@ -151,13 +152,13 @@ class _TripHistoryDetailPageState extends State<TripHistoryDetailPage> {
                         ),
                         if (_receipt != null) ...[
                           const SizedBox(height: 16),
-                          Text('Reçu', style: postText(fontSize: 18, fontWeight: FontWeight.w800)),
+                          Text('Reçu'.tr(context), style: postText(fontSize: 18, fontWeight: FontWeight.w800)),
                           const SizedBox(height: 10),
                           ReceiptCard(receipt: _receipt!),
                         ],
                         if (_ratings.isNotEmpty) ...[
                           const SizedBox(height: 20),
-                          Text('Votre note', style: postText(fontSize: 18, fontWeight: FontWeight.w800)),
+                          Text('Votre note'.tr(context), style: postText(fontSize: 18, fontWeight: FontWeight.w800)),
                           const SizedBox(height: 10),
                           Container(
                             padding: const EdgeInsets.all(18),
@@ -191,7 +192,7 @@ class _TripHistoryDetailPageState extends State<TripHistoryDetailPage> {
                             _ratings.isEmpty &&
                             (_item?.isTrip != false || _trip != null))
                           PostPrimaryButton(
-                            label: 'Noter le trajet',
+                            label: 'Noter le trajet'.tr(context),
                             onPressed: () => context.push(RouteConstants.tripRatePath(widget.itemId)),
                           ),
                         if (_ratings.isEmpty) const SizedBox(height: 12),
@@ -211,7 +212,7 @@ class _TripHistoryDetailPageState extends State<TripHistoryDetailPage> {
                             side: const BorderSide(color: AppColors.outline, width: 1.5),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
                           ),
-                          child: Text('Contacter le support', style: postText(fontSize: 16, fontWeight: FontWeight.w700)),
+                          child: Text('Contacter le support'.tr(context), style: postText(fontSize: 16, fontWeight: FontWeight.w700)),
                         ),
                       ],
                     ),

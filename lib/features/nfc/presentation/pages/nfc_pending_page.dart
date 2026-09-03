@@ -7,6 +7,7 @@ import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/nfc/domain/entities/nfc_entities.dart';
 import 'package:motodi_go_mobile/features/nfc/presentation/cubit/nfc_pending_cubit.dart';
 import 'package:motodi_go_mobile/features/nfc/presentation/cubit/nfc_sync_cubit.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/nfc/presentation/widgets/nfc_widgets.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_bottom_sheet.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/widgets/wallet_widgets.dart';
@@ -45,7 +46,7 @@ class _NfcPendingView extends StatelessWidget {
               if (!context.mounted) return;
             } else if (state.status == NfcSyncStatusView.success) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Synchronisation terminée')),
+                SnackBar(content: Text('Synchronisation terminée'.tr(context))),
               );
             } else if (state.status == NfcSyncStatusView.failure && state.errorMessage != null) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -71,7 +72,7 @@ class _NfcPendingView extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        'Paiements NFC locaux',
+                        'Paiements NFC locaux'.tr(context),
                         style: walletText(fontSize: 24, fontWeight: FontWeight.w800),
                       ),
                     ),
@@ -89,7 +90,7 @@ class _NfcPendingView extends StatelessWidget {
                     if (state.items.isEmpty) {
                       return Center(
                         child: Text(
-                          'Aucun paiement NFC en local.',
+                          'Aucun paiement NFC en local.'.tr(context),
                           style: walletText(color: AppColors.textSecondary),
                         ),
                       );
@@ -115,7 +116,7 @@ class _NfcPendingView extends StatelessWidget {
                   builder: (context, syncState) {
                     final syncing = syncState.status == NfcSyncStatusView.syncing;
                     return UrbanPrimaryButton(
-                      label: syncing ? 'Synchronisation…' : 'Synchroniser maintenant',
+                      label: syncing ? 'Synchronisation…'.tr(context) : 'Synchroniser maintenant'.tr(context),
                       onPressed: syncing
                           ? null
                           : () => context.read<NfcSyncCubit>().syncAll(),
@@ -162,7 +163,7 @@ class _PendingTile extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            item.isInbound ? 'Reçu (conducteur)' : 'Émis (passager)',
+            item.isInbound ? 'Reçu (conducteur)'.tr(context) : 'Émis (passager)'.tr(context),
             style: walletText(fontSize: 12, color: AppColors.textSecondary),
           ),
           if (item.conflictMessage != null && item.conflictMessage!.isNotEmpty) ...[

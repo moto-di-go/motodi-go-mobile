@@ -7,6 +7,7 @@ import 'package:motodi_go_mobile/core/widgets/app_error_view.dart';
 import 'package:motodi_go_mobile/core/widgets/nfc_status_card.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/nfc/presentation/cubit/nfc_eligibility_cubit.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_bottom_sheet.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/widgets/wallet_widgets.dart';
 
@@ -45,7 +46,7 @@ class _NfcEligibilityView extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          'Paiement NFC',
+                          'Paiement NFC'.tr(context),
                           style: walletText(fontSize: 26, fontWeight: FontWeight.w800),
                         ),
                       ),
@@ -67,7 +68,7 @@ class _NfcEligibilityView extends StatelessWidget {
     }
     if (state.status == NfcEligibilityStatus.failure || state.eligibility == null) {
       return AppErrorView(
-        message: state.errorMessage ?? 'Vérification impossible.',
+        message: state.errorMessage ?? 'Vérification impossible.'.tr(context),
         onRetry: () => context.read<NfcEligibilityCubit>().load(),
       );
     }
@@ -81,37 +82,37 @@ class _NfcEligibilityView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           NfcStatusCard(
-            title: canContinue ? 'Éligible' : 'Non éligible',
+            title: canContinue ? 'Éligible'.tr(context) : 'Non éligible'.tr(context),
             subtitle: canContinue
-                ? 'Vous pouvez préparer un jeton NFC hors-ligne.'
-                : 'Corrigez les points ci-dessous avant de continuer.',
+                ? 'Vous pouvez préparer un jeton NFC hors-ligne.'.tr(context)
+                : 'Corrigez les points ci-dessous avant de continuer.'.tr(context),
             icon: canContinue ? Icons.verified_rounded : Icons.block_rounded,
             iconColor: canContinue ? AppColors.primary : AppColors.error,
             checklist: [
               NfcChecklistRow(
-                label: 'Wallet actif',
+                label: 'Wallet actif'.tr(context),
                 ok: elig.walletActive,
               ),
               NfcChecklistRow(
-                label: 'Solde disponible',
+                label: 'Solde disponible'.tr(context),
                 ok: elig.availableBalance > 0,
                 detail: formatWalletAmount(elig.availableBalance),
               ),
               NfcChecklistRow(
-                label: 'Plafond NFC',
+                label: 'Plafond NFC'.tr(context),
                 ok: elig.maxAmount > 0,
                 detail: formatWalletAmount(elig.maxAmount),
               ),
               NfcChecklistRow(
-                label: elig.forceQrOnly ? 'Mode QR (iOS)' : 'NFC appareil',
+                label: elig.forceQrOnly ? 'Mode QR (iOS)'.tr(context) : 'NFC appareil'.tr(context),
                 ok: elig.forceQrOnly || elig.deviceNfcSupported,
                 detail: elig.forceQrOnly
-                    ? 'Parcours NFC masqué — QR uniquement'
-                    : (elig.deviceNfcSupported ? 'NFC activé' : 'QR de secours disponible'),
+                    ? 'Parcours NFC masqué — QR uniquement'.tr(context)
+                    : (elig.deviceNfcSupported ? 'NFC activé'.tr(context) : 'QR de secours disponible'.tr(context)),
               ),
               if (elig.offlineQuotaRemaining != null)
                 NfcChecklistRow(
-                  label: 'Quota hors-ligne restant',
+                  label: 'Quota hors-ligne restant'.tr(context),
                   ok: elig.offlineQuotaRemaining! > 0,
                   detail: formatWalletAmount(elig.offlineQuotaRemaining!),
                 ),
@@ -122,7 +123,7 @@ class _NfcEligibilityView extends StatelessWidget {
           ),
           const Spacer(),
           UrbanPrimaryButton(
-            label: 'Préparer un paiement',
+            label: 'Préparer un paiement'.tr(context),
             onPressed: canContinue
                 ? () => context.push(RouteConstants.nfcPay)
                 : null,
@@ -130,7 +131,7 @@ class _NfcEligibilityView extends StatelessWidget {
           if (!canContinue) ...[
             const SizedBox(height: 10),
             Text(
-              'Le bouton reste désactivé tant que les conditions ne sont pas remplies.',
+              'Le bouton reste désactivé tant que les conditions ne sont pas remplies.'.tr(context),
               textAlign: TextAlign.center,
               style: walletText(fontSize: 12, color: AppColors.textSecondary),
             ),
@@ -139,7 +140,7 @@ class _NfcEligibilityView extends StatelessWidget {
           TextButton(
             onPressed: () => context.push(RouteConstants.nfcReceive),
             child: Text(
-              'Mode conducteur — recevoir',
+              'Mode conducteur — recevoir'.tr(context),
               style: walletText(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.primary),
             ),
           ),

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/auth_form_cubit.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/pages/auth_route_args.dart';
@@ -60,27 +61,27 @@ class _RegisterViewState extends State<_RegisterView> {
       builder: (context, state) {
         final passwordMismatch = state.errorCode == 'PASSWORD_MISMATCH';
         return AuthScaffold(
-          title: 'Créer un compte',
+          title: 'Créer un compte'.tr(context),
           showBack: true,
           padding: const EdgeInsets.fromLTRB(22, 20, 22, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const _RegisterFieldLabel('Numéro de téléphone'),
+              _RegisterFieldLabel('Numéro de téléphone'.tr(context)),
               _RegisterPhoneInput(controller: _phoneController),
               const SizedBox(height: 12),
-              const _RegisterFieldLabel('Nom complet'),
+              _RegisterFieldLabel('Nom complet'.tr(context)),
               _RegisterTextField(
                 controller: _nameController,
-                hintText: 'Nom & Prénom',
+                hintText: 'Nom & Prénom'.tr(context),
                 prefixIcon: const MotodigoPersonGrayIcon(),
               ),
               const SizedBox(height: 12),
-              const _RegisterFieldLabel('Mot de passe'),
-              _RegisterPasswordField(controller: _passwordController, hintText: 'mot de passe'),
+              _RegisterFieldLabel('Mot de passe'.tr(context)),
+              _RegisterPasswordField(controller: _passwordController, hintText: 'mot de passe'.tr(context)),
               const SizedBox(height: 10),
-              const Text(
-                'Au moins 8 caractères, dont un chiffre.',
+              Text(
+                'Au moins 8 caractères, dont un chiffre.'.tr(context),
                 style: TextStyle(
                   color: Color(0xFF8E9A91),
                   fontSize: 17,
@@ -88,10 +89,10 @@ class _RegisterViewState extends State<_RegisterView> {
                 ),
               ),
               const SizedBox(height: 12),
-              const _RegisterFieldLabel('Confirmer le mot de passe'),
+              _RegisterFieldLabel('Confirmer le mot de passe'.tr(context)),
               _RegisterPasswordField(
                 controller: _confirmController,
-                hintText: 'mot de passe',
+                hintText: 'mot de passe'.tr(context),
                 hasError: passwordMismatch,
               ),
               if (state.errorMessage != null && state.errorMessage!.isNotEmpty) ...[
@@ -105,7 +106,7 @@ class _RegisterViewState extends State<_RegisterView> {
               ),
               const SizedBox(height: 40),
               _RegisterSubmitButton(
-                label: 'Créer mon compte',
+                label: 'Créer mon compte'.tr(context),
                 isLoading: state.isLoading,
                 onPressed: () => context.read<AuthFormCubit>().register(
                   rawPhoneNumber: _phoneController.text,
@@ -311,7 +312,7 @@ class _RegisterPasswordFieldState extends State<_RegisterPasswordField> {
           ? const MotodigoWrongPasswordRedIcon()
           : const MotodigoPasswordGrayIcon(),
       suffixIcon: IconButton(
-        tooltip: _obscure ? 'Afficher' : 'Masquer',
+        tooltip: (_obscure ? 'Afficher' : 'Masquer').tr(context),
         padding: EdgeInsets.zero,
         constraints: const BoxConstraints.tightFor(width: 42, height: 42),
         onPressed: () => setState(() => _obscure = !_obscure),
@@ -379,18 +380,18 @@ class _TermsAcceptanceRow extends StatelessWidget {
                   ),
           ),
           const SizedBox(width: 16),
-          const Expanded(
+          Expanded(
             child: Text.rich(
               TextSpan(
-                text: "J'accepte les ",
+                text: "J'accepte les ".tr(context),
                 children: [
                   TextSpan(
-                    text: "Conditions d'utilisation",
+                    text: "Conditions d'utilisation".tr(context),
                     style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900),
                   ),
-                  TextSpan(text: ' et la '),
+                  TextSpan(text: ' et la '.tr(context)),
                   TextSpan(
-                    text: 'Politique de confidentialité.',
+                    text: 'Politique de confidentialité.'.tr(context),
                     style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900),
                   ),
                 ],

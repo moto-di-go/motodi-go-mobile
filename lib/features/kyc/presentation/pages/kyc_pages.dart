@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/core/widgets/app_error_view.dart';
 import 'package:motodi_go_mobile/core/widgets/app_loading.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
@@ -58,25 +59,25 @@ class KycStatusPage extends StatelessWidget {
           if (state.status == KycStatus.loading || state.bundle == null) {
             if (state.status == KycStatus.failure) {
               return _KycScaffold(
-                title: 'Validation du profil',
+                title: 'Validation du profil'.tr(context),
                 showBack: true,
                 child: AppErrorView(
-                  message: state.errorMessage ?? 'Chargement KYC impossible.',
+                  message: state.errorMessage ?? 'Chargement KYC impossible.'.tr(context),
                   onRetry: () => context.read<KycCubit>().load(),
                 ),
               );
             }
-            return const _KycScaffold(
-              title: 'Validation du profil',
+            return _KycScaffold(
+              title: 'Validation du profil'.tr(context),
               showBack: true,
               child: AppLoading(),
             );
           }
           return _KycScaffold(
-            title: 'Validation du profil',
+            title: 'Validation du profil'.tr(context),
             showBack: true,
             bottom: _KycBottomButton(
-              label: 'Continuer la validation',
+              label: 'Continuer la validation'.tr(context),
               onPressed: () => context.go(RouteConstants.kycDocuments),
             ),
             child: _KycStatusContent(bundle: state.bundle!),
@@ -99,17 +100,17 @@ class KycDocumentsPage extends StatelessWidget {
           if (state.status == KycStatus.loading || state.bundle == null) {
             if (state.status == KycStatus.failure) {
               return _KycScaffold(
-                title: 'Mes documents',
+                title: 'Mes documents'.tr(context),
                 child: AppErrorView(
-                  message: state.errorMessage ?? 'Chargement KYC impossible.',
+                  message: state.errorMessage ?? 'Chargement KYC impossible.'.tr(context),
                   onRetry: () => context.read<KycCubit>().load(),
                 ),
               );
             }
-            return const _KycScaffold(title: 'Mes documents', child: AppLoading());
+            return _KycScaffold(title: 'Mes documents'.tr(context), child: AppLoading());
           }
           return _KycScaffold(
-            title: 'Mes documents',
+            title: 'Mes documents'.tr(context),
             child: _DocumentsList(bundle: state.bundle!),
           );
         },
@@ -173,14 +174,14 @@ class _KycStatusTabs extends StatelessWidget {
         children: [
           Expanded(
             child: _KycStatusTab(
-              label: 'Requis',
+              label: 'Requis'.tr(context),
               selected: selected == _KycStatusTabKind.required,
               onTap: () => onChanged(_KycStatusTabKind.required),
             ),
           ),
           Expanded(
             child: _KycStatusTab(
-              label: 'En cours',
+              label: 'En cours'.tr(context),
               selected: selected == _KycStatusTabKind.inProgress,
               onTap: () => onChanged(_KycStatusTabKind.inProgress),
             ),
@@ -273,9 +274,9 @@ class _KycInProgressView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!_hasSubmittedBundleInProgress(bundle)) {
-      return const _KycEmptyState(
-        title: 'Aucun dossier soumis',
-        message: 'Tous les documents requis doivent etre fournis avant le suivi de verification.',
+      return _KycEmptyState(
+        title: 'Aucun dossier soumis'.tr(context),
+        message: 'Tous les documents requis doivent etre fournis avant le suivi de verification.'.tr(context),
       );
     }
     final submittedAt = _latestSubmittedAt(bundle);
@@ -307,7 +308,7 @@ class _KycInProgressView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Dossier soumis',
+                      'Dossier soumis'.tr(context),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: AppColors.textPrimary,
                         fontWeight: FontWeight.w900,
@@ -316,7 +317,9 @@ class _KycInProgressView extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       submittedAt == null
-                          ? 'En cours de verification'
+                          ? 'En cours de verification'.tr(context)
+                          : Localizations.localeOf(context).languageCode == 'en'
+                          ? 'Submitted on ${_formatShortDate(submittedAt)}'
                           : 'Soumis le ${_formatShortDate(submittedAt)}',
                       style: const TextStyle(
                         color: Color(0xFF8A6410),
@@ -331,20 +334,20 @@ class _KycInProgressView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 28),
-        const _KycTimelineStep(
-          title: 'Documents soumis',
-          subtitle: 'Dossier complet',
+        _KycTimelineStep(
+          title: 'Documents soumis'.tr(context),
+          subtitle: 'Dossier complet'.tr(context),
           active: true,
           icon: Icons.check_rounded,
         ),
-        const _KycTimelineStep(
-          title: 'Verification en cours',
-          subtitle: 'En traitement',
+        _KycTimelineStep(
+          title: 'Verification en cours'.tr(context),
+          subtitle: 'En traitement'.tr(context),
           warning: true,
           icon: Icons.circle,
         ),
-        const _KycTimelineStep(
-          title: 'Decision',
+        _KycTimelineStep(
+          title: 'Decision'.tr(context),
           subtitle: 'En attente',
           icon: Icons.shield_outlined,
         ),
@@ -375,9 +378,9 @@ class _KycHistoryView extends StatelessWidget {
           });
 
     if (decisions.isEmpty) {
-      return const _KycEmptyState(
-        title: 'Aucun historique',
-        message: 'Les dossiers valides ou rejetes apparaitront ici apres decision admin.',
+      return _KycEmptyState(
+        title: 'Aucun historique'.tr(context),
+        message: 'Les dossiers valides ou rejetes apparaitront ici apres decision admin.'.tr(context),
       );
     }
 
@@ -464,7 +467,7 @@ class _KycEmptyState extends StatelessWidget {
   final String title;
   final String message;
 
-  const _KycEmptyState({required this.title, required this.message});
+  _KycEmptyState({required this.title, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -512,7 +515,7 @@ class _KycTimelineStep extends StatelessWidget {
   final bool active;
   final bool warning;
 
-  const _KycTimelineStep({
+  _KycTimelineStep({
     required this.title,
     required this.subtitle,
     required this.icon,
@@ -593,7 +596,7 @@ class _KycProgressCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  'Statut global',
+                  'Statut global'.tr(context),
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: AppColors.textPrimary,
                     fontSize: 18,
@@ -601,7 +604,7 @@ class _KycProgressCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const _KycCompletionPill(),
+              _KycCompletionPill(),
             ],
           ),
           const SizedBox(height: 22),
@@ -609,7 +612,9 @@ class _KycProgressCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  '${bundle.providedCount} / ${bundle.requiredCount} documents fournis',
+                  Localizations.localeOf(context).languageCode == 'en'
+                  ? '${bundle.providedCount} / ${bundle.requiredCount} documents provided'
+                  : '${bundle.providedCount} / ${bundle.requiredCount} documents fournis',
                   style: const TextStyle(
                     color: Color(0xFF54615A),
                     fontSize: 18,
@@ -644,7 +649,7 @@ class _KycProgressCard extends StatelessWidget {
 }
 
 class _KycCompletionPill extends StatelessWidget {
-  const _KycCompletionPill();
+  _KycCompletionPill();
 
   @override
   Widget build(BuildContext context) {
@@ -654,13 +659,13 @@ class _KycCompletionPill extends StatelessWidget {
         color: const Color(0xFFFFEDB7),
         borderRadius: BorderRadius.circular(999),
       ),
-      child: const Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          CircleAvatar(radius: 3.5, backgroundColor: Color(0xFFF3C316)),
-          SizedBox(width: 7),
+          const CircleAvatar(radius: 3.5, backgroundColor: Color(0xFFF3C316)),
+          const SizedBox(width: 7),
           Text(
-            'À compléter',
+            'À compléter'.tr(context),
             style: TextStyle(
               color: Color(0xFF8A6410),
               fontSize: 13,
@@ -757,28 +762,28 @@ class KycPreviewPage extends StatelessWidget {
     final selectedDraft = draft;
     if (selectedDraft == null) {
       return _KycScaffold(
-        title: 'Aperçu du document',
+        title: 'Aperçu du document'.tr(context),
         child: AppErrorView(
-          message: 'Aucun document selectionne.',
+          message: 'Aucun document selectionne.'.tr(context),
           onRetry: () => context.go(RouteConstants.kycDocuments),
         ),
       );
     }
     return _KycScaffold(
-      title: 'Aperçu du document',
+      title: 'Aperçu du document'.tr(context),
       bottom: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           _KycBottomButton(
-            label: 'Envoyer',
+            label: 'Envoyer'.tr(context),
             leading: const MotodigoUploadWhiteIcon(size: 21),
             onPressed: () => context.push(RouteConstants.kycUploading, extra: selectedDraft),
           ),
           const SizedBox(height: 12),
           TextButton(
             onPressed: () => context.go(RouteConstants.kycDocuments),
-            child: const Text(
-              'Reprendre',
+            child: Text(
+              'Reprendre'.tr(context),
               style: TextStyle(color: Color(0xFF54615A), fontSize: 15, fontWeight: FontWeight.w800),
             ),
           ),
@@ -810,9 +815,9 @@ class _KycUploadingPageState extends State<KycUploadingPage> {
     final draft = widget.draft;
     if (draft == null) {
       return _KycScaffold(
-        title: 'Envoi en cours',
+        title: 'Envoi en cours'.tr(context),
         child: AppErrorView(
-          message: 'Aucun document selectionne.',
+          message: 'Aucun document selectionne.'.tr(context),
           onRetry: () => context.go(RouteConstants.kycDocuments),
         ),
       );
@@ -850,13 +855,13 @@ class _KycUploadingPageState extends State<KycUploadingPage> {
         builder: (context, state) {
           if (state.status == KycStatus.failure) {
             return _KycScaffold(
-              title: 'Envoi impossible',
+              title: 'Envoi impossible'.tr(context),
               bottom: SecondaryAuthButton(
-                label: 'Retour aux documents',
+                label: 'Retour aux documents'.tr(context),
                 onPressed: () => context.go(RouteConstants.kycDocuments),
               ),
               child: AppErrorView(
-                message: state.errorMessage ?? "L'envoi du document a echoue. Reessayez.",
+                message: state.errorMessage ?? "L'envoi du document a echoue. Reessayez.".tr(context),
                 onRetry: () => context.read<KycCubit>().uploadDraft(draft),
               ),
             );
@@ -877,8 +882,8 @@ class _KycUploadingPageState extends State<KycUploadingPage> {
                       child: MotodigoUploadGreenIcon(size: 46),
                     ),
                     const SizedBox(height: 28),
-                    const Text(
-                      'Envoi en cours...',
+                    Text(
+                      'Envoi en cours...'.tr(context),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: AppColors.textPrimary,
@@ -919,13 +924,13 @@ class _KycUploadingPageState extends State<KycUploadingPage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.lock_outline_rounded, color: AppColors.primary, size: 15),
-                        SizedBox(width: 7),
+                        const Icon(Icons.lock_outline_rounded, color: AppColors.primary, size: 15),
+                        const SizedBox(width: 7),
                         Text(
-                          'Chiffrement et envoi sécurisé',
+                          'Chiffrement et envoi sécurisé'.tr(context),
                           style: TextStyle(
                             color: Color(0xFF8A968C),
                             fontSize: 12.5,
@@ -936,7 +941,7 @@ class _KycUploadingPageState extends State<KycUploadingPage> {
                     ),
                     const Spacer(),
                     _KycCancelUploadButton(
-                      label: "Annuler l'envoi",
+                      label: "Annuler l'envoi".tr(context),
                       onPressed: () {
                         context.read<KycCubit>().cancelUpload();
                         context.go(RouteConstants.kycDocuments);
@@ -983,7 +988,7 @@ class KycUploadSuccessPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
                 Text(
-                  'Document envoye',
+                  'Document envoye'.tr(context),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                     fontWeight: FontWeight.w900,
@@ -992,7 +997,9 @@ class KycUploadSuccessPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Votre $documentType est maintenant en attente de verification. Vous serez notifie de la decision.',
+                  Localizations.localeOf(context).languageCode == 'en'
+                    ? 'Your $documentType is now awaiting verification. You will be notified of the decision.'
+                    : 'Votre $documentType est maintenant en attente de verification. Vous serez notifie de la decision.',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: AppColors.textSecondary,
@@ -1002,12 +1009,12 @@ class KycUploadSuccessPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 36),
                 PrimaryAuthButton(
-                  label: 'Voir mes documents',
+                  label: 'Voir mes documents'.tr(context),
                   onPressed: () => context.go(RouteConstants.kycDocuments),
                 ),
                 const SizedBox(height: 14),
                 SecondaryAuthButton(
-                  label: 'Ajouter un autre document',
+                  label: 'Ajouter un autre document'.tr(context),
                   onPressed: () => context.go(RouteConstants.kycDocuments),
                 ),
               ],
@@ -1029,9 +1036,9 @@ class KycInvalidFilePage extends StatelessWidget {
     final validation = args?.validation;
     final issues = validation?.issues ?? const <KycFileIssue>[KycFileIssue.unsupportedFormat];
     return _KycScaffold(
-      title: 'Fichier invalide',
+      title: 'Fichier invalide'.tr(context),
       bottom: PrimaryAuthButton(
-        label: 'Choisir un autre fichier',
+        label: 'Choisir un autre fichier'.tr(context),
         onPressed: () => context.go(RouteConstants.kycDocuments),
       ),
       child: Column(
@@ -1070,7 +1077,7 @@ class KycInvalidFilePage extends StatelessWidget {
                 Expanded(
                   child: Text(
                     args?.message ??
-                        'Ce fichier ne peut pas etre envoye. Corrigez les points ci-dessous puis reessayez.',
+                        'Ce fichier ne peut pas etre envoye. Corrigez les points ci-dessous puis reessayez.'.tr(context),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: const Color(0xFFC62828),
                       fontWeight: FontWeight.w900,
@@ -1122,12 +1129,12 @@ class KycSubmittedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _KycScaffold(
-      title: 'Dossier soumis',
+      title: 'Dossier soumis'.tr(context),
       bottom: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           _KycBottomButton(
-            label: 'Voir mes documents',
+            label: 'Voir mes documents'.tr(context),
             onPressed: () => context.go(RouteConstants.kycDocuments),
           ),
           const SizedBox(height: 14),
@@ -1151,8 +1158,8 @@ class KycSubmittedPage extends StatelessWidget {
             child: const Center(child: MotodigoPendingYellowIcon(size: 34)),
           ),
           const SizedBox(height: 36),
-          const Text(
-            'Dossier en cours de\nvérification',
+          Text(
+            'Dossier en cours de\nvérification'.tr(context),
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 30,
@@ -1161,7 +1168,7 @@ class KycSubmittedPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          const Text.rich(
+          Text.rich(
             TextSpan(
               children: [
                 TextSpan(
@@ -1169,7 +1176,7 @@ class KycSubmittedPage extends StatelessWidget {
                   style: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w500),
                 ),
                 TextSpan(
-                  text: '24 à 48 h',
+                  text: '24 à 48 h'.tr(context),
                   style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w900),
                 ),
                 TextSpan(
@@ -1187,23 +1194,25 @@ class KycSubmittedPage extends StatelessWidget {
               backgroundColor: AppColors.primary,
               child: Icon(Icons.check_rounded, color: Colors.white, size: 27),
             ),
-            title: 'Documents soumis',
-            subtitle: "Aujourd'hui · ${_formatClock(DateTime.now())}",
+            title: 'Documents soumis'.tr(context),
+            subtitle: Localizations.localeOf(context).languageCode == 'en'
+              ? "Today · ${_formatClock(DateTime.now())}"
+              : "Aujourd'hui · ${_formatClock(DateTime.now())}",
             active: true,
           ),
-          const _SubmittedTimelineStep(
+          _SubmittedTimelineStep(
             marker: MotodigoFolderVerificationIcon(size: 42),
-            title: 'Vérification en cours',
-            subtitle: 'En traitement',
+            title: 'Vérification en cours'.tr(context),
+            subtitle: 'En traitement'.tr(context),
             warning: true,
           ),
-          const _SubmittedTimelineStep(
+          _SubmittedTimelineStep(
             marker: CircleAvatar(
               radius: 20,
               backgroundColor: Color(0xFFEFF1EC),
               child: MotodigoFolderCheckedWhiteIcon(size: 21, color: Color(0xFF9BA69E)),
             ),
-            title: 'Décision',
+            title: 'Décision'.tr(context),
             subtitle: 'En attente',
             last: true,
           ),
@@ -1221,7 +1230,7 @@ class _SubmittedTimelineStep extends StatelessWidget {
   final bool warning;
   final bool last;
 
-  const _SubmittedTimelineStep({
+  _SubmittedTimelineStep({
     required this.marker,
     required this.title,
     required this.subtitle,
@@ -1294,27 +1303,27 @@ class KycRejectedDocumentPage extends StatelessWidget {
     final selected = document;
     if (selected == null) {
       return _KycScaffold(
-        title: 'Document rejete',
+        title: 'Document rejete'.tr(context),
         child: AppErrorView(
-          message: 'Aucun document rejete selectionne.',
+          message: 'Aucun document rejete selectionne.'.tr(context),
           onRetry: () => context.go(RouteConstants.kycDocuments),
         ),
       );
     }
     return _KycScaffold(
-      title: 'Document rejete',
+      title: 'Document rejete'.tr(context),
       bottom: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           PrimaryAuthButton(
-            label: 'Remplacer le document',
+            label: 'Remplacer le document'.tr(context),
             leadingIcon: Icons.sync_rounded,
             onPressed: () => _openUploadSourceSheet(context, selected.type),
           ),
           const SizedBox(height: 12),
           TextButton(
             onPressed: () => launchUrl(Uri.parse('mailto:support@motodigo.com')),
-            child: const Text('Contacter le support'),
+            child: Text('Contacter le support'.tr(context)),
           ),
         ],
       ),
@@ -1339,7 +1348,9 @@ class KycRejectedDocumentPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${selected.type.shortLabel} rejetee',
+                        Localizations.localeOf(context).languageCode == 'en'
+                          ? '${selected.type.shortLabel} rejected'
+                          : '${selected.type.shortLabel} rejetee',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: const Color(0xFFC62828),
                           fontWeight: FontWeight.w900,
@@ -1347,7 +1358,9 @@ class KycRejectedDocumentPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'Motif : ${selected.rejectionReason ?? 'Document non conforme.'}',
+                        Localizations.localeOf(context).languageCode == 'en'
+                            ? 'Reason: ${selected.rejectionReason ?? 'Non-compliant document.'}'
+                            : 'Motif : ${selected.rejectionReason ?? 'Document non conforme.'}',
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           color: const Color(0xFFC62828),
                           height: 1.45,
@@ -1369,15 +1382,15 @@ class KycRejectedDocumentPage extends StatelessWidget {
             backgroundColor: const Color(0xFFF1F2ED),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
             collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-            title: const Text(
-              'Voir les consignes detaillees',
-              style: TextStyle(fontWeight: FontWeight.w900, color: AppColors.textSecondary),
+            title: Text(
+              'Voir les consignes detaillees'.tr(context),
+              style: const TextStyle(fontWeight: FontWeight.w900, color: AppColors.textSecondary),
             ),
-            children: const [
+            children: [
               Padding(
-                padding: EdgeInsets.fromLTRB(18, 0, 18, 18),
+                padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
                 child: Text(
-                  'Le document doit etre lisible, complet et montrer clairement les informations obligatoires.',
+                  'Le document doit etre lisible, complet et montrer clairement les informations obligatoires.'.tr(context),
                   style: TextStyle(color: AppColors.textSecondary, height: 1.4),
                 ),
               ),
@@ -1397,7 +1410,7 @@ class KycVerifiedPage extends StatelessWidget {
     return _KycScaffold(
       showBack: false,
       bottom: PrimaryAuthButton(
-        label: 'Activer mon profil',
+        label: 'Activer mon profil'.tr(context),
         onPressed: () => context.go(RouteConstants.home),
       ),
       child: Column(
@@ -1419,13 +1432,13 @@ class KycVerifiedPage extends StatelessWidget {
               color: AppColors.primaryLight,
               borderRadius: BorderRadius.circular(22),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.check_circle_outline_rounded, color: AppColors.primary),
-                SizedBox(width: 8),
+                const Icon(Icons.check_circle_outline_rounded, color: AppColors.primary),
+                const SizedBox(width: 8),
                 Text(
-                  'Profil verifie',
+                  'Profil verifie'.tr(context),
                   style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900),
                 ),
               ],
@@ -1433,7 +1446,7 @@ class KycVerifiedPage extends StatelessWidget {
           ),
           const SizedBox(height: 34),
           Text(
-            'Votre profil mototaxi est valide',
+            'Votre profil mototaxi est valide'.tr(context),
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.displaySmall?.copyWith(
               color: AppColors.textPrimary,
@@ -1443,7 +1456,7 @@ class KycVerifiedPage extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'Vous avez desormais acces aux fonctions conducteur : disponibilite, trajets et partage de position.',
+            'Vous avez desormais acces aux fonctions conducteur : disponibilite, trajets et partage de position.'.tr(context),
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               color: AppColors.textSecondary,
@@ -1467,7 +1480,7 @@ class KycNotificationDetailPage extends StatelessWidget {
     final notification =
         payload ??
         KycNotificationPayload(
-          title: 'Votre profil mototaxi est valide',
+          title: 'Votre profil mototaxi est valide'.tr(context),
           body:
               'Bonne nouvelle ! Tous vos documents ont ete acceptes. Vous pouvez maintenant passer en ligne et recevoir des courses.',
           status: ValidationStatus.validated,
@@ -1484,7 +1497,7 @@ class KycNotificationDetailPage extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    'Banniere systeme',
+                    'Banniere systeme'.tr(context),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: AppColors.textSecondary,
                       fontWeight: FontWeight.w900,
@@ -1552,8 +1565,8 @@ class KycNotificationDetailPage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 30),
-                            const Text(
-                              'DETAIL DE LA NOTIFICATION',
+                            Text(
+                              'DETAIL DE LA NOTIFICATION'.tr(context),
                               style: TextStyle(
                                 color: AppColors.textTertiary,
                                 fontWeight: FontWeight.w900,
@@ -1598,7 +1611,7 @@ class KycNotificationDetailPage extends StatelessWidget {
                       ),
                     ),
                     PrimaryAuthButton(
-                      label: 'Ouvrir le statut KYC',
+                      label: 'Ouvrir le statut KYC'.tr(context),
                       trailingIcon: Icons.arrow_forward_rounded,
                       onPressed: () => context.go(RouteConstants.kycDocuments),
                     ),
@@ -1671,7 +1684,7 @@ class _KycScaffold extends StatelessWidget {
   final Widget? bottom;
   final bool showBack;
 
-  const _KycScaffold({this.title, required this.child, this.bottom, this.showBack = true});
+  _KycScaffold({this.title, required this.child, this.bottom, this.showBack = true});
 
   @override
   Widget build(BuildContext context) {
@@ -1850,8 +1863,8 @@ class _DocumentListTile extends StatelessWidget {
                 minimumSize: const Size(48, 32),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              child: const Text(
-                'Détails',
+              child: Text(
+                'Détails'.tr(context),
                 style: TextStyle(
                   color: Color(0xFFC62828),
                   fontSize: 13,
@@ -1944,7 +1957,7 @@ class _DocumentAddButton extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: onPressed,
         icon: const Icon(Icons.add_rounded, size: 17),
-        label: const Text('Ajouter'),
+        label: Text('Ajouter'.tr(context)),
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 13),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
@@ -2036,7 +2049,9 @@ class _PreviewFrame extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                'aperçu — ${_documentLabel(draft.documentType).toLowerCase()} (recto)',
+                Localizations.localeOf(context).languageCode == 'en'
+                    ? 'preview — ${_documentLabel(draft.documentType).toLowerCase()} (front)'
+                    : 'aperçu — ${_documentLabel(draft.documentType).toLowerCase()} (recto)',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -2169,7 +2184,9 @@ class _UploadedFileSummary extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Envoye le ${_formatShortDate(document.uploadedAt)} - ${_formatSize(document.sizeBytes)}',
+                  Localizations.localeOf(context).languageCode == 'en'
+                    ? 'Sent on ${_formatShortDate(document.uploadedAt)} - ${_formatSize(document.sizeBytes)}'
+                    : 'Envoye le ${_formatShortDate(document.uploadedAt)} - ${_formatSize(document.sizeBytes)}',
                   style: const TextStyle(
                     color: AppColors.textTertiary,
                     fontWeight: FontWeight.w700,
@@ -2314,7 +2331,7 @@ class _UploadSourceSheet extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               Text(
-                'Ajouter un document',
+                'Ajouter un document'.tr(context),
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                   color: AppColors.textPrimary,
                   fontSize: 26,
@@ -2323,7 +2340,9 @@ class _UploadSourceSheet extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                '${_documentLabel(type)} · JPG, PNG ou PDF · 5 Mo max ·\ndocument lisible.',
+                Localizations.localeOf(context).languageCode == 'en'
+                    ? '${_documentLabel(type)} · JPG, PNG or PDF · 5 MB max ·\nreadable document.'
+                    : '${_documentLabel(type)} · JPG, PNG ou PDF · 5 Mo max ·\ndocument lisible.',
                 style: const TextStyle(
                   color: Color(0xFF8A968C),
                   fontSize: 16,
@@ -2334,24 +2353,24 @@ class _UploadSourceSheet extends StatelessWidget {
               const SizedBox(height: 24),
               _UploadOption(
                 icon: const MotodigoCameraGreenIcon(size: 28),
-                title: 'Prendre une photo',
-                subtitle: 'Utiliser la caméra',
+                title: 'Prendre une photo'.tr(context),
+                subtitle: 'Utiliser la caméra'.tr(context),
                 onTap: () async =>
                     Navigator.of(context).pop(await _pickImage(type, ImageSource.camera)),
               ),
               const SizedBox(height: 14),
               _UploadOption(
                 icon: const MotodigoPictureGreenIcon(size: 28),
-                title: 'Choisir dans la galerie',
-                subtitle: 'Photos existantes',
+                title: 'Choisir dans la galerie'.tr(context),
+                subtitle: 'Photos existantes'.tr(context),
                 onTap: () async =>
                     Navigator.of(context).pop(await _pickImage(type, ImageSource.gallery)),
               ),
               const SizedBox(height: 14),
               _UploadOption(
                 icon: const MotodigoFileLeftGrayIcon(size: 28, color: AppColors.primary),
-                title: 'Importer un PDF',
-                subtitle: 'Depuis vos fichiers',
+                title: 'Importer un PDF'.tr(context),
+                subtitle: 'Depuis vos fichiers'.tr(context),
                 onTap: () async => Navigator.of(context).pop(await _pickPdf(type)),
               ),
             ],

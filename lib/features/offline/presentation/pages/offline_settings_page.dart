@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/offline/presentation/cubit/offline_settings_cubit.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/offline/presentation/widgets/offline_widgets.dart';
 
 class OfflineSettingsPage extends StatelessWidget {
@@ -51,7 +52,7 @@ class _OfflineSettingsView extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      'Cache hors-ligne',
+                      'Cache hors-ligne'.tr(context),
                       style: offlineText(fontSize: 26, fontWeight: FontWeight.w800),
                     ),
                   ],
@@ -69,7 +70,7 @@ class _OfflineSettingsView extends StatelessWidget {
                     children: [
                       ListTile(
                         title: Text(
-                          'Sync auto à la reconnexion',
+                          'Sync auto à la reconnexion'.tr(context),
                           style: offlineText(fontSize: 15, fontWeight: FontWeight.w700),
                         ),
                         trailing: CupertinoSwitch(
@@ -83,7 +84,7 @@ class _OfflineSettingsView extends StatelessWidget {
                       const Divider(height: 1),
                       ListTile(
                         title: Text(
-                          'Conserver les reçus',
+                          'Conserver les reçus'.tr(context),
                           style: offlineText(fontSize: 15, fontWeight: FontWeight.w700),
                         ),
                         trailing: CupertinoSwitch(
@@ -97,7 +98,7 @@ class _OfflineSettingsView extends StatelessWidget {
                       const Divider(height: 1),
                       ListTile(
                         title: Text(
-                          'Conserver les réservations',
+                          'Conserver les réservations'.tr(context),
                           style: offlineText(fontSize: 15, fontWeight: FontWeight.w700),
                         ),
                         trailing: CupertinoSwitch(
@@ -111,11 +112,11 @@ class _OfflineSettingsView extends StatelessWidget {
                       const Divider(height: 1),
                       ListTile(
                         title: Text(
-                          'Limite cache',
+                          'Limite cache'.tr(context),
                           style: offlineText(fontSize: 15, fontWeight: FontWeight.w700),
                         ),
                         subtitle: Text(
-                          '${s.maxCacheMb} Mo',
+                          Localizations.localeOf(context).languageCode == 'en' ? '${s.maxCacheMb} MB' : '${s.maxCacheMb} Mo',
                           style: offlineText(fontSize: 13, color: AppColors.textSecondary),
                         ),
                         trailing: Row(
@@ -147,7 +148,7 @@ class _OfflineSettingsView extends StatelessWidget {
                     await context.read<OfflineSettingsCubit>().clearCaches();
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Cache vidé')),
+                        SnackBar(content: Text('Cache vidé'.tr(context))),
                       );
                     }
                   },
@@ -158,7 +159,7 @@ class _OfflineSettingsView extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
                   ),
                   child: Text(
-                    'Vider le cache local',
+                    'Vider le cache local'.tr(context),
                     style: offlineText(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.error),
                   ),
                 ),

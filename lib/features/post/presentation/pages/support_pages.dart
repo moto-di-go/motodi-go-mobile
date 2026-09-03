@@ -10,6 +10,7 @@ import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_formatters.dart';
 import 'package:motodi_go_mobile/features/post/domain/entities/post_entities.dart';
 import 'package:motodi_go_mobile/features/post/presentation/cubit/support_cubit.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/post/presentation/widgets/post_ui.dart';
 
 class SupportFormPage extends StatelessWidget {
@@ -54,12 +55,12 @@ class _SupportFormView extends StatelessWidget {
                       PostBackButton(onTap: () => context.pop()),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: Text('Support', style: postText(fontSize: 28, fontWeight: FontWeight.w800)),
+                        child: Text('Support'.tr(context), style: postText(fontSize: 28, fontWeight: FontWeight.w800)),
                       ),
                       TextButton(
                         onPressed: () => context.push(RouteConstants.supportTickets),
                         child: Text(
-                          'Mes tickets',
+                          'Mes tickets'.tr(context),
                           style: postText(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.primary),
                         ),
                       ),
@@ -71,7 +72,7 @@ class _SupportFormView extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
                     children: [
                       Text(
-                        'Décrivez votre problème. Une connexion internet est requise pour envoyer le ticket.',
+                        'Décrivez votre problème. Une connexion internet est requise pour envoyer le ticket.'.tr(context),
                         style: postText(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -84,7 +85,7 @@ class _SupportFormView extends StatelessWidget {
                         SupportContextCard(contextData: state.context!),
                       ],
                       const SizedBox(height: 18),
-                      Text('Catégorie', style: postText(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
+                      Text('Catégorie'.tr(context), style: postText(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
@@ -99,7 +100,7 @@ class _SupportFormView extends StatelessWidget {
                         }).toList(),
                       ),
                       const SizedBox(height: 16),
-                      Text('Priorité', style: postText(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
+                      Text('Priorité'.tr(context), style: postText(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
@@ -114,20 +115,20 @@ class _SupportFormView extends StatelessWidget {
                         }).toList(),
                       ),
                       const SizedBox(height: 16),
-                      Text('Sujet', style: postText(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
+                      Text('Sujet'.tr(context), style: postText(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
                       const SizedBox(height: 8),
                       TextField(
                         maxLength: 180,
                         onChanged: context.read<SupportCubit>().setSubject,
-                        decoration: _inputDecoration('Ex. Problème de paiement'),
+                        decoration: _inputDecoration('Ex. Problème de paiement'.tr(context)),
                       ),
                       const SizedBox(height: 8),
-                      Text('Message', style: postText(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
+                      Text('Message'.tr(context), style: postText(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
                       const SizedBox(height: 8),
                       TextField(
                         maxLines: 5,
                         onChanged: context.read<SupportCubit>().setMessage,
-                        decoration: _inputDecoration('Décrivez la situation…'),
+                        decoration: _inputDecoration('Décrivez la situation…'.tr(context)),
                       ),
                       if (state.errorMessage != null) ...[
                         const SizedBox(height: 8),
@@ -142,7 +143,7 @@ class _SupportFormView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                   child: PostPrimaryButton(
-                    label: 'Envoyer',
+                    label: 'Envoyer'.tr(context),
                     isLoading: state.formStatus == SupportFormStatus.submitting,
                     onPressed: () => context.read<SupportCubit>().submit(),
                   ),
@@ -233,26 +234,28 @@ class SupportTicketCreatedPage extends StatelessWidget {
               ),
               const SizedBox(height: 22),
               Text(
-                'Ticket créé',
+                'Ticket créé'.tr(context),
                 textAlign: TextAlign.center,
                 style: postText(fontSize: 28, fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 10),
               Text(
-                'Accusé de réception : ${ticket.ticketNumber}\nNotre équipe vous répondra dès que possible.',
+                Localizations.localeOf(context).languageCode == 'en'
+                    ? 'Acknowledgement: ${ticket.ticketNumber}\nOur team will respond as soon as possible.'
+                    : 'Accusé de réception : ${ticket.ticketNumber}\nNotre équipe vous répondra dès que possible.',
                 textAlign: TextAlign.center,
                 style: postText(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.textSecondary, height: 1.4),
               ),
               const Spacer(),
               PostPrimaryButton(
-                label: 'Voir mes tickets',
+                label: 'Voir mes tickets'.tr(context),
                 onPressed: () => context.go(RouteConstants.supportTickets),
               ),
               const SizedBox(height: 12),
               TextButton(
                 onPressed: () => context.go(RouteConstants.home),
                 child: Text(
-                  'Retour à l’accueil',
+                  'Retour à l’accueil'.tr(context),
                   style: postText(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.primary),
                 ),
               ),
@@ -293,7 +296,7 @@ class _SupportTicketsView extends StatelessWidget {
                   PostBackButton(onTap: () => context.canPop() ? context.pop() : context.go(RouteConstants.support)),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text('Mes tickets', style: postText(fontSize: 26, fontWeight: FontWeight.w800)),
+                    child: Text('Mes tickets'.tr(context), style: postText(fontSize: 26, fontWeight: FontWeight.w800)),
                   ),
                   IconButton(
                     onPressed: () => context.push(RouteConstants.support),
@@ -327,7 +330,7 @@ class _SupportTicketsView extends StatelessWidget {
                             border: Border.all(color: selected ? AppColors.primary : AppColors.outline),
                           ),
                           child: Text(
-                            status?.labelFr ?? 'Tous',
+                            status?.labelFr ?? 'Tous'.tr(context),
                             style: postText(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
@@ -350,7 +353,7 @@ class _SupportTicketsView extends StatelessWidget {
                   }
                   if (state.listStatus == SupportListStatus.failure && state.tickets.isEmpty) {
                     return AppErrorView(
-                      message: state.errorMessage ?? 'Chargement impossible.',
+                      message: state.errorMessage ?? 'Chargement impossible.'.tr(context),
                       onRetry: () => context.read<SupportCubit>().refreshTickets(),
                     );
                   }
@@ -369,9 +372,9 @@ class _SupportTicketsView extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
                         children: [
                           if (state.tickets.isEmpty)
-                            const PostEmptyState(
-                              title: 'Aucun ticket',
-                              message: 'Vos demandes support apparaîtront ici.',
+                            PostEmptyState(
+                              title: 'Aucun ticket'.tr(context),
+                              message: 'Vos demandes support apparaîtront ici.'.tr(context),
                             )
                           else
                             ...state.tickets.map(
@@ -478,7 +481,7 @@ class _SupportTicketDetailView extends StatelessWidget {
             }
             if (state.detailStatus == SupportDetailStatus.failure || state.selectedTicket == null) {
               return AppErrorView(
-                message: state.errorMessage ?? 'Ticket introuvable.',
+                message: state.errorMessage ?? 'Ticket introuvable.'.tr(context),
                 onRetry: () => context.read<SupportCubit>().loadTicketDetail(ticketId),
               );
             }
@@ -526,7 +529,9 @@ class _SupportTicketDetailView extends StatelessWidget {
                             ),
                             const SizedBox(height: 14),
                             Text(
-                              'Créé le ${formatShortDate(ticket.createdAt.toLocal())}',
+                              Localizations.localeOf(context).languageCode == 'en'
+                                  ? 'Created on ${formatShortDate(ticket.createdAt.toLocal())}'
+                                  : 'Créé le ${formatShortDate(ticket.createdAt.toLocal())}',
                               style: postText(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textTertiary),
                             ),
                           ],

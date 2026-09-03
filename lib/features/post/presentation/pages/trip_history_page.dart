@@ -8,6 +8,7 @@ import 'package:motodi_go_mobile/core/widgets/trip_history_card.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/post/domain/entities/post_entities.dart';
 import 'package:motodi_go_mobile/features/post/presentation/cubit/trip_history_cubit.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/post/presentation/widgets/post_ui.dart';
 
 class TripHistoryPage extends StatelessWidget {
@@ -40,7 +41,7 @@ class _TripHistoryView extends StatelessWidget {
                   PostBackButton(onTap: () => context.canPop() ? context.pop() : context.go(RouteConstants.profile)),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text('Historique', style: postText(fontSize: 28, fontWeight: FontWeight.w800)),
+                    child: Text('Historique'.tr(context), style: postText(fontSize: 28, fontWeight: FontWeight.w800)),
                   ),
                   IconButton(
                     onPressed: () => _openFilters(context),
@@ -60,7 +61,7 @@ class _TripHistoryView extends StatelessWidget {
                   }
                   if (state.status == TripHistoryViewStatus.failure && state.items.isEmpty) {
                     return AppErrorView(
-                      message: state.errorMessage ?? 'Chargement impossible.',
+                      message: state.errorMessage ?? 'Chargement impossible.'.tr(context),
                       onRetry: () => context.read<TripHistoryCubit>().refresh(),
                     );
                   }
@@ -80,11 +81,11 @@ class _TripHistoryView extends StatelessWidget {
                         children: [
                           if (state.items.isEmpty)
                             PostEmptyState(
-                              title: 'Aucun trajet',
+                              title: 'Aucun trajet'.tr(context),
                               message: switch (state.tab) {
-                                TripHistoryTab.past => 'Vos trajets terminés apparaîtront ici.',
-                                TripHistoryTab.upcoming => 'Aucun trajet à venir pour le moment.',
-                                TripHistoryTab.cancelled => 'Aucun trajet annulé.',
+                                TripHistoryTab.past => 'Vos trajets terminés apparaîtront ici.'.tr(context),
+                                TripHistoryTab.upcoming => 'Aucun trajet à venir pour le moment.'.tr(context),
+                                TripHistoryTab.cancelled => 'Aucun trajet annulé.'.tr(context),
                               },
                             )
                           else
@@ -143,48 +144,48 @@ class _TripHistoryView extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text('Filtres', style: postText(fontSize: 22, fontWeight: FontWeight.w800)),
+                  Text('Filtres'.tr(context), style: postText(fontSize: 22, fontWeight: FontWeight.w800)),
                   const SizedBox(height: 16),
-                  Text('Type', style: postText(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
+                  Text('Type'.tr(context), style: postText(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
                     children: [
                       _FilterChip(
-                        label: 'Tous',
+                        label: 'Tous'.tr(context),
                         selected: tripType == null,
                         onTap: () => setModal(() => tripType = null),
                       ),
                       _FilterChip(
-                        label: 'Urbain',
+                        label: 'Urbain'.tr(context),
                         selected: tripType == 'URBAN',
                         onTap: () => setModal(() => tripType = 'URBAN'),
                       ),
                       _FilterChip(
-                        label: 'Interurbain',
+                        label: 'Interurbain'.tr(context),
                         selected: tripType == 'INTERCITY',
                         onTap: () => setModal(() => tripType = 'INTERCITY'),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
-                  Text('Paiement', style: postText(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
+                  Text('Paiement'.tr(context), style: postText(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textTertiary)),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
                     children: [
                       _FilterChip(
-                        label: 'Tous',
+                        label: 'Tous'.tr(context),
                         selected: payment == null,
                         onTap: () => setModal(() => payment = null),
                       ),
                       _FilterChip(
-                        label: 'Payé',
+                        label: 'Payé'.tr(context),
                         selected: payment == 'PAID' || payment == 'CONFIRMED',
                         onTap: () => setModal(() => payment = 'PAID'),
                       ),
                       _FilterChip(
-                        label: 'En attente',
+                        label: 'En attente'.tr(context),
                         selected: payment == 'PENDING',
                         onTap: () => setModal(() => payment = 'PENDING'),
                       ),
@@ -192,7 +193,7 @@ class _TripHistoryView extends StatelessWidget {
                   ),
                   const SizedBox(height: 22),
                   PostPrimaryButton(
-                    label: 'Appliquer',
+                    label: 'Appliquer'.tr(context),
                     onPressed: () {
                       Navigator.of(sheetContext).pop();
                       cubit.applyFilters(tripType: tripType, paymentStatus: payment);

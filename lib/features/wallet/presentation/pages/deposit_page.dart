@@ -9,6 +9,7 @@ import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_botto
 import 'package:motodi_go_mobile/features/wallet/domain/entities/wallet.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/cubit/deposit_cubit.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/widgets/wallet_widgets.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 class DepositPage extends StatelessWidget {
   const DepositPage({super.key});
@@ -78,7 +79,7 @@ class _DepositViewState extends State<_DepositView> {
                       ),
                       Expanded(
                         child: Text(
-                          'Recharger',
+                          'Recharger'.tr(context),
                           style: walletText(fontSize: 28, fontWeight: FontWeight.w800, height: 1.1),
                         ),
                       ),
@@ -90,7 +91,7 @@ class _DepositViewState extends State<_DepositView> {
                     padding: const EdgeInsets.fromLTRB(22, 12, 22, 24),
                     children: [
                       Text(
-                        'Opérateur',
+                        'Opérateur'.tr(context),
                         style: walletText(fontSize: 16, fontWeight: FontWeight.w800),
                       ),
                       const SizedBox(height: 10),
@@ -120,7 +121,7 @@ class _DepositViewState extends State<_DepositView> {
                                   const SizedBox(width: 12),
                                   Expanded(
                                     child: Text(
-                                      provider.labelFr,
+                                      provider.labelFr.tr(context),
                                       style: walletText(fontSize: 16, fontWeight: FontWeight.w700),
                                     ),
                                   ),
@@ -134,7 +135,7 @@ class _DepositViewState extends State<_DepositView> {
                       }),
                       const SizedBox(height: 18),
                       Text(
-                        'Montant (XAF)',
+                        'Montant (XAF)'.tr(context),
                         style: walletText(fontSize: 16, fontWeight: FontWeight.w800),
                       ),
                       const SizedBox(height: 10),
@@ -144,7 +145,7 @@ class _DepositViewState extends State<_DepositView> {
                         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                         onChanged: context.read<DepositCubit>().setAmount,
                         decoration: InputDecoration(
-                          hintText: 'Ex. 5000',
+                          hintText: 'Ex. 5000'.tr(context),
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
@@ -191,7 +192,7 @@ class _DepositViewState extends State<_DepositView> {
                       ),
                       const SizedBox(height: 18),
                       Text(
-                        'Téléphone Mobile Money',
+                        'Téléphone Mobile Money'.tr(context),
                         style: walletText(fontSize: 16, fontWeight: FontWeight.w800),
                       ),
                       const SizedBox(height: 10),
@@ -200,7 +201,7 @@ class _DepositViewState extends State<_DepositView> {
                         keyboardType: TextInputType.phone,
                         onChanged: context.read<DepositCubit>().setPhone,
                         decoration: InputDecoration(
-                          hintText: '+2376XXXXXXXX',
+                          hintText: '+2376XXXXXXXX'.tr(context),
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
@@ -212,7 +213,7 @@ class _DepositViewState extends State<_DepositView> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Format accepté : +237 suivi d’un numéro 6–9.',
+                        'Format accepté : +237 suivi d’un numéro 6–9.'.tr(context),
                         style: walletText(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
@@ -225,7 +226,7 @@ class _DepositViewState extends State<_DepositView> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(22, 0, 22, 20),
                   child: UrbanPrimaryButton(
-                    label: 'Continuer',
+                    label: 'Continuer'.tr(context),
                     isLoading: state.status == DepositFlowStatus.submitting,
                     onPressed: state.canSubmit ? () => _confirmAndSubmit(context) : null,
                   ),
@@ -263,20 +264,26 @@ class _DepositViewState extends State<_DepositView> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Confirmer la recharge',
+            'Confirmer la recharge'.tr(context),
             style: walletText(fontSize: 22, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 12),
-          _ConfirmRow(label: 'Opérateur', value: state.provider!.labelFr),
-          _ConfirmRow(label: 'Montant', value: formatWalletAmount(state.amount!)),
-          _ConfirmRow(label: 'Téléphone', value: state.phoneText.trim()),
+          _ConfirmRow(
+            label: 'Opérateur'.tr(context),
+            value: state.provider!.labelFr.tr(context),
+          ),
+          _ConfirmRow(label: 'Montant'.tr(context), value: formatWalletAmount(state.amount!)),
+          _ConfirmRow(label: 'Téléphone'.tr(context), value: state.phoneText.trim()),
           const SizedBox(height: 16),
-          UrbanPrimaryButton(label: 'Confirmer', onPressed: () => Navigator.of(context).pop(true)),
+          UrbanPrimaryButton(
+            label: 'Confirmer'.tr(context),
+            onPressed: () => Navigator.of(context).pop(true),
+          ),
           const SizedBox(height: 10),
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(
-              'Annuler',
+              'Annuler'.tr(context),
               style: walletText(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,

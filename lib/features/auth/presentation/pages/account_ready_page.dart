@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_buttons.dart';
 
 class AccountReadyPage extends StatelessWidget {
@@ -32,7 +33,7 @@ class AccountReadyPage extends StatelessWidget {
               ),
               const SizedBox(height: 56),
               Text(
-                'Votre compte est\nprêt',
+                'Votre compte est\nprêt'.tr(context),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.displaySmall?.copyWith(
                   color: AppColors.textPrimary,
@@ -42,7 +43,8 @@ class AccountReadyPage extends StatelessWidget {
               ),
               const SizedBox(height: 28),
               Text(
-                'Numéro vérifié avec succès.\nChoisissez maintenant le profil que\nvous souhaitez utiliser.',
+                'Numéro vérifié avec succès.\nChoisissez maintenant le profil que\nvous souhaitez utiliser.'
+                    .tr(context),
                 textAlign: TextAlign.center,
                 style: Theme.of(
                   context,
@@ -50,7 +52,7 @@ class AccountReadyPage extends StatelessWidget {
               ),
               const Spacer(flex: 5),
               PrimaryAuthButton(
-                label: 'Choisir mon profil',
+                label: 'Choisir mon profil'.tr(context),
                 onPressed: () => context.go(RouteConstants.profileSelection),
               ),
             ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 TextStyle urbanText({
   double fontSize = 14,
@@ -67,7 +68,7 @@ class UrbanBottomSheet extends StatelessWidget {
 class UrbanDemoBanner extends StatelessWidget {
   final String message;
 
-  const UrbanDemoBanner({super.key, this.message = 'Données de démonstration'});
+  UrbanDemoBanner({super.key, this.message = 'Données de démonstration'});
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +82,7 @@ class UrbanDemoBanner extends StatelessWidget {
         border: Border.all(color: const Color(0xFFF3D77B)),
       ),
       child: Text(
-        message,
+        message.tr(context),
         style: urbanText(fontSize: 13, fontWeight: FontWeight.w700, color: const Color(0xFF8B6509)),
       ),
     );

@@ -4,6 +4,7 @@ import 'package:motodi_go_mobile/features/urban/data/urban_geo.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/urban_ride_cubit.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/urban_ride_state.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_bottom_sheet.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 class UrbanDestinationView extends StatefulWidget {
   final UrbanRideState state;
@@ -59,7 +60,7 @@ class _UrbanDestinationViewState extends State<UrbanDestinationView> {
                     onPressed: cubit.back,
                     icon: const Icon(Icons.arrow_back_rounded, size: 26),
                   ),
-                  Text('Destination', style: urbanText(fontSize: 26, fontWeight: FontWeight.w800)),
+                  Text('Destination'.tr(context), style: urbanText(fontSize: 26, fontWeight: FontWeight.w800)),
                 ],
               ),
             ),
@@ -105,7 +106,7 @@ class _UrbanDestinationViewState extends State<UrbanDestinationView> {
                             controller: _controller,
                             onChanged: cubit.updateDestinationQuery,
                             decoration: InputDecoration(
-                              hintText: 'Où allez-vous ?',
+                              hintText: 'Où allez-vous ?'.tr(context),
                               hintStyle: urbanText(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
@@ -162,7 +163,7 @@ class _UrbanDestinationViewState extends State<UrbanDestinationView> {
               child: Row(
                 children: [
                   Text(
-                    state.destinationQuery.trim().isEmpty ? 'QUARTIERS POPULAIRES' : 'RÉSULTATS',
+                    state.destinationQuery.trim().isEmpty ? 'QUARTIERS POPULAIRES'.tr(context) : 'RÉSULTATS'.tr(context),
                     style: urbanText(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
@@ -185,9 +186,9 @@ class _UrbanDestinationViewState extends State<UrbanDestinationView> {
               ),
             ),
             if (state.visiblePlacesDemo)
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: UrbanDemoBanner(message: 'Quartiers Yaoundé — données de démonstration'),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: UrbanDemoBanner(message: 'Quartiers Yaoundé — données de démonstration'.tr(context)),
               ),
             Expanded(
               child: state.geocoding && state.visiblePlaces.isEmpty
@@ -235,7 +236,7 @@ class _UrbanDestinationViewState extends State<UrbanDestinationView> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
               child: UrbanPrimaryButton(
-                label: 'Choisir sur la carte',
+                label: 'Choisir sur la carte'.tr(context),
                 onPressed: cubit.startPickDestination,
               ),
             ),

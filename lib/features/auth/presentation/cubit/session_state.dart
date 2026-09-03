@@ -1,6 +1,6 @@
 part of 'session_cubit.dart';
 
-enum SessionStatus { initial, bootstrapping, unauthenticated, authenticated, expired }
+enum SessionStatus { initial, bootstrapping, unauthenticated, authenticated, expired, guest }
 
 class SessionState extends Equatable {
   final SessionStatus status;
@@ -20,6 +20,7 @@ class SessionState extends Equatable {
   bool get isBootstrapping =>
       status == SessionStatus.initial || status == SessionStatus.bootstrapping;
   bool get isAuthenticated => status == SessionStatus.authenticated && session != null;
+  bool get isGuest => status == SessionStatus.guest;
   bool get isExpired => status == SessionStatus.expired;
   bool get hasActiveMobileProfile =>
       session?.hasActiveProfile == true && (session?.activeProfileType?.isSelfService ?? false);

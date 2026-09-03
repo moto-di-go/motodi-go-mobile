@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:maplibre_gl/maplibre_gl.dart' as ml;
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
@@ -82,7 +83,7 @@ class _DriverHeader extends StatelessWidget {
   final ValidationStatus kyc;
   final String availability;
 
-  const _DriverHeader({required this.type, required this.kyc, required this.availability});
+  _DriverHeader({required this.type, required this.kyc, required this.availability});
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +101,7 @@ class _DriverHeader extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  'Espace conducteur',
+                  'Espace conducteur'.tr(context),
                   style: urbanText(fontSize: 22, fontWeight: FontWeight.w800),
                 ),
               ),
@@ -132,7 +133,9 @@ class _DriverHeader extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${profileLabel(type)} actif',
+                        Localizations.localeOf(context).languageCode == 'en'
+                            ? '${profileLabel(type)} active'
+                            : '${profileLabel(type)} actif',
                         style: urbanText(fontSize: 17, fontWeight: FontWeight.w800),
                       ),
                       const SizedBox(height: 8),
@@ -163,7 +166,7 @@ class _LockedBody extends StatelessWidget {
   final ValidationStatus kyc;
   final ProfileType type;
 
-  const _LockedBody({required this.kyc, required this.type});
+  _LockedBody({required this.kyc, required this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -181,13 +184,14 @@ class _LockedBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Profil non validé',
+                'Profil non validé'.tr(context),
                 style: urbanText(fontSize: 22, fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 10),
               Text(
-                'Votre profil ${profileLabel(type)} doit être validé (KYC · ${compactStatusLabel(kyc)}) '
-                'avant d’activer la disponibilité et le partage GPS.',
+                Localizations.localeOf(context).languageCode == 'en'
+                    ? 'Your ${profileLabel(type)} profile must be validated (KYC · ${compactStatusLabel(kyc)}) before enabling availability and GPS sharing.'
+                    : 'Votre profil ${profileLabel(type)} doit être validé (KYC · ${compactStatusLabel(kyc)}) avant d’activer la disponibilité et le partage GPS.',
                 style: urbanText(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
@@ -197,7 +201,7 @@ class _LockedBody extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               UrbanPrimaryButton(
-                label: 'Voir mes documents',
+                label: 'Voir mes documents'.tr(context),
                 onPressed: () => context.push(RouteConstants.kycDocuments),
               ),
             ],
@@ -276,9 +280,9 @@ class _ActiveBodyState extends State<_ActiveBody> with WidgetsBindingObserver {
   }
 
   String _lastSentLabel(DateTime? at) {
-    if (at == null) return 'Aucun envoi';
+    if (at == null) return Localizations.localeOf(context).languageCode == 'en' ? 'Never sent' : 'Aucun envoi';
     final seconds = DateTime.now().difference(at).inSeconds.clamp(0, 9999);
-    return 'il y a ${seconds}s';
+    return Localizations.localeOf(context).languageCode == 'en' ? '${seconds}s ago' : 'il y a ${seconds}s';
   }
 }
 
@@ -308,7 +312,7 @@ class _HealthRow extends StatelessWidget {
         Expanded(
           child: _HealthChip(
             icon: Icons.wifi_rounded,
-            label: 'Réseau',
+            label: 'Réseau'.tr(context),
             value: state.networkOk ? 'OK' : 'OFF',
             ok: state.networkOk,
           ),
@@ -317,7 +321,7 @@ class _HealthRow extends StatelessWidget {
         Expanded(
           child: _HealthChip(
             icon: Icons.battery_std_rounded,
-            label: 'Batterie',
+            label: 'Batterie'.tr(context),
             value: battery == null ? '—' : '$battery%',
             ok: battery == null || !state.batteryLow,
           ),
@@ -326,7 +330,7 @@ class _HealthRow extends StatelessWidget {
         Expanded(
           child: _HealthChip(
             icon: Icons.send_rounded,
-            label: 'Envoi',
+            label: 'Envoi'.tr(context),
             value: state.lastSentAt == null
                 ? '—'
                 : '${DateTime.now().difference(state.lastSentAt!).inSeconds.clamp(0, 999)}s',
@@ -387,18 +391,18 @@ class _DegradedBanners extends StatelessWidget {
   final DriverAvailabilityState state;
   final DriverAvailabilityCubit cubit;
 
-  const _DegradedBanners({required this.state, required this.cubit});
+  _DegradedBanners({required this.state, required this.cubit});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         if (state.networkDegraded)
-          const _Banner(
+          _Banner(
             color: Color(0xFFFFF3C9),
             border: Color(0xFFF3D77B),
             textColor: Color(0xFF8B6509),
-            message: 'Réseau dégradé — la position peut ne pas être envoyée.',
+            message: 'Réseau dégradé — la position peut ne pas être envoyée.'.tr(context),
           ),
         if (state.gpsDegraded)
           Padding(
@@ -408,12 +412,12 @@ class _DegradedBanners extends StatelessWidget {
               border: const Color(0xFFF5B5B5),
               textColor: const Color(0xFF9B1C1C),
               message: state.permission == DriverGpsPermission.serviceDisabled
-                  ? 'GPS désactivé — activez la localisation.'
-                  : 'GPS dégradé — vérifiez la permission de localisation.',
+                  ? 'GPS désactivé — activez la localisation.'.tr(context)
+                  : 'GPS dégradé — vérifiez la permission de localisation.'.tr(context),
               actionLabel: state.permission == DriverGpsPermission.permanentlyDenied
-                  ? 'Réglages'
+                  ? 'Réglages'.tr(context)
                   : state.permission == DriverGpsPermission.serviceDisabled
-                  ? 'Activer GPS'
+                  ? 'Activer GPS'.tr(context)
                   : null,
               onAction: state.permission == DriverGpsPermission.permanentlyDenied
                   ? cubit.openAppSettings
@@ -431,9 +435,9 @@ class _DegradedBanners extends StatelessWidget {
               textColor: const Color(0xFF9B1C1C),
               message: state.error!,
               actionLabel: state.permission == DriverGpsPermission.permanentlyDenied
-                  ? 'Ouvrir les réglages'
+                  ? 'Ouvrir les réglages'.tr(context)
                   : state.permission == DriverGpsPermission.serviceDisabled
-                  ? 'Activer le GPS'
+                  ? 'Activer le GPS'.tr(context)
                   : null,
               onAction: state.permission == DriverGpsPermission.permanentlyDenied
                   ? cubit.openAppSettings
@@ -499,7 +503,7 @@ class _Banner extends StatelessWidget {
 class _OfflinePanel extends StatelessWidget {
   final DriverAvailabilityState state;
 
-  const _OfflinePanel({required this.state});
+  _OfflinePanel({required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -514,15 +518,15 @@ class _OfflinePanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _StatusPill(label: 'HORS LIGNE', color: AppColors.textTertiary),
+          _StatusPill(label: 'HORS LIGNE'.tr(context), color: AppColors.textTertiary),
           const SizedBox(height: 16),
           Text(
-            'Vous n’êtes pas visible des passagers',
+            'Vous n’êtes pas visible des passagers'.tr(context),
             style: urbanText(fontSize: 20, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 8),
           Text(
-            'Passez disponible pour recevoir des courses. Le partage GPS démarre uniquement après votre consentement.',
+            'Passez disponible pour recevoir des courses. Le partage GPS démarre uniquement après votre consentement.'.tr(context),
             style: urbanText(
               fontSize: 14,
               fontWeight: FontWeight.w500,
@@ -619,13 +623,13 @@ class _ActiveTripCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Course en cours',
+                  'Course en cours'.tr(context),
                   style: urbanText(fontSize: 15, fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   trip == null
-                      ? 'Trajet actif — détails à venir'
+                      ? 'Trajet actif — détails à venir'.tr(context)
                       : '${trip!.passengerLabel} → ${trip!.destinationLabel}',
                   style: urbanText(
                     fontSize: 13,
@@ -646,7 +650,7 @@ class _BottomActions extends StatelessWidget {
   final DriverAvailabilityState state;
   final DriverAvailabilityCubit cubit;
 
-  const _BottomActions({required this.state, required this.cubit});
+  _BottomActions({required this.state, required this.cubit});
 
   @override
   Widget build(BuildContext context) {
@@ -654,7 +658,7 @@ class _BottomActions extends StatelessWidget {
       return Column(
         children: [
           UrbanPrimaryButton(
-            label: 'Passer hors ligne',
+            label: 'Passer hors ligne'.tr(context),
             isLoading: state.busy,
             onPressed: state.busy ? null : () => cubit.goOffline(),
           ),
@@ -665,19 +669,19 @@ class _BottomActions extends StatelessWidget {
     return Column(
       children: [
         if (state.permission == DriverGpsPermission.permanentlyDenied) ...[
-          UrbanPrimaryButton(label: 'Ouvrir les réglages', onPressed: cubit.openAppSettings),
+          UrbanPrimaryButton(label: 'Ouvrir les réglages'.tr(context), onPressed: cubit.openAppSettings),
           const SizedBox(height: 10),
           UrbanTextLink(
-            label: 'Réessayer après autorisation',
+            label: 'Réessayer après autorisation'.tr(context),
             onTap: () => _showGpsConsentSheet(context),
           ),
         ] else if (state.permission == DriverGpsPermission.serviceDisabled) ...[
-          UrbanPrimaryButton(label: 'Activer le GPS', onPressed: cubit.openLocationSettings),
+          UrbanPrimaryButton(label: 'Activer le GPS'.tr(context), onPressed: cubit.openLocationSettings),
           const SizedBox(height: 10),
-          UrbanTextLink(label: 'Réessayer', onTap: () => _showGpsConsentSheet(context)),
+          UrbanTextLink(label: 'Réessayer'.tr(context), onTap: () => _showGpsConsentSheet(context)),
         ] else ...[
           UrbanPrimaryButton(
-            label: 'Passer disponible',
+            label: 'Passer disponible'.tr(context),
             isLoading: state.busy,
             onPressed: state.busy ? null : () => _showGpsConsentSheet(context),
           ),
@@ -699,10 +703,10 @@ Future<void> _showGpsConsentSheet(BuildContext context) async {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Consentement GPS', style: urbanText(fontSize: 22, fontWeight: FontWeight.w800)),
+            Text('Consentement GPS'.tr(context), style: urbanText(fontSize: 22, fontWeight: FontWeight.w800)),
             const SizedBox(height: 10),
             Text(
-              'Pour être visible des passagers, MOTO’DI GO doit accéder à votre position et l’envoyer toutes les 5 secondes tant que vous êtes disponible ou occupé.',
+              'Pour être visible des passagers, MOTO’DI GO doit accéder à votre position et l’envoyer toutes les 5 secondes tant que vous êtes disponible ou occupé.'.tr(context),
               style: urbanText(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -712,7 +716,7 @@ Future<void> _showGpsConsentSheet(BuildContext context) async {
             ),
             const SizedBox(height: 22),
             UrbanPrimaryButton(
-              label: 'Autoriser et continuer',
+              label: 'Autoriser et continuer'.tr(context),
               onPressed: () async {
                 Navigator.of(sheetContext).pop();
                 await cubit.activateWithConsent();
@@ -721,7 +725,7 @@ Future<void> _showGpsConsentSheet(BuildContext context) async {
             const SizedBox(height: 12),
             Center(
               child: UrbanTextLink(
-                label: 'Refuser',
+                label: 'Refuser'.tr(context),
                 color: AppColors.textSecondary,
                 onTap: () async {
                   Navigator.of(sheetContext).pop();
@@ -854,14 +858,14 @@ class _StatusPill extends StatelessWidget {
 class _AvailabilityPill extends StatelessWidget {
   final String availability;
 
-  const _AvailabilityPill({required this.availability});
+  _AvailabilityPill({required this.availability});
 
   @override
   Widget build(BuildContext context) {
     final (label, color) = switch (availability) {
-      'AVAILABLE' => ('DISPONIBLE', AppColors.primary),
-      'OCCUPIED' => ('OCCUPÉ', AppColors.secondary),
-      _ => ('HORS LIGNE', AppColors.textTertiary),
+      'AVAILABLE' => ('DISPONIBLE'.tr(context), AppColors.primary),
+      'OCCUPIED' => ('OCCUPÉ'.tr(context), AppColors.secondary),
+      _ => ('HORS LIGNE'.tr(context), AppColors.textTertiary),
     };
     return _StatusPill(label: label, color: color);
   }

@@ -11,6 +11,7 @@ import 'package:motodi_go_mobile/features/nfc/presentation/widgets/nfc_widgets.d
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_bottom_sheet.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/cubit/wallet_cubit.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/widgets/wallet_widgets.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 class WalletPage extends StatelessWidget {
   const WalletPage({super.key});
@@ -42,7 +43,7 @@ class _WalletView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(22, 16, 22, 0),
                   child: Text(
-                    'Wallet',
+                    'Portefeuille'.tr(context),
                     style: walletText(fontSize: 32, fontWeight: FontWeight.w800, height: 1.1),
                   ),
                 ),
@@ -69,7 +70,7 @@ class _WalletBody extends StatelessWidget {
     }
     if (state.status == WalletViewStatus.failure && state.wallet == null) {
       return AppErrorView(
-        message: state.errorMessage ?? 'Chargement du portefeuille impossible.',
+        message: state.errorMessage ?? 'Chargement du portefeuille impossible.'.tr(context),
         onRetry: () => context.read<WalletCubit>().load(),
       );
     }
@@ -122,7 +123,7 @@ class _WalletBody extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        'Solde disponible',
+                        'Solde disponible'.tr(context),
                         style: walletText(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -140,7 +141,7 @@ class _WalletBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Mis à jour ${formatWalletTime(state.lastRefreshedAt ?? wallet.lastUpdatedAt)}',
+                    '${'Mis à jour'.tr(context)} ${formatWalletTime(state.lastRefreshedAt ?? wallet.lastUpdatedAt)}',
                     style: walletText(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
@@ -155,7 +156,7 @@ class _WalletBody extends StatelessWidget {
               children: [
                 Expanded(
                   child: WalletActionButton(
-                    label: 'Recharger',
+                    label: 'Recharger'.tr(context),
                     icon: Icons.add_card_rounded,
                     primary: true,
                     onTap: canAct ? () => context.push(RouteConstants.walletDeposit) : null,
@@ -164,7 +165,7 @@ class _WalletBody extends StatelessWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   child: WalletActionButton(
-                    label: 'Payer',
+                    label: 'Payer'.tr(context),
                     icon: Icons.payments_outlined,
                     onTap: canAct ? () => _openPaySheet(context) : null,
                   ),
@@ -172,7 +173,7 @@ class _WalletBody extends StatelessWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   child: WalletActionButton(
-                    label: 'Paiement NFC',
+                    label: 'Paiement NFC'.tr(context),
                     icon: Icons.nfc_rounded,
                     onTap: canAct ? () => context.push(RouteConstants.nfcEligibility) : null,
                   ),
@@ -184,7 +185,7 @@ class _WalletBody extends StatelessWidget {
               children: [
                 Expanded(
                   child: WalletActionButton(
-                    label: 'Histororique',
+                    label: 'Historique'.tr(context),
                     icon: Icons.history_rounded,
                     onTap: () {
                       context.read<WalletCubit>().refresh();
@@ -194,7 +195,7 @@ class _WalletBody extends StatelessWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   child: WalletActionButton(
-                    label: 'Recevoir NFC',
+                    label: 'Recevoir NFC'.tr(context),
                     icon: Icons.phone_android_rounded,
                     onTap: () => context.push(RouteConstants.nfcReceive),
                   ),
@@ -203,7 +204,7 @@ class _WalletBody extends StatelessWidget {
             ),
             const SizedBox(height: 28),
             Text(
-              'Mouvements récents',
+              'Mouvements récents'.tr(context),
               style: walletText(fontSize: 18, fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 12),
@@ -211,9 +212,8 @@ class _WalletBody extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 40),
                 child: WalletEmptyState(
-                  message:
-                      'Aucun mouvement pour le moment.\nRechargez votre wallet pour commencer.',
-                  actionLabel: canAct ? 'Recharger' : null,
+                  message: 'Aucun mouvement pour le moment.\nRechargez votre wallet pour commencer.'.tr(context),
+                  actionLabel: canAct ? 'Recharger'.tr(context) : null,
                   onAction: canAct ? () => context.push(RouteConstants.walletDeposit) : null,
                 ),
               )
@@ -245,12 +245,12 @@ class _WalletBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Payer une réservation',
+            'Payer une réservation'.tr(context),
             style: walletText(fontSize: 22, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 8),
           Text(
-            'Saisissez l’identifiant de la réservation à régler avec votre wallet.',
+            'Saisissez l’identifiant de la réservation à régler avec votre wallet.'.tr(context),
             style: walletText(fontSize: 14, color: AppColors.textSecondary, height: 1.4),
           ),
           const SizedBox(height: 16),
@@ -258,14 +258,14 @@ class _WalletBody extends StatelessWidget {
             controller: controller,
             autofocus: true,
             decoration: InputDecoration(
-              labelText: 'ID réservation',
-              hintText: 'UUID de la réservation',
+              labelText: 'ID réservation'.tr(context),
+              hintText: 'UUID de la réservation'.tr(context),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
             ),
           ),
           const SizedBox(height: 16),
           UrbanPrimaryButton(
-            label: 'Continuer',
+            label: 'Continuer'.tr(context),
             onPressed: () {
               final value = controller.text.trim();
               if (value.isEmpty) return;

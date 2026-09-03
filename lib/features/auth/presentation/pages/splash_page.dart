@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/motodi_logo.dart';
 
 class SplashPage extends StatelessWidget {
@@ -7,21 +8,25 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
-            Spacer(flex: 5),
-            Center(child: MotodiLogo(size: 92, showText: true)),
-            Spacer(flex: 4),
-            _Dots(),
-            SizedBox(height: 26),
+            const Spacer(flex: 5),
+            const Center(child: MotodiLogo(size: 92, showText: true)),
+            const Spacer(flex: 4),
+            const _Dots(),
+            const SizedBox(height: 26),
             Text(
-              'Vérification de la session...',
-              style: TextStyle(color: Color(0xFF9AA59C), fontSize: 18, fontWeight: FontWeight.w800),
+              'Vérification de la session...'.tr(context),
+              style: const TextStyle(
+                color: Color(0xFF9AA59C),
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+              ),
             ),
-            Spacer(),
+            const Spacer(),
           ],
         ),
       ),

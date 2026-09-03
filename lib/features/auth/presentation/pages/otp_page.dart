@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/domain/entities/auth_validators.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/auth_form_cubit.dart';
@@ -81,13 +82,13 @@ class _OtpViewState extends State<_OtpView> {
       builder: (context, state) {
         final phone = widget.args.phoneNumber;
         return AuthScaffold(
-          title: 'Vérification',
+          title: 'Vérification'.tr(context),
           showBack: true,
           bottom: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               PrimaryAuthButton(
-                label: 'Vérifier',
+                label: 'Vérifier'.tr(context),
                 isLoading: state.isLoading,
                 onPressed: () => context.read<AuthFormCubit>().verifyRegistrationOtp(
                   phoneNumber: phone,
@@ -100,8 +101,8 @@ class _OtpViewState extends State<_OtpView> {
                 onPressed: state.isLoading
                     ? null
                     : () => context.read<AuthFormCubit>().resendRegistrationOtp(phone),
-                child: const Text(
-                  "Vous n'avez rien reçu ? Renvoyer le code",
+                child: Text(
+                  "Vous n'avez rien reçu ? Renvoyer le code".tr(context),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: AppColors.primary,
@@ -116,7 +117,7 @@ class _OtpViewState extends State<_OtpView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Entrez le code reçu',
+                'Entrez le code reçu'.tr(context),
                 style: Theme.of(context).textTheme.displaySmall?.copyWith(
                   fontWeight: FontWeight.w900,
                   color: AppColors.textPrimary,
@@ -125,7 +126,7 @@ class _OtpViewState extends State<_OtpView> {
               const SizedBox(height: 22),
               Text.rich(
                 TextSpan(
-                  text: 'Un code à 6 chiffres a été envoyé par SMS au ',
+                  text: 'Un code à 6 chiffres a été envoyé par SMS au '.tr(context),
                   children: [
                     TextSpan(
                       text: CameroonPhoneValidator.displayNational(
@@ -136,8 +137,8 @@ class _OtpViewState extends State<_OtpView> {
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                    const TextSpan(
-                      text: '. Modifier',
+                    TextSpan(
+                      text: '. Modifier'.tr(context),
                       style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900),
                     ),
                   ],
@@ -157,7 +158,7 @@ class _OtpViewState extends State<_OtpView> {
                         alignment: PlaceholderAlignment.middle,
                         child: Icon(Icons.schedule_rounded, color: Color(0xFF92A099), size: 24),
                       ),
-                      const TextSpan(text: '  Le code expire dans  '),
+                      TextSpan(text: '  Le code expire dans  '.tr(context)),
                       TextSpan(
                         text: _formatRemaining(_remainingSeconds),
                         style: const TextStyle(
@@ -194,13 +195,13 @@ class _MissingOtpArgs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AuthScaffold(
-      title: 'Vérification',
+      title: 'Vérification'.tr(context),
       showBack: true,
       bottom: PrimaryAuthButton(
-        label: 'Créer un compte',
+        label: 'Créer un compte'.tr(context),
         onPressed: () => context.go(RouteConstants.register),
       ),
-      child: const Text('Relancez la création de compte pour recevoir un nouveau code.'),
+      child: Text('Relancez la création de compte pour recevoir un nouveau code.'.tr(context)),
     );
   }
 }

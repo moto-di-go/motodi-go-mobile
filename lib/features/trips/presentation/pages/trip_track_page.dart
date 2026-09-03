@@ -10,6 +10,7 @@ import 'package:motodi_go_mobile/features/intercity/presentation/widgets/interci
 import 'package:motodi_go_mobile/features/trips/domain/entities/trip.dart';
 import 'package:motodi_go_mobile/features/trips/presentation/cubit/trip_track_cubit.dart';
 import 'package:motodi_go_mobile/features/trips/presentation/cubit/trip_track_state.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/trips/presentation/widgets/trip_track_map.dart';
 
 TextStyle _trackText({
@@ -53,7 +54,7 @@ class _TripTrackView extends StatelessWidget {
           final trip = state.trip;
           if (trip == null) {
             return AppErrorView(
-              message: state.errorMessage ?? 'Trajet introuvable.',
+              message: state.errorMessage ?? 'Trajet introuvable.'.tr(context),
               onRetry: () => context.read<TripTrackCubit>().refresh(),
             );
           }
@@ -130,7 +131,7 @@ class _CompletedTripView extends StatelessWidget {
             ),
             const SizedBox(height: 22),
             Text(
-              'Trajet terminé',
+              'Trajet terminé'.tr(context),
               textAlign: TextAlign.center,
               style: _trackText(fontSize: 28, fontWeight: FontWeight.w800),
             ),
@@ -170,7 +171,7 @@ class _CompletedTripView extends StatelessWidget {
                   height: 56,
                   alignment: Alignment.center,
                   child: Text(
-                    'Noter',
+                    'Noter'.tr(context),
                     style: _trackText(
                       fontSize: 17,
                       fontWeight: FontWeight.w700,
@@ -196,7 +197,7 @@ class _CompletedTripView extends StatelessWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
               ),
               child: Text(
-                'Voir reçu',
+                'Voir reçu'.tr(context),
                 style: _trackText(fontSize: 17, fontWeight: FontWeight.w700),
               ),
             ),
@@ -204,7 +205,7 @@ class _CompletedTripView extends StatelessWidget {
             TextButton(
               onPressed: () => context.go(RouteConstants.tripsHistory),
               child: Text(
-                'Retour à l’historique',
+                'Retour à l’historique'.tr(context),
                 style: _trackText(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -281,7 +282,7 @@ class _TripBottomSheet extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Prochaine étape',
+                  'Prochaine étape'.tr(context),
                   style: _trackText(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -297,12 +298,12 @@ class _TripBottomSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          Text('Suivi', style: _trackText(fontSize: 16, fontWeight: FontWeight.w800)),
+          Text('Suivi'.tr(context), style: _trackText(fontSize: 16, fontWeight: FontWeight.w800)),
           const SizedBox(height: 12),
           _TripStatusTimeline(current: trip.status),
           if (events.isNotEmpty) ...[
             const SizedBox(height: 20),
-            Text('Événements', style: _trackText(fontSize: 16, fontWeight: FontWeight.w800)),
+            Text('Événements'.tr(context), style: _trackText(fontSize: 16, fontWeight: FontWeight.w800)),
             const SizedBox(height: 10),
             for (final event in events.take(6))
               Padding(
@@ -349,7 +350,7 @@ class _TripStatusTimeline extends StatelessWidget {
   Widget build(BuildContext context) {
     if (current == TripStatus.cancelled) {
       return Text(
-        'Trajet annulé',
+        'Trajet annulé'.tr(context),
         style: _trackText(
           fontSize: 15,
           fontWeight: FontWeight.w700,
@@ -470,9 +471,9 @@ class _ConnectionChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (label, color) = switch (mode) {
-      TripConnectionMode.live => ('En direct', const Color(0xFF16A34A)),
-      TripConnectionMode.polling => ('Actualisation', const Color(0xFFB45309)),
-      TripConnectionMode.offline => ('Hors ligne', const Color(0xFF6B7280)),
+      TripConnectionMode.live => ('En direct'.tr(context), const Color(0xFF16A34A)),
+      TripConnectionMode.polling => ('Actualisation'.tr(context), const Color(0xFFB45309)),
+      TripConnectionMode.offline => ('Hors ligne'.tr(context), const Color(0xFF6B7280)),
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

@@ -11,6 +11,7 @@ import 'package:motodi_go_mobile/features/profiles/domain/entities/user_profile.
 import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/cubit/profile_cubit.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_widgets.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 class ProfileSelectionPage extends StatelessWidget {
   const ProfileSelectionPage({super.key});
@@ -45,7 +46,7 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-              const SnackBar(content: Text('Impossible de continuer pour le moment.')),
+              SnackBar(content: Text('Impossible de continuer pour le moment.'.tr(context))),
             );
         }
       },
@@ -63,7 +64,7 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
               children: [
                 const SizedBox(height: 42),
                 Text(
-                  'Choisissez votre profil',
+                  'Choisissez votre profil'.tr(context),
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
                     color: AppColors.textPrimary,
                     fontSize: 32,
@@ -73,7 +74,7 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  "Vous pourrez en ajouter d'autres à tout moment.",
+                  "Vous pourrez en ajouter d'autres à tout moment.".tr(context),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: const Color(0xFF54615A),
                     fontSize: 22,
@@ -85,10 +86,10 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
                 if (state.status == ProfileStatus.loading)
                   const Expanded(child: Center(child: CircularProgressIndicator()))
                 else if (state.status == ProfileStatus.failure && state.profiles.isEmpty)
-                  const Expanded(
+                  Expanded(
                     child: Center(
                       child: Text(
-                        'Impossible de charger vos profils.',
+                        'Impossible de charger vos profils.'.tr(context),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Color(0xFF54615A),
@@ -140,7 +141,9 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
     if (profile.validationStatus == ValidationStatus.suspended) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Ce profil est suspendu.')));
+      ).showSnackBar(
+        SnackBar(content: Text('Ce profil est suspendu.'.tr(context))),
+      );
       return;
     }
     if (profile.active) {
@@ -185,8 +188,8 @@ class _ProfileContinueButton extends StatelessWidget {
                 height: 26,
                 child: CircularProgressIndicator(strokeWidth: 2.7, color: Colors.white),
               )
-            : const Text(
-                'Continuer',
+            : Text(
+                'Continuer'.tr(context),
                 overflow: TextOverflow.fade,
                 softWrap: false,
                 style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w800),

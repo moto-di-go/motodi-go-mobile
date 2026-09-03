@@ -19,6 +19,7 @@ import 'package:motodi_go_mobile/features/intercity/presentation/widgets/interci
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_formatters.dart';
 import 'package:motodi_go_mobile/features/urban/data/urban_models.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 TextStyle _publishText({
   double fontSize = 14,
@@ -96,9 +97,9 @@ class _IntercityPublishGuardPageState extends State<IntercityPublishGuardPage> {
           backgroundColor: AppColors.background,
           elevation: 0,
           iconTheme: const IconThemeData(color: AppColors.textPrimary),
-          title: const Text(
-            'Publier une annonce',
-            style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w900),
+          title: Text(
+            'Publier une annonce'.tr(context),
+            style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w900),
           ),
         ),
         body: BlocBuilder<IntercityPublishCubit, IntercityPublishState>(
@@ -123,8 +124,8 @@ class _IntercityPublishGuardPageState extends State<IntercityPublishGuardPage> {
                 const SizedBox(height: 24),
                 Text(
                   state.isEligible
-                      ? 'Vous pouvez publier une annonce'
-                      : 'Publication non disponible',
+                      ? 'Vous pouvez publier une annonce'.tr(context)
+                      : 'Publication non disponible'.tr(context),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: AppColors.textPrimary,
@@ -134,16 +135,16 @@ class _IntercityPublishGuardPageState extends State<IntercityPublishGuardPage> {
                 const SizedBox(height: 10),
                 Text(
                   state.isEligible
-                      ? 'Renseignez votre trajet, votre véhicule et vos disponibilités.'
+                      ? 'Renseignez votre trajet, votre véhicule et vos disponibilités.'.tr(context)
                       : state.eligibilityReason ??
-                            'Votre profil ne remplit pas encore les conditions requises.',
+                            'Votre profil ne remplit pas encore les conditions requises.'.tr(context),
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: Color(0xFF8A968C), height: 1.4),
                 ),
                 const SizedBox(height: 28),
                 if (state.vehicles.isNotEmpty) ...[
                   Text(
-                    'MES VÉHICULES',
+                    'MES VÉHICULES'.tr(context),
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       color: const Color(0xFF9CA7A0),
                       fontWeight: FontWeight.w900,
@@ -160,7 +161,7 @@ class _IntercityPublishGuardPageState extends State<IntercityPublishGuardPage> {
                 ],
                 const SizedBox(height: 20),
                 PrimaryAuthButton(
-                  label: state.isEligible ? 'Continuer' : 'Retour à l\'accueil',
+                  label: state.isEligible ? 'Continuer'.tr(context) : 'Retour à l\'accueil'.tr(context),
                   onPressed: () {
                     if (state.isEligible) {
                       context.push(RouteConstants.intercityCreate, extra: _cubit);
@@ -209,7 +210,9 @@ class _VehicleTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  '${vehicle.capacity ?? '—'} places · ${vehicle.isUsable ? 'Validé' : vehicle.validationStatus}',
+                  Localizations.localeOf(context).languageCode == 'en'
+                    ? '${vehicle.capacity ?? '—'} seats · ${vehicle.isUsable ? 'Validated' : vehicle.validationStatus}'
+                    : '${vehicle.capacity ?? '—'} places · ${vehicle.isUsable ? 'Validé' : vehicle.validationStatus}',
                   style: TextStyle(
                     color: vehicle.isUsable ? AppColors.primary : const Color(0xFF9AA49D),
                     fontWeight: FontWeight.w700,
@@ -290,7 +293,7 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
                   _CreateBackButton(onTap: () => context.pop()),
                   const SizedBox(width: 14),
                   Text(
-                    'Créer une annonce',
+                    'Créer une annonce'.tr(context),
                     style: _publishText(fontSize: 22, fontWeight: FontWeight.w800),
                   ),
                 ],
@@ -302,7 +305,7 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
                 children: [
                   _CreateLabeledField(
-                    label: 'Départ',
+                    label: 'Départ'.tr(context),
                     child: CityAutocompleteField(
                       controller: _departureController,
                       hint: 'Yaoundé',
@@ -337,7 +340,7 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
                   ),
                   const SizedBox(height: 16),
                   _CreateLabeledField(
-                    label: 'Destination',
+                    label: 'Destination'.tr(context),
                     child: CityAutocompleteField(
                       controller: _destinationController,
                       hint: 'Douala',
@@ -363,18 +366,18 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
                   ),
                   const SizedBox(height: 16),
                   _CreateLabeledField(
-                    label: 'Pt. Ramassage',
+                    label: 'Pt. Ramassage'.tr(context),
                     child: CityAutocompleteField(
                       controller: _ptRamassageController,
                       hint: _departurePlace == null
-                          ? 'Choisir d\'abord la ville de départ'
-                          : 'Ex : quartier, carrefour…',
+                          ? 'Choisir d\'abord la ville de départ'.tr(context)
+                          : 'Ex : quartier, carrefour…'.tr(context),
                       kind: null,
                       suggestionIcon: Icons.place_outlined,
                       requireBias: true,
                       biasLat: _departurePlace?.point.latitude,
                       biasLon: _departurePlace?.point.longitude,
-                      missingBiasMessage: 'Choisissez d\'abord une ville de départ',
+                      missingBiasMessage: 'Choisissez d\'abord une ville de départ'.tr(context),
                       minHeight: 56,
                       leading: const MotodigoMapPinIcon(size: 20, color: Color(0xFF8A968C)),
                       boxDecoration: _createFieldDecoration(),
@@ -402,26 +405,26 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
                     children: [
                       Expanded(
                         child: _CreateLabeledField(
-                          label: 'Date',
+                          label: 'Date'.tr(context),
                           child: _CreateTapBox(
                             onTap: _pickDate,
                             prefix: const MotodigoCalendarIcon(size: 20, color: Color(0xFF8A968C)),
-                            value: _date == null ? null : formatShortDate(_date!),
-                            placeholder: 'Choisir',
+                            value: _date == null ? null : formatShortDate(_date!, context: context),
+                            placeholder: 'Choisir'.tr(context),
                           ),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: _CreateLabeledField(
-                          label: 'Heure',
+                          label: 'Heure'.tr(context),
                           child: _CreateTapBox(
                             onTap: _pickTime,
                             prefix: const MotodigoClockIcon(size: 20, color: Color(0xFF8A968C)),
                             value: _time == null
                                 ? null
                                 : '${_time!.hour.toString().padLeft(2, '0')}:${_time!.minute.toString().padLeft(2, '0')}',
-                            placeholder: 'Choisir',
+                            placeholder: 'Choisir'.tr(context),
                           ),
                         ),
                       ),
@@ -429,14 +432,14 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
                   ),
                   const SizedBox(height: 16),
                   _CreateLabeledField(
-                    label: 'Véhicule',
+                    label: 'Véhicule'.tr(context),
                     child: usableVehicles.isEmpty
                         ? Container(
                             width: double.infinity,
                             padding: const EdgeInsets.all(16),
                             decoration: _createFieldDecoration(),
                             child: Text(
-                              'Aucun véhicule validé disponible',
+                              'Aucun véhicule validé disponible'.tr(context),
                               style: _publishText(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
@@ -462,7 +465,7 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
                     children: [
                       Expanded(
                         child: _CreateLabeledField(
-                          label: 'Places totales',
+                          label: 'Places totales'.tr(context),
                           child: _CreateSeatsStepper(
                             seats: _seats,
                             maxSeats: _maxSeats,
@@ -473,7 +476,7 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
                       const SizedBox(width: 12),
                       Expanded(
                         child: _CreateLabeledField(
-                          label: 'Prix / place',
+                          label: 'Prix / place'.tr(context),
                           child: _CreateTextBox(
                             controller: _priceController,
                             hint: '4 500',
@@ -490,10 +493,10 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
                   ),
                   const SizedBox(height: 16),
                   _CreateLabeledField(
-                    label: 'Consignes',
+                    label: 'Consignes'.tr(context),
                     child: _CreateTextBox(
                       controller: _instructionsController,
-                      hint: 'Présentez-vous 15 min avant le départ...',
+                      hint: 'Présentez-vous 15 min avant le départ...'.tr(context),
                       maxLines: 4,
                       minHeight: 110,
                     ),
@@ -525,7 +528,7 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     alignment: Alignment.center,
                     child: Text(
-                      'Prévisualiser',
+                      'Prévisualiser'.tr(context),
                       style: _publishText(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
@@ -564,23 +567,23 @@ class _IntercityCreateAnnouncementPageState extends State<IntercityCreateAnnounc
     final price = double.tryParse(priceRaw);
 
     if (departure.isEmpty || destination.isEmpty) {
-      setState(() => _formError = 'Renseignez le départ et la destination.');
+      setState(() => _formError = 'Renseignez le départ et la destination.'.tr(context));
       return;
     }
     if (_date == null || _time == null) {
-      setState(() => _formError = 'Choisissez une date et une heure de départ.');
+      setState(() => _formError = 'Choisissez une date et une heure de départ.'.tr(context));
       return;
     }
     if (price == null || price < 0) {
-      setState(() => _formError = 'Le prix par place est invalide.');
+      setState(() => _formError = 'Le prix par place est invalide.'.tr(context));
       return;
     }
     if (_seats <= 0) {
-      setState(() => _formError = 'Le nombre de places est invalide.');
+      setState(() => _formError = 'Le nombre de places est invalide.'.tr(context));
       return;
     }
     if (_vehicle == null) {
-      setState(() => _formError = 'Sélectionnez un véhicule.');
+      setState(() => _formError = 'Sélectionnez un véhicule.'.tr(context));
       return;
     }
     setState(() => _formError = null);
@@ -806,7 +809,7 @@ class _CreateVehiclePicker extends StatelessWidget {
                     DropdownMenuItem(
                       value: vehicle,
                       child: Text(
-                        '${vehicle.type} · ${vehicle.capacity ?? '—'} places',
+                        Localizations.localeOf(context).languageCode == 'en' ? '${vehicle.type} · ${vehicle.capacity ?? '—'} seats' : '${vehicle.type} · ${vehicle.capacity ?? '—'} places',
                         overflow: TextOverflow.ellipsis,
                         style: _publishText(fontSize: 16, fontWeight: FontWeight.w700),
                       ),
@@ -931,7 +934,7 @@ class IntercityPreviewPage extends StatelessWidget {
                         const SizedBox(width: 14),
                         Expanded(
                           child: Text(
-                            "Aperçu de l'annonce",
+                            "Aperçu de l'annonce".tr(context),
                             style: _publishText(fontSize: 22, fontWeight: FontWeight.w800),
                           ),
                         ),
@@ -974,23 +977,24 @@ class IntercityPreviewPage extends StatelessWidget {
                               ),
                               const Divider(height: 28, color: Color(0xFFF1F2ED)),
                               _PreviewRow(
-                                label: 'Date',
-                                value: formatWeekdayDate(draft.departureDate),
+                                label: 'Date'.tr(context),
+                                value: formatWeekdayDate(draft.departureDate, context: context),
                               ),
                               _PreviewRow(
-                                label: 'Heure',
+                                label: 'Heure'.tr(context),
                                 value: draft.departureTime.substring(0, 5),
                               ),
                               if (draft.ptRamassage != null)
-                                _PreviewRow(label: 'Pt. Ramassage', value: draft.ptRamassage!),
-                              _PreviewRow(label: 'Sièges', value: '${draft.totalSeats}'),
+                                _PreviewRow(label: 'Pt. Ramassage'.tr(context), value: draft.ptRamassage!),
+                              _PreviewRow(label: 'Sièges'.tr(context), value: '${draft.totalSeats}'),
                               _PreviewRow(
-                                label: 'Véhicule',
-                                value:
-                                    '${draft.vehicle.type} · ${draft.vehicle.capacity ?? '—'} places',
+                                label: 'Véhicule'.tr(context),
+                                value: Localizations.localeOf(context).languageCode == 'en'
+                                    ? '${draft.vehicle.type} · ${draft.vehicle.capacity ?? '—'} seats'
+                                    : '${draft.vehicle.type} · ${draft.vehicle.capacity ?? '—'} places',
                               ),
                               if (draft.instructions != null)
-                                _PreviewRow(label: 'Instructions', value: draft.instructions!),
+                                _PreviewRow(label: 'Instructions'.tr(context), value: draft.instructions!),
                             ],
                           ),
                         ),
@@ -1002,7 +1006,7 @@ class IntercityPreviewPage extends StatelessWidget {
                     child: Column(
                       children: [
                         PrimaryAuthButton(
-                          label: "Publier l'annonce",
+                          label: "Publier l'annonce".tr(context),
                           isLoading: state.isCreating,
                           onPressed: () => cubit.createAnnouncement(
                             departureCity: draft.departureCity,
@@ -1017,7 +1021,7 @@ class IntercityPreviewPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        SecondaryAuthButton(label: 'Modifier', onPressed: () => context.pop()),
+                        SecondaryAuthButton(label: 'Modifier'.tr(context), onPressed: () => context.pop()),
                       ],
                     ),
                   ),
@@ -1074,7 +1078,10 @@ class IntercityPublishSuccessPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final subtitle =
-        'Votre trajet ${announcement.route} du ${formatDayMonthLong(announcement.departureDate)} '
+        Localizations.localeOf(context).languageCode == 'en'
+        ? 'Your trip ${announcement.route} on ${formatDayMonthLong(announcement.departureDate, context: context)} '
+        'is now visible to travelers.'
+        : 'Votre trajet ${announcement.route} du ${formatDayMonthLong(announcement.departureDate, context: context)} '
         'est visible par les voyageurs.';
 
     return Scaffold(
@@ -1094,7 +1101,7 @@ class IntercityPublishSuccessPage extends StatelessWidget {
               ),
               const SizedBox(height: 22),
               Text(
-                'Annonce publiée',
+                'Annonce publiée'.tr(context),
                 textAlign: TextAlign.center,
                 style: _publishText(fontSize: 28, fontWeight: FontWeight.w800),
               ),
@@ -1121,7 +1128,7 @@ class IntercityPublishSuccessPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     alignment: Alignment.center,
                     child: Text(
-                      'Voir mes annonces',
+                      'Voir mes annonces'.tr(context),
                       style: _publishText(
                         fontSize: 17,
                         fontWeight: FontWeight.w700,
@@ -1153,7 +1160,7 @@ class IntercityPublishSuccessPage extends StatelessWidget {
                         const MotodigoShareIcon(size: 20, color: Color(0xFF101512)),
                         const SizedBox(width: 10),
                         Text(
-                          'Partager',
+                          'Partager'.tr(context),
                           style: _publishText(fontSize: 17, fontWeight: FontWeight.w700),
                         ),
                       ],
@@ -1169,7 +1176,7 @@ class IntercityPublishSuccessPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
                 child: Text(
-                  'Créer une autre annonce',
+                  'Créer une autre annonce'.tr(context),
                   style: _publishText(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
@@ -1186,7 +1193,7 @@ class IntercityPublishSuccessPage extends StatelessWidget {
 
   Future<void> _share(BuildContext context) async {
     final text =
-        'Trajet ${announcement.route} le ${formatShortDate(announcement.departureDate)} à '
+        'Trajet ${announcement.route} le ${formatShortDate(announcement.departureDate, context: context)} à '
         '${announcement.formattedDepartureTime} · ${formatPriceFcfa(announcement.priceFcfa)} — Moto\'di Go';
     try {
       await SharePlus.instance.share(ShareParams(text: text));
@@ -1257,7 +1264,7 @@ class _IntercityMyAnnouncementsPageState extends State<IntercityMyAnnouncementsP
                       children: [
                         Expanded(
                           child: Text(
-                            'Mes annonces',
+                            'Mes annonces'.tr(context),
                             style: _publishText(
                               fontSize: 32,
                               fontWeight: FontWeight.w800,
@@ -1289,19 +1296,19 @@ class _IntercityMyAnnouncementsPageState extends State<IntercityMyAnnouncementsP
                       child: Row(
                         children: [
                           _FilterChip(
-                            label: 'Actives',
+                            label: 'Actives'.tr(context),
                             selected: _filter == _MyAnnouncementsFilter.actives,
                             onTap: () => setState(() => _filter = _MyAnnouncementsFilter.actives),
                           ),
                           const SizedBox(width: 8),
                           _FilterChip(
-                            label: 'Complètes',
+                            label: 'Complètes'.tr(context),
                             selected: _filter == _MyAnnouncementsFilter.completes,
                             onTap: () => setState(() => _filter = _MyAnnouncementsFilter.completes),
                           ),
                           const SizedBox(width: 8),
                           _FilterChip(
-                            label: 'Clôturées',
+                            label: 'Clôturées'.tr(context),
                             selected: _filter == _MyAnnouncementsFilter.cloturees,
                             onTap: () => setState(() => _filter = _MyAnnouncementsFilter.cloturees),
                           ),
@@ -1323,8 +1330,8 @@ class _IntercityMyAnnouncementsPageState extends State<IntercityMyAnnouncementsP
                               Center(
                                 child: Text(
                                   state.myAnnouncements.isEmpty
-                                      ? "Vous n'avez publié aucune annonce"
-                                      : 'Aucune annonce dans ce filtre',
+                                      ? "Vous n'avez publié aucune annonce".tr(context)
+                                      : 'Aucune annonce dans ce filtre'.tr(context),
                                   textAlign: TextAlign.center,
                                   style: _publishText(fontSize: 16, fontWeight: FontWeight.w700),
                                 ),
@@ -1454,7 +1461,7 @@ class _MyAnnouncementCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '${formatDayMonth(announcement.departureDate)} • ${announcement.formattedDepartureTime}',
+                  '${formatDayMonth(announcement.departureDate, context: context)} • ${announcement.formattedDepartureTime}',
                   style: _publishText(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -1465,7 +1472,7 @@ class _MyAnnouncementCard extends StatelessWidget {
                 if (showOccupancy) ...[
                   const SizedBox(height: 12),
                   Text(
-                    '$reserved/${announcement.totalSeats} places réservées',
+                    Localizations.localeOf(context).languageCode == 'en' ? '$reserved/${announcement.totalSeats} seats booked' : '$reserved/${announcement.totalSeats} places réservées',
                     style: _publishText(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -1500,11 +1507,11 @@ class _AnnouncementStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (label, fg, bg) = switch (status) {
-      AnnouncementStatus.published => ('Active', const Color(0xFF16A34A), const Color(0xFFE8F8EE)),
-      AnnouncementStatus.full => ('Complète', const Color(0xFFB45309), const Color(0xFFFFF7ED)),
-      AnnouncementStatus.closed => ('Clôturée', const Color(0xFF6B756E), const Color(0xFFEEEEE6)),
-      AnnouncementStatus.cancelled => ('Annulée', const Color(0xFFDC2626), const Color(0xFFFEF2F2)),
-      AnnouncementStatus.draft => ('Brouillon', const Color(0xFF6B756E), const Color(0xFFEEEEE6)),
+      AnnouncementStatus.published => ('Active'.tr(context), const Color(0xFF16A34A), const Color(0xFFE8F8EE)),
+      AnnouncementStatus.full => ('Complète'.tr(context), const Color(0xFFB45309), const Color(0xFFFFF7ED)),
+      AnnouncementStatus.closed => ('Clôturée'.tr(context), const Color(0xFF6B756E), const Color(0xFFEEEEE6)),
+      AnnouncementStatus.cancelled => ('Annulée'.tr(context), const Color(0xFFDC2626), const Color(0xFFFEF2F2)),
+      AnnouncementStatus.draft => ('Brouillon'.tr(context), const Color(0xFF6B756E), const Color(0xFFEEEEE6)),
       AnnouncementStatus.unknown => (
         status.label,
         const Color(0xFF6B756E),
@@ -1562,7 +1569,7 @@ class _IntercityIncomingBookingsPageState extends State<IntercityIncomingBooking
               final announcement = state.incomingAnnouncement;
               final subtitle = announcement == null
                   ? null
-                  : '${announcement.route} · ${formatDayMonth(announcement.departureDate)} · ${announcement.formattedDepartureTime}';
+                  : '${announcement.route} · ${formatDayMonth(announcement.departureDate, context: context)} · ${announcement.formattedDepartureTime}';
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1579,7 +1586,7 @@ class _IntercityIncomingBookingsPageState extends State<IntercityIncomingBooking
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Réservations\nreçues',
+                                'Réservations\nreçues'.tr(context),
                                 style: _publishText(
                                   fontSize: 32,
                                   fontWeight: FontWeight.w800,
@@ -1615,7 +1622,7 @@ class _IntercityIncomingBookingsPageState extends State<IntercityIncomingBooking
                         ? AppErrorView(
                             message:
                                 state.incomingErrorMessage ??
-                                'Impossible de charger les réservations.',
+                                'Impossible de charger les réservations.'.tr(context),
                             onRetry: () => _cubit.loadIncomingBookings(widget.announcementId),
                           )
                         : state.incomingBookings.isEmpty
@@ -1625,7 +1632,7 @@ class _IntercityIncomingBookingsPageState extends State<IntercityIncomingBooking
                               const Center(child: MotodigoSearchEmptyIcon(size: 96)),
                               const SizedBox(height: 28),
                               Text(
-                                'Aucune réservation',
+                                'Aucune réservation'.tr(context),
                                 textAlign: TextAlign.center,
                                 style: _publishText(
                                   fontSize: 26,
@@ -1635,7 +1642,7 @@ class _IntercityIncomingBookingsPageState extends State<IntercityIncomingBooking
                               ),
                               const SizedBox(height: 12),
                               Text(
-                                'Les demandes de places pour cette annonce apparaîtront ici.',
+                                'Les demandes de places pour cette annonce apparaîtront ici.'.tr(context),
                                 textAlign: TextAlign.center,
                                 style: _publishText(
                                   fontSize: 16,
@@ -1667,7 +1674,7 @@ class _IntercityIncomingBookingsPageState extends State<IntercityIncomingBooking
                                     onCancel: booking.status == IntercityBookingStatus.pending
                                         ? () => _cubit.cancelIncomingBooking(
                                             booking.id,
-                                            'Refusée par le transporteur',
+                                            'Refusée par le transporteur'.tr(context),
                                           )
                                         : null,
                                   ),
@@ -1829,7 +1836,9 @@ class _IncomingBookingCard extends StatelessWidget {
         ? const Color(0xFFDC2626)
         : Colors.white;
     final seatsLabel =
-        '${booking.seatsRequested} place${booking.seatsRequested > 1 ? 's' : ''} demandée${booking.seatsRequested > 1 ? 's' : ''}';
+        Localizations.localeOf(context).languageCode == 'en'
+        ? '${booking.seatsRequested} seat${booking.seatsRequested > 1 ? 's' : ''} requested'
+        : '${booking.seatsRequested} place${booking.seatsRequested > 1 ? 's' : ''} demandée${booking.seatsRequested > 1 ? 's' : ''}';
 
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
@@ -1877,7 +1886,7 @@ class _IncomingBookingCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(
-                      'En attente',
+                      'En attente'.tr(context),
                       style: _publishText(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
@@ -1973,12 +1982,12 @@ class _IncomingCompactBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final (label, fg, bg) = switch (status) {
       IntercityBookingStatus.cancelled => (
-        'Refusée',
+        'Refusée'.tr(context),
         const Color(0xFFDC2626),
         const Color(0xFFFEE2E2),
       ),
       IntercityBookingStatus.expired => (
-        'Expirée',
+        'Expirée'.tr(context),
         const Color(0xFF6B756E),
         const Color(0xFFEEEEE6),
       ),

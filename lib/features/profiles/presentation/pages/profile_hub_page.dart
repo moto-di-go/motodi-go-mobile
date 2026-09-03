@@ -12,6 +12,7 @@ import 'package:motodi_go_mobile/features/profiles/presentation/cubit/profile_cu
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_figma_icons.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_hub_figma_icons.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_widgets.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 TextStyle _hubText({
   double fontSize = 14,
@@ -59,14 +60,14 @@ bool _looksLikePhone(String value) {
   return digits.length >= 8 && !RegExp(r'[A-Za-zÀ-ÿ]').hasMatch(value);
 }
 
-String _kycStatusLabel(ValidationStatus status) {
+String _kycStatusLabel(BuildContext context, ValidationStatus status) {
   return switch (status) {
-    ValidationStatus.validated => 'Vérifié',
-    ValidationStatus.pending => 'En attente',
-    ValidationStatus.rejected => 'Rejeté',
-    ValidationStatus.suspended => 'Suspendu',
-    ValidationStatus.draft => 'Brouillon',
-    ValidationStatus.unknown => 'Inconnu',
+    ValidationStatus.validated => 'Vérifié'.tr(context),
+    ValidationStatus.pending => 'En attente'.tr(context),
+    ValidationStatus.rejected => 'Rejeté'.tr(context),
+    ValidationStatus.suspended => 'Suspendu'.tr(context),
+    ValidationStatus.draft => 'Brouillon'.tr(context),
+    ValidationStatus.unknown => 'Inconnu'.tr(context),
   };
 }
 
@@ -87,6 +88,7 @@ class _ProfileHubView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final monProfil = 'Mon profil'.tr(context);
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAF6),
       body: SafeArea(
@@ -123,7 +125,7 @@ class _ProfileHubView extends StatelessWidget {
               final rawName = active?.displayName.trim() ?? '';
               final displayName = rawName.isNotEmpty && !_looksLikePhone(rawName)
                   ? rawName
-                  : 'Mon profil';
+                  : monProfil;
               final phoneRaw = session.session?.phoneNumber ?? session.lastPhoneNumber ?? '';
               final phone = phoneRaw.isNotEmpty ? _formatPhone(phoneRaw) : '';
               // La session est la source de vérité après un switch de profil.
@@ -133,7 +135,7 @@ class _ProfileHubView extends StatelessWidget {
                   active?.validationStatus ??
                   ValidationStatus.pending;
               final initials = _initialsFrom(
-                displayName != 'Mon profil' ? displayName : profileLabel(type),
+                displayName != monProfil ? displayName : profileLabel(type),
               );
 
               return ListView(
@@ -143,7 +145,7 @@ class _ProfileHubView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          'Profil',
+                          'Profil'.tr(context),
                           style: _hubText(fontSize: 34, fontWeight: FontWeight.w800, height: 1.05),
                         ),
                       ),
@@ -208,43 +210,43 @@ class _ProfileHubView extends StatelessWidget {
                   const SizedBox(height: 22),
                   _MenuCard(
                     icon: const MotodigoHubFolderGrayIcon(size: 20),
-                    title: 'Documents & validation',
+                    title: 'Documents & validation'.tr(context),
                     onTap: () => context.push(RouteConstants.kyc),
                   ),
                   const SizedBox(height: 10),
                   _MenuCard(
                     icon: const MotodigoHubPeopleIcon(size: 20),
-                    title: 'Mes profils',
+                    title: 'Mes profils'.tr(context),
                     onTap: () => context.push(RouteConstants.profilesMine),
                   ),
                   const SizedBox(height: 10),
                   _MenuCard(
                     icon: const Icon(Icons.history_rounded, size: 22, color: Color(0xFF5B6760)),
-                    title: 'Historique des trajets',
+                    title: 'Historique des trajets'.tr(context),
                     onTap: () => context.push(RouteConstants.tripsHistory),
                   ),
                   const SizedBox(height: 10),
                   _MenuCard(
                     icon: const Icon(Icons.receipt_long_rounded, size: 22, color: Color(0xFF5B6760)),
-                    title: 'Mes reçus',
+                    title: 'Mes reçus'.tr(context),
                     onTap: () => context.push(RouteConstants.receipts),
                   ),
                   const SizedBox(height: 10),
                   _MenuCard(
                     icon: const Icon(Icons.support_agent_rounded, size: 22, color: Color(0xFF5B6760)),
-                    title: 'Support',
+                    title: 'Support'.tr(context),
                     onTap: () => context.push(RouteConstants.support),
                   ),
                   const SizedBox(height: 10),
                   _MenuCard(
                     icon: const Icon(Icons.cloud_off_rounded, size: 22, color: Color(0xFF5B6760)),
-                    title: 'Mode hors-ligne',
+                    title: 'Mode hors-ligne'.tr(context),
                     onTap: () => context.push(RouteConstants.offline),
                   ),
                   const SizedBox(height: 10),
                   _MenuCard(
                     icon: const MotodigoHubSettingsIcon(size: 20),
-                    title: 'Paramètres',
+                    title: 'Paramètres'.tr(context),
                     onTap: () => context.push(RouteConstants.settings),
                   ),
                   const SizedBox(height: 28),
@@ -254,7 +256,9 @@ class _ProfileHubView extends StatelessWidget {
                       onPressed: () {
                         ScaffoldMessenger.of(
                           context,
-                        ).showSnackBar(const SnackBar(content: Text('Bientôt disponible')));
+                        ).showSnackBar(
+                          SnackBar(content: Text('Bientôt disponible'.tr(context))),
+                        );
                       },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFF101512),
@@ -263,7 +267,7 @@ class _ProfileHubView extends StatelessWidget {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
                       ),
                       child: Text(
-                        'Modifier mon profil',
+                        'Modifier mon profil'.tr(context),
                         style: _hubText(fontSize: 17, fontWeight: FontWeight.w700),
                       ),
                     ),
@@ -346,7 +350,7 @@ class _ActiveProfileCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Profil actif',
+            'Profil actif'.tr(context),
             style: _hubText(
               fontSize: 13,
               fontWeight: FontWeight.w500,
@@ -381,7 +385,7 @@ class _KycStatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = _kycStatusLabel(status);
+    final label = _kycStatusLabel(context, status);
     final color = statusColor(status);
     final isVerified = status == ValidationStatus.validated;
 
@@ -397,7 +401,7 @@ class _KycStatusCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Statut KYC',
+            'Statut KYC'.tr(context),
             style: _hubText(
               fontSize: 13,
               fontWeight: FontWeight.w500,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 // Rôle : Vue d'erreur standardisée avec bouton de réessai.
 class AppErrorView extends StatelessWidget {
@@ -24,7 +25,7 @@ class AppErrorView extends StatelessWidget {
             ),
             if (onRetry != null) ...[
               const SizedBox(height: 24),
-              ElevatedButton(onPressed: onRetry, child: const Text('Réessayer')),
+              ElevatedButton(onPressed: onRetry, child: Text('Réessayer'.tr(context))),
             ],
           ],
         ),

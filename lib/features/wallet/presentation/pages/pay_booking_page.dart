@@ -8,6 +8,7 @@ import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_bottom_sheet.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/cubit/pay_booking_cubit.dart';
 import 'package:motodi_go_mobile/features/wallet/presentation/widgets/wallet_widgets.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 class PayBookingArgs {
   final String bookingId;
@@ -66,7 +67,9 @@ class _PayBookingView extends StatelessWidget {
               } else {
                 ScaffoldMessenger.of(
                   context,
-                ).showSnackBar(const SnackBar(content: Text('Paiement confirmé.')));
+                ).showSnackBar(
+                  SnackBar(content: Text('Paiement confirmé.'.tr(context))),
+                );
                 context.go(RouteConstants.wallet);
               }
             }
@@ -85,7 +88,7 @@ class _PayBookingView extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          'Payer la réservation',
+                          'Payer la réservation'.tr(context),
                           style: walletText(fontSize: 26, fontWeight: FontWeight.w800, height: 1.1),
                         ),
                       ),
@@ -107,7 +110,7 @@ class _PayBookingView extends StatelessWidget {
     }
     if (state.status == PayBookingStatus.failure && state.wallet == null) {
       return AppErrorView(
-        message: state.errorMessage ?? 'Chargement impossible.',
+        message: state.errorMessage ?? 'Chargement impossible.'.tr(context),
         onRetry: () => context.read<PayBookingCubit>().load(
           bookingId: bookingId,
           expectedAmount: state.expectedAmount,
@@ -138,27 +141,30 @@ class _PayBookingView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Récapitulatif', style: walletText(fontSize: 18, fontWeight: FontWeight.w800)),
+                Text(
+                  'Récapitulatif'.tr(context),
+                  style: walletText(fontSize: 18, fontWeight: FontWeight.w800),
+                ),
                 const SizedBox(height: 14),
-                _row('Réservation', state.bookingId ?? '—'),
-                if (label != null && label!.isNotEmpty) _row('Trajet', label!),
+                _row('Réservation'.tr(context), state.bookingId ?? '—'),
+                if (label != null && label!.isNotEmpty) _row('Trajet'.tr(context), label!),
                 _row(
-                  'Montant',
+                  'Montant'.tr(context),
                   state.expectedAmount == null
-                      ? 'Déterminé à la confirmation'
+                      ? 'Déterminé à la confirmation'.tr(context)
                       : formatWalletAmount(state.expectedAmount!),
                 ),
                 _row(
-                  'Solde wallet',
+                  'Solde wallet'.tr(context),
                   formatWalletAmount(wallet.currentBalance, currency: wallet.currency),
                 ),
-                _row('Statut wallet', wallet.status.labelFr),
+                _row('Statut wallet'.tr(context), wallet.status.labelFr.tr(context)),
               ],
             ),
           ),
           const Spacer(),
           UrbanPrimaryButton(
-            label: 'Confirmer le paiement',
+            label: 'Confirmer le paiement'.tr(context),
             isLoading: state.status == PayBookingStatus.paying,
             onPressed: state.canPay ? () => context.read<PayBookingCubit>().confirmPay() : null,
           ),
@@ -171,7 +177,7 @@ class _PayBookingView extends StatelessWidget {
               ),
             ),
             child: Text(
-              'Payer via NFC (hors-ligne)',
+              'Payer via NFC (hors-ligne)'.tr(context),
               style: walletText(
                 fontSize: 15,
                 fontWeight: FontWeight.w800,
@@ -184,7 +190,7 @@ class _PayBookingView extends StatelessWidget {
             TextButton(
               onPressed: () => context.push(RouteConstants.walletDeposit),
               child: Text(
-                'Recharger mon wallet',
+                'Recharger mon wallet'.tr(context),
                 style: walletText(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,

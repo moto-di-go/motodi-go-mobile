@@ -4,12 +4,13 @@ import 'package:motodi_go_mobile/features/urban/data/urban_models.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/urban_ride_cubit.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/urban_ride_state.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_bottom_sheet.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 class UrbanLayersSheet extends StatelessWidget {
   final UrbanRideState state;
   final UrbanRideCubit cubit;
 
-  const UrbanLayersSheet({super.key, required this.state, required this.cubit});
+  UrbanLayersSheet({super.key, required this.state, required this.cubit});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class UrbanLayersSheet extends StatelessWidget {
       child: ListView(
         shrinkWrap: true,
         children: [
-          Text('Couches carte', style: urbanText(fontSize: 24, fontWeight: FontWeight.w800)),
+          Text('Couches carte'.tr(context), style: urbanText(fontSize: 24, fontWeight: FontWeight.w800)),
           const SizedBox(height: 6),
           Text(
             state.layersFreshness,
@@ -27,27 +28,27 @@ class UrbanLayersSheet extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _LayerToggle(
-            label: 'Trafic dense',
+            label: 'Trafic dense'.tr(context),
             value: draft.congestion,
             onChanged: (value) => cubit.updateDraftLayers(draft.copyWith(congestion: value)),
           ),
           _LayerToggle(
-            label: 'Travaux',
+            label: 'Travaux'.tr(context),
             value: draft.roadwork,
             onChanged: (value) => cubit.updateDraftLayers(draft.copyWith(roadwork: value)),
           ),
           _LayerToggle(
-            label: 'Routes dégradées',
+            label: 'Routes dégradées'.tr(context),
             value: draft.damagedRoad,
             onChanged: (value) => cubit.updateDraftLayers(draft.copyWith(damagedRoad: value)),
           ),
           _LayerToggle(
-            label: 'Routes alternatives',
+            label: 'Routes alternatives'.tr(context),
             value: draft.alternative,
             onChanged: (value) => cubit.updateDraftLayers(draft.copyWith(alternative: value)),
           ),
           _LayerToggle(
-            label: 'Zones à éviter',
+            label: 'Zones à éviter'.tr(context),
             value: draft.avoidZones,
             onChanged: (value) => cubit.updateDraftLayers(draft.copyWith(avoidZones: value)),
           ),
@@ -61,12 +62,12 @@ class UrbanLayersSheet extends StatelessWidget {
                     minimumSize: const Size.fromHeight(52),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
                   ),
-                  child: Text('Réinitialiser', style: urbanText(fontWeight: FontWeight.w800)),
+                  child: Text('Réinitialiser'.tr(context), style: urbanText(fontWeight: FontWeight.w800)),
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: UrbanPrimaryButton(label: 'Appliquer', onPressed: cubit.applyLayers),
+                child: UrbanPrimaryButton(label: 'Appliquer'.tr(context), onPressed: cubit.applyLayers),
               ),
             ],
           ),
@@ -80,7 +81,7 @@ class UrbanLegendCard extends StatelessWidget {
   final bool expanded;
   final VoidCallback onToggle;
 
-  const UrbanLegendCard({super.key, required this.expanded, required this.onToggle});
+  UrbanLegendCard({super.key, required this.expanded, required this.onToggle});
 
   @override
   Widget build(BuildContext context) {
@@ -99,16 +100,16 @@ class UrbanLegendCard extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Légende', style: urbanText(fontSize: 13, fontWeight: FontWeight.w800)),
+                  Text('Légende'.tr(context), style: urbanText(fontSize: 13, fontWeight: FontWeight.w800)),
                   Icon(expanded ? Icons.expand_less : Icons.expand_more, size: 18),
                 ],
               ),
               if (expanded) ...[
                 const SizedBox(height: 8),
-                const _LegendRow(color: Color(0xFFF59E0B), label: 'Congestion'),
-                const _LegendRow(color: Color(0xFFEF4444), label: 'Bloquée / dégradée'),
-                const _LegendRow(color: Color(0xFF3B82F6), label: 'Alternative'),
-                const _LegendRow(color: Color(0xFF9CA3AF), label: 'Données anciennes'),
+                _LegendRow(color: Color(0xFFF59E0B), label: 'Congestion'.tr(context)),
+                _LegendRow(color: Color(0xFFEF4444), label: 'Bloquée / dégradée'.tr(context)),
+                _LegendRow(color: Color(0xFF3B82F6), label: 'Alternative'.tr(context)),
+                _LegendRow(color: Color(0xFF9CA3AF), label: 'Données anciennes'.tr(context)),
               ],
             ],
           ),
@@ -150,7 +151,7 @@ class UrbanIncidentSheet extends StatelessWidget {
           ],
           const SizedBox(height: 16),
           UrbanPrimaryButton(
-            label: "Voir l'itinéraire alternatif",
+            label: "Voir l'itinéraire alternatif".tr(context),
             onPressed: cubit.seeAlternativeFromIncident,
           ),
         ],
@@ -180,7 +181,7 @@ class UrbanCompareSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (state.routeOptionsDemo) const UrbanDemoBanner(),
+          if (state.routeOptionsDemo) UrbanDemoBanner(),
           if (state.hasTrafficBanner)
             Container(
               width: double.infinity,
@@ -191,7 +192,7 @@ class UrbanCompareSheet extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Text(
-                'Trafic ou voie dégradée sur l’itinéraire principal.',
+                'Trafic ou voie dégradée sur l’itinéraire principal.'.tr(context),
                 style: urbanText(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -203,18 +204,18 @@ class UrbanCompareSheet extends StatelessWidget {
             children: [
               if (main != null)
                 Expanded(
-                  child: _CompareCard(title: 'Principal', option: main),
+                  child: _CompareCard(title: 'Principal'.tr(context), option: main),
                 ),
               if (main != null && alt != null) const SizedBox(width: 8),
               if (alt != null)
                 Expanded(
-                  child: _CompareCard(title: 'Alternative', option: alt),
+                  child: _CompareCard(title: 'Alternative'.tr(context), option: alt),
                 ),
             ],
           ),
           const SizedBox(height: 14),
           UrbanPrimaryButton(
-            label: 'Voir les options',
+            label: 'Voir les options'.tr(context),
             onPressed: () => cubit.openRouteOptions(from: UrbanRideStep.compareRoutes),
           ),
         ],
@@ -227,7 +228,7 @@ class UrbanRouteOptionsSheet extends StatelessWidget {
   final UrbanRideState state;
   final UrbanRideCubit cubit;
 
-  const UrbanRouteOptionsSheet({super.key, required this.state, required this.cubit});
+  UrbanRouteOptionsSheet({super.key, required this.state, required this.cubit});
 
   @override
   Widget build(BuildContext context) {
@@ -237,11 +238,11 @@ class UrbanRouteOptionsSheet extends StatelessWidget {
         shrinkWrap: true,
         children: [
           Text(
-            'Choisir un itinéraire',
+            'Choisir un itinéraire'.tr(context),
             style: urbanText(fontSize: 22, fontWeight: FontWeight.w800),
           ),
           if (state.routeOptionsDemo)
-            const Padding(padding: EdgeInsets.only(top: 12), child: UrbanDemoBanner()),
+            Padding(padding: const EdgeInsets.only(top: 12), child: UrbanDemoBanner()),
           const SizedBox(height: 12),
           for (final option in state.routeOptions) ...[
             _RouteOptionCard(
@@ -400,7 +401,7 @@ class _RouteOptionCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(
-                      'Conseillé',
+                      'Conseillé'.tr(context),
                       style: urbanText(
                         fontSize: 11,
                         fontWeight: FontWeight.w800,
@@ -417,7 +418,7 @@ class _RouteOptionCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(
-                      'Dégradée',
+                      'Dégradée'.tr(context),
                       style: urbanText(
                         fontSize: 11,
                         fontWeight: FontWeight.w800,
@@ -429,7 +430,7 @@ class _RouteOptionCard extends StatelessWidget {
                 if (option.isDemo) ...[
                   const SizedBox(width: 6),
                   Text(
-                    'Démo',
+                    'Démo'.tr(context),
                     style: urbanText(
                       fontSize: 11,
                       fontWeight: FontWeight.w800,
@@ -445,7 +446,7 @@ class _RouteOptionCard extends StatelessWidget {
               style: urbanText(fontSize: 14, color: AppColors.textSecondary),
             ),
             const SizedBox(height: 12),
-            UrbanPrimaryButton(label: 'Choisir cet itinéraire', onPressed: onTap),
+            UrbanPrimaryButton(label: 'Choisir cet itinéraire'.tr(context), onPressed: onTap),
           ],
         ),
       ),

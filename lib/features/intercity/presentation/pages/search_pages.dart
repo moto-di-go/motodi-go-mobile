@@ -14,6 +14,7 @@ import 'package:motodi_go_mobile/features/intercity/presentation/cubit/intercity
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/city_autocomplete_field.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_figma_icons.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_formatters.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 const List<String> _kPopularCities = ['Yaoundé', 'Douala', 'Bafoussam', 'Bamenda', 'Garoua'];
 
@@ -96,13 +97,13 @@ class _IntercityHubViewState extends State<_IntercityHubView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Trajets',
+                    'Trajets'.tr(context),
                     style: _resultsText(fontSize: 32, fontWeight: FontWeight.w800, height: 1.1),
                   ),
                   const SizedBox(height: 16),
                   _SegmentedToggle(
                     index: _tabIndex,
-                    labels: const ['Rechercher', 'Mes réservations'],
+                    labels: ['Rechercher'.tr(context), 'Mes réservations'.tr(context)],
                     onChanged: (index) => setState(() => _tabIndex = index),
                   ),
                 ],
@@ -166,9 +167,9 @@ class _SearchFormState extends State<_SearchForm> {
                   children: [
                     CityAutocompleteField(
                       leading: const MotodigoLocationGreenIcon(size: 46),
-                      label: 'Ville de départ',
+                      label: 'Ville de départ'.tr(context),
                       controller: widget.departureController,
-                      hint: 'Ex : Yaoundé',
+                      hint: 'Ex : Yaoundé'.tr(context),
                       textStyle: const TextStyle(
                         color: Color(0xFF101512),
                         fontSize: 20,
@@ -202,9 +203,9 @@ class _SearchFormState extends State<_SearchForm> {
                     ),
                     CityAutocompleteField(
                       leading: const MotodigoLocationRedIcon(size: 46),
-                      label: 'Ville de destination',
+                      label: 'Ville de destination'.tr(context),
                       controller: widget.destinationController,
-                      hint: 'Ex : Douala',
+                      hint: 'Ex : Douala'.tr(context),
                       textStyle: const TextStyle(
                         color: Color(0xFF101512),
                         fontSize: 20,
@@ -242,13 +243,13 @@ class _SearchFormState extends State<_SearchForm> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Row(
+                          Row(
                             children: [
-                              MotodigoDateGrayIcon(size: 20),
-                              SizedBox(width: 10),
+                              const MotodigoDateGrayIcon(size: 20),
+                              const SizedBox(width: 10),
                               Text(
-                                'Date',
-                                style: TextStyle(
+                                'Date'.tr(context),
+                                style: const TextStyle(
                                   color: Color(0xFF8A968C),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -258,7 +259,7 @@ class _SearchFormState extends State<_SearchForm> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            _date == null ? 'Choisir' : formatShortDate(_date!),
+                            _date == null ? 'Choisir'.tr(context) : formatShortDate(_date!, context: context),
                             style: const TextStyle(
                               color: Color(0xFF101512),
                               fontSize: 17,
@@ -276,13 +277,13 @@ class _SearchFormState extends State<_SearchForm> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Row(
+                          Row(
                             children: [
-                              MotodigoPeopleGrayIcon(size: 20),
-                              SizedBox(width: 10),
+                              const MotodigoPeopleGrayIcon(size: 20),
+                              const SizedBox(width: 10),
                               Text(
-                                'Places',
-                                style: TextStyle(
+                                'Places'.tr(context),
+                                style: const TextStyle(
                                   color: Color(0xFF8A968C),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -319,9 +320,9 @@ class _SearchFormState extends State<_SearchForm> {
                 ],
               ),
               const SizedBox(height: 26),
-              const Text(
-                'DESTINATIONS POPULAIRES',
-                style: TextStyle(
+              Text(
+                'DESTINATIONS POPULAIRES'.tr(context),
+                style: const TextStyle(
                   color: Color(0xFF98A29A),
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -364,9 +365,9 @@ class _SearchFormState extends State<_SearchForm> {
                       height: 24,
                       child: CircularProgressIndicator(strokeWidth: 2.6, color: Colors.white),
                     )
-                  : const Text(
-                      'Rechercher',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                  : Text(
+                      'Rechercher'.tr(context),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                     ),
             ),
           ),
@@ -516,13 +517,13 @@ class _MyBookingsTabState extends State<_MyBookingsTab> {
               const Center(child: MotodigoSearchEmptyIcon(size: 96)),
               const SizedBox(height: 28),
               Text(
-                'Aucune réservation',
+                'Aucune réservation'.tr(context),
                 textAlign: TextAlign.center,
                 style: _resultsText(fontSize: 26, fontWeight: FontWeight.w800, height: 1.25),
               ),
               const SizedBox(height: 12),
               Text(
-                'Recherchez un trajet pour réserver votre premier siège.',
+                'Recherchez un trajet pour réserver votre premier siège.'.tr(context),
                 textAlign: TextAlign.center,
                 style: _resultsText(
                   fontSize: 16,
@@ -554,7 +555,7 @@ class _MyBookingsTabState extends State<_MyBookingsTab> {
                         padding: const EdgeInsets.fromLTRB(28, 48, 28, 28),
                         children: [
                           Text(
-                            'Aucun trajet dans cet onglet',
+                            'Aucun trajet dans cet onglet'.tr(context),
                             textAlign: TextAlign.center,
                             style: _resultsText(
                               fontSize: 18,
@@ -598,11 +599,11 @@ class _MyTripsFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const labels = [
-      (_MyTripsFilter.actifs, 'Actifs'),
-      (_MyTripsFilter.aVenir, 'À venir'),
-      (_MyTripsFilter.passes, 'Passés'),
-      (_MyTripsFilter.annules, 'Annulés'),
+    final labels = [
+      (_MyTripsFilter.actifs, 'Actifs'.tr(context)),
+      (_MyTripsFilter.aVenir, 'À venir'.tr(context)),
+      (_MyTripsFilter.passes, 'Passés'.tr(context)),
+      (_MyTripsFilter.annules, 'Annulés'.tr(context)),
     ];
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -664,14 +665,14 @@ class _BookingListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final destination = announcement?.destinationCity ?? 'Destination';
     final dateLabel = announcement != null
-        ? '${formatDayMonth(announcement!.departureDate)} · ${announcement!.formattedDepartureTime}'
+        ? '${formatDayMonth(announcement!.departureDate, context: context)} · ${announcement!.formattedDepartureTime}'
         : booking.requestedAt == null
         ? null
-        : formatRelativeDayTime(booking.requestedAt!);
+        : formatRelativeDayTime(booking.requestedAt!, context: context);
     final paymentLabel = switch (booking.status) {
-      IntercityBookingStatus.paid => 'Payé',
-      IntercityBookingStatus.pendingPayment || IntercityBookingStatus.confirmed => 'À payer',
-      IntercityBookingStatus.pending => 'En attente',
+      IntercityBookingStatus.paid => 'Payé'.tr(context),
+      IntercityBookingStatus.pendingPayment || IntercityBookingStatus.confirmed => 'À payer'.tr(context),
+      IntercityBookingStatus.pending => 'En attente'.tr(context),
       IntercityBookingStatus.cancelled || IntercityBookingStatus.expired => '—',
       _ => booking.status.label,
     };
@@ -734,7 +735,9 @@ class _BookingListTile extends StatelessWidget {
                       const SizedBox(height: 8),
                       Text(
                         [
-                          '${booking.seatsRequested} place${booking.seatsRequested > 1 ? 's' : ''}',
+                          Localizations.localeOf(context).languageCode == 'en'
+                              ? '${booking.seatsRequested} seat${booking.seatsRequested > 1 ? 's' : ''}'
+                              : '${booking.seatsRequested} place${booking.seatsRequested > 1 ? 's' : ''}',
                           paymentLabel,
                           if (total != null) formatPriceF(total),
                         ].join(' · '),
@@ -767,23 +770,23 @@ class _MyBookingStatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final (label, fg, bg) = switch (status) {
       IntercityBookingStatus.pending => (
-        'En attente',
+        'En attente'.tr(context),
         const Color(0xFFB45309),
         const Color(0xFFFFF7ED),
       ),
       IntercityBookingStatus.confirmed || IntercityBookingStatus.pendingPayment => (
-        'Confirmée',
+        'Confirmée'.tr(context),
         const Color(0xFF16A34A),
         const Color(0xFFE8F8EE),
       ),
-      IntercityBookingStatus.paid => ('Payée', const Color(0xFF16A34A), const Color(0xFFE8F8EE)),
+      IntercityBookingStatus.paid => ('Payée'.tr(context), const Color(0xFF16A34A), const Color(0xFFE8F8EE)),
       IntercityBookingStatus.cancelled => (
-        'Annulée',
+        'Annulée'.tr(context),
         const Color(0xFFDC2626),
         const Color(0xFFFEF2F2),
       ),
       IntercityBookingStatus.expired => (
-        'Expirée',
+        'Expirée'.tr(context),
         const Color(0xFF6B756E),
         const Color(0xFFEEEEE6),
       ),
@@ -852,14 +855,17 @@ class _IntercityResultsPageState extends State<IntercityResultsPage> {
             return const Scaffold(backgroundColor: Color(0xFFFAFAF6), body: AppLoading());
           }
 
+          final _partout = 'Partout'.tr(context);
           final routeTitle = state.filters.hasRoute
-              ? '${state.filters.departureCity ?? 'Partout'} → ${state.filters.destinationCity ?? 'Partout'}'
-              : 'Résultats';
+              ? '${state.filters.departureCity ?? _partout} → ${state.filters.destinationCity ?? _partout}'
+              : 'Résultats'.tr(context);
           final dateLabel = state.filters.date != null
-              ? formatDayMonth(state.filters.date!)
-              : 'Toutes dates';
-          final countLabel =
-              '${state.results.length} annonce${state.results.length > 1 ? 's' : ''} · $dateLabel';
+              ? formatDayMonth(state.filters.date!, context: context)
+              : 'Toutes dates'.tr(context);
+          final _isEn = Localizations.localeOf(context).languageCode == 'en';
+          final countLabel = _isEn
+              ? '${state.results.length} listing${state.results.length > 1 ? 's' : ''} · $dateLabel'
+              : '${state.results.length} annonce${state.results.length > 1 ? 's' : ''} · $dateLabel';
 
           return Scaffold(
             backgroundColor: const Color(0xFFFAFAF6),
@@ -994,10 +1000,14 @@ class _AnnouncementCard extends StatelessWidget {
     final timeLine = ptRamassage == null || ptRamassage.isEmpty
         ? announcement.formattedDepartureTime
         : '${announcement.formattedDepartureTime} · $ptRamassage';
+    final _isEn = Localizations.localeOf(context).languageCode == 'en';
     final vehicleLabel = [
       if (announcement.vehicleType != null && announcement.vehicleType!.trim().isNotEmpty)
         announcement.vehicleType,
-      if (announcement.vehicleCapacity != null) '${announcement.vehicleCapacity} places',
+      if (announcement.vehicleCapacity != null)
+        _isEn
+            ? '${announcement.vehicleCapacity} seats'
+            : '${announcement.vehicleCapacity} places',
     ].join(' · ');
     final seatsColor = announcement.remainingSeats <= 2
         ? const Color(0xFF8A6410)
@@ -1077,7 +1087,7 @@ class _AnnouncementCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Text(
-                        'Émis par vous',
+                        'Émis par vous'.tr(context),
                         style: _resultsText(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
@@ -1094,7 +1104,7 @@ class _AnnouncementCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      vehicleLabel.isEmpty ? 'Véhicule' : vehicleLabel,
+                      vehicleLabel.isEmpty ? 'Véhicule'.tr(context) : vehicleLabel,
                       style: _resultsText(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
@@ -1105,7 +1115,9 @@ class _AnnouncementCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    '${announcement.remainingSeats} place${announcement.remainingSeats > 1 ? 's' : ''} restante${announcement.remainingSeats > 1 ? 's' : ''}',
+                    _isEn
+                        ? '${announcement.remainingSeats} seat${announcement.remainingSeats > 1 ? 's' : ''} left'
+                        : '${announcement.remainingSeats} place${announcement.remainingSeats > 1 ? 's' : ''} restante${announcement.remainingSeats > 1 ? 's' : ''}',
                     style: _resultsText(
                       fontSize: 15,
                       fontWeight: FontWeight.w800,
@@ -1138,23 +1150,27 @@ class IntercityEmptyResultsPage extends StatelessWidget {
       child: BlocBuilder<IntercitySearchCubit, IntercitySearchState>(
         builder: (context, state) {
           final filters = state.filters;
+          final _partout = 'Partout'.tr(context);
           final from = filters.departureCity?.trim().isNotEmpty == true
               ? filters.departureCity!
-              : 'Partout';
+              : _partout;
           final to = filters.destinationCity?.trim().isNotEmpty == true
               ? filters.destinationCity!
-              : 'Partout';
-          final datePart = filters.date != null ? ' le ${formatDayMonthLong(filters.date!)}' : '';
+              : _partout;
+          final _isEn = Localizations.localeOf(context).languageCode == 'en';
+          final datePart = filters.date != null
+              ? (_isEn ? ' on ${formatDayMonthLong(filters.date!, context: context)}' : ' le ${formatDayMonthLong(filters.date!, context: context)}')
+              : '';
 
           // Toujours les 3 CTA Figma (indépendamment des filtres actifs).
           final actions = <_EmptyAction>[
             _EmptyAction(
-              label: 'Changer de date',
+              label: 'Changer de date'.tr(context),
               primary: true,
               onTap: () => _changeDate(context),
             ),
-            _EmptyAction(label: 'Élargir le budget', onTap: () => _widenBudget(context)),
-            _EmptyAction(label: 'Retirer le pt. ramassage', onTap: () => _dropPtRamassage(context)),
+            _EmptyAction(label: 'Élargir le budget'.tr(context), onTap: () => _widenBudget(context)),
+            _EmptyAction(label: 'Retirer le pt. ramassage'.tr(context), onTap: () => _dropPtRamassage(context)),
           ];
 
           final subtitleStyle = _resultsText(
@@ -1186,7 +1202,7 @@ class IntercityEmptyResultsPage extends StatelessWidget {
                             const MotodigoSearchEmptyIcon(size: 96),
                             const SizedBox(height: 28),
                             Text(
-                              'Aucune annonce trouvée',
+                              'Aucune annonce trouvée'.tr(context),
                               textAlign: TextAlign.center,
                               style: _resultsText(
                                 fontSize: 26,
@@ -1201,7 +1217,7 @@ class IntercityEmptyResultsPage extends StatelessWidget {
                                 TextSpan(
                                   style: subtitleStyle,
                                   children: [
-                                    const TextSpan(text: 'Aucun trajet '),
+                                    TextSpan(text: _isEn ? 'No trip ' : 'Aucun trajet '),
                                     TextSpan(text: from),
                                     const WidgetSpan(
                                       alignment: PlaceholderAlignment.middle,
@@ -1213,7 +1229,7 @@ class IntercityEmptyResultsPage extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    TextSpan(text: '$to$datePart avec ces critères.'),
+                                    TextSpan(text: _isEn ? '$to$datePart with these criteria.' : '$to$datePart avec ces critères.'),
                                   ],
                                 ),
                                 textAlign: TextAlign.center,
@@ -1229,9 +1245,9 @@ class IntercityEmptyResultsPage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                               onTap: () {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                    SnackBar(
                                     content: Text(
-                                      'Les alertes trajets arriveront bientôt. Fonctionnalité en préparation.',
+                                      'Les alertes trajets arriveront bientôt. Fonctionnalité en préparation.'.tr(context),
                                     ),
                                   ),
                                 );
@@ -1244,7 +1260,7 @@ class IntercityEmptyResultsPage extends StatelessWidget {
                                     const MotodigoBellGreenIcon(size: 22),
                                     const SizedBox(width: 10),
                                     Text(
-                                      'Créer une alerte sur ce trajet',
+                                      'Créer une alerte sur ce trajet'.tr(context),
                                       style: _resultsText(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w700,

@@ -12,6 +12,7 @@ import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_st
 import 'package:motodi_go_mobile/features/profiles/presentation/cubit/profile_cubit.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_widgets.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/settings_figma_icons.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
 TextStyle _mineText({
   double fontSize = 14,
@@ -63,7 +64,9 @@ class _MesProfilsView extends StatelessWidget {
               if (context.mounted) {
                 ScaffoldMessenger.of(
                   context,
-                ).showSnackBar(const SnackBar(content: Text('Profil activé')));
+                ).showSnackBar(
+                  SnackBar(content: Text('Profil activé'.tr(context))),
+                );
               }
             } else if (state.status == ProfileStatus.failure && state.errorMessage != null) {
               ScaffoldMessenger.of(
@@ -84,7 +87,7 @@ class _MesProfilsView extends StatelessWidget {
                       _BackButton(onTap: () => context.pop()),
                       const SizedBox(width: 10),
                       Text(
-                        'Mes profils',
+                        'Mes profils'.tr(context),
                         style: _mineText(fontSize: 28, fontWeight: FontWeight.w800),
                       ),
                     ],
@@ -104,11 +107,11 @@ class _MesProfilsView extends StatelessWidget {
                                 showAction: !profile.active,
                                 compact: true,
                                 showStatusDot: false,
-                                footer: _blockedBanner(profile),
+                                footer: _blockedBanner(context, profile),
                                 onTap: () {
                                   if (profile.validationStatus == ValidationStatus.suspended) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Ce profil est suspendu.')),
+                                      SnackBar(content: Text('Ce profil est suspendu.'.tr(context))),
                                     );
                                     return;
                                   }
@@ -134,7 +137,7 @@ class _MesProfilsView extends StatelessWidget {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
                     ),
                     child: Text(
-                      '+ Ajouter un profil',
+                      '+ Ajouter un profil'.tr(context),
                       style: _mineText(
                         fontSize: 17,
                         fontWeight: FontWeight.w700,
@@ -151,9 +154,15 @@ class _MesProfilsView extends StatelessWidget {
     );
   }
 
-  Widget? _blockedBanner(UserProfile profile) {
+  Widget? _blockedBanner(BuildContext context, UserProfile profile) {
     final count = _blockedActionsCount(profile);
     if (count == 0) return null;
+
+    final isEn = Localizations.localeOf(context).languageCode == 'en';
+    final message = isEn
+        ? '$count action(s) blocked — validation required'
+        : '$count action${count > 1 ? 's' : ''} bloquée${count > 1 ? 's' : ''} — validation requise';
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
@@ -166,7 +175,7 @@ class _MesProfilsView extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              '$count action${count > 1 ? 's' : ''} bloquée${count > 1 ? 's' : ''} — validation requise',
+              message,
               style: _mineText(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,

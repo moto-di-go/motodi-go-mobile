@@ -12,6 +12,7 @@ import 'package:motodi_go_mobile/features/notifications/domain/entities/app_noti
 import 'package:motodi_go_mobile/features/notifications/presentation/cubit/notifications_cubit.dart';
 import 'package:motodi_go_mobile/features/notifications/presentation/widgets/notifications_figma_icons.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_figma_icons.dart';
 
 TextStyle _notifText({
@@ -59,7 +60,7 @@ class _NotificationsView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          'Notifications',
+                          'Notifications'.tr(context),
                           style: _notifText(fontSize: 32, fontWeight: FontWeight.w800, height: 1.1),
                         ),
                       ),
@@ -68,7 +69,7 @@ class _NotificationsView extends StatelessWidget {
                             ? () => context.read<NotificationsCubit>().markAllRead()
                             : null,
                         child: Text(
-                          'Tout lire',
+                          'Tout lire'.tr(context),
                           style: _notifText(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
@@ -128,13 +129,15 @@ class _FilterTabs extends StatelessWidget {
         children: [
           Expanded(
             child: _FilterChip(
-              label: unreadCount > 0 ? 'Non lues · $unreadCount' : 'Non lues',
+              label: unreadCount > 0
+              ? (Localizations.localeOf(context).languageCode == 'en' ? 'Unread · $unreadCount' : 'Non lues · $unreadCount')
+              : 'Non lues'.tr(context),
               selected: unreadOnly,
               onTap: onUnread,
             ),
           ),
           Expanded(
-            child: _FilterChip(label: 'Toutes', selected: !unreadOnly, onTap: onAll),
+            child: _FilterChip(label: 'Toutes'.tr(context), selected: !unreadOnly, onTap: onAll),
           ),
         ],
       ),
@@ -188,7 +191,7 @@ class _NotificationsBody extends StatelessWidget {
     }
     if (state.status == NotificationsStatus.failure && state.items.isEmpty) {
       return AppErrorView(
-        message: state.errorMessage ?? 'Chargement des notifications impossible.',
+        message: state.errorMessage ?? 'Chargement des notifications impossible.'.tr(context),
         onRetry: () => context.read<NotificationsCubit>().load(),
       );
     }
@@ -203,8 +206,8 @@ class _NotificationsBody extends StatelessWidget {
               const SizedBox(height: 22),
               Text(
                 state.unreadOnly
-                    ? 'Aucune notification non lue'
-                    : 'Aucune notification pour le moment',
+                    ? 'Aucune notification non lue'.tr(context)
+                    : 'Aucune notification pour le moment'.tr(context),
                 textAlign: TextAlign.center,
                 style: _notifText(
                   fontSize: 16,
