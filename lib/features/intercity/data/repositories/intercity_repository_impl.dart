@@ -10,13 +10,16 @@ import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_bo
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_vehicle.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/entities/search_filters.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/repositories/intercity_repository.dart';
+import 'package:motodi_go_mobile/features/offline/domain/entities/offline_entities.dart';
+import 'package:motodi_go_mobile/features/offline/domain/repositories/offline_repository.dart';
 
 @LazySingleton(as: IntercityRepository)
 class IntercityRepositoryImpl implements IntercityRepository {
   final IntercityRemoteDataSource _remoteDataSource;
   final NetworkInfo _networkInfo;
+  final OfflineRepository _offlineRepository;
 
-  IntercityRepositoryImpl(this._remoteDataSource, this._networkInfo);
+  IntercityRepositoryImpl(this._remoteDataSource, this._networkInfo, this._offlineRepository);
 
   @override
   Future<Either<Failure, AnnouncementSearchResult>> searchAnnouncements(
@@ -157,7 +160,22 @@ class IntercityRepositoryImpl implements IntercityRepository {
   }
 
   @override
-  Future<Either<Failure, IntercityBooking>> cancelBooking(String id, String cancellationReason) {
+  Future<Either<Failure, IntercityBooking>> cancelBooking(String id, String cancellationReason) async {
+    if (!await _networkInfo.isConnected) {
+      await _offlineRepository.enqueue(
+        type: OfflineOperationType.bookingCancel,
+        payload: {
+          'bookingId': id,
+          'cancellationReason': cancellationReason,
+        },
+      );
+      return left(
+        const NetworkFailure(
+          'Annulation enregistrée sur ce téléphone. Elle sera synchronisée plus tard.',
+          code: 'OFFLINE_QUEUED',
+        ),
+      );
+    }
     return _guard(() async {
       final model = await _remoteDataSource.cancelBooking(id, cancellationReason);
       return model.toEntity();

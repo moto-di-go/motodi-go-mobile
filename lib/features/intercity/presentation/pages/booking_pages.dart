@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +20,7 @@ import 'package:motodi_go_mobile/features/intercity/presentation/widgets/interci
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_figma_icons.dart';
 import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_formatters.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
+import 'package:motodi_go_mobile/features/wallet/presentation/pages/pay_booking_page.dart';
 
 final RegExp _kPhonePattern = RegExp(r'^\+237[6-9]\d{8}$');
 
@@ -113,7 +116,7 @@ class _IntercityDetailPageState extends State<IntercityDetailPage> {
   }
 }
 
-class _DetailContent extends StatelessWidget {
+class _DetailContent extends StatefulWidget {
   final IntercityAnnouncement announcement;
   final IntercityItineraryStatus itineraryStatus;
   final IntercityItinerary? itinerary;
@@ -121,31 +124,35 @@ class _DetailContent extends StatelessWidget {
   const _DetailContent({required this.announcement, required this.itineraryStatus, this.itinerary});
 
   @override
-  Widget build(BuildContext context) {
-    final profiles = getIt<SessionCubit>().state.session?.profiles ?? const [];
-    final activeProfile = getIt<SessionCubit>().state.activeProfile;
-    final kycValidated = activeProfile?.validationStatus == ValidationStatus.validated;
-    final ownedByMe = profiles.any((profile) => profile.id == announcement.publisherProfileId);
-    final hasSeats = !ownedByMe && announcement.hasSeatsAvailable && announcement.status.isActive;
-    final agency = announcement.publisherDisplayName?.trim().isNotEmpty == true
-        ? announcement.publisherDisplayName!
-        : 'Transporteur';
-    final ptRamassage = announcement.ptRamassage?.trim();
-    final metaParts = <String>[
-      '${formatDayMonth(announcement.departureDate)} ${announcement.departureDate.year}',
-      announcement.formattedDepartureTime,
-      if (ptRamassage != null && ptRamassage.isNotEmpty) 'Pt. Ramassage $ptRamassage',
-    ];
-    final metaLine = metaParts.join(' · ');
-    final ctaLabel = ownedByMe
-        ? 'Émis par vous'
-        : hasSeats
-        ? 'Souscrire'
-        : 'Complet';
+  State<_DetailContent> createState() => _DetailContentState();
+}
 
-    void openSubscribe() {
+class _DetailContentState extends State<_DetailContent> {
+  bool _checkingKyc = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Session JWT can lag behind admin KYC decisions — refresh on open.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(getIt<SessionCubit>().refreshAfterProfileChange());
+    });
+  }
+
+  Future<void> _openSubscribe() async {
+    if (_checkingKyc) return;
+    setState(() => _checkingKyc = true);
+    try {
+      final sessionCubit = getIt<SessionCubit>();
+      await sessionCubit.refreshAfterProfileChange();
+      if (!mounted) return;
+
+      final activeProfile = sessionCubit.state.activeProfile;
+      final kycValidated = activeProfile?.isValidated == true ||
+          activeProfile?.validationStatus == ValidationStatus.validated;
+
       if (!kycValidated) {
-        showDialog<void>(
+        await showDialog<void>(
           context: context,
           builder: (dialogContext) {
             return AlertDialog(
@@ -196,6 +203,9 @@ class _DetailContent extends StatelessWidget {
         );
         return;
       }
+
+      final announcement = widget.announcement;
+      if (!mounted) return;
       context.push(
         RouteConstants.intercitySubscribe,
         extra: IntercitySubscribeArgs(
@@ -205,7 +215,34 @@ class _DetailContent extends StatelessWidget {
           maxSeats: announcement.remainingSeats,
         ),
       );
+    } finally {
+      if (mounted) setState(() => _checkingKyc = false);
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final announcement = widget.announcement;
+    final itineraryStatus = widget.itineraryStatus;
+    final itinerary = widget.itinerary;
+    final profiles = getIt<SessionCubit>().state.session?.profiles ?? const [];
+    final ownedByMe = profiles.any((profile) => profile.id == announcement.publisherProfileId);
+    final hasSeats = !ownedByMe && announcement.hasSeatsAvailable && announcement.status.isActive;
+    final agency = announcement.publisherDisplayName?.trim().isNotEmpty == true
+        ? announcement.publisherDisplayName!
+        : 'Transporteur';
+    final ptRamassage = announcement.ptRamassage?.trim();
+    final metaParts = <String>[
+      '${formatDayMonth(announcement.departureDate)} ${announcement.departureDate.year}',
+      announcement.formattedDepartureTime,
+      if (ptRamassage != null && ptRamassage.isNotEmpty) 'Pt. Ramassage $ptRamassage',
+    ];
+    final metaLine = metaParts.join(' · ');
+    final ctaLabel = ownedByMe
+        ? 'Émis par vous'
+        : hasSeats
+        ? (_checkingKyc ? 'Vérification…' : 'Souscrire')
+        : 'Complet';
 
     return Column(
       children: [
@@ -473,7 +510,7 @@ class _DetailContent extends StatelessWidget {
             shadowColor: const Color(0x8C16A34A),
             child: InkWell(
               borderRadius: BorderRadius.circular(999),
-              onTap: hasSeats ? openSubscribe : null,
+              onTap: hasSeats && !_checkingKyc ? _openSubscribe : null,
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 20),
@@ -745,8 +782,7 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
               if (state.subscribeStatus == IntercitySubscribeStatus.success &&
                   state.createdBooking != null) {
                 context.pushReplacement(
-                  RouteConstants.intercityBooking,
-                  extra: state.createdBooking!.id,
+                  RouteConstants.intercityBookingPath(state.createdBooking!.id),
                 );
               }
               if (state.subscribeStatus == IntercitySubscribeStatus.failure &&
@@ -1145,17 +1181,50 @@ class IntercityBookingStatusPage extends StatefulWidget {
 
 class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage> {
   late final IntercityBookingCubit _cubit = getIt<IntercityBookingCubit>();
+  Timer? _ticker;
+  Duration? _remaining;
+  bool _expirySnackShown = false;
 
   @override
   void initState() {
     super.initState();
     _cubit.loadBooking(widget.bookingId);
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tickCountdown());
   }
 
   @override
   void dispose() {
+    _ticker?.cancel();
     _cubit.close();
     super.dispose();
+  }
+
+  void _tickCountdown() {
+    final booking = _cubit.state.booking;
+    final expiresAt = booking?.expiresAt;
+    if (booking == null ||
+        expiresAt == null ||
+        (booking.status != IntercityBookingStatus.pending &&
+            booking.status != IntercityBookingStatus.pendingPayment)) {
+      if (_remaining != null && mounted) setState(() => _remaining = null);
+      return;
+    }
+    final remaining = expiresAt.difference(DateTime.now());
+    if (!mounted) return;
+    setState(() => _remaining = remaining.isNegative ? Duration.zero : remaining);
+    if (!_expirySnackShown && remaining.inMinutes <= 5 && remaining.inSeconds > 0) {
+      _expirySnackShown = true;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            remaining.inMinutes <= 1
+                ? 'Votre place expire dans moins d’une minute.'
+                : 'Votre place expire dans ${remaining.inMinutes} min.',
+          ),
+          backgroundColor: const Color(0xFFB45309),
+        ),
+      );
+    }
   }
 
   @override
@@ -1180,6 +1249,9 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
               final announcement = state.announcement?.id == booking.announcementId
                   ? state.announcement
                   : null;
+              final needsPaymentLock =
+                  booking.status == IntercityBookingStatus.pending ||
+                  booking.status == IntercityBookingStatus.pendingPayment;
 
               return Column(
                 children: [
@@ -1201,65 +1273,47 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
                       padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
                       children: [
                         _BookingTripSummaryCard(booking: booking, announcement: announcement),
+                        if (needsPaymentLock && _remaining != null) ...[
+                          const SizedBox(height: 14),
+                          _PaymentLockBanner(remaining: _remaining!),
+                        ],
+                        if (state.itineraryStatus == IntercityItineraryStatus.ready &&
+                            state.itinerary != null) ...[
+                          const SizedBox(height: 14),
+                          Text(
+                            'APERÇU DU TRAJET',
+                            style: _detailText(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF7A857E),
+                              letterSpacing: 1.1,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          SizedBox(
+                            height: 180,
+                            child: IntercityItineraryMap(itinerary: state.itinerary!),
+                          ),
+                        ] else if (announcement?.departureLat != null &&
+                            announcement?.departureLon != null) ...[
+                          const SizedBox(height: 14),
+                          _MapCoordsHint(
+                            lat: announcement!.departureLat!,
+                            lon: announcement.departureLon!,
+                            label: announcement.departureCity,
+                          ),
+                        ],
                         const SizedBox(height: 24),
-                        _BookingTimeline(booking: booking),
+                        _BookingTimeline(booking: booking, announcement: announcement),
                       ],
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-                    child: Column(
-                      children: [
-                        if (booking.status.isCancellable) ...[
-                          SizedBox(
-                            width: double.infinity,
-                            height: 56,
-                            child: OutlinedButton(
-                              onPressed: () => _confirmCancel(context, booking),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: const Color(0xFF101512),
-                                side: const BorderSide(color: Color(0xFFDDE3DA), width: 1.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(999),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.close_rounded, size: 20),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    'Annuler la réservation',
-                                    style: _detailText(fontSize: 17, fontWeight: FontWeight.w700),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                        ],
-                        Material(
-                          color: const Color(0xFF101512),
-                          borderRadius: BorderRadius.circular(999),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(999),
-                            onTap: () => context.go(RouteConstants.home),
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Retour à l'accueil",
-                                style: _detailText(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    child: _BookingActions(
+                      booking: booking,
+                      announcement: announcement,
+                      onCancel: () => _confirmCancel(context, booking),
                     ),
                   ),
                 ],
@@ -1324,6 +1378,235 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
           : reasonController.text.trim();
       await _cubit.cancelBooking(booking.id, reason);
     }
+  }
+}
+
+class _PaymentLockBanner extends StatelessWidget {
+  final Duration remaining;
+
+  const _PaymentLockBanner({required this.remaining});
+
+  @override
+  Widget build(BuildContext context) {
+    final mm = remaining.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final ss = remaining.inSeconds.remainder(60).toString().padLeft(2, '0');
+    final hh = remaining.inHours;
+    final label = hh > 0 ? '${hh.toString().padLeft(2, '0')}:$mm:$ss' : '$mm:$ss';
+    final urgent = remaining.inMinutes < 5;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+      decoration: BoxDecoration(
+        color: urgent ? const Color(0xFFFFF7ED) : const Color(0xFFFFFBEB),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: urgent ? const Color(0xFFFDBA74) : const Color(0xFFFDE68A)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.timer_outlined,
+            color: urgent ? const Color(0xFFC2410C) : const Color(0xFFCA8A04),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Place verrouillée',
+                  style: _detailText(fontSize: 15, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  remaining == Duration.zero ? 'Délai de paiement expiré' : 'Expire dans $label',
+                  style: _detailText(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: urgent ? const Color(0xFFC2410C) : const Color(0xFFCA8A04),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MapCoordsHint extends StatelessWidget {
+  final double lat;
+  final double lon;
+  final String label;
+
+  const _MapCoordsHint({required this.lat, required this.lon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 1, color: Color(0xFFE7EAE3)),
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.place_rounded, color: Color(0xFF16A34A)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              '$label · ${lat.toStringAsFixed(4)}, ${lon.toStringAsFixed(4)}',
+              style: _detailText(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF54615A),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BookingActions extends StatelessWidget {
+  final IntercityBooking booking;
+  final IntercityAnnouncement? announcement;
+  final VoidCallback onCancel;
+
+  const _BookingActions({
+    required this.booking,
+    required this.announcement,
+    required this.onCancel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final needsPay =
+        booking.status == IntercityBookingStatus.pending ||
+        booking.status == IntercityBookingStatus.pendingPayment ||
+        booking.status == IntercityBookingStatus.confirmed;
+    final canTrack = booking.tripId != null && booking.tripId!.isNotEmpty;
+    final showReceipt = booking.status == IntercityBookingStatus.paid;
+
+    return Column(
+      children: [
+        if (needsPay) ...[
+          Material(
+            color: const Color(0xFF16A34A),
+            borderRadius: BorderRadius.circular(999),
+            elevation: 8,
+            shadowColor: const Color(0x8C16A34A),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(999),
+              onTap: () {
+                final amount = announcement == null
+                    ? null
+                    : announcement!.priceFcfa * booking.seatsRequested;
+                context.push(
+                  RouteConstants.walletPayPath(booking.id),
+                  extra: PayBookingArgs(
+                    bookingId: booking.id,
+                    amount: amount,
+                    label: announcement?.route,
+                  ),
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                alignment: Alignment.center,
+                child: Text(
+                  'Payer maintenant',
+                  style: _detailText(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
+        if (canTrack) ...[
+          Material(
+            color: const Color(0xFF101512),
+            borderRadius: BorderRadius.circular(999),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(999),
+              onTap: () => context.push(RouteConstants.tripTrackPath(booking.tripId!)),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                alignment: Alignment.center,
+                child: Text(
+                  'Suivre le trajet',
+                  style: _detailText(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
+        if (showReceipt) ...[
+          OutlinedButton(
+            onPressed: () => context.push(RouteConstants.walletReceiptPath(booking.id)),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: const Color(0xFF16A34A),
+              side: const BorderSide(color: Color(0xFFBBF7D0), width: 1.5),
+              minimumSize: const Size.fromHeight(52),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+            ),
+            child: Text(
+              'Voir le reçu',
+              style: _detailText(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFF16A34A),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
+        if (booking.status.isCancellable) ...[
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: OutlinedButton(
+              onPressed: onCancel,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF101512),
+                side: const BorderSide(color: Color(0xFFDDE3DA), width: 1.5),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+              ),
+              child: Text('Annuler', style: _detailText(fontSize: 16, fontWeight: FontWeight.w700)),
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
+        TextButton(
+          onPressed: () => context.go(RouteConstants.home),
+          child: Text(
+            "Retour à l'accueil",
+            style: _detailText(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF54615A),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -1451,12 +1734,13 @@ class _TimelineStepData {
 
 class _BookingTimeline extends StatelessWidget {
   final IntercityBooking booking;
+  final IntercityAnnouncement? announcement;
 
-  const _BookingTimeline({required this.booking});
+  const _BookingTimeline({required this.booking, this.announcement});
 
   @override
   Widget build(BuildContext context) {
-    final steps = _stepsFor(booking);
+    final steps = _stepsFor(booking, announcement);
     return Column(
       children: [
         for (var i = 0; i < steps.length; i++)
@@ -1465,45 +1749,73 @@ class _BookingTimeline extends StatelessWidget {
     );
   }
 
-  List<_TimelineStepData> _stepsFor(IntercityBooking booking) {
-    final confirmed =
+  List<_TimelineStepData> _stepsFor(IntercityBooking booking, IntercityAnnouncement? announcement) {
+    final locked =
         booking.confirmedAt != null ||
         booking.status == IntercityBookingStatus.confirmed ||
         booking.status == IntercityBookingStatus.pendingPayment ||
         booking.status == IntercityBookingStatus.paid;
+    final paymentRequested =
+        booking.status == IntercityBookingStatus.pendingPayment ||
+        booking.status == IntercityBookingStatus.confirmed ||
+        booking.status == IntercityBookingStatus.paid;
     final paid = booking.status == IntercityBookingStatus.paid;
     final cancelled = booking.status == IntercityBookingStatus.cancelled;
+    final expired = booking.status == IntercityBookingStatus.expired;
+    final departureLabel = announcement == null
+        ? null
+        : '${formatDayMonth(announcement.departureDate)} · ${announcement.formattedDepartureTime}';
 
     return [
       _TimelineStepData(
-        label: 'Demande envoyée',
+        label: 'Demande créée',
         subtitle: booking.requestedAt == null ? null : formatRelativeDayTime(booking.requestedAt!),
         visual: _TimelineStepVisual.done,
       ),
       _TimelineStepData(
-        label: 'Confirmée par le transporteur',
-        subtitle: booking.confirmedAt == null ? null : formatRelativeDayTime(booking.confirmedAt!),
-        visual: confirmed ? _TimelineStepVisual.done : _TimelineStepVisual.pending,
+        label: 'Place verrouillée',
+        subtitle: booking.confirmedAt == null
+            ? (locked ? 'Place réservée' : 'En attente du transporteur')
+            : formatRelativeDayTime(booking.confirmedAt!),
+        visual: locked ? _TimelineStepVisual.done : _TimelineStepVisual.pending,
       ),
-      if (cancelled)
+      if (cancelled || expired)
         _TimelineStepData(
-          label: 'Annulée',
+          label: cancelled ? 'Annulée' : 'Expirée',
           subtitle: booking.cancelledAt == null
               ? null
               : formatRelativeDayTime(booking.cancelledAt!),
           visual: _TimelineStepVisual.cancelled,
         )
-      else if (paid)
-        const _TimelineStepData(label: 'Payée / terminée', visual: _TimelineStepVisual.done)
-      else if (confirmed)
-        const _TimelineStepData(
-          label: 'Paiement',
-          subtitle: 'À régler via Wallet avant le départ',
-          visual: _TimelineStepVisual.payment,
-          accentSubtitle: true,
-        )
-      else
-        const _TimelineStepData(label: 'Paiement', visual: _TimelineStepVisual.pending),
+      else ...[
+        _TimelineStepData(
+          label: 'Paiement demandé',
+          subtitle: paymentRequested
+              ? 'À régler via Wallet avant le départ'
+              : 'Après confirmation du transporteur',
+          visual: paid
+              ? _TimelineStepVisual.done
+              : paymentRequested
+              ? _TimelineStepVisual.payment
+              : _TimelineStepVisual.pending,
+          accentSubtitle: paymentRequested && !paid,
+        ),
+        _TimelineStepData(
+          label: 'Paiement confirmé',
+          subtitle: paid ? 'Wallet · payé' : null,
+          visual: paid ? _TimelineStepVisual.done : _TimelineStepVisual.pending,
+        ),
+        _TimelineStepData(
+          label: 'Départ prévu',
+          subtitle: departureLabel,
+          visual: paid ? _TimelineStepVisual.done : _TimelineStepVisual.pending,
+        ),
+        _TimelineStepData(
+          label: 'Trajet terminé',
+          subtitle: booking.tripId != null ? 'Suivi disponible' : null,
+          visual: _TimelineStepVisual.pending,
+        ),
+      ],
     ];
   }
 }

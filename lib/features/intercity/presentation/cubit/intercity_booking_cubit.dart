@@ -148,22 +148,46 @@ class IntercityBookingCubit extends Cubit<IntercityBookingState> {
       ),
     );
     final result = await _repository.listMyBookings(page: nextPage, size: _pageSize);
-    result.fold(
-      (failure) => emit(
-        state.copyWith(
-          myBookingsStatus: IntercityBookingsStatus.failure,
-          myBookingsErrorMessage: failure.message,
-        ),
-      ),
-      (page) => emit(
-        state.copyWith(
-          myBookingsStatus: IntercityBookingsStatus.success,
-          myBookings: loadMore ? [...state.myBookings, ...page.items] : page.items,
-          myBookingsPage: page.page,
-          myBookingsHasMore: page.hasMore,
-        ),
-      ),
+    await result.fold(
+      (failure) async {
+        emit(
+          state.copyWith(
+            myBookingsStatus: IntercityBookingsStatus.failure,
+            myBookingsErrorMessage: failure.message,
+          ),
+        );
+      },
+      (page) async {
+        final bookings = loadMore ? [...state.myBookings, ...page.items] : page.items;
+        emit(
+          state.copyWith(
+            myBookingsStatus: IntercityBookingsStatus.success,
+            myBookings: bookings,
+            myBookingsPage: page.page,
+            myBookingsHasMore: page.hasMore,
+          ),
+        );
+        await _enrichBookingAnnouncements(page.items);
+      },
     );
+  }
+
+  Future<void> _enrichBookingAnnouncements(List<IntercityBooking> bookings) async {
+    final missingIds = bookings
+        .map((b) => b.announcementId)
+        .where((id) => id.isNotEmpty && !state.myBookingAnnouncements.containsKey(id))
+        .toSet();
+    if (missingIds.isEmpty) return;
+    final merged = Map<String, IntercityAnnouncement>.from(state.myBookingAnnouncements);
+    await Future.wait(
+      missingIds.map((id) async {
+        final result = await _repository.getAnnouncement(id);
+        result.fold((_) {}, (announcement) => merged[id] = announcement);
+      }),
+    );
+    if (!isClosed) {
+      emit(state.copyWith(myBookingAnnouncements: merged));
+    }
   }
 
   Future<void> loadBooking(String bookingId) async {
@@ -181,19 +205,28 @@ class IntercityBookingCubit extends Cubit<IntercityBookingState> {
       (booking) async {
         emit(state.copyWith(bookingStatus: IntercityBookingsStatus.success, booking: booking));
         final announcementResult = await _repository.getAnnouncement(booking.announcementId);
-        announcementResult.fold(
-          (_) {},
-          (announcement) => emit(state.copyWith(announcement: announcement)),
-        );
+        await announcementResult.fold((_) async {}, (announcement) async {
+          emit(state.copyWith(announcement: announcement));
+          await _loadItinerary(announcement);
+        });
       },
     );
   }
 
   Future<bool> cancelBooking(String bookingId, String reason) async {
     final result = await _repository.cancelBooking(bookingId, reason);
-    return result.fold((failure) => false, (booking) {
-      emit(state.copyWith(bookingStatus: IntercityBookingsStatus.success, booking: booking));
-      return true;
-    });
+    return result.fold(
+      (failure) {
+        if (failure.code == 'OFFLINE_QUEUED') {
+          emit(state.copyWith(bookingStatus: IntercityBookingsStatus.success));
+          return true;
+        }
+        return false;
+      },
+      (booking) {
+        emit(state.copyWith(bookingStatus: IntercityBookingsStatus.success, booking: booking));
+        return true;
+      },
+    );
   }
 }

@@ -469,8 +469,38 @@ class _SeatStepperButton extends StatelessWidget {
   }
 }
 
-class _MyBookingsTab extends StatelessWidget {
+class _MyBookingsTab extends StatefulWidget {
   const _MyBookingsTab();
+
+  @override
+  State<_MyBookingsTab> createState() => _MyBookingsTabState();
+}
+
+enum _MyTripsFilter { actifs, aVenir, passes, annules }
+
+class _MyBookingsTabState extends State<_MyBookingsTab> {
+  _MyTripsFilter _filter = _MyTripsFilter.actifs;
+
+  List<IntercityBooking> _filtered(List<IntercityBooking> all) {
+    return all.where((booking) {
+      return switch (_filter) {
+        _MyTripsFilter.actifs =>
+          booking.status == IntercityBookingStatus.pending ||
+              booking.status == IntercityBookingStatus.pendingPayment ||
+              booking.status == IntercityBookingStatus.confirmed,
+        _MyTripsFilter.aVenir =>
+          booking.status == IntercityBookingStatus.paid &&
+              (booking.tripId == null || booking.tripId!.isEmpty),
+        _MyTripsFilter.passes =>
+          booking.status == IntercityBookingStatus.paid &&
+              booking.tripId != null &&
+              booking.tripId!.isNotEmpty,
+        _MyTripsFilter.annules =>
+          booking.status == IntercityBookingStatus.cancelled ||
+              booking.status == IntercityBookingStatus.expired,
+      };
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -504,38 +534,148 @@ class _MyBookingsTab extends StatelessWidget {
             ],
           );
         }
-        return RefreshIndicator(
-          onRefresh: () => context.read<IntercityBookingCubit>().loadMyBookings(),
-          child: ListView.builder(
-            padding: const EdgeInsets.fromLTRB(18, 16, 18, 24),
-            itemCount: state.myBookings.length,
-            itemBuilder: (context, index) {
-              final booking = state.myBookings[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 14),
-                child: _BookingListTile(
-                  booking: booking,
-                  onTap: () => context.push(RouteConstants.intercityBooking, extra: booking.id),
-                ),
-              );
-            },
-          ),
+
+        final filtered = _filtered(state.myBookings);
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(18, 14, 18, 8),
+              child: _MyTripsFilterBar(
+                selected: _filter,
+                onChanged: (value) => setState(() => _filter = value),
+              ),
+            ),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () => context.read<IntercityBookingCubit>().loadMyBookings(),
+                child: filtered.isEmpty
+                    ? ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.fromLTRB(28, 48, 28, 28),
+                        children: [
+                          Text(
+                            'Aucun trajet dans cet onglet',
+                            textAlign: TextAlign.center,
+                            style: _resultsText(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF54615A),
+                            ),
+                          ),
+                        ],
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(18, 8, 18, 24),
+                        itemCount: filtered.length,
+                        itemBuilder: (context, index) {
+                          final booking = filtered[index];
+                          final announcement = state.myBookingAnnouncements[booking.announcementId];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 14),
+                            child: _BookingListTile(
+                              booking: booking,
+                              announcement: announcement,
+                              onTap: () =>
+                                  context.push(RouteConstants.intercityBookingPath(booking.id)),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ),
+          ],
         );
       },
     );
   }
 }
 
-class _BookingListTile extends StatelessWidget {
-  final IntercityBooking booking;
-  final VoidCallback onTap;
+class _MyTripsFilterBar extends StatelessWidget {
+  final _MyTripsFilter selected;
+  final ValueChanged<_MyTripsFilter> onChanged;
 
-  const _BookingListTile({required this.booking, required this.onTap});
+  const _MyTripsFilterBar({required this.selected, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
-    final seatsLabel =
-        '${booking.seatsRequested} place${booking.seatsRequested > 1 ? 's' : ''} réservée${booking.seatsRequested > 1 ? 's' : ''}';
+    const labels = [
+      (_MyTripsFilter.actifs, 'Actifs'),
+      (_MyTripsFilter.aVenir, 'À venir'),
+      (_MyTripsFilter.passes, 'Passés'),
+      (_MyTripsFilter.annules, 'Annulés'),
+    ];
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (final entry in labels) ...[
+            _MyTripsChip(
+              label: entry.$2,
+              selected: selected == entry.$1,
+              onTap: () => onChanged(entry.$1),
+            ),
+            const SizedBox(width: 8),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _MyTripsChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _MyTripsChip({required this.label, required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 160),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: selected ? const Color(0xFF16A34A) : const Color(0xFFEEEFE8),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(
+          label,
+          style: _resultsText(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: selected ? Colors.white : const Color(0xFF54615A),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BookingListTile extends StatelessWidget {
+  final IntercityBooking booking;
+  final IntercityAnnouncement? announcement;
+  final VoidCallback onTap;
+
+  const _BookingListTile({required this.booking, required this.onTap, this.announcement});
+
+  @override
+  Widget build(BuildContext context) {
+    final destination = announcement?.destinationCity ?? 'Destination';
+    final dateLabel = announcement != null
+        ? '${formatDayMonth(announcement!.departureDate)} · ${announcement!.formattedDepartureTime}'
+        : booking.requestedAt == null
+        ? null
+        : formatRelativeDayTime(booking.requestedAt!);
+    final paymentLabel = switch (booking.status) {
+      IntercityBookingStatus.paid => 'Payé',
+      IntercityBookingStatus.pendingPayment || IntercityBookingStatus.confirmed => 'À payer',
+      IntercityBookingStatus.pending => 'En attente',
+      IntercityBookingStatus.cancelled || IntercityBookingStatus.expired => '—',
+      _ => booking.status.label,
+    };
+    final total = announcement == null ? null : announcement!.priceFcfa * booking.seatsRequested;
 
     return Material(
       color: Colors.white,
@@ -567,31 +707,23 @@ class _BookingListTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                            child: Row(
-                              children: [
-                                const MotodigoPeopleIcon(size: 18, color: Color(0xFF16A34A)),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    seatsLabel,
-                                    style: _resultsText(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w800,
-                                      height: 1.2,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            child: Text(
+                              announcement?.route ?? destination,
+                              style: _resultsText(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w800,
+                                height: 1.2,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 10),
                           _MyBookingStatusBadge(status: booking.status),
                         ],
                       ),
-                      if (booking.requestedAt != null) ...[
+                      if (dateLabel != null) ...[
                         const SizedBox(height: 10),
                         Text(
-                          formatRelativeDayTime(booking.requestedAt!),
+                          dateLabel,
                           style: _resultsText(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -599,6 +731,19 @@ class _BookingListTile extends StatelessWidget {
                           ),
                         ),
                       ],
+                      const SizedBox(height: 8),
+                      Text(
+                        [
+                          '${booking.seatsRequested} place${booking.seatsRequested > 1 ? 's' : ''}',
+                          paymentLabel,
+                          if (total != null) formatPriceF(total),
+                        ].join(' · '),
+                        style: _resultsText(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF54615A),
+                        ),
+                      ),
                     ],
                   ),
                 ),

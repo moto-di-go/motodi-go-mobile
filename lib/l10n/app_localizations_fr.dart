@@ -72,7 +72,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get auth_already_account => 'Déjà un compte ?';
 
   @override
-  String get errors_network => 'Pas de connexion internet. Vérifiez votre réseau.';
+  String get errors_network =>
+      'Pas de connexion internet. Vérifiez votre réseau.';
 
   @override
   String get errors_server => 'Erreur serveur. Veuillez réessayer plus tard.';
@@ -84,7 +85,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get errors_validation => 'Veuillez vérifier les informations saisies.';
 
   @override
-  String get errors_session_expired => 'Session expirée. Veuillez vous reconnecter.';
+  String get errors_session_expired =>
+      'Session expirée. Veuillez vous reconnecter.';
 
   @override
   String get navigation_home => 'Accueil';

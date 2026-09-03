@@ -189,6 +189,80 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
                 const SizedBox(height: 22),
+                const _SectionLabel('TRAJETS & AIDE'),
+                const SizedBox(height: 10),
+                _SettingsGroup(
+                  children: [
+                    _SettingsRow(
+                      icon: const Icon(Icons.history_rounded, size: 22, color: Color(0xFF5B6760)),
+                      title: 'Historique des trajets',
+                      trailing: const Icon(
+                        Icons.chevron_right_rounded,
+                        color: Color(0xFFC2C8C0),
+                        size: 26,
+                      ),
+                      onTap: () => context.push(RouteConstants.tripsHistory),
+                    ),
+                    _SettingsRow(
+                      icon: const Icon(Icons.support_agent_rounded, size: 22, color: Color(0xFF5B6760)),
+                      title: 'Support',
+                      trailing: const Icon(
+                        Icons.chevron_right_rounded,
+                        color: Color(0xFFC2C8C0),
+                        size: 26,
+                      ),
+                      onTap: () => context.push(RouteConstants.support),
+                    ),
+                    _SettingsRow(
+                      icon: const Icon(Icons.confirmation_number_outlined, size: 22, color: Color(0xFF5B6760)),
+                      title: 'Mes tickets support',
+                      trailing: const Icon(
+                        Icons.chevron_right_rounded,
+                        color: Color(0xFFC2C8C0),
+                        size: 26,
+                      ),
+                      onTap: () => context.push(RouteConstants.supportTickets),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 22),
+                const _SectionLabel('HORS-LIGNE'),
+                const SizedBox(height: 10),
+                _SettingsGroup(
+                  children: [
+                    _SettingsRow(
+                      icon: const Icon(Icons.cloud_off_rounded, size: 22, color: Color(0xFF5B6760)),
+                      title: 'Mode hors-ligne',
+                      trailing: const Icon(
+                        Icons.chevron_right_rounded,
+                        color: Color(0xFFC2C8C0),
+                        size: 26,
+                      ),
+                      onTap: () => context.push(RouteConstants.offline),
+                    ),
+                    _SettingsRow(
+                      icon: const Icon(Icons.map_rounded, size: 22, color: Color(0xFF5B6760)),
+                      title: 'Cartes hors-ligne',
+                      trailing: const Icon(
+                        Icons.chevron_right_rounded,
+                        color: Color(0xFFC2C8C0),
+                        size: 26,
+                      ),
+                      onTap: () => context.push(RouteConstants.offlineMaps),
+                    ),
+                    _SettingsRow(
+                      icon: const Icon(Icons.tune_rounded, size: 22, color: Color(0xFF5B6760)),
+                      title: 'Cache & synchronisation',
+                      trailing: const Icon(
+                        Icons.chevron_right_rounded,
+                        color: Color(0xFFC2C8C0),
+                        size: 26,
+                      ),
+                      onTap: () => context.push(RouteConstants.offlineSettings),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 22),
                 const _SectionLabel('SÉCURITÉ'),
                 const SizedBox(height: 10),
                 _SettingsGroup(
