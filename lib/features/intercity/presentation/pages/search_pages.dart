@@ -941,8 +941,7 @@ class _IntercityResultsPageState extends State<IntercityResultsPage> {
                                 onTap: ownedByMe
                                     ? null
                                     : () => context.push(
-                                        RouteConstants.intercityDetail,
-                                        extra: announcement.id,
+                                        RouteConstants.intercityDetailPath(announcement.id),
                                       ),
                               ),
                             );

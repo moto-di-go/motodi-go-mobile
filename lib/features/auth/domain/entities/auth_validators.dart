@@ -26,12 +26,31 @@ class CameroonPhoneValidator {
     return null;
   }
 
+  /// Affiche le national camerounais en groupes de 3 : `XXX XXX XXX`.
   static String displayNational(String phoneNumber) {
+    final national = nationalDigits(phoneNumber);
+    if (national.isEmpty) return phoneNumber;
+    return formatGroupedNational(national);
+  }
+
+  /// Extrait jusqu'à 9 chiffres nationaux (sans +237).
+  static String nationalDigits(String phoneNumber) {
     final normalized = normalize(phoneNumber);
-    final national = normalized?.substring(4) ?? phoneNumber.replaceAll(RegExp(r'\D'), '');
-    if (national.length != 9) return phoneNumber;
-    return '${national.substring(0, 1)} ${national.substring(1, 3)} '
-        '${national.substring(3, 5)} ${national.substring(5, 7)} ${national.substring(7)}';
+    final raw = normalized?.substring(4) ?? phoneNumber.replaceAll(RegExp(r'\D'), '');
+    final withoutCountry = raw.startsWith('237') && raw.length > 9 ? raw.substring(3) : raw;
+    return withoutCountry.length > 9 ? withoutCountry.substring(0, 9) : withoutCountry;
+  }
+
+  /// Formate des chiffres nationaux en `XXX XXX XXX` (max 9 chiffres).
+  static String formatGroupedNational(String digits) {
+    final limited = digits.replaceAll(RegExp(r'\D'), '');
+    final national = limited.length > 9 ? limited.substring(0, 9) : limited;
+    final buffer = StringBuffer();
+    for (var i = 0; i < national.length; i++) {
+      if (i > 0 && i % 3 == 0) buffer.write(' ');
+      buffer.write(national[i]);
+    }
+    return buffer.toString();
   }
 }
 

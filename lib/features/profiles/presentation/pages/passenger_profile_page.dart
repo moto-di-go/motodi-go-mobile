@@ -57,7 +57,9 @@ class _PassengerProfileViewState extends State<_PassengerProfileView> {
       listener: (context, state) async {
         if (state.isSaved) {
           await context.read<SessionCubit>().refreshAfterProfileChange();
-          if (context.mounted) context.go(RouteConstants.home);
+          if (context.mounted) {
+            context.go(context.read<SessionCubit>().takePostAuthDestination());
+          }
         }
       },
       builder: (context, state) {

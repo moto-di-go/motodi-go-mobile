@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/error/failure.dart';
 import 'package:motodi_go_mobile/core/services/notification_service.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
@@ -56,7 +57,33 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   void continueAsGuest() {
-    emit(state.copyWith(status: SessionStatus.guest, session: null, errorMessage: null));
+    emit(
+      state.copyWith(
+        status: SessionStatus.guest,
+        session: null,
+        errorMessage: null,
+        pendingReturnLocation: null,
+      ),
+    );
+  }
+
+  void rememberReturnLocation(String location) {
+    final path = Uri.tryParse(location)?.path ?? location;
+    if (path.isEmpty ||
+        path == RouteConstants.splash ||
+        path == RouteConstants.onboarding ||
+        path == RouteConstants.sessionExpired ||
+        RouteConstants.authEntryRoutes.contains(path)) {
+      return;
+    }
+    emit(state.copyWith(pendingReturnLocation: location));
+  }
+
+  String takePostAuthDestination() {
+    final pending = state.pendingReturnLocation;
+    if (pending == null || pending.isEmpty) return RouteConstants.home;
+    emit(state.copyWith(pendingReturnLocation: null));
+    return pending;
   }
 
   void setAuthenticated(AuthSession session) {
@@ -72,6 +99,7 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   Future<void> refreshAfterProfileChange() async {
+    if (!state.isAuthenticated) return;
     final result = await _authRepository.refreshSession();
     result.fold((failure) {
       if (failure is AuthFailure) {
@@ -84,12 +112,25 @@ class SessionCubit extends Cubit<SessionState> {
 
   Future<void> logout() async {
     await _authRepository.logout();
-    emit(state.copyWith(status: SessionStatus.unauthenticated, session: null, errorMessage: null));
+    emit(
+      state.copyWith(
+        status: SessionStatus.unauthenticated,
+        session: null,
+        errorMessage: null,
+        pendingReturnLocation: null,
+      ),
+    );
   }
 
   Future<void> changeAccount() async {
     await _authRepository.clearSession();
-    emit(state.copyWith(status: SessionStatus.unauthenticated, session: null));
+    emit(
+      state.copyWith(
+        status: SessionStatus.unauthenticated,
+        session: null,
+        pendingReturnLocation: null,
+      ),
+    );
   }
 
   void expire([String? message]) {

@@ -74,17 +74,7 @@ GoRouter createAppRouter(SessionCubit sessionCubit) {
       final session = sessionCubit.state;
       final location = state.matchedLocation;
 
-      final authEntryRoutes = {
-        RouteConstants.welcome,
-        RouteConstants.login,
-        RouteConstants.register,
-        RouteConstants.otp,
-        RouteConstants.accountReady,
-        RouteConstants.forgotPassword,
-        RouteConstants.resetOtp,
-        RouteConstants.resetPassword,
-        RouteConstants.passwordResetSuccess,
-      };
+      final authEntryRoutes = RouteConstants.authEntryRoutes;
       final publicRoutes = {
         RouteConstants.splash,
         RouteConstants.onboarding,
@@ -133,7 +123,7 @@ GoRouter createAppRouter(SessionCubit sessionCubit) {
       }
 
       if (authEntryRoutes.contains(location) || location == RouteConstants.onboarding) {
-        return RouteConstants.home;
+        return session.pendingReturnLocation ?? RouteConstants.home;
       }
 
       return null;
@@ -329,8 +319,11 @@ GoRouter createAppRouter(SessionCubit sessionCubit) {
                   GoRoute(
                     path: 'detail',
                     parentNavigatorKey: rootNavigatorKey,
-                    builder: (context, state) =>
-                        IntercityDetailPage(announcementId: state.extra as String),
+                    builder: (context, state) {
+                      final id = state.uri.queryParameters['id'] ??
+                          (state.extra is String ? state.extra as String : null);
+                      return IntercityDetailPage(announcementId: id ?? '');
+                    },
                   ),
                   GoRoute(
                     path: 'subscribe',

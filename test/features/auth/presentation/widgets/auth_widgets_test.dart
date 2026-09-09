@@ -18,6 +18,22 @@ void main() {
     expect(find.byType(TextField), findsOneWidget);
   });
 
+  testWidgets('CameroonPhoneInput formats as XXX XXX XXX and caps at 9 digits', (tester) async {
+    final controller = TextEditingController();
+    addTearDown(controller.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(body: CameroonPhoneInput(controller: controller)),
+      ),
+    );
+
+    await tester.enterText(find.byType(EditableText), '6789012345');
+    await tester.pump();
+
+    expect(controller.text, '678 901 234');
+  });
+
   testWidgets('OtpCodeField limits entry to six digits', (tester) async {
     final controller = TextEditingController();
     addTearDown(controller.dispose);

@@ -6,8 +6,10 @@ import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
+import 'package:motodi_go_mobile/features/auth/domain/entities/auth_validators.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/auth_form_cubit.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_fields.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_figma_icons.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_scaffold.dart';
 
@@ -34,7 +36,10 @@ class _LoginViewState extends State<_LoginView> {
   @override
   void initState() {
     super.initState();
-    _phoneController.text = context.read<SessionCubit>().state.lastPhoneNumber ?? '';
+    final lastPhone = context.read<SessionCubit>().state.lastPhoneNumber;
+    if (lastPhone != null && lastPhone.isNotEmpty) {
+      _phoneController.text = CameroonPhoneValidator.displayNational(lastPhone);
+    }
   }
 
   @override
@@ -49,10 +54,11 @@ class _LoginViewState extends State<_LoginView> {
     return BlocConsumer<AuthFormCubit, AuthFormState>(
       listener: (context, state) {
         if (state.session != null) {
-          context.read<SessionCubit>().setAuthenticated(state.session!);
-          final next = state.session!.hasActiveProfile
-              ? RouteConstants.home
-              : RouteConstants.profileSelection;
+          final sessionCubit = context.read<SessionCubit>();
+          sessionCubit.setAuthenticated(state.session!);
+          final next = sessionCubit.state.needsProfileSelection
+              ? RouteConstants.profileSelection
+              : (sessionCubit.state.pendingReturnLocation ?? RouteConstants.home);
           context.go(next);
         }
       },
@@ -67,7 +73,7 @@ class _LoginViewState extends State<_LoginView> {
               rawPhoneNumber: _phoneController.text,
               password: _passwordController.text,
             ),
-            onRegister: () => context.go(RouteConstants.register),
+            onRegister: () => context.push(RouteConstants.register),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,9 +190,9 @@ class _LoginPhoneInput extends StatelessWidget {
         Expanded(
           child: _LoginTextField(
             controller: controller,
-            hintText: '6 XX XX XX XX',
+            hintText: 'XXX XXX XXX',
             keyboardType: TextInputType.phone,
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9 +()-]'))],
+            inputFormatters: const [CameroonNationalPhoneInputFormatter()],
           ),
         ),
       ],

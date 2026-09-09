@@ -11,20 +11,36 @@ import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.
 /// Returns `true` if the user is authenticated (action allowed),
 /// `false` if the user is a guest (dialog shown, action blocked).
 ///
+/// After sign-in, [SessionCubit.takePostAuthDestination] restores this screen.
+///
 /// Usage:
 /// ```dart
 /// if (!guardGuestAction(context)) return;
 /// // proceed with protected action
 /// ```
 bool guardGuestAction(BuildContext context) {
-  final session = context.read<SessionCubit>().state;
-  if (!session.isGuest) return true;
+  final sessionCubit = context.read<SessionCubit>();
+  if (sessionCubit.state.isAuthenticated) return true;
 
+  _rememberReturnLocation(context, sessionCubit);
   showDialog<void>(
     context: context,
     builder: (ctx) => const _GuestBlockerDialog(),
   );
   return false;
+}
+
+void _rememberReturnLocation(BuildContext context, SessionCubit sessionCubit) {
+  final goState = GoRouterState.of(context);
+  var location = goState.uri.toString();
+  final extra = goState.extra;
+  final onDetail =
+      goState.matchedLocation == RouteConstants.intercityDetail ||
+      goState.uri.path == RouteConstants.intercityDetail;
+  if (onDetail && extra is String && extra.isNotEmpty && !goState.uri.queryParameters.containsKey('id')) {
+    location = RouteConstants.intercityDetailPath(extra);
+  }
+  sessionCubit.rememberReturnLocation(location);
 }
 
 class _GuestBlockerDialog extends StatelessWidget {
@@ -69,7 +85,7 @@ class _GuestBlockerDialog extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  context.go(RouteConstants.register);
+                  context.push(RouteConstants.register);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
@@ -89,7 +105,7 @@ class _GuestBlockerDialog extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  context.go(RouteConstants.login);
+                  context.push(RouteConstants.login);
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.textPrimary,

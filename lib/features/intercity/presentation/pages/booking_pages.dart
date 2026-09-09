@@ -9,6 +9,7 @@ import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/core/widgets/app_error_view.dart';
 import 'package:motodi_go_mobile/core/widgets/app_loading.dart';
+import 'package:motodi_go_mobile/core/widgets/guest_action_blocker.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_buttons.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
@@ -137,12 +138,15 @@ class _DetailContentState extends State<_DetailContent> {
     super.initState();
     // Session JWT can lag behind admin KYC decisions — refresh on open.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      unawaited(getIt<SessionCubit>().refreshAfterProfileChange());
+      final sessionCubit = getIt<SessionCubit>();
+      if (!sessionCubit.state.isAuthenticated) return;
+      unawaited(sessionCubit.refreshAfterProfileChange());
     });
   }
 
   Future<void> _openSubscribe() async {
     if (_checkingKyc) return;
+    if (!guardGuestAction(context)) return;
     setState(() => _checkingKyc = true);
     try {
       final sessionCubit = getIt<SessionCubit>();

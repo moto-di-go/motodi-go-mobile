@@ -33,11 +33,53 @@ class FieldLabel extends StatelessWidget {
   }
 }
 
+/// Limite à 9 chiffres nationaux et affiche `XXX XXX XXX`.
+class CameroonNationalPhoneInputFormatter extends TextInputFormatter {
+  const CameroonNationalPhoneInputFormatter();
+
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    final digits = newValue.text.replaceAll(RegExp(r'\D'), '');
+    final limited = digits.length > 9 ? digits.substring(0, 9) : digits;
+    final formatted = _formatGrouped(limited);
+
+    final selectionIndex = newValue.selection.end.clamp(0, newValue.text.length);
+    var digitsBeforeCursor = 0;
+    for (var i = 0; i < selectionIndex; i++) {
+      if (_isDigit(newValue.text.codeUnitAt(i))) digitsBeforeCursor++;
+    }
+    if (digitsBeforeCursor > limited.length) digitsBeforeCursor = limited.length;
+
+    var cursor = 0;
+    var seen = 0;
+    while (cursor < formatted.length && seen < digitsBeforeCursor) {
+      if (_isDigit(formatted.codeUnitAt(cursor))) seen++;
+      cursor++;
+    }
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: cursor),
+    );
+  }
+
+  static String _formatGrouped(String digits) {
+    final buffer = StringBuffer();
+    for (var i = 0; i < digits.length; i++) {
+      if (i > 0 && i % 3 == 0) buffer.write(' ');
+      buffer.write(digits[i]);
+    }
+    return buffer.toString();
+  }
+
+  static bool _isDigit(int codeUnit) => codeUnit >= 48 && codeUnit <= 57;
+}
+
 class CameroonPhoneInput extends StatelessWidget {
   final TextEditingController controller;
   final String? hintText;
 
-  const CameroonPhoneInput({super.key, required this.controller, this.hintText = '6 78 90 12 34'});
+  const CameroonPhoneInput({super.key, required this.controller, this.hintText = 'XXX XXX XXX'});
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +113,7 @@ class CameroonPhoneInput extends StatelessWidget {
           child: TextField(
             controller: controller,
             keyboardType: TextInputType.phone,
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9 +()-]'))],
+            inputFormatters: const [CameroonNationalPhoneInputFormatter()],
             style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
             decoration: _inputDecoration(hintText?.tr(context)),
           ),

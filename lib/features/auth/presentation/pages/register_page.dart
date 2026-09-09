@@ -8,6 +8,7 @@ import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/auth_form_cubit.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/pages/auth_route_args.dart';
+import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_fields.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_figma_icons.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_scaffold.dart';
 
@@ -178,9 +179,9 @@ class _RegisterPhoneInput extends StatelessWidget {
         Expanded(
           child: _RegisterTextField(
             controller: controller,
-            hintText: '6 XX XX XX XX',
+            hintText: 'XXX XXX XXX',
             keyboardType: TextInputType.phone,
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9 +()-]'))],
+            inputFormatters: const [CameroonNationalPhoneInputFormatter()],
           ),
         ),
       ],

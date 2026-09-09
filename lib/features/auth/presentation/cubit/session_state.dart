@@ -8,6 +8,7 @@ class SessionState extends Equatable {
   final bool onboardingSeen;
   final String? lastPhoneNumber;
   final String? errorMessage;
+  final String? pendingReturnLocation;
 
   const SessionState({
     this.status = SessionStatus.initial,
@@ -15,6 +16,7 @@ class SessionState extends Equatable {
     this.onboardingSeen = false,
     this.lastPhoneNumber,
     this.errorMessage,
+    this.pendingReturnLocation,
   });
 
   bool get isBootstrapping =>
@@ -33,6 +35,7 @@ class SessionState extends Equatable {
     bool? onboardingSeen,
     String? lastPhoneNumber,
     String? errorMessage,
+    Object? pendingReturnLocation = _unchanged,
   }) {
     return SessionState(
       status: status ?? this.status,
@@ -40,11 +43,21 @@ class SessionState extends Equatable {
       onboardingSeen: onboardingSeen ?? this.onboardingSeen,
       lastPhoneNumber: lastPhoneNumber ?? this.lastPhoneNumber,
       errorMessage: errorMessage,
+      pendingReturnLocation: identical(pendingReturnLocation, _unchanged)
+          ? this.pendingReturnLocation
+          : pendingReturnLocation as String?,
     );
   }
 
   @override
-  List<Object?> get props => [status, session, onboardingSeen, lastPhoneNumber, errorMessage];
+  List<Object?> get props => [
+    status,
+    session,
+    onboardingSeen,
+    lastPhoneNumber,
+    errorMessage,
+    pendingReturnLocation,
+  ];
 }
 
 const Object _unchanged = Object();

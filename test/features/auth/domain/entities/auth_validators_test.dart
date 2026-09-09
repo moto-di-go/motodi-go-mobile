@@ -18,8 +18,10 @@ void main() {
       expect(CameroonPhoneValidator.error('+237578901234'), 'INVALID_PHONE_NUMBER');
     });
 
-    test('formats a normalized number for display', () {
-      expect(CameroonPhoneValidator.displayNational('+237678901234'), '6 78 90 12 34');
+    test('formats a normalized number for display as XXX XXX XXX', () {
+      expect(CameroonPhoneValidator.displayNational('+237678901234'), '678 901 234');
+      expect(CameroonPhoneValidator.formatGroupedNational('678901234'), '678 901 234');
+      expect(CameroonPhoneValidator.formatGroupedNational('67890'), '678 90');
     });
   });
 

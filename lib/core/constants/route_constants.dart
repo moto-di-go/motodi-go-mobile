@@ -13,6 +13,18 @@ class RouteConstants {
   static const String passwordResetSuccess = '/password-reset-success';
   static const String sessionExpired = '/session-expired';
 
+  static const Set<String> authEntryRoutes = {
+    welcome,
+    login,
+    register,
+    otp,
+    accountReady,
+    forgotPassword,
+    resetOtp,
+    resetPassword,
+    passwordResetSuccess,
+  };
+
   // Onboarding
   static const String onboarding = '/onboarding';
 
@@ -106,6 +118,8 @@ class RouteConstants {
   static const String supportTicketCreated = '/support/created';
 
   static String intercityBookingPath(String id) => '/intercity/booking/$id';
+  static String intercityDetailPath(String id) =>
+      Uri(path: intercityDetail, queryParameters: {'id': id}).toString();
   static String tripTrackPath(String id) => '/trips/$id/track';
   static String tripRatePath(String id) => '/trips/$id/rate';
   static String tripHistoryDetailPath(String id) => '/trips/$id/history';

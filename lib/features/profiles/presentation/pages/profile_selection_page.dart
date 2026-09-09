@@ -39,7 +39,9 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
       listener: (context, state) async {
         if (state.isSaved) {
           await context.read<SessionCubit>().refreshAfterProfileChange();
-          if (context.mounted) context.go(RouteConstants.home);
+          if (context.mounted) {
+            context.go(context.read<SessionCubit>().takePostAuthDestination());
+          }
         } else if (state.status == ProfileStatus.failure &&
             state.errorMessage != null &&
             state.profiles.isNotEmpty) {
@@ -147,7 +149,7 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
       return;
     }
     if (profile.active) {
-      context.go(RouteConstants.home);
+      context.go(context.read<SessionCubit>().takePostAuthDestination());
       return;
     }
     context.read<ProfileCubit>().activateProfile(profile.id);

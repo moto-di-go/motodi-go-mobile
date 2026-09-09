@@ -439,7 +439,7 @@ Future<void> _onSaved(BuildContext context, ProfileState state) async {
   if (state.isSaved) {
     await context.read<SessionCubit>().refreshAfterProfileChange();
     if (!context.mounted) return;
-    context.go(RouteConstants.home);
+    context.go(context.read<SessionCubit>().takePostAuthDestination());
   }
 }
 
