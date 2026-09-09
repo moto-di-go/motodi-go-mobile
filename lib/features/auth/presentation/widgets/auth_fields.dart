@@ -162,7 +162,7 @@ class InlineError extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              message!,
+              message!.tr(context),
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: const Color(0xFFC62828),
                 fontWeight: FontWeight.w800,
@@ -197,7 +197,7 @@ class ErrorBanner extends StatelessWidget {
           const SizedBox(width: 14),
           Expanded(
             child: Text(
-              message!,
+              message!.tr(context),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: const Color(0xFFC62828),
                 fontWeight: FontWeight.w800,

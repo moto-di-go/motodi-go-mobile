@@ -9,7 +9,6 @@ import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_buttons.dart';
-import 'package:motodi_go_mobile/features/intercity/presentation/widgets/intercity_formatters.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/profile_type.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/cubit/profile_cubit.dart';
@@ -73,10 +72,15 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
                   padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
                   child: _HomeHeader(
                     state: state,
-                    onMenu: () => _showMenu(context),
+                    onMenu: () {
+                      if (!guardGuestAction(context)) return;
+                      _showMenu(context);
+                    },
                     onBack: cubit.back,
-                    onWallet: () => context.go(RouteConstants.wallet),
-                    onProfile: () => context.go(RouteConstants.profile),
+                    onProfile: () {
+                      if (!guardGuestAction(context)) return;
+                      _showProfileSwitcher(context);
+                    },
                   ),
                 ),
               ),
@@ -134,28 +138,18 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
                     onToggle: cubit.toggleLegend,
                   ),
                 ),
-              if (state.step == UrbanRideStep.home)
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                      child: _ModeToggle(onIntercity: () => context.go(RouteConstants.intercity)),
-                    ),
-                  ),
-                ),
               if (state.locationError != null && state.step == UrbanRideStep.home)
                 Positioned(
                   left: 16,
                   right: 16,
-                  bottom: 86,
+                  bottom: 24,
                   child: Material(
                     color: const Color(0xFFFFF3C9),
                     borderRadius: BorderRadius.circular(14),
                     child: Padding(
                       padding: const EdgeInsets.all(10),
                       child: Text(
-                        state.locationError!,
+                        state.locationError!.tr(context),
                         style: urbanText(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
@@ -191,7 +185,7 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
       UrbanRideStep.filters => UrbanFiltersSheet(state: state, cubit: cubit),
       UrbanRideStep.empty => UrbanEmptySheet(
         cubit: cubit,
-        error: state.apiError,
+        error: state.apiError?.tr(context),
         onIntercity: () => context.go(RouteConstants.intercity),
       ),
       UrbanRideStep.driverDetail => UrbanDriverDetailSheet(state: state, cubit: cubit),
@@ -389,14 +383,12 @@ class _HomeHeader extends StatelessWidget {
   final UrbanRideState state;
   final VoidCallback onMenu;
   final VoidCallback onBack;
-  final VoidCallback onWallet;
   final VoidCallback onProfile;
 
   const _HomeHeader({
     required this.state,
     required this.onMenu,
     required this.onBack,
-    required this.onWallet,
     required this.onProfile,
   });
 
@@ -411,22 +403,6 @@ class _HomeHeader extends StatelessWidget {
           onTap: showBack ? onBack : onMenu,
         ),
         const Spacer(),
-        GestureDetector(
-          onTap: onWallet,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(999),
-              boxShadow: const [BoxShadow(color: Color(0x1A101512), blurRadius: 12)],
-            ),
-            child: Text(
-              state.walletBalance == null ? '— F' : formatPriceF(state.walletBalance!),
-              style: urbanText(fontSize: 15, fontWeight: FontWeight.w800),
-            ),
-          ),
-        ),
-        const SizedBox(width: 10),
         GestureDetector(
           onTap: onProfile,
           child: CircleAvatar(
@@ -470,54 +446,6 @@ class _SearchPill extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ModeToggle extends StatelessWidget {
-  final VoidCallback onIntercity;
-  const _ModeToggle({required this.onIntercity});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(999),
-        boxShadow: const [BoxShadow(color: Color(0x1A101512), blurRadius: 16)],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              height: 46,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Text(
-                'Mototaxi'.tr(context),
-                style: urbanText(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white),
-              ),
-            ),
-          ),
-          Expanded(
-            child: GestureDetector(
-              onTap: onIntercity,
-              child: Container(
-                height: 46,
-                alignment: Alignment.center,
-                child: Text(
-                  'Interurbain'.tr(context),
-                  style: urbanText(fontSize: 15, fontWeight: FontWeight.w800),
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

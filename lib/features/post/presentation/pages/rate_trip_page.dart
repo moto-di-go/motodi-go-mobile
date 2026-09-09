@@ -49,7 +49,7 @@ class _RateTripView extends StatelessWidget {
         if (state.status == RatingViewStatus.impossible) {
           return RatingImpossiblePage(
             reason: state.impossibleReason ?? RatingImpossibleReason.forbidden,
-            message: state.errorMessage,
+            message: state.errorMessage?.tr(context),
             tripId: state.tripId,
           );
         }
@@ -59,7 +59,7 @@ class _RateTripView extends StatelessWidget {
             backgroundColor: AppColors.background,
             body: SafeArea(
               child: AppErrorView(
-                message: state.errorMessage ?? 'Impossible de charger la notation.'.tr(context),
+                message: (state.errorMessage ?? 'Impossible de charger la notation.').tr(context),
                 onRetry: () => context.read<RatingCubit>().load(state.tripId ?? ''),
               ),
             ),
@@ -124,7 +124,7 @@ class _RateTripView extends StatelessWidget {
                                 border: Border.all(color: selected ? AppColors.primary : AppColors.outline),
                               ),
                               child: Text(
-                                tag.labelFr,
+                                tag.labelFr.tr(context),
                                 style: postText(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w700,
@@ -163,7 +163,7 @@ class _RateTripView extends StatelessWidget {
                       if (state.errorMessage != null) ...[
                         const SizedBox(height: 8),
                         Text(
-                          state.errorMessage!,
+                          state.errorMessage!.tr(context),
                           style: postText(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.error),
                         ),
                       ],
@@ -260,27 +260,27 @@ class RatingImpossiblePage extends StatelessWidget {
     final (title, body, icon) = switch (reason) {
       RatingImpossibleReason.notCompleted => (
         'Notation indisponible'.tr(context),
-        message ?? 'Le trajet doit être terminé avant de pouvoir le noter.'.tr(context),
+        (message ?? 'Le trajet doit être terminé avant de pouvoir le noter.').tr(context),
         Icons.hourglass_empty_rounded,
       ),
       RatingImpossibleReason.alreadyRated => (
         'Déjà noté'.tr(context),
-        message ?? 'Vous avez déjà envoyé une note pour ce trajet.'.tr(context),
+        (message ?? 'Vous avez déjà envoyé une note pour ce trajet.').tr(context),
         Icons.star_rounded,
       ),
       RatingImpossibleReason.forbidden => (
         'Accès refusé'.tr(context),
-        message ?? 'Vous n’êtes pas autorisé à noter ce trajet.'.tr(context),
+        (message ?? 'Vous n’êtes pas autorisé à noter ce trajet.').tr(context),
         Icons.lock_outline_rounded,
       ),
       RatingImpossibleReason.notFound => (
         'Trajet introuvable'.tr(context),
-        message ?? 'Ce trajet n’existe pas ou n’est plus accessible.'.tr(context),
+        (message ?? 'Ce trajet n’existe pas ou n’est plus accessible.').tr(context),
         Icons.search_off_rounded,
       ),
       RatingImpossibleReason.noRatee => (
         'Notation impossible'.tr(context),
-        message ?? 'Impossible d’identifier le profil à noter.'.tr(context),
+        (message ?? 'Impossible d’identifier le profil à noter.').tr(context),
         Icons.person_off_outlined,
       ),
     };

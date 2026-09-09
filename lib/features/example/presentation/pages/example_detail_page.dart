@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/example/presentation/bloc/example_bloc.dart';
 
@@ -16,12 +17,12 @@ class ExampleDetailPage extends StatelessWidget {
     return BlocProvider.value(
       value: bloc ?? getIt<ExampleBloc>(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Détail')),
+        appBar: AppBar(title: Text('Détail'.tr(context))),
         body: BlocBuilder<ExampleBloc, ExampleState>(
           builder: (context, state) {
             final item = state.items.firstWhereOrNull((i) => i.id == itemId);
             if (item == null) {
-              return const Center(child: Text('Element non trouvé'));
+              return Center(child: Text('Element non trouvé'.tr(context)));
             }
             return Padding(
               padding: const EdgeInsets.all(24),
@@ -31,7 +32,10 @@ class ExampleDetailPage extends StatelessWidget {
                   Text(item.title, style: Theme.of(context).textTheme.headlineSmall),
                   const SizedBox(height: 8),
                   Text(
-                    'Créé le ${item.createdAt.toLocal()}',
+                    'Créé le {date}'.tr(
+                      context,
+                      placeholders: {'date': '${item.createdAt.toLocal()}'},
+                    ),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   const SizedBox(height: 16),

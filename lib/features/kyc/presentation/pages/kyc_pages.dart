@@ -188,7 +188,7 @@ class _KycStatusTabs extends StatelessWidget {
           ),
           Expanded(
             child: _KycStatusTab(
-              label: 'Historique',
+              label: 'Historique'.tr(context),
               selected: selected == _KycStatusTabKind.history,
               onTap: () => onChanged(_KycStatusTabKind.history),
             ),
@@ -318,9 +318,10 @@ class _KycInProgressView extends StatelessWidget {
                     Text(
                       submittedAt == null
                           ? 'En cours de verification'.tr(context)
-                          : Localizations.localeOf(context).languageCode == 'en'
-                          ? 'Submitted on ${_formatShortDate(submittedAt)}'
-                          : 'Soumis le ${_formatShortDate(submittedAt)}',
+                          : 'Soumis le {date}'.tr(
+                              context,
+                              placeholders: {'date': _formatShortDate(context, submittedAt)},
+                            ),
                       style: const TextStyle(
                         color: Color(0xFF8A6410),
                         fontSize: 18,
@@ -348,7 +349,7 @@ class _KycInProgressView extends StatelessWidget {
         ),
         _KycTimelineStep(
           title: 'Decision'.tr(context),
-          subtitle: 'En attente',
+          subtitle: 'En attente'.tr(context),
           icon: Icons.shield_outlined,
         ),
       ],
@@ -443,7 +444,7 @@ class _KycHistoryTile extends StatelessWidget {
                 Text(
                   date == null
                       ? document.displayName
-                      : '${document.displayName} - ${_formatShortDate(date)}',
+                      : '${document.displayName} - ${_formatShortDate(context, date)}',
                   style: const TextStyle(
                     color: Color(0xFF8A968C),
                     fontSize: 16,
@@ -454,7 +455,7 @@ class _KycHistoryTile extends StatelessWidget {
             ),
           ),
           Text(
-            rejected ? 'Rejeté' : 'Validé',
+            rejected ? 'Rejeté'.tr(context) : 'Validé'.tr(context),
             style: TextStyle(color: color, fontSize: 17, fontWeight: FontWeight.w900),
           ),
         ],
@@ -612,9 +613,13 @@ class _KycProgressCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  Localizations.localeOf(context).languageCode == 'en'
-                  ? '${bundle.providedCount} / ${bundle.requiredCount} documents provided'
-                  : '${bundle.providedCount} / ${bundle.requiredCount} documents fournis',
+                  '{provided} / {required} documents fournis'.tr(
+                    context,
+                    placeholders: {
+                      'provided': '${bundle.providedCount}',
+                      'required': '${bundle.requiredCount}',
+                    },
+                  ),
                   style: const TextStyle(
                     color: Color(0xFF54615A),
                     fontSize: 18,
@@ -694,7 +699,7 @@ class _KycStatusRequirementRow extends StatelessWidget {
         const SizedBox(width: 14),
         Expanded(
           child: Text(
-            _kycRequirementLabel(requirement.type),
+            _kycRequirementLabel(context, requirement.type),
             overflow: TextOverflow.fade,
             softWrap: false,
             style: TextStyle(
@@ -706,7 +711,7 @@ class _KycStatusRequirementRow extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         Text(
-          _kycStatusChecklistLabel(status),
+          _kycStatusChecklistLabel(context, status),
           style: TextStyle(
             color: _kycStatusChecklistColor(status),
             fontSize: 16,
@@ -894,7 +899,7 @@ class _KycUploadingPageState extends State<KycUploadingPage> {
                     ),
                     const SizedBox(height: 14),
                     Text(
-                      '${draft.fileName} · ${_formatSize(draft.sizeBytes)}',
+                      '${draft.fileName} · ${_formatSize(context, draft.sizeBytes)}',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         color: AppColors.textSecondary,
@@ -965,7 +970,6 @@ class KycUploadSuccessPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final documentType = result?.document.type.shortLabel.toLowerCase() ?? 'document';
     return Scaffold(
       backgroundColor: const Color(0x99000000),
       body: SafeArea(
@@ -997,9 +1001,15 @@ class KycUploadSuccessPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  Localizations.localeOf(context).languageCode == 'en'
-                    ? 'Your $documentType is now awaiting verification. You will be notified of the decision.'
-                    : 'Votre $documentType est maintenant en attente de verification. Vous serez notifie de la decision.',
+                  'Votre {type} est maintenant en attente de verification. Vous serez notifie de la decision.'
+                      .tr(
+                        context,
+                        placeholders: {
+                          'type': result != null
+                              ? _documentLabel(context, result!.document.type).toLowerCase()
+                              : 'Document'.tr(context).toLowerCase(),
+                        },
+                      ),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: AppColors.textSecondary,
@@ -1089,7 +1099,7 @@ class KycInvalidFilePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 26),
-          for (final issue in _allIssueRows(issues, validation)) ...[
+          for (final issue in _allIssueRows(context, issues, validation)) ...[
             _IssueRow(issue: issue.issue, passed: issue.passed, detail: issue.detail),
             const SizedBox(height: 18),
           ],
@@ -1139,7 +1149,7 @@ class KycSubmittedPage extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           _KycBottomButton(
-            label: "Retour à l'accueil",
+            label: "Retour à l'accueil".tr(context),
             backgroundColor: AppColors.textPrimary,
             onPressed: () => context.go(RouteConstants.home),
           ),
@@ -1172,7 +1182,7 @@ class KycSubmittedPage extends StatelessWidget {
             TextSpan(
               children: [
                 TextSpan(
-                  text: 'Nos équipes examinent vos documents.\nDélai indicatif : ',
+                  text: 'Nos équipes examinent vos documents.\nDélai indicatif : '.tr(context),
                   style: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w500),
                 ),
                 TextSpan(
@@ -1195,9 +1205,10 @@ class KycSubmittedPage extends StatelessWidget {
               child: Icon(Icons.check_rounded, color: Colors.white, size: 27),
             ),
             title: 'Documents soumis'.tr(context),
-            subtitle: Localizations.localeOf(context).languageCode == 'en'
-              ? "Today · ${_formatClock(DateTime.now())}"
-              : "Aujourd'hui · ${_formatClock(DateTime.now())}",
+            subtitle: "Aujourd'hui · {time}".tr(
+              context,
+              placeholders: {'time': _formatClock(DateTime.now())},
+            ),
             active: true,
           ),
           _SubmittedTimelineStep(
@@ -1213,7 +1224,7 @@ class KycSubmittedPage extends StatelessWidget {
               child: MotodigoFolderCheckedWhiteIcon(size: 21, color: Color(0xFF9BA69E)),
             ),
             title: 'Décision'.tr(context),
-            subtitle: 'En attente',
+            subtitle: 'En attente'.tr(context),
             last: true,
           ),
         ],
@@ -1348,9 +1359,10 @@ class KycRejectedDocumentPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        Localizations.localeOf(context).languageCode == 'en'
-                          ? '${selected.type.shortLabel} rejected'
-                          : '${selected.type.shortLabel} rejetee',
+                        '{label} rejetee'.tr(
+                          context,
+                          placeholders: {'label': _documentLabel(context, selected.type)},
+                        ),
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: const Color(0xFFC62828),
                           fontWeight: FontWeight.w900,
@@ -1358,9 +1370,13 @@ class KycRejectedDocumentPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        Localizations.localeOf(context).languageCode == 'en'
-                            ? 'Reason: ${selected.rejectionReason ?? 'Non-compliant document.'}'
-                            : 'Motif : ${selected.rejectionReason ?? 'Document non conforme.'}',
+                        'Motif : {reason}'.tr(
+                          context,
+                          placeholders: {
+                            'reason':
+                                selected.rejectionReason ?? 'Document non conforme.'.tr(context),
+                          },
+                        ),
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           color: const Color(0xFFC62828),
                           height: 1.45,
@@ -1482,7 +1498,8 @@ class KycNotificationDetailPage extends StatelessWidget {
         KycNotificationPayload(
           title: 'Votre profil mototaxi est valide'.tr(context),
           body:
-              'Bonne nouvelle ! Tous vos documents ont ete acceptes. Vous pouvez maintenant passer en ligne et recevoir des courses.',
+              'Bonne nouvelle ! Tous vos documents ont ete acceptes. Vous pouvez maintenant passer en ligne et recevoir des courses.'
+                  .tr(context),
           status: ValidationStatus.validated,
           occurredAt: DateTime.now(),
         );
@@ -1642,7 +1659,7 @@ class _DocumentsList extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: children.isEmpty ? 0 : 30, bottom: 20),
             child: Text(
-              _documentSectionLabel(requirement.type),
+              _documentSectionLabel(context, requirement.type),
               style: const TextStyle(
                 color: Color(0xFF98A29A),
                 fontSize: 13,
@@ -1827,7 +1844,7 @@ class _DocumentListTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  _documentLabel(requirement.type),
+                  _documentLabel(context, requirement.type),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -1839,7 +1856,7 @@ class _DocumentListTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  _documentSubtitle(document, status),
+                  _documentSubtitle(context, document, status),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -1983,7 +2000,7 @@ class _DocumentStatusPill extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        _statusLabel(status),
+        _statusLabel(context, status),
         style: TextStyle(color: color, fontSize: 12.5, fontWeight: FontWeight.w900, height: 1),
       ),
     );
@@ -2049,9 +2066,12 @@ class _PreviewFrame extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                Localizations.localeOf(context).languageCode == 'en'
-                    ? 'preview — ${_documentLabel(draft.documentType).toLowerCase()} (front)'
-                    : 'aperçu — ${_documentLabel(draft.documentType).toLowerCase()} (recto)',
+                'aperçu — {label} (recto)'.tr(
+                  context,
+                  placeholders: {
+                    'label': _documentLabel(context, draft.documentType).toLowerCase(),
+                  },
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -2129,7 +2149,7 @@ class _SelectedFileCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${draft.mimeType.startsWith('image/') ? 'Image' : 'PDF'} · ${_formatSize(draft.sizeBytes)} · ${draft.extension}',
+                  '${draft.mimeType.startsWith('image/') ? 'Image'.tr(context) : 'PDF'.tr(context)} · ${_formatSize(context, draft.sizeBytes)} · ${draft.extension}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -2184,9 +2204,13 @@ class _UploadedFileSummary extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  Localizations.localeOf(context).languageCode == 'en'
-                    ? 'Sent on ${_formatShortDate(document.uploadedAt)} - ${_formatSize(document.sizeBytes)}'
-                    : 'Envoye le ${_formatShortDate(document.uploadedAt)} - ${_formatSize(document.sizeBytes)}',
+                  'Envoye le {date} - {size}'.tr(
+                    context,
+                    placeholders: {
+                      'date': _formatShortDate(context, document.uploadedAt),
+                      'size': _formatSize(context, document.sizeBytes),
+                    },
+                  ),
                   style: const TextStyle(
                     color: AppColors.textTertiary,
                     fontWeight: FontWeight.w700,
@@ -2340,9 +2364,10 @@ class _UploadSourceSheet extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                Localizations.localeOf(context).languageCode == 'en'
-                    ? '${_documentLabel(type)} · JPG, PNG or PDF · 5 MB max ·\nreadable document.'
-                    : '${_documentLabel(type)} · JPG, PNG ou PDF · 5 Mo max ·\ndocument lisible.',
+                '{label} · JPG, PNG ou PDF · 5 Mo max ·\ndocument lisible.'.tr(
+                  context,
+                  placeholders: {'label': _documentLabel(context, type)},
+                ),
                 style: const TextStyle(
                   color: Color(0xFF8A968C),
                   fontSize: 16,
@@ -2490,7 +2515,11 @@ Future<KycFileDraft?> _pickPdf(KycDocumentType type) async {
   );
 }
 
-List<_IssueRowData> _allIssueRows(List<KycFileIssue> issues, KycFileValidation? validation) {
+List<_IssueRowData> _allIssueRows(
+  BuildContext context,
+  List<KycFileIssue> issues,
+  KycFileValidation? validation,
+) {
   final size = validation?.draft.sizeBytes ?? 0;
   final extension = validation?.draft.extension ?? '';
   return [
@@ -2498,18 +2527,26 @@ List<_IssueRowData> _allIssueRows(List<KycFileIssue> issues, KycFileValidation? 
       issue: KycFileIssue.tooLarge,
       passed: !issues.contains(KycFileIssue.tooLarge),
       detail: size > 0
-          ? 'Taille trop grande (${_formatSize(size)} > 5 Mo)'
-          : 'Taille inferieure a 5 Mo',
+          ? 'Taille trop grande ({size} > 5 Mo)'.tr(
+              context,
+              placeholders: {'size': _formatSize(context, size)},
+            )
+          : 'Taille inferieure a 5 Mo'.tr(context),
     ),
     _IssueRowData(
       issue: KycFileIssue.unreadable,
       passed: !issues.contains(KycFileIssue.unreadable) && !issues.contains(KycFileIssue.empty),
-      detail: 'Document lisible et non vide',
+      detail: 'Document lisible et non vide'.tr(context),
     ),
     _IssueRowData(
       issue: KycFileIssue.unsupportedFormat,
       passed: !issues.contains(KycFileIssue.unsupportedFormat),
-      detail: extension.isEmpty ? 'Format accepte (JPG, PNG, PDF)' : 'Format accepte ($extension)',
+      detail: extension.isEmpty
+          ? 'Format accepte (JPG, PNG, PDF)'.tr(context)
+          : 'Format accepte ({extension})'.tr(
+              context,
+              placeholders: {'extension': extension},
+            ),
     ),
   ];
 }
@@ -2520,51 +2557,58 @@ bool _isLastRequirementInSection(List<KycRequirement> requirements, KycRequireme
   return requirements[index + 1].type.sectionLabel != requirement.type.sectionLabel;
 }
 
-String _documentSectionLabel(KycDocumentType type) {
+String _documentSectionLabel(BuildContext context, KycDocumentType type) {
   return switch (type) {
-    KycDocumentType.cni || KycDocumentType.profilePhoto => 'IDENTITÉ',
-    KycDocumentType.driverLicense => 'AUTORISATION DE CONDUITE',
+    KycDocumentType.cni || KycDocumentType.profilePhoto => 'IDENTITÉ'.tr(context),
+    KycDocumentType.driverLicense => 'AUTORISATION DE CONDUITE'.tr(context),
     KycDocumentType.vehicleRegistration ||
     KycDocumentType.insurance ||
-    KycDocumentType.vehiclePhoto => 'VÉHICULE',
-    KycDocumentType.unknown => 'DOCUMENTS',
+    KycDocumentType.vehiclePhoto => 'VÉHICULE'.tr(context),
+    KycDocumentType.unknown => 'DOCUMENTS'.tr(context),
   };
 }
 
-String _documentLabel(KycDocumentType type) {
+String _documentLabel(BuildContext context, KycDocumentType type) {
   return switch (type) {
-    KycDocumentType.cni => "Carte d'identité",
-    KycDocumentType.driverLicense => 'Permis de conduire',
-    KycDocumentType.vehicleRegistration => 'Carte grise',
-    KycDocumentType.insurance => 'Assurance',
-    KycDocumentType.profilePhoto => 'Photo de profil',
-    KycDocumentType.vehiclePhoto => 'Photo du véhicule',
-    KycDocumentType.unknown => 'Document',
+    KycDocumentType.cni => "Carte d'identité".tr(context),
+    KycDocumentType.driverLicense => 'Permis de conduire'.tr(context),
+    KycDocumentType.vehicleRegistration => 'Carte grise'.tr(context),
+    KycDocumentType.insurance => 'Assurance'.tr(context),
+    KycDocumentType.profilePhoto => 'Photo de profil'.tr(context),
+    KycDocumentType.vehiclePhoto => 'Photo du véhicule'.tr(context),
+    KycDocumentType.unknown => 'Document'.tr(context),
   };
 }
 
-String _kycRequirementLabel(KycDocumentType type) {
+String _kycRequirementLabel(BuildContext context, KycDocumentType type) {
   return switch (type) {
-    KycDocumentType.cni => "Carte nationale d'identité",
-    KycDocumentType.driverLicense => 'Permis de conduire',
-    KycDocumentType.vehicleRegistration => 'Carte grise',
-    KycDocumentType.insurance => 'Assurance',
-    KycDocumentType.profilePhoto => 'Photo de profil',
-    KycDocumentType.vehiclePhoto => 'Photo du véhicule',
-    KycDocumentType.unknown => 'Document',
+    KycDocumentType.cni => "Carte nationale d'identité".tr(context),
+    KycDocumentType.driverLicense => 'Permis de conduire'.tr(context),
+    KycDocumentType.vehicleRegistration => 'Carte grise'.tr(context),
+    KycDocumentType.insurance => 'Assurance'.tr(context),
+    KycDocumentType.profilePhoto => 'Photo de profil'.tr(context),
+    KycDocumentType.vehiclePhoto => 'Photo du véhicule'.tr(context),
+    KycDocumentType.unknown => 'Document'.tr(context),
   };
 }
 
-String _documentSubtitle(KycDocument? document, KycDocumentStatus status) {
+String _documentSubtitle(BuildContext context, KycDocument? document, KycDocumentStatus status) {
   return switch (status) {
-    KycDocumentStatus.rejected =>
-      'Rejeté · ${document?.rejectionReason ?? 'document non conforme'}',
+    KycDocumentStatus.rejected => 'Rejeté · {reason}'.tr(
+      context,
+      placeholders: {
+        'reason': document?.rejectionReason ?? 'document non conforme'.tr(context),
+      },
+    ),
     KycDocumentStatus.pendingReview ||
     KycDocumentStatus.uploaded ||
-    KycDocumentStatus.encrypted => 'En cours de vérification',
-    KycDocumentStatus.accepted => 'Ajouté le ${_formatShortDate(document?.uploadedAt)}',
-    KycDocumentStatus.expired => 'Document expiré',
-    KycDocumentStatus.missing || KycDocumentStatus.unknown => 'Document requis',
+    KycDocumentStatus.encrypted => 'En cours de vérification'.tr(context),
+    KycDocumentStatus.accepted => 'Ajouté le {date}'.tr(
+      context,
+      placeholders: {'date': _formatShortDate(context, document?.uploadedAt)},
+    ),
+    KycDocumentStatus.expired => 'Document expiré'.tr(context),
+    KycDocumentStatus.missing || KycDocumentStatus.unknown => 'Document requis'.tr(context),
   };
 }
 
@@ -2576,28 +2620,47 @@ String _mimeTypeFromName(String name, {required String fallback}) {
   return fallback;
 }
 
-String _formatSize(int bytes) {
-  if (bytes <= 0) return '0 Mo';
+String _formatSize(BuildContext context, int bytes) {
+  if (bytes <= 0) return '{n} Mo'.tr(context, placeholders: {'n': '0'});
   final mb = bytes / (1024 * 1024);
-  return '${mb.toStringAsFixed(mb >= 10 ? 0 : 1)} Mo';
+  return '{n} Mo'.tr(
+    context,
+    placeholders: {'n': mb.toStringAsFixed(mb >= 10 ? 0 : 1)},
+  );
 }
 
-String _formatShortDate(DateTime? date) {
-  if (date == null) return 'récemment';
-  const months = [
-    'janv.',
-    'févr.',
-    'mars',
-    'avr.',
-    'mai',
-    'juin',
-    'juil.',
-    'août',
-    'sept.',
-    'oct.',
-    'nov.',
-    'déc.',
-  ];
+String _formatShortDate(BuildContext context, DateTime? date) {
+  if (date == null) return 'récemment'.tr(context);
+  final isEn = Localizations.localeOf(context).languageCode == 'en';
+  final months = isEn
+      ? const [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+        ]
+      : const [
+          'janv.',
+          'févr.',
+          'mars',
+          'avr.',
+          'mai',
+          'juin',
+          'juil.',
+          'août',
+          'sept.',
+          'oct.',
+          'nov.',
+          'déc.',
+        ];
   return '${date.day} ${months[date.month - 1]}';
 }
 
@@ -2609,26 +2672,26 @@ String _formatClock(DateTime date) {
   return '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
 }
 
-String _statusLabel(KycDocumentStatus status) {
+String _statusLabel(BuildContext context, KycDocumentStatus status) {
   return switch (status) {
-    KycDocumentStatus.accepted => 'Validé',
-    KycDocumentStatus.pendingReview => 'En attente',
-    KycDocumentStatus.rejected => 'Rejeté',
-    KycDocumentStatus.expired => 'Expiré',
-    KycDocumentStatus.uploaded || KycDocumentStatus.encrypted => 'Fourni',
-    KycDocumentStatus.missing || KycDocumentStatus.unknown => 'À fournir',
+    KycDocumentStatus.accepted => 'Validé'.tr(context),
+    KycDocumentStatus.pendingReview => 'En attente'.tr(context),
+    KycDocumentStatus.rejected => 'Rejeté'.tr(context),
+    KycDocumentStatus.expired => 'Expiré'.tr(context),
+    KycDocumentStatus.uploaded || KycDocumentStatus.encrypted => 'Fourni'.tr(context),
+    KycDocumentStatus.missing || KycDocumentStatus.unknown => 'À fournir'.tr(context),
   };
 }
 
-String _kycStatusChecklistLabel(KycDocumentStatus status) {
+String _kycStatusChecklistLabel(BuildContext context, KycDocumentStatus status) {
   return switch (status) {
-    KycDocumentStatus.accepted => 'Validé',
+    KycDocumentStatus.accepted => 'Validé'.tr(context),
     KycDocumentStatus.pendingReview ||
     KycDocumentStatus.uploaded ||
-    KycDocumentStatus.encrypted => 'En attente',
-    KycDocumentStatus.rejected => 'Rejeté',
-    KycDocumentStatus.expired => 'Expiré',
-    KycDocumentStatus.missing || KycDocumentStatus.unknown => 'À fournir',
+    KycDocumentStatus.encrypted => 'En attente'.tr(context),
+    KycDocumentStatus.rejected => 'Rejeté'.tr(context),
+    KycDocumentStatus.expired => 'Expiré'.tr(context),
+    KycDocumentStatus.missing || KycDocumentStatus.unknown => 'À fournir'.tr(context),
   };
 }
 

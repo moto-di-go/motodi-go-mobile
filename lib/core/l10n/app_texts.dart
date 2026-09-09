@@ -729,6 +729,181 @@ const Map<String, String> _frToEn = {
   'Continuer sans se connecter': 'Continue without signing in',
   'Action non disponible': 'Action unavailable',
   'Vous devez vous connecter ou créer un compte pour effectuer cette action.': 'You need to sign in or create an account to perform this action.',
+  // Bottom nav + missing keys
+  'Accueil': 'Home',
+  'Annonces': 'Listings',
+  'Notifs': 'Alerts',
+  'Se déconnecter': 'Log out',
+  'Mes documents': 'My documents',
+  'En cours': 'In progress',
+  'Hors-ligne': 'Offline',
+  'Suivi': 'Tracking',
+  'Actualisation': 'Refresh',
+  // Offline / Post / Notifs / Core / Example
+  'Zones': 'Areas',
+  'Impossible de charger les zones.': 'Unable to load areas.',
+  'Packs disponibles': 'Available packs',
+  'Dernière sync · {date}': 'Last sync · {date}',
+  '{count} opération(s) en attente de synchronisation':
+      '{count} operation(s) awaiting sync',
+  '{count} en attente': '{count} pending',
+  '{sync} · {count} en file': '{sync} · {count} in queue',
+  'Cartes {maps} · Cache {cache} · File {queue}':
+      'Maps {maps} · Cache {cache} · Queue {queue}',
+  '{n} o': '{n} B',
+  '{n} Ko': '{n} KB',
+  '{n} Mo': '{n} MB',
+  'Synchronisation': 'Synchronization',
+  'Synchronisation en cours…': 'Sync in progress…',
+  'Lot de synchronisation': 'Sync batch',
+  'Statut lot : {status}': 'Batch status: {status}',
+  'Lancer la synchronisation': 'Start synchronization',
+  'Création réservation': 'Booking creation',
+  'Annulation réservation': 'Booking cancellation',
+  'Mise à jour profil': 'Profile update',
+  'Ticket support': 'Support ticket',
+  'Enregistré sur ce téléphone': 'Saved on this phone',
+  'Synchronisé': 'Synced',
+  "À l'instant": 'Just now',
+  'Il y a {n} min': '{n} min ago',
+  'Hier · {time}': 'Yesterday · {time}',
+  'Non lues · {count}': 'Unread · {count}',
+  'Accusé de réception : {number}\nNotre équipe vous répondra dès que possible.':
+      'Acknowledgement: {number}\nOur team will respond as soon as possible.',
+  'Créé le {date}': 'Created on {date}',
+  'Contexte du signalement': 'Report context',
+  'Trajet · {id}…': 'Trip · {id}…',
+  'Transport': 'Transport',
+  'Compte': 'Account',
+  'Sécurité': 'Security',
+  'Urgence': 'Emergency',
+  'Basse': 'Low',
+  'Moyenne': 'Medium',
+  'Haute': 'High',
+  'Urgente': 'Urgent',
+  'Ouvert': 'Open',
+  'Résolu': 'Resolved',
+  'Ponctuel': 'Punctual',
+  'Conduite sûre': 'Safe driving',
+  'Prix respecté': 'Fare respected',
+  'Véhicule propre': 'Clean vehicle',
+  'Problème itinéraire': 'Route issue',
+  'Conducteur en approche': 'Driver approaching',
+  'À bord': 'On board',
+  'Annulé': 'Cancelled',
+  'Le conducteur prépare le départ. Restez disponible.':
+      'The driver is preparing departure. Stay available.',
+  'Le conducteur arrive. Présentez-vous au point de rendez-vous.':
+      'The driver is arriving. Go to the meeting point.',
+  'Bon trajet ! Suivez l’itinéraire jusqu’à destination.':
+      'Have a good trip! Follow the route to your destination.',
+  'Trajet terminé. Merci d’avoir voyagé avec Moto’di Go.':
+      "Trip completed. Thanks for traveling with Moto'di Go.",
+  'Ce trajet a été annulé.': 'This trip was cancelled.',
+  'Chargement du statut du trajet…': 'Loading trip status…',
+  'Portefeuille gelé. Recharge et paiements temporairement indisponibles.':
+      'Wallet frozen. Top-ups and payments temporarily unavailable.',
+  'Solde insuffisant pour finaliser ce paiement.':
+      'Insufficient balance to complete this payment.',
+  'Solde insuffisant. Il manque {amount}.':
+      'Insufficient balance. Short by {amount}.',
+  'Numéro de téléphone camerounais invalide.':
+      'Invalid Cameroonian phone number.',
+  'Le nom complet doit contenir au moins 10 caractères.':
+      'Full name must contain at least 10 characters.',
+  'Les mots de passe ne correspondent pas.': 'Passwords do not match.',
+  'Vous devez accepter les conditions.': 'You must accept the terms.',
+  'Le mot de passe est requis.': 'Password is required.',
+  'Le trajet doit être terminé pour noter.':
+      'The trip must be completed to rate it.',
+  'Vous avez déjà noté ce trajet.': 'You have already rated this trip.',
+  'Choisissez une note de 1 à 5 étoiles.': 'Choose a rating from 1 to 5 stars.',
+  'Connexion requise pour envoyer la note. Réessayez en ligne.':
+      'Connection required to submit the rating. Try again online.',
+  'Exemples': 'Examples',
+  'Détail': 'Detail',
+  'Element non trouvé': 'Item not found',
+  'Une erreur est survenue': 'An error occurred',
+  'Prêt à émettre': 'Ready to issue',
+  'Émis': 'Issued',
+  'Sujet et message sont obligatoires.': 'Subject and message are required.',
+  // Intercity / Urban remaining
+  'Le GPS est désactivé. Activez la localisation pour passer disponible.':
+      'GPS is disabled. Enable location to go available.',
+  'Permission GPS refusée. Autorisez la localisation pour être visible.':
+      'GPS permission denied. Allow location access to be visible.',
+  'Permission GPS définitivement refusée. Ouvrez les réglages pour l’autoriser.':
+      'GPS permission permanently denied. Open settings to allow it.',
+  'Consentement GPS refusé. Diffusion arrêtée.':
+      'GPS consent declined. Sharing stopped.',
+  'Sans consentement GPS, vous n’êtes pas visible des passagers.':
+      'Without GPS consent, you are not visible to passengers.',
+  'Destination en cours': 'Destination in progress',
+  'Permission GPS insuffisante. Diffusion arrêtée.':
+      'Insufficient GPS permission. Sharing stopped.',
+  'Ma position': 'My location',
+  'Point choisi': 'Selected point',
+  'Point sur la carte': 'Point on the map',
+  'Aucune couche trafic': 'No traffic layers',
+  'Couches trafic': 'Traffic layers',
+  "Mis à jour à l'instant": 'Updated just now',
+  'Mis à jour il y a {minutes} min': 'Updated {minutes} min ago',
+  'Choisissez une origine sur la carte.': 'Choose an origin on the map.',
+  'Localisation refusée. Vous pouvez choisir origine et destination sur la carte.':
+      'Location denied. You can pick origin and destination on the map.',
+  'GPS indisponible. Mode dégradé : sélection manuelle sur la carte.':
+      'GPS unavailable. Fallback mode: pick manually on the map.',
+  'Seuls les profils transporteur ou mototaxi peuvent publier une annonce.':
+      'Only transporter or mototaxi profiles can publish a listing.',
+  'Votre profil doit être validé avant de publier une annonce.':
+      'Your profile must be validated before publishing a listing.',
+  'Ajoutez un véhicule validé à votre profil pour publier une annonce.':
+      'Add a validated vehicle to your profile to publish a listing.',
+  'Recherche indisponible': 'Search unavailable',
+  'Recherche trop lente': 'Search too slow',
+  'Aucun envoi': 'Never sent',
+  'il y a {seconds}s': '{seconds}s ago',
+  // Profiles / KYC
+  'Passager': 'Passenger',
+  'Agence': 'Agency',
+  'Admin': 'Admin',
+  'Accès immédiat': 'Immediate access',
+  'Utiliser': 'Use',
+  'Validé · actif': 'Validated · active',
+  'DOCUMENTS': 'DOCUMENTS',
+  'Permis de conduire': "Driver's license",
+  'Assurance': 'Insurance',
+  'Photo de profil': 'Profile photo',
+  'Document': 'Document',
+  'Soumis le {date}': 'Submitted on {date}',
+  '{provided} / {required} documents fournis': '{provided} / {required} documents provided',
+  "Aujourd'hui · {time}": 'Today · {time}',
+  'Nos équipes examinent vos documents.\nDélai indicatif : ':
+      'Our team is reviewing your documents.\nEstimated time: ',
+  'Votre {type} est maintenant en attente de verification. Vous serez notifie de la decision.':
+      'Your {type} is now awaiting verification. You will be notified of the decision.',
+  '{label} rejetee': '{label} rejected',
+  'Motif : {reason}': 'Reason: {reason}',
+  'Document non conforme.': 'Non-compliant document.',
+  'document non conforme': 'non-compliant document',
+  'Bonne nouvelle ! Tous vos documents ont ete acceptes. Vous pouvez maintenant passer en ligne et recevoir des courses.':
+      'Good news! All your documents have been accepted. You can now go online and receive rides.',
+  'aperçu — {label} (recto)': 'preview — {label} (front)',
+  'Image': 'Image',
+  'Envoye le {date} - {size}': 'Sent on {date} - {size}',
+  '{label} · JPG, PNG ou PDF · 5 Mo max ·\ndocument lisible.':
+      '{label} · JPG, PNG or PDF · 5 MB max ·\nreadable document.',
+  'Taille trop grande ({size} > 5 Mo)': 'File too large ({size} > 5 MB)',
+  'Taille inferieure a 5 Mo': 'Size under 5 MB',
+  'Format accepte (JPG, PNG, PDF)': 'Accepted format (JPG, PNG, PDF)',
+  'Format accepte ({extension})': 'Accepted format ({extension})',
+  'Rejeté · {reason}': 'Rejected · {reason}',
+  'Ajouté le {date}': 'Added on {date}',
+  'récemment': 'recently',
+  '{profile} actif': '{profile} active',
+  'KYC · {status}': 'KYC · {status}',
+  'Votre profil {profile} doit être validé (KYC · {status}) avant d’activer la disponibilité et le partage GPS.':
+      'Your {profile} profile must be validated (KYC · {status}) before enabling availability and GPS sharing.',
 };
 
 String translateAppText(

@@ -61,7 +61,7 @@ class _TripHistoryView extends StatelessWidget {
                   }
                   if (state.status == TripHistoryViewStatus.failure && state.items.isEmpty) {
                     return AppErrorView(
-                      message: state.errorMessage ?? 'Chargement impossible.'.tr(context),
+                      message: (state.errorMessage ?? 'Chargement impossible.').tr(context),
                       onRetry: () => context.read<TripHistoryCubit>().refresh(),
                     );
                   }
@@ -240,7 +240,7 @@ class _Tabs extends StatelessWidget {
                       ),
                       alignment: Alignment.center,
                       child: Text(
-                        tab.labelFr,
+                        tab.labelFr.tr(context),
                         style: postText(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,

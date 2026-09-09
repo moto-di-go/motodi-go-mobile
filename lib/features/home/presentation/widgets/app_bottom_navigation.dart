@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/home/presentation/widgets/home_figma_icons.dart';
 
 class AppBottomNavigation extends StatelessWidget {
@@ -17,30 +18,30 @@ class AppBottomNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = [
-      const _NavItemData(
-        label: 'Accueil',
-        activeIcon: MotodigoHomeGreenIcon(size: 30),
-        inactiveIcon: MotodigoHomeGrayIcon(size: 30),
+      _NavItemData(
+        label: 'Accueil'.tr(context),
+        activeIcon: const MotodigoHomeGreenIcon(size: 30),
+        inactiveIcon: const MotodigoHomeGrayIcon(size: 30),
       ),
       _NavItemData(
         label: tripsTabLabel,
         activeIcon: const MotodigoTrajetGreenIcon(size: 30),
         inactiveIcon: const MotodigoTrajetGrayIcon(size: 30),
       ),
-      const _NavItemData(
-        label: 'Wallet',
-        activeIcon: MotodigoWalletGreenIcon(size: 30),
-        inactiveIcon: MotodigoWalletGrayIcon(size: 30),
+      _NavItemData(
+        label: 'Wallet'.tr(context),
+        activeIcon: const MotodigoWalletGreenIcon(size: 30),
+        inactiveIcon: const MotodigoWalletGrayIcon(size: 30),
       ),
-      const _NavItemData(
-        label: 'Notifs',
-        activeIcon: MotodigoNotifGreenIcon(size: 30),
-        inactiveIcon: MotodigoNotifGrayIcon(size: 30),
+      _NavItemData(
+        label: 'Notifs'.tr(context),
+        activeIcon: const MotodigoNotifGreenIcon(size: 30),
+        inactiveIcon: const MotodigoNotifGrayIcon(size: 30),
       ),
-      const _NavItemData(
-        label: 'Profil',
-        activeIcon: MotodigoProfileGreenIcon(size: 30),
-        inactiveIcon: MotodigoProfileGrayIcon(size: 30),
+      _NavItemData(
+        label: 'Profil'.tr(context),
+        activeIcon: const MotodigoProfileGreenIcon(size: 30),
+        inactiveIcon: const MotodigoProfileGrayIcon(size: 30),
       ),
     ];
 

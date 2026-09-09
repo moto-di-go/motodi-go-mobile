@@ -379,7 +379,7 @@ class _PendingProfileBadge extends StatelessWidget {
           CircleAvatar(radius: 5, backgroundColor: color),
           const SizedBox(width: 9),
           Text(
-            '${profileLabel(type)} · ${_homeStatusLabel(context, status)}',
+            '${profileLabel(context, type)} · ${_homeStatusLabel(context, status)}',
             style: TextStyle(color: color, fontSize: 16, fontWeight: FontWeight.w900, height: 1),
           ),
         ],
@@ -426,7 +426,7 @@ class _PassengerReadyCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${profileLabel(type)} ${'actif'.tr(context)}',
+                  '${profileLabel(context, type)} ${'actif'.tr(context)}',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w900,

@@ -81,7 +81,7 @@ class _UrbanDestinationViewState extends State<UrbanDestinationView> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            state.originLabel,
+                            state.originLabel.tr(context),
                             style: urbanText(fontSize: 16, fontWeight: FontWeight.w700),
                           ),
                         ),
@@ -174,7 +174,7 @@ class _UrbanDestinationViewState extends State<UrbanDestinationView> {
                   if (state.visiblePlacesDemo) ...[
                     const SizedBox(width: 8),
                     Text(
-                      'Démo',
+                      'Démo'.tr(context),
                       style: urbanText(
                         fontSize: 12,
                         fontWeight: FontWeight.w800,

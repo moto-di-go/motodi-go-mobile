@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/core/widgets/sync_status_chip.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/nfc/domain/entities/nfc_entities.dart';
@@ -65,7 +66,7 @@ class _OfflineSyncView extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      'Synchronisation',
+                      'Synchronisation'.tr(context),
                       style: offlineText(fontSize: 26, fontWeight: FontWeight.w800),
                     ),
                   ],
@@ -82,9 +83,10 @@ class _OfflineSyncView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        state.status == OfflineSyncViewStatus.syncing
-                            ? 'Synchronisation en cours…'
-                            : 'Lot de synchronisation',
+                        (state.status == OfflineSyncViewStatus.syncing
+                                ? 'Synchronisation en cours…'
+                                : 'Lot de synchronisation')
+                            .tr(context),
                         style: offlineText(fontSize: 18, fontWeight: FontWeight.w800),
                       ),
                       const SizedBox(height: 14),
@@ -100,12 +102,15 @@ class _OfflineSyncView extends StatelessWidget {
                       const SizedBox(height: 16),
                       if (state.errorMessage != null)
                         Text(
-                          state.errorMessage!,
+                          state.errorMessage!.tr(context),
                           style: offlineText(fontSize: 14, color: AppColors.error),
                         ),
                       if (state.batch != null) ...[
                         Text(
-                          'Statut lot : ${state.batch!.status}',
+                          'Statut lot : {status}'.tr(
+                            context,
+                            placeholders: {'status': state.batch!.status},
+                          ),
                           style: offlineText(fontSize: 14, color: AppColors.textSecondary),
                         ),
                         const SizedBox(height: 12),
@@ -150,7 +155,7 @@ class _OfflineSyncView extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
                   ),
                   child: Text(
-                    'Lancer la synchronisation',
+                    'Lancer la synchronisation'.tr(context),
                     style: offlineText(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white),
                   ),
                 ),

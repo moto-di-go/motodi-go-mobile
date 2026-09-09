@@ -358,8 +358,8 @@ class UrbanConfirmSheet extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 14),
-          _InfoRow(icon: Icons.trip_origin, label: state.originLabel, trailing: ''),
-          _InfoRow(icon: Icons.place_rounded, label: state.destinationLabel, trailing: ''),
+          _InfoRow(icon: Icons.trip_origin, label: state.originLabel.tr(context), trailing: ''),
+          _InfoRow(icon: Icons.place_rounded, label: state.destinationLabel.tr(context), trailing: ''),
           if (driver != null)
             _InfoRow(
               icon: Icons.person_outline,

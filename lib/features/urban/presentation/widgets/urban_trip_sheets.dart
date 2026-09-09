@@ -26,7 +26,7 @@ class UrbanCalculatingSheet extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            '${state.originLabel} → ${state.destinationLabel}',
+            '${state.originLabel.tr(context)} → ${state.destinationLabel.tr(context)}',
             textAlign: TextAlign.center,
             style: urbanText(fontSize: 15, color: AppColors.textSecondary),
           ),

@@ -93,7 +93,7 @@ class _SupportFormView extends StatelessWidget {
                         children: SupportCategory.values.map((cat) {
                           final selected = state.category == cat;
                           return _Chip(
-                            label: cat.labelFr,
+                            label: cat.labelFr.tr(context),
                             selected: selected,
                             onTap: () => context.read<SupportCubit>().setCategory(cat),
                           );
@@ -108,7 +108,7 @@ class _SupportFormView extends StatelessWidget {
                         children: SupportPriority.values.map((p) {
                           final selected = state.priority == p;
                           return _Chip(
-                            label: p.labelFr,
+                            label: p.labelFr.tr(context),
                             selected: selected,
                             onTap: () => context.read<SupportCubit>().setPriority(p),
                           );
@@ -133,7 +133,7 @@ class _SupportFormView extends StatelessWidget {
                       if (state.errorMessage != null) ...[
                         const SizedBox(height: 8),
                         Text(
-                          state.errorMessage!,
+                          state.errorMessage!.tr(context),
                           style: postText(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.error),
                         ),
                       ],
@@ -240,9 +240,10 @@ class SupportTicketCreatedPage extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                Localizations.localeOf(context).languageCode == 'en'
-                    ? 'Acknowledgement: ${ticket.ticketNumber}\nOur team will respond as soon as possible.'
-                    : 'Accusé de réception : ${ticket.ticketNumber}\nNotre équipe vous répondra dès que possible.',
+                'Accusé de réception : {number}\nNotre équipe vous répondra dès que possible.'.tr(
+                  context,
+                  placeholders: {'number': ticket.ticketNumber},
+                ),
                 textAlign: TextAlign.center,
                 style: postText(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.textSecondary, height: 1.4),
               ),
@@ -330,7 +331,7 @@ class _SupportTicketsView extends StatelessWidget {
                             border: Border.all(color: selected ? AppColors.primary : AppColors.outline),
                           ),
                           child: Text(
-                            status?.labelFr ?? 'Tous'.tr(context),
+                            status?.labelFr.tr(context) ?? 'Tous'.tr(context),
                             style: postText(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
@@ -353,7 +354,7 @@ class _SupportTicketsView extends StatelessWidget {
                   }
                   if (state.listStatus == SupportListStatus.failure && state.tickets.isEmpty) {
                     return AppErrorView(
-                      message: state.errorMessage ?? 'Chargement impossible.'.tr(context),
+                      message: (state.errorMessage ?? 'Chargement impossible.').tr(context),
                       onRetry: () => context.read<SupportCubit>().refreshTickets(),
                     );
                   }
@@ -438,7 +439,7 @@ class _TicketTile extends StatelessWidget {
               Text(ticket.subject, style: postText(fontSize: 16, fontWeight: FontWeight.w800)),
               const SizedBox(height: 6),
               Text(
-                '${ticket.category.labelFr} · ${formatShortDate(ticket.createdAt.toLocal())}',
+                '${ticket.category.labelFr.tr(context)} · ${formatShortDate(ticket.createdAt.toLocal())}',
                 style: postText(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textSecondary),
               ),
             ],
@@ -481,7 +482,7 @@ class _SupportTicketDetailView extends StatelessWidget {
             }
             if (state.detailStatus == SupportDetailStatus.failure || state.selectedTicket == null) {
               return AppErrorView(
-                message: state.errorMessage ?? 'Ticket introuvable.'.tr(context),
+                message: (state.errorMessage ?? 'Ticket introuvable.').tr(context),
                 onRetry: () => context.read<SupportCubit>().loadTicketDetail(ticketId),
               );
             }
@@ -519,7 +520,7 @@ class _SupportTicketDetailView extends StatelessWidget {
                             Text(ticket.subject, style: postText(fontSize: 20, fontWeight: FontWeight.w800)),
                             const SizedBox(height: 10),
                             Text(
-                              '${ticket.category.labelFr} · Priorité ${ticket.priority.labelFr}',
+                              '${ticket.category.labelFr.tr(context)} · ${'Priorité'.tr(context)} ${ticket.priority.labelFr.tr(context)}',
                               style: postText(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textSecondary),
                             ),
                             const SizedBox(height: 16),
@@ -529,9 +530,10 @@ class _SupportTicketDetailView extends StatelessWidget {
                             ),
                             const SizedBox(height: 14),
                             Text(
-                              Localizations.localeOf(context).languageCode == 'en'
-                                  ? 'Created on ${formatShortDate(ticket.createdAt.toLocal())}'
-                                  : 'Créé le ${formatShortDate(ticket.createdAt.toLocal())}',
+                              'Créé le {date}'.tr(
+                                context,
+                                placeholders: {'date': formatShortDate(ticket.createdAt.toLocal())},
+                              ),
                               style: postText(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textTertiary),
                             ),
                           ],

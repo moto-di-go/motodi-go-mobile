@@ -136,8 +136,9 @@ class _IntercityPublishGuardPageState extends State<IntercityPublishGuardPage> {
                 Text(
                   state.isEligible
                       ? 'Renseignez votre trajet, votre véhicule et vos disponibilités.'.tr(context)
-                      : state.eligibilityReason ??
-                            'Votre profil ne remplit pas encore les conditions requises.'.tr(context),
+                      : (state.eligibilityReason ??
+                            'Votre profil ne remplit pas encore les conditions requises.')
+                          .tr(context),
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: Color(0xFF8A968C), height: 1.4),
                 ),
@@ -919,7 +920,7 @@ class IntercityPreviewPage extends StatelessWidget {
                   state.createErrorMessage != null) {
                 ScaffoldMessenger.of(
                   context,
-                ).showSnackBar(SnackBar(content: Text(state.createErrorMessage!)));
+                ).showSnackBar(SnackBar(content: Text(state.createErrorMessage!.tr(context))));
               }
             },
             builder: (context, state) {
@@ -1192,9 +1193,13 @@ class IntercityPublishSuccessPage extends StatelessWidget {
   }
 
   Future<void> _share(BuildContext context) async {
-    final text =
-        'Trajet ${announcement.route} le ${formatShortDate(announcement.departureDate, context: context)} à '
-        '${announcement.formattedDepartureTime} · ${formatPriceFcfa(announcement.priceFcfa)} — Moto\'di Go';
+    final isEn = Localizations.localeOf(context).languageCode == 'en';
+    final date = formatShortDate(announcement.departureDate, context: context);
+    final time = announcement.formattedDepartureTime;
+    final price = formatPriceFcfa(announcement.priceFcfa);
+    final text = isEn
+        ? 'Trip ${announcement.route} on $date at $time · $price — Moto\'di Go'
+        : 'Trajet ${announcement.route} le $date à $time · $price — Moto\'di Go';
     try {
       await SharePlus.instance.share(ShareParams(text: text));
     } catch (_) {
@@ -1621,8 +1626,9 @@ class _IntercityIncomingBookingsPageState extends State<IntercityIncomingBooking
                         : state.incomingStatus == IntercityIncomingStatus.failure
                         ? AppErrorView(
                             message:
-                                state.incomingErrorMessage ??
-                                'Impossible de charger les réservations.'.tr(context),
+                                (state.incomingErrorMessage ??
+                                        'Impossible de charger les réservations.')
+                                    .tr(context),
                             onRetry: () => _cubit.loadIncomingBookings(widget.announcementId),
                           )
                         : state.incomingBookings.isEmpty

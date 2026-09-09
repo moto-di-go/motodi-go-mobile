@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/profile_type.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/user_profile.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
@@ -16,38 +17,38 @@ IconData profileIcon(ProfileType type) {
   };
 }
 
-String profileLabel(ProfileType type) {
+String profileLabel(BuildContext context, ProfileType type) {
   return switch (type) {
-    ProfileType.passenger => 'Passager',
-    ProfileType.mototaxi => 'Mototaxi',
-    ProfileType.transporter => 'Transporteur',
-    ProfileType.agency => 'Agence',
-    ProfileType.admin => 'Admin',
-    ProfileType.unknown => 'Profil',
+    ProfileType.passenger => 'Passager'.tr(context),
+    ProfileType.mototaxi => 'Mototaxi'.tr(context),
+    ProfileType.transporter => 'Transporteur'.tr(context),
+    ProfileType.agency => 'Agence'.tr(context),
+    ProfileType.admin => 'Admin'.tr(context),
+    ProfileType.unknown => 'Profil'.tr(context),
   };
 }
 
-String statusLabel(ValidationStatus status, {bool active = false}) {
-  if (active && status == ValidationStatus.validated) return 'Accès immédiat';
+String statusLabel(BuildContext context, ValidationStatus status, {bool active = false}) {
+  if (active && status == ValidationStatus.validated) return 'Accès immédiat'.tr(context);
   return switch (status) {
-    ValidationStatus.validated => 'Accès immédiat',
-    ValidationStatus.pending => 'Validation requise',
-    ValidationStatus.rejected => 'Rejeté',
-    ValidationStatus.suspended => 'Suspendu',
-    ValidationStatus.draft => 'Brouillon',
-    ValidationStatus.unknown => 'Statut inconnu',
+    ValidationStatus.validated => 'Accès immédiat'.tr(context),
+    ValidationStatus.pending => 'Validation requise'.tr(context),
+    ValidationStatus.rejected => 'Rejeté'.tr(context),
+    ValidationStatus.suspended => 'Suspendu'.tr(context),
+    ValidationStatus.draft => 'Brouillon'.tr(context),
+    ValidationStatus.unknown => 'Statut inconnu'.tr(context),
   };
 }
 
-String compactStatusLabel(ValidationStatus status, {bool active = false}) {
-  if (active && status == ValidationStatus.validated) return 'Validé · actif';
+String compactStatusLabel(BuildContext context, ValidationStatus status, {bool active = false}) {
+  if (active && status == ValidationStatus.validated) return 'Validé · actif'.tr(context);
   return switch (status) {
-    ValidationStatus.validated => 'Validé',
-    ValidationStatus.pending => 'En attente',
-    ValidationStatus.rejected => 'Rejeté',
-    ValidationStatus.suspended => 'Suspendu',
-    ValidationStatus.draft => 'Brouillon',
-    ValidationStatus.unknown => 'Statut inconnu',
+    ValidationStatus.validated => 'Validé'.tr(context),
+    ValidationStatus.pending => 'En attente'.tr(context),
+    ValidationStatus.rejected => 'Rejeté'.tr(context),
+    ValidationStatus.suspended => 'Suspendu'.tr(context),
+    ValidationStatus.draft => 'Brouillon'.tr(context),
+    ValidationStatus.unknown => 'Statut inconnu'.tr(context),
   };
 }
 
@@ -135,7 +136,7 @@ class ProfileChoiceCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          profileLabel(type),
+                          profileLabel(context, type),
                           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             color: AppColors.textPrimary,
                             fontSize: compact ? 21 : 25,
@@ -161,7 +162,7 @@ class ProfileChoiceCard extends StatelessWidget {
                     )
                   else if (showAction)
                     Text(
-                      'Utiliser',
+                      'Utiliser'.tr(context),
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: AppColors.primary,
                         fontSize: compact ? 19 : null,
@@ -231,8 +232,8 @@ class StatusBadge extends StatelessWidget {
           ],
           Text(
             compact
-                ? compactStatusLabel(status, active: active)
-                : statusLabel(status, active: active),
+                ? compactStatusLabel(context, status, active: active)
+                : statusLabel(context, status, active: active),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: color,
               fontSize: compact ? 15 : 16,

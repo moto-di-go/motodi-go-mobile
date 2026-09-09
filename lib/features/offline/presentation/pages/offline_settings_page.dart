@@ -116,7 +116,7 @@ class _OfflineSettingsView extends StatelessWidget {
                           style: offlineText(fontSize: 15, fontWeight: FontWeight.w700),
                         ),
                         subtitle: Text(
-                          Localizations.localeOf(context).languageCode == 'en' ? '${s.maxCacheMb} MB' : '${s.maxCacheMb} Mo',
+                          '{n} Mo'.tr(context, placeholders: {'n': '${s.maxCacheMb}'}),
                           style: offlineText(fontSize: 13, color: AppColors.textSecondary),
                         ),
                         trailing: Row(

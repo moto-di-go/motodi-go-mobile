@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/post/domain/entities/post_entities.dart';
 import 'package:motodi_go_mobile/features/post/presentation/widgets/post_ui.dart';
 
@@ -23,7 +24,7 @@ class TicketStatusChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(999)),
       child: Text(
-        status.labelFr,
+        status.labelFr.tr(context),
         style: postText(fontSize: 12, fontWeight: FontWeight.w700, color: fg),
       ),
     );

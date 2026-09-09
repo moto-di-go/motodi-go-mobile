@@ -336,7 +336,7 @@ class _RegisterInlineError extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: Text(
-            message,
+            message.tr(context),
             style: const TextStyle(
               color: Color(0xFFB42318),
               fontSize: 18,

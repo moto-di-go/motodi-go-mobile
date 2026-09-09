@@ -135,7 +135,7 @@ class _ProfileHubView extends StatelessWidget {
                   active?.validationStatus ??
                   ValidationStatus.pending;
               final initials = _initialsFrom(
-                displayName != monProfil ? displayName : profileLabel(type),
+                displayName != monProfil ? displayName : profileLabel(context, type),
               );
 
               return ListView(
@@ -202,7 +202,7 @@ class _ProfileHubView extends StatelessWidget {
                   const SizedBox(height: 28),
                   Row(
                     children: [
-                      Expanded(child: _ActiveProfileCard(typeLabel: profileLabel(type))),
+                      Expanded(child: _ActiveProfileCard(typeLabel: profileLabel(context, type))),
                       const SizedBox(width: 12),
                       Expanded(child: _KycStatusCard(status: status)),
                     ],

@@ -298,7 +298,7 @@ class WalletFrozenBanner extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              'Portefeuille gelé. Recharge et paiements temporairement indisponibles.',
+              'Portefeuille gelé. Recharge et paiements temporairement indisponibles.'.tr(context),
               style: walletText(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -336,8 +336,11 @@ class WalletInsufficientBanner extends StatelessWidget {
           Expanded(
             child: Text(
               shortfall == null
-                  ? 'Solde insuffisant pour finaliser ce paiement.'
-                  : 'Solde insuffisant. Il manque ${formatWalletAmount(shortfall!)}.',
+                  ? 'Solde insuffisant pour finaliser ce paiement.'.tr(context)
+                  : 'Solde insuffisant. Il manque {amount}.'.tr(
+                      context,
+                      placeholders: {'amount': formatWalletAmount(shortfall!)},
+                    ),
               style: walletText(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,

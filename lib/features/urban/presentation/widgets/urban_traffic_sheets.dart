@@ -6,6 +6,17 @@ import 'package:motodi_go_mobile/features/urban/presentation/urban_ride_state.da
 import 'package:motodi_go_mobile/features/urban/presentation/widgets/urban_bottom_sheet.dart';
 import 'package:motodi_go_mobile/core/utils/extensions.dart';
 
+String _trFreshness(BuildContext context, String label) {
+  final match = RegExp(r'^Mis à jour il y a (\d+) min$').firstMatch(label);
+  if (match != null) {
+    return 'Mis à jour il y a {minutes} min'.tr(
+      context,
+      placeholders: {'minutes': match.group(1)!},
+    );
+  }
+  return label.tr(context);
+}
+
 class UrbanLayersSheet extends StatelessWidget {
   final UrbanRideState state;
   final UrbanRideCubit cubit;
@@ -23,7 +34,7 @@ class UrbanLayersSheet extends StatelessWidget {
           Text('Couches carte'.tr(context), style: urbanText(fontSize: 24, fontWeight: FontWeight.w800)),
           const SizedBox(height: 6),
           Text(
-            state.layersFreshness,
+            _trFreshness(context, state.layersFreshness),
             style: urbanText(fontSize: 14, color: AppColors.textSecondary),
           ),
           const SizedBox(height: 12),
@@ -144,7 +155,7 @@ class UrbanIncidentSheet extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Text(layer.freshnessLabel(), style: urbanText(color: AppColors.textSecondary)),
+          Text(_trFreshness(context, layer.freshnessLabel()), style: urbanText(color: AppColors.textSecondary)),
           if (layer.impact != null && layer.impact!.isNotEmpty) ...[
             const SizedBox(height: 8),
             Text(layer.impact!, style: urbanText(fontSize: 15)),

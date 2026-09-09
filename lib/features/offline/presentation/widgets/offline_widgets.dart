@@ -27,20 +27,25 @@ TextStyle offlineText({
   );
 }
 
-String formatLastSync(DateTime? at) {
-  // Note: caller should translate via .tr(context) if needed
-  if (at == null) return 'Jamais synchronisé';
+String formatLastSync(DateTime? at, [BuildContext? context]) {
+  if (at == null) {
+    return context == null ? 'Jamais synchronisé' : 'Jamais synchronisé'.tr(context);
+  }
   final local = at.toLocal();
   final hh = local.hour.toString().padLeft(2, '0');
   final mm = local.minute.toString().padLeft(2, '0');
-  return 'Dernière sync · ${local.day.toString().padLeft(2, '0')}/'
-      '${local.month.toString().padLeft(2, '0')} $hh:$mm';
+  final date =
+      '${local.day.toString().padLeft(2, '0')}/${local.month.toString().padLeft(2, '0')} $hh:$mm';
+  if (context == null) return 'Dernière sync · $date';
+  return 'Dernière sync · {date}'.tr(context, placeholders: {'date': date});
 }
 
-String formatBytes(int bytes) {
-  if (bytes < 1024) return '$bytes o';
-  if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(0)} Ko';
-  return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} Mo';
+String formatBytes(int bytes, [BuildContext? context]) {
+  String fmt(String key, String n) =>
+      context == null ? key.replaceAll('{n}', n) : key.tr(context, placeholders: {'n': n});
+  if (bytes < 1024) return fmt('{n} o', '$bytes');
+  if (bytes < 1024 * 1024) return fmt('{n} Ko', (bytes / 1024).toStringAsFixed(0));
+  return fmt('{n} Mo', (bytes / (1024 * 1024)).toStringAsFixed(1));
 }
 
 class OfflineBanner extends StatelessWidget {
@@ -99,8 +104,14 @@ class OfflineBanner extends StatelessWidget {
                           ),
                           Text(
                             state.pendingCount > 0
-                                ? '${formatLastSync(state.lastSyncAt)} · ${state.pendingCount} en file'
-                                : formatLastSync(state.lastSyncAt),
+                                ? '{sync} · {count} en file'.tr(
+                                    context,
+                                    placeholders: {
+                                      'sync': formatLastSync(state.lastSyncAt, context),
+                                      'count': '${state.pendingCount}',
+                                    },
+                                  )
+                                : formatLastSync(state.lastSyncAt, context),
                             style: offlineText(fontSize: 12, color: fg.withValues(alpha: 0.85)),
                           ),
                         ],
@@ -144,7 +155,7 @@ class OfflineOperationCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    operation.type.labelFr,
+                    operation.type.labelFr.tr(context),
                     style: offlineText(fontSize: 16, fontWeight: FontWeight.w800),
                   ),
                 ),
@@ -153,13 +164,13 @@ class OfflineOperationCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              formatLastSync(operation.queuedAt),
+              formatLastSync(operation.queuedAt, context),
               style: offlineText(fontSize: 12, color: AppColors.textSecondary),
             ),
             if (operation.conflictMessage != null && operation.conflictMessage!.isNotEmpty) ...[
               const SizedBox(height: 8),
               Text(
-                operation.conflictMessage!,
+                operation.conflictMessage!.tr(context),
                 style: offlineText(fontSize: 13, color: AppColors.error),
               ),
             ],
@@ -210,7 +221,7 @@ class DownloadMapAreaCard extends StatelessWidget {
                 ),
               ),
               Text(
-                formatBytes(area.sizeBytes),
+                formatBytes(area.sizeBytes, context),
                 style: offlineText(fontSize: 13, color: AppColors.textSecondary),
               ),
             ],
@@ -303,7 +314,7 @@ class StorageUsageBar extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                '${formatBytes(usage.usedBytes)} / ${formatBytes(usage.maxBytes)}',
+                '${formatBytes(usage.usedBytes, context)} / ${formatBytes(usage.maxBytes, context)}',
                 style: offlineText(fontSize: 12, color: AppColors.textSecondary),
               ),
             ],
@@ -320,7 +331,14 @@ class StorageUsageBar extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Cartes ${formatBytes(usage.mapsBytes)} · Cache ${formatBytes(usage.cacheBytes)} · File ${formatBytes(usage.queueBytes)}',
+            'Cartes {maps} · Cache {cache} · File {queue}'.tr(
+              context,
+              placeholders: {
+                'maps': formatBytes(usage.mapsBytes, context),
+                'cache': formatBytes(usage.cacheBytes, context),
+                'queue': formatBytes(usage.queueBytes, context),
+              },
+            ),
             style: offlineText(fontSize: 12, color: AppColors.textTertiary),
           ),
         ],

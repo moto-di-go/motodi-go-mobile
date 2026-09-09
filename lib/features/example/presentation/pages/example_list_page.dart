@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/core/widgets/app_loading.dart';
 import 'package:motodi_go_mobile/core/widgets/app_error_view.dart';
@@ -32,7 +33,7 @@ class _ExampleListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Exemples'),
+        title: Text('Exemples'.tr(context)),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -47,7 +48,7 @@ class _ExampleListView extends StatelessWidget {
           }
           if (state.isFailure) {
             return AppErrorView(
-              message: state.errorMessage ?? 'Une erreur est survenue',
+              message: (state.errorMessage ?? 'Une erreur est survenue').tr(context),
               onRetry: () => context.read<ExampleBloc>().add(const GetExamplesRequested()),
             );
           }

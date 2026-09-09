@@ -171,12 +171,12 @@ class _CityAutocompleteFieldState extends State<CityAutocompleteField> {
               .timeout(const Duration(seconds: 8)) ??
           const <UrbanPlace>[];
     } on TimeoutException {
-      error = Localizations.localeOf(context).languageCode == 'en' ? 'Search too slow' : 'Recherche trop lente';
+      error = 'Recherche trop lente';
     } on ApiException catch (e) {
       error = e.message;
       debugPrint('[CityAutocomplete] api error: $e');
     } catch (e) {
-      error = Localizations.localeOf(context).languageCode == 'en' ? 'Search unavailable' : 'Recherche indisponible';
+      error = 'Recherche indisponible';
       debugPrint('[CityAutocomplete] error: $e');
     }
 
@@ -315,7 +315,7 @@ class _CityAutocompleteFieldState extends State<CityAutocompleteField> {
         ] else if (showEmpty) ...[
           const SizedBox(height: 8),
           Text(
-            _error ?? 'Aucun lieu trouvé'.tr(context),
+            (_error ?? 'Aucun lieu trouvé').tr(context),
             style: const TextStyle(
               color: Color(0xFF8A968C),
               fontSize: 13,

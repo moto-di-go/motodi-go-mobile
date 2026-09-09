@@ -133,9 +133,10 @@ class _DriverHeader extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        Localizations.localeOf(context).languageCode == 'en'
-                            ? '${profileLabel(type)} active'
-                            : '${profileLabel(type)} actif',
+                        '{profile} actif'.tr(
+                          context,
+                          placeholders: {'profile': profileLabel(context, type)},
+                        ),
                         style: urbanText(fontSize: 17, fontWeight: FontWeight.w800),
                       ),
                       const SizedBox(height: 8),
@@ -144,7 +145,10 @@ class _DriverHeader extends StatelessWidget {
                         runSpacing: 8,
                         children: [
                           _StatusPill(
-                            label: 'KYC · ${compactStatusLabel(kyc)}',
+                            label: 'KYC · {status}'.tr(
+                              context,
+                              placeholders: {'status': compactStatusLabel(context, kyc)},
+                            ),
                             color: statusColor(kyc),
                           ),
                           _AvailabilityPill(availability: availability),
@@ -189,9 +193,14 @@ class _LockedBody extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                Localizations.localeOf(context).languageCode == 'en'
-                    ? 'Your ${profileLabel(type)} profile must be validated (KYC · ${compactStatusLabel(kyc)}) before enabling availability and GPS sharing.'
-                    : 'Votre profil ${profileLabel(type)} doit être validé (KYC · ${compactStatusLabel(kyc)}) avant d’activer la disponibilité et le partage GPS.',
+                'Votre profil {profile} doit être validé (KYC · {status}) avant d’activer la disponibilité et le partage GPS.'
+                    .tr(
+                      context,
+                      placeholders: {
+                        'profile': profileLabel(context, type),
+                        'status': compactStatusLabel(context, kyc),
+                      },
+                    ),
                 style: urbanText(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
@@ -280,9 +289,9 @@ class _ActiveBodyState extends State<_ActiveBody> with WidgetsBindingObserver {
   }
 
   String _lastSentLabel(DateTime? at) {
-    if (at == null) return Localizations.localeOf(context).languageCode == 'en' ? 'Never sent' : 'Aucun envoi';
+    if (at == null) return 'Aucun envoi'.tr(context);
     final seconds = DateTime.now().difference(at).inSeconds.clamp(0, 9999);
-    return Localizations.localeOf(context).languageCode == 'en' ? '${seconds}s ago' : 'il y a ${seconds}s';
+    return 'il y a {seconds}s'.tr(context, placeholders: {'seconds': '$seconds'});
   }
 }
 
@@ -433,7 +442,7 @@ class _DegradedBanners extends StatelessWidget {
               color: const Color(0xFFFFE8E8),
               border: const Color(0xFFF5B5B5),
               textColor: const Color(0xFF9B1C1C),
-              message: state.error!,
+              message: state.error!.tr(context),
               actionLabel: state.permission == DriverGpsPermission.permanentlyDenied
                   ? 'Ouvrir les réglages'.tr(context)
                   : state.permission == DriverGpsPermission.serviceDisabled
@@ -537,7 +546,7 @@ class _OfflinePanel extends StatelessWidget {
           if (state.error != null) ...[
             const SizedBox(height: 14),
             Text(
-              state.error!,
+              state.error!.tr(context),
               style: urbanText(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.error),
             ),
           ],
@@ -630,7 +639,7 @@ class _ActiveTripCard extends StatelessWidget {
                 Text(
                   trip == null
                       ? 'Trajet actif — détails à venir'.tr(context)
-                      : '${trip!.passengerLabel} → ${trip!.destinationLabel}',
+                      : '${trip!.passengerLabel} → ${trip!.destinationLabel.tr(context)}',
                   style: urbanText(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,

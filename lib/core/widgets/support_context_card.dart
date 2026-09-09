@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/post/domain/entities/post_entities.dart';
 import 'package:motodi_go_mobile/features/post/presentation/widgets/post_ui.dart';
 
@@ -24,7 +25,7 @@ class SupportContextCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Contexte du signalement',
+            'Contexte du signalement'.tr(context),
             style: postText(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primary),
           ),
           const SizedBox(height: 8),
@@ -33,14 +34,19 @@ class SupportContextCard extends StatelessWidget {
           if (contextData.statusLabel != null) ...[
             const SizedBox(height: 4),
             Text(
-              contextData.statusLabel!,
+              contextData.statusLabel!.tr(context),
               style: postText(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textSecondary),
             ),
           ],
           if (contextData.tripId != null) ...[
             const SizedBox(height: 6),
             Text(
-              'Trajet · ${contextData.tripId!.substring(0, contextData.tripId!.length.clamp(0, 8))}…',
+              'Trajet · {id}…'.tr(
+                context,
+                placeholders: {
+                  'id': contextData.tripId!.substring(0, contextData.tripId!.length.clamp(0, 8)),
+                },
+              ),
               style: postText(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textTertiary),
             ),
           ],

@@ -101,7 +101,7 @@ class _IntercityDetailPageState extends State<IntercityDetailPage> {
               final announcement = state.announcement;
               if (announcement == null) {
                 return AppErrorView(
-                  message: state.detailErrorMessage ?? "Impossible de charger l'annonce.".tr(context),
+                  message: (state.detailErrorMessage ?? "Impossible de charger l'annonce.").tr(context),
                   onRetry: () => _cubit.loadDetail(widget.announcementId),
                 );
               }
@@ -232,12 +232,13 @@ class _DetailContentState extends State<_DetailContent> {
     final hasSeats = !ownedByMe && announcement.hasSeatsAvailable && announcement.status.isActive;
     final agency = announcement.publisherDisplayName?.trim().isNotEmpty == true
         ? announcement.publisherDisplayName!
-        : 'Transporteur';
+        : 'Transporteur'.tr(context);
     final ptRamassage = announcement.ptRamassage?.trim();
     final metaParts = <String>[
       '${formatDayMonth(announcement.departureDate, context: context)} ${announcement.departureDate.year}',
       announcement.formattedDepartureTime,
-      if (ptRamassage != null && ptRamassage.isNotEmpty) 'Pt. Ramassage $ptRamassage',
+      if (ptRamassage != null && ptRamassage.isNotEmpty)
+        '${'Pt. Ramassage'.tr(context)} $ptRamassage',
     ];
     final metaLine = metaParts.join(' · ');
     final ctaLabel = ownedByMe
@@ -804,7 +805,7 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
                           style: _detailText(fontSize: 20, fontWeight: FontWeight.w800),
                         ),
                         content: Text(
-                          state.subscribeErrorMessage!,
+                          state.subscribeErrorMessage!.tr(context),
                           style: _detailText(
                             fontSize: 15,
                             fontWeight: FontWeight.w500,
@@ -845,7 +846,7 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
                 } else {
                   ScaffoldMessenger.of(
                     context,
-                  ).showSnackBar(SnackBar(content: Text(state.subscribeErrorMessage!)));
+                  ).showSnackBar(SnackBar(content: Text(state.subscribeErrorMessage!.tr(context))));
                 }
               }
             },
@@ -1247,7 +1248,7 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
               final booking = state.booking;
               if (booking == null) {
                 return AppErrorView(
-                  message: state.bookingErrorMessage ?? 'Réservation introuvable.'.tr(context),
+                  message: (state.bookingErrorMessage ?? 'Réservation introuvable.').tr(context),
                   onRetry: () => _cubit.loadBooking(widget.bookingId),
                 );
               }
@@ -1623,7 +1624,7 @@ class _BookingTripSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routeLabel = announcement?.route ?? 'Trajet';
+    final routeLabel = announcement?.route ?? 'Trajet'.tr(context);
     final total = announcement == null ? null : announcement!.priceFcfa * booking.seatsRequested;
     final metaParts = <String>[
       if (announcement != null) formatDayMonth(announcement!.departureDate, context: context),

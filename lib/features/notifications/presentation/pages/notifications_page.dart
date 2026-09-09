@@ -130,8 +130,8 @@ class _FilterTabs extends StatelessWidget {
           Expanded(
             child: _FilterChip(
               label: unreadCount > 0
-              ? (Localizations.localeOf(context).languageCode == 'en' ? 'Unread · $unreadCount' : 'Non lues · $unreadCount')
-              : 'Non lues'.tr(context),
+                  ? 'Non lues · {count}'.tr(context, placeholders: {'count': '$unreadCount'})
+                  : 'Non lues'.tr(context),
               selected: unreadOnly,
               onTap: onUnread,
             ),
@@ -191,7 +191,7 @@ class _NotificationsBody extends StatelessWidget {
     }
     if (state.status == NotificationsStatus.failure && state.items.isEmpty) {
       return AppErrorView(
-        message: state.errorMessage ?? 'Chargement des notifications impossible.'.tr(context),
+        message: (state.errorMessage ?? 'Chargement des notifications impossible.').tr(context),
         onRetry: () => context.read<NotificationsCubit>().load(),
       );
     }
@@ -385,7 +385,7 @@ class _NotificationCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      _formatRelative(notification.createdAt),
+                      _formatRelative(notification.createdAt, context),
                       style: _notifText(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -446,18 +446,20 @@ _CardStyle _cardStyle(NotificationVisualKind kind, bool unread) {
   };
 }
 
-String _formatRelative(DateTime date) {
+String _formatRelative(DateTime date, BuildContext context) {
   final now = DateTime.now();
   final local = date.toLocal();
   final diff = now.difference(local);
-  if (diff.inMinutes < 1) return "À l'instant";
-  if (diff.inMinutes < 60) return 'Il y a ${diff.inMinutes} min';
+  if (diff.inMinutes < 1) return "À l'instant".tr(context);
+  if (diff.inMinutes < 60) {
+    return 'Il y a {n} min'.tr(context, placeholders: {'n': '${diff.inMinutes}'});
+  }
   final yesterday = DateTime(now.year, now.month, now.day).subtract(const Duration(days: 1));
   final day = DateTime(local.year, local.month, local.day);
   if (day == yesterday) {
     final hh = local.hour.toString().padLeft(2, '0');
     final mm = local.minute.toString().padLeft(2, '0');
-    return 'Hier · $hh:$mm';
+    return 'Hier · {time}'.tr(context, placeholders: {'time': '$hh:$mm'});
   }
   if (local.year == now.year) return formatDayMonth(local);
   return '${formatDayMonth(local)} ${local.year}';

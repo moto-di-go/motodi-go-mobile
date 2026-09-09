@@ -54,7 +54,7 @@ class _TripTrackView extends StatelessWidget {
           final trip = state.trip;
           if (trip == null) {
             return AppErrorView(
-              message: state.errorMessage ?? 'Trajet introuvable.'.tr(context),
+              message: (state.errorMessage ?? 'Trajet introuvable.').tr(context),
               onRetry: () => context.read<TripTrackCubit>().refresh(),
             );
           }
@@ -291,7 +291,7 @@ class _TripBottomSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  nextStep,
+                  nextStep.tr(context),
                   style: _trackText(fontSize: 15, fontWeight: FontWeight.w600, height: 1.35),
                 ),
               ],
@@ -312,7 +312,7 @@ class _TripBottomSheet extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        event.label,
+                        event.label.tr(context),
                         style: _trackText(fontSize: 14, fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -363,7 +363,7 @@ class _TripStatusTimeline extends StatelessWidget {
       children: [
         for (var i = 0; i < _steps.length; i++)
           _TimelineRow(
-            label: _steps[i].label,
+            label: _steps[i].label.tr(context),
             done: i <= activeIndex,
             isLast: i == _steps.length - 1,
             active: i == activeIndex,
@@ -456,7 +456,7 @@ class _TripStatusBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(999)),
       child: Text(
-        status.label,
+        status.label.tr(context),
         style: _trackText(fontSize: 12, fontWeight: FontWeight.w700, color: fg),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/core/widgets/guest_action_blocker.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:motodi_go_mobile/features/home/presentation/widgets/app_bottom_navigation.dart';
@@ -35,7 +36,9 @@ class MainShell extends StatelessWidget {
           ),
           bottomNavigationBar: AppBottomNavigation(
             selectedIndex: navigationShell.currentIndex,
-            tripsTabLabel: usesAnnouncementsTab(type) ? 'Annonces' : 'Trajets',
+            tripsTabLabel: usesAnnouncementsTab(type)
+                ? 'Annonces'.tr(context)
+                : 'Trajets'.tr(context),
             onSelected: (index) {
               // Wallet (2), Notifs (3), Profil (4) are blocked for guests
               if (state.isGuest && index >= 2) {

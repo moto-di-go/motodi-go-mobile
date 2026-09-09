@@ -663,7 +663,7 @@ class _BookingListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final destination = announcement?.destinationCity ?? 'Destination';
+    final destination = announcement?.destinationCity ?? 'Destination'.tr(context);
     final dateLabel = announcement != null
         ? '${formatDayMonth(announcement!.departureDate, context: context)} · ${announcement!.formattedDepartureTime}'
         : booking.requestedAt == null

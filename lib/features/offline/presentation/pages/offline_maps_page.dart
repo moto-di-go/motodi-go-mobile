@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/core/widgets/app_error_view.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/offline/presentation/cubit/offline_maps_cubit.dart';
@@ -61,14 +62,14 @@ class _OfflineMapsView extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Cartes hors-ligne',
+                      'Cartes hors-ligne'.tr(context),
                       style: offlineText(fontSize: 26, fontWeight: FontWeight.w800),
                     ),
                   ),
                   TextButton(
                     onPressed: () => context.push(RouteConstants.offlineMapsSelect),
                     child: Text(
-                      'Zones',
+                      'Zones'.tr(context),
                       style: offlineText(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.primary),
                     ),
                   ),
@@ -83,7 +84,7 @@ class _OfflineMapsView extends StatelessWidget {
                   }
                   if (state.status == OfflineMapsStatus.failure && state.areas.isEmpty) {
                     return AppErrorView(
-                      message: state.errorMessage ?? 'Impossible de charger les zones.',
+                      message: (state.errorMessage ?? 'Impossible de charger les zones.').tr(context),
                       onRetry: () => context.read<OfflineMapsCubit>().load(),
                     );
                   }
@@ -95,7 +96,7 @@ class _OfflineMapsView extends StatelessWidget {
                         const SizedBox(height: 16),
                       ],
                       Text(
-                        'Packs disponibles',
+                        'Packs disponibles'.tr(context),
                         style: offlineText(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textSecondary),
                       ),
                       const SizedBox(height: 10),

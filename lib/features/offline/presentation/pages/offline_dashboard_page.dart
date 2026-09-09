@@ -81,15 +81,16 @@ class _OfflineDashboardPageState extends State<OfflineDashboardPage> {
                         Text(label, style: offlineText(fontSize: 20, fontWeight: FontWeight.w800)),
                         const SizedBox(height: 6),
                         Text(
-                          formatLastSync(state.lastSyncAt),
+                          formatLastSync(state.lastSyncAt, context),
                           style: offlineText(fontSize: 13, color: AppColors.textSecondary),
                         ),
                         if (_pending > 0) ...[
                           const SizedBox(height: 8),
                           Text(
-                            Localizations.localeOf(context).languageCode == 'en'
-                            ? '$_pending operation(s) awaiting sync'
-                            : '$_pending opération(s) en attente de synchronisation',
+                            '{count} opération(s) en attente de synchronisation'.tr(
+                              context,
+                              placeholders: {'count': '$_pending'},
+                            ),
                             style: offlineText(fontSize: 13, color: const Color(0xFF8B6509)),
                           ),
                         ],
@@ -112,7 +113,7 @@ class _OfflineDashboardPageState extends State<OfflineDashboardPage> {
               _DashTile(
                 icon: Icons.queue_rounded,
                 title: 'File d’opérations'.tr(context),
-                subtitle: Localizations.localeOf(context).languageCode == 'en' ? '$_pending pending' : '$_pending en attente',
+                subtitle: '{count} en attente'.tr(context, placeholders: {'count': '$_pending'}),
                 onTap: () => context.push(RouteConstants.offlineQueue),
               ),
               _DashTile(
