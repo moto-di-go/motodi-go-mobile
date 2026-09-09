@@ -77,7 +77,17 @@ class _OfflineMapsView extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: BlocBuilder<OfflineMapsCubit, OfflineMapsState>(
+              child: BlocConsumer<OfflineMapsCubit, OfflineMapsState>(
+                listenWhen: (previous, next) =>
+                    previous.errorMessage != next.errorMessage ||
+                    previous.successMessage != next.successMessage,
+                listener: (context, state) {
+                  final message = state.errorMessage ?? state.successMessage;
+                  if (message == null || message.isEmpty) return;
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(SnackBar(content: Text(message.tr(context))));
+                },
                 builder: (context, state) {
                   if (state.status == OfflineMapsStatus.loading && state.areas.isEmpty) {
                     return const Center(child: CircularProgressIndicator(color: AppColors.primary));

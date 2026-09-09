@@ -8,7 +8,7 @@ import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
-import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_buttons.dart';
+import 'package:motodi_go_mobile/features/home/presentation/widgets/home_side_drawer.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/profile_type.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/cubit/profile_cubit.dart';
@@ -74,7 +74,7 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
                     state: state,
                     onMenu: () {
                       if (!guardGuestAction(context)) return;
-                      _showMenu(context);
+                      showHomeSideDrawer(context);
                     },
                     onBack: cubit.back,
                     onProfile: () {
@@ -208,80 +208,6 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
     };
   }
 
-  void _showMenu(BuildContext context) {
-    final session = context.read<SessionCubit>().state;
-    final hasDriver =
-        session.session?.profiles.any(
-          (profile) =>
-              profile.type == ProfileType.mototaxi ||
-              profile.type == ProfileType.transporter ||
-              profile.type == ProfileType.agency,
-        ) ??
-        false;
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) {
-        return UrbanBottomSheet(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.swap_horiz_rounded),
-                title: Text(
-                  'Changer de profil'.tr(context),
-                  style: urbanText(fontSize: 16, fontWeight: FontWeight.w800),
-                ),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  _showProfileSwitcher(context);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.person_outline_rounded),
-                title: Text(
-                  'Mon profil'.tr(context),
-                  style: urbanText(fontSize: 16, fontWeight: FontWeight.w800),
-                ),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  context.go(RouteConstants.profile);
-                },
-              ),
-              if (hasDriver)
-                ListTile(
-                  leading: const Icon(Icons.two_wheeler_rounded),
-                  title: Text(
-                    'Disponibilité conducteur'.tr(context),
-                    style: urbanText(fontSize: 16, fontWeight: FontWeight.w800),
-                  ),
-                  onTap: () {
-                    Navigator.pop(sheetContext);
-                    context.push(RouteConstants.driverAvailability);
-                  },
-                ),
-              ListTile(
-                leading: const Icon(Icons.logout_rounded, color: AppColors.error),
-                title: Text(
-                  'Se déconnecter'.tr(context),
-                  style: urbanText(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.error,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  _showLogoutSheet(context);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   void _showProfileSwitcher(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet<void>(
@@ -337,41 +263,6 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
                 ),
               );
             },
-          ),
-        );
-      },
-    );
-  }
-
-  void _showLogoutSheet(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) {
-        return UrbanBottomSheet(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Se déconnecter ?'.tr(context),
-                style: urbanText(fontSize: 24, fontWeight: FontWeight.w800),
-              ),
-              const SizedBox(height: 18),
-              PrimaryAuthButton(
-                label: 'Se déconnecter'.tr(context),
-                backgroundColor: AppColors.error,
-                onPressed: () async {
-                  Navigator.of(sheetContext).pop();
-                  await context.read<SessionCubit>().logout();
-                  if (context.mounted) context.go(RouteConstants.login);
-                },
-              ),
-              const SizedBox(height: 10),
-              SecondaryAuthButton(
-                label: 'Annuler'.tr(context),
-                onPressed: () => Navigator.of(sheetContext).pop(),
-              ),
-            ],
           ),
         );
       },

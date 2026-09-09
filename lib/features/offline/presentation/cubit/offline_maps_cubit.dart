@@ -37,7 +37,14 @@ class OfflineMapsCubit extends Cubit<OfflineMapsState> {
   Future<void> download(String id) async {
     final area = state.areas.where((a) => a.id == id).firstOrNull;
     if (area == null) return;
-    emit(state.copyWith(downloadingId: id, downloadProgress: 0));
+    emit(
+      state.copyWith(
+        downloadingId: id,
+        downloadProgress: 0.0,
+        errorMessage: null,
+        successMessage: null,
+      ),
+    );
     final result = await _repository.downloadMapArea(
       area,
       onProgress: (p) {
@@ -46,7 +53,13 @@ class OfflineMapsCubit extends Cubit<OfflineMapsState> {
     );
     await result.fold(
       (f) async {
-        emit(state.copyWith(downloadingId: null, errorMessage: f.message));
+        emit(
+          state.copyWith(
+            downloadingId: null,
+            downloadProgress: null,
+            errorMessage: f.message,
+          ),
+        );
       },
       (saved) async {
         final areas = state.areas.map((a) => a.id == saved.id ? saved : a).toList();
@@ -57,6 +70,7 @@ class OfflineMapsCubit extends Cubit<OfflineMapsState> {
             downloadingId: null,
             downloadProgress: null,
             usage: usage,
+            successMessage: 'Pack téléchargé.',
           ),
         );
       },

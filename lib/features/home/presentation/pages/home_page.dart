@@ -3,16 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
+import 'package:motodi_go_mobile/core/utils/extensions.dart';
+import 'package:motodi_go_mobile/core/widgets/guest_action_blocker.dart';
 import 'package:motodi_go_mobile/di/injection.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_buttons.dart';
+import 'package:motodi_go_mobile/features/home/presentation/widgets/home_figma_icons.dart';
+import 'package:motodi_go_mobile/features/home/presentation/widgets/home_side_drawer.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/profile_type.dart';
 import 'package:motodi_go_mobile/features/profiles/domain/entities/validation_status.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/cubit/profile_cubit.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_widgets.dart';
-import 'package:motodi_go_mobile/features/home/presentation/widgets/home_figma_icons.dart';
 import 'package:motodi_go_mobile/features/urban/presentation/pages/urban_ride_page.dart';
-import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/l10n/app_localizations.dart';
 
 class HomePage extends StatelessWidget {
@@ -39,7 +41,10 @@ class HomePage extends StatelessWidget {
                   children: [
                     _SquareIconButton(
                       icon: const Icon(Icons.menu_rounded, color: AppColors.textPrimary, size: 30),
-                      onTap: () => _showLogoutSheet(context),
+                      onTap: () {
+                        if (!guardGuestAction(context)) return;
+                        showHomeSideDrawer(context);
+                      },
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -227,61 +232,6 @@ class HomePage extends StatelessWidget {
                 ),
               );
             },
-          ),
-        );
-      },
-    );
-  }
-
-  void _showLogoutSheet(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) {
-        return _BottomSheetFrame(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircleAvatar(
-                radius: 44,
-                backgroundColor: Color(0xFFFBE3E5),
-                child: Icon(Icons.logout_rounded, size: 42, color: AppColors.error),
-              ),
-              const SizedBox(height: 26),
-              Text(
-                'Se déconnecter ?'.tr(context),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Vous devrez saisir à nouveau votre numéro et votre mot de passe pour vous reconnecter.'.tr(
-                  context,
-                ),
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(color: const Color(0xFF5B6760), height: 1.35),
-              ),
-              const SizedBox(height: 34),
-              PrimaryAuthButton(
-                label: 'Se déconnecter'.tr(context),
-                backgroundColor: AppColors.error,
-                onPressed: () async {
-                  Navigator.of(sheetContext).pop();
-                  await context.read<SessionCubit>().logout();
-                  if (context.mounted) context.go(RouteConstants.login);
-                },
-              ),
-              const SizedBox(height: 14),
-              SecondaryAuthButton(
-                label: 'Annuler'.tr(context),
-                onPressed: () => Navigator.of(sheetContext).pop(),
-              ),
-            ],
           ),
         );
       },

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
@@ -69,14 +70,23 @@ class OfflineRepositoryImpl implements OfflineRepository {
     void Function(double progress)? onProgress,
   }) async {
     try {
-      final request = http.Request('GET', Uri.parse(area.downloadUrl));
+      final downloadUrl = _resolveDownloadUrl(area.downloadUrl);
+      if (downloadUrl.isEmpty) {
+        return left(const ServerFailure('URL de téléchargement manquante.'));
+      }
+      final request = http.Request('GET', Uri.parse(downloadUrl));
       final response = await _http.send(request);
       if (response.statusCode < 200 || response.statusCode >= 300) {
-        return left(ServerFailure('Téléchargement impossible (${response.statusCode}).'));
+        return left(
+          ServerFailure(
+            'Téléchargement impossible (${response.statusCode}).',
+            code: 'MAP_DOWNLOAD_FAILED',
+          ),
+        );
       }
 
       final dir = await _local.mapsDirectory();
-      final ext = p.extension(Uri.parse(area.downloadUrl).path);
+      final ext = p.extension(Uri.parse(downloadUrl).path);
       final file = File(p.join(dir.path, '${area.id}${ext.isEmpty ? '.mbtiles' : ext}'));
       final sink = file.openWrite();
       final total = response.contentLength ?? area.sizeBytes;
@@ -98,8 +108,32 @@ class OfflineRepositoryImpl implements OfflineRepository {
       await _local.upsertMapArea(saved);
       return right(saved);
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+        return left(
+          const ServerFailure(
+            'Téléchargement impossible. Vérifiez votre connexion.',
+            code: 'MAP_DOWNLOAD_FAILED',
+          ),
+        );
     }
+  }
+
+  /// Remappe les hôtes Docker / localhost vers l'hôte de l'API (émulateur = 10.0.2.2).
+  String _resolveDownloadUrl(String rawUrl) {
+    final parsed = Uri.tryParse(rawUrl);
+    if (parsed == null || !parsed.hasScheme) return rawUrl;
+    final apiBase = dotenv.env['API_BASE_URL'] ?? 'http://10.0.2.2:8080/api/v1';
+    final apiHost = Uri.tryParse(apiBase)?.host;
+    if (apiHost == null || apiHost.isEmpty) return rawUrl;
+
+    final dockerHosts = {'object-storage', 'localhost', '127.0.0.1', 'minio'};
+    if (!dockerHosts.contains(parsed.host)) return rawUrl;
+
+    return parsed
+        .replace(
+          host: apiHost,
+          port: parsed.hasPort ? parsed.port : 9000,
+        )
+        .toString();
   }
 
   @override
