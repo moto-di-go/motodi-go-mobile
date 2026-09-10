@@ -1,6 +1,7 @@
 import 'package:latlong2/latlong.dart';
 import 'package:motodi_go_mobile/features/urban/data/urban_geo.dart';
 import 'package:motodi_go_mobile/features/urban/data/urban_models.dart';
+import 'package:motodi_go_mobile/features/urban/presentation/wkt_parser.dart';
 
 final _traceRegex = RegExp(
   r'base\s+([\d.]+)\s*\+\s*([\d.]+)\s*km\s*\*\s*([\d.]+).*night\s*=\s*([\d.]+).*weather\s*=\s*([\d.]+)',
@@ -87,10 +88,22 @@ const _routeKindOrder = [
   RouteOptionKind.cheapest,
 ];
 
+/// Same validation as intercity detail map: reject DIRECT / empty / too-short geometries.
+bool isRoadItinerary(RoutePreview? preview) {
+  if (preview == null || preview.polyline.trim().isEmpty) {
+    return false;
+  }
+  if (preview.engine.toUpperCase() == 'DIRECT') {
+    return false;
+  }
+  return parseWktLine(preview.polyline).length >= 3;
+}
+
 List<RouteOption> resolveRouteOptions({
   required FareEstimate? estimate,
   required LatLng origin,
   required LatLng destination,
+  RoutePreview? preview,
 }) {
   final api = estimate?.options ?? const <RouteOption>[];
   if (api.isNotEmpty) {
@@ -99,22 +112,65 @@ List<RouteOption> resolveRouteOptions({
         (left, right) =>
             _routeKindOrder.indexOf(left.kind).compareTo(_routeKindOrder.indexOf(right.kind)),
       );
-    return sorted;
+    return applyPreviewGeometry(sorted, preview: preview);
   }
-  return buildMockRouteOptions(origin, destination, estimate);
+  return buildMockRouteOptions(origin, destination, estimate, preview: preview);
 }
 
-List<RouteOption> buildMockRouteOptions(LatLng origin, LatLng destination, FareEstimate? estimate) {
-  final baseDistance = estimate?.distanceKm ?? haversineKm(origin, destination);
-  final baseDuration = estimate?.durationMinutes ?? estimateUrbanMinutes(baseDistance);
+/// Prefer `/urban/route/preview` road geometry (Valhalla) over pricing / bulged polylines.
+List<RouteOption> applyPreviewGeometry(
+  List<RouteOption> options, {
+  RoutePreview? preview,
+}) {
+  if (!isRoadItinerary(preview)) return options;
+  final road = preview!;
+  final alts = road.alternatives
+      .where((alt) => parseWktLine(alt.polylineWkt).length >= 3)
+      .toList();
+  return options.map((option) {
+    final polyline = switch (option.kind) {
+      RouteOptionKind.recommended => road.polyline,
+      RouteOptionKind.fastest => alts.isNotEmpty ? alts.first.polylineWkt : road.polyline,
+      RouteOptionKind.cheapest => alts.length > 1 ? alts[1].polylineWkt : road.polyline,
+    };
+    return option.copyWith(polyline: polyline);
+  }).toList();
+}
+
+List<RouteOption> buildMockRouteOptions(
+  LatLng origin,
+  LatLng destination,
+  FareEstimate? estimate, {
+  RoutePreview? preview,
+}) {
+  final baseDistance = (isRoadItinerary(preview) && preview!.distanceKm > 0)
+      ? preview.distanceKm
+      : (estimate?.distanceKm ?? haversineKm(origin, destination));
+  final baseDuration = (isRoadItinerary(preview) && preview!.durationMinutes > 0)
+      ? preview.durationMinutes
+      : (estimate?.durationMinutes ?? estimateUrbanMinutes(baseDistance));
   final baseAmount = estimate?.amountFcfa ?? (300 + baseDistance * 200).roundToDouble();
-  final recommendedLine = (estimate?.polyline.isNotEmpty ?? false)
-      ? estimate!.polyline
-      : toWktLine(bulgedPath(origin, destination, 0.0018));
-  final fastestLine = estimate?.alternatives.isNotEmpty == true
-      ? estimate!.alternatives.first.polylineWkt
-      : toWktLine(bulgedPath(origin, destination, 0.0042));
-  final cheapestLine = toWktLine(bulgedPath(origin, destination, -0.0034));
+
+  final roadOk = isRoadItinerary(preview);
+  final roadAlts = roadOk
+      ? preview!.alternatives
+            .where((alt) => parseWktLine(alt.polylineWkt).length >= 3)
+            .toList()
+      : const <RouteAlternative>[];
+
+  final recommendedLine = roadOk
+      ? preview!.polyline
+      : ((estimate?.polyline.isNotEmpty ?? false)
+            ? estimate!.polyline
+            : toWktLine(bulgedPath(origin, destination, 0.0018)));
+  final fastestLine = roadOk
+      ? (roadAlts.isNotEmpty ? roadAlts.first.polylineWkt : preview!.polyline)
+      : (estimate?.alternatives.isNotEmpty == true
+            ? estimate!.alternatives.first.polylineWkt
+            : toWktLine(bulgedPath(origin, destination, 0.0042)));
+  final cheapestLine = roadOk
+      ? (roadAlts.length > 1 ? roadAlts[1].polylineWkt : preview!.polyline)
+      : toWktLine(bulgedPath(origin, destination, -0.0034));
   final fastestDegraded =
       estimate?.alternatives.any((alt) => alt.reason.toUpperCase().contains('DEGRAD')) ?? false;
 
@@ -126,7 +182,7 @@ List<RouteOption> buildMockRouteOptions(LatLng origin, LatLng destination, FareE
       durationMinutes: baseDuration,
       amountFcfa: baseAmount,
       polyline: recommendedLine,
-      isDemo: true,
+      isDemo: !roadOk,
     ),
     RouteOption(
       kind: RouteOptionKind.fastest,
@@ -136,7 +192,7 @@ List<RouteOption> buildMockRouteOptions(LatLng origin, LatLng destination, FareE
       amountFcfa: (baseAmount * 1.08).roundToDouble(),
       polyline: fastestLine,
       degraded: fastestDegraded || (estimate?.status.toUpperCase() == 'DEGRADED'),
-      isDemo: true,
+      isDemo: !roadOk,
     ),
     RouteOption(
       kind: RouteOptionKind.cheapest,
@@ -145,7 +201,7 @@ List<RouteOption> buildMockRouteOptions(LatLng origin, LatLng destination, FareE
       durationMinutes: (baseDuration * 1.22).round().clamp(1, 180),
       amountFcfa: (baseAmount * 0.86).roundToDouble(),
       polyline: cheapestLine,
-      isDemo: true,
+      isDemo: !roadOk,
     ),
   ];
 }

@@ -112,7 +112,7 @@ class _UrbanVectorMapState extends State<UrbanVectorMap> {
         ml.LineOptions(
           geometry: selected.map(_toMl).toList(),
           lineColor: _hex(AppColors.primary),
-          lineWidth: 5.5,
+          lineWidth: 4.5,
           lineOpacity: 0.95,
         ),
       );

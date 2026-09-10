@@ -6,9 +6,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_announcement.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/entities/intercity_booking.dart';
 import 'package:motodi_go_mobile/features/intercity/domain/repositories/intercity_repository.dart';
-import 'package:motodi_go_mobile/features/urban/data/urban_models.dart';
+import 'package:motodi_go_mobile/features/urban/data/urban_estimate_parser.dart';
 import 'package:motodi_go_mobile/features/urban/data/urban_remote_datasource.dart';
-import 'package:motodi_go_mobile/features/urban/presentation/wkt_parser.dart';
 
 part 'intercity_booking_state.dart';
 
@@ -72,7 +71,7 @@ class IntercityBookingCubit extends Cubit<IntercityBookingState> {
         costing: 'auto',
       );
       if (isClosed) return;
-      if (!_isRoadItinerary(preview)) {
+      if (!isRoadItinerary(preview)) {
         emit(state.copyWith(itineraryStatus: IntercityItineraryStatus.failure));
         return;
       }
@@ -91,16 +90,6 @@ class IntercityBookingCubit extends Cubit<IntercityBookingState> {
         emit(state.copyWith(itineraryStatus: IntercityItineraryStatus.failure));
       }
     }
-  }
-
-  static bool _isRoadItinerary(RoutePreview? preview) {
-    if (preview == null || preview.polyline.trim().isEmpty) {
-      return false;
-    }
-    if (preview.engine.toUpperCase() == 'DIRECT') {
-      return false;
-    }
-    return parseWktLine(preview.polyline).length >= 3;
   }
 
   Future<void> subscribe({

@@ -90,6 +90,65 @@ void main() {
     expect(options.first.amountFcfa, 850);
   });
 
+  test('uses /urban/route/preview road geometry when available', () {
+    final estimate = FareEstimate.fromJson({
+      'id': 'est-preview',
+      'amountFcfa': 900,
+      'distanceKm': 3.5,
+      'durationMinutes': 11,
+      'polyline': 'LINESTRING(11.516 3.868, 11.511 3.890)',
+      'options': [
+        {
+          'kind': 'RECOMMENDED',
+          'distanceKm': 3.5,
+          'durationMinutes': 11,
+          'amountFcfa': 900,
+          'polyline': 'LINESTRING(11.516 3.868, 11.511 3.890)',
+        },
+        {
+          'kind': 'FASTEST',
+          'distanceKm': 3.2,
+          'durationMinutes': 9,
+          'amountFcfa': 980,
+          'polyline': 'LINESTRING(11.516 3.868, 11.520 3.875, 11.511 3.890)',
+        },
+        {
+          'kind': 'CHEAPEST',
+          'distanceKm': 4.1,
+          'durationMinutes': 14,
+          'amountFcfa': 780,
+          'polyline': 'LINESTRING(11.516 3.868, 11.500 3.870, 11.511 3.890)',
+        },
+      ],
+    });
+    const preview = RoutePreview(
+      polyline: 'LINESTRING(11.516 3.868, 11.518 3.875, 11.515 3.882, 11.511 3.890)',
+      distanceKm: 3.7,
+      durationMinutes: 12,
+      engine: 'VALHALLA',
+      alternatives: [
+        RouteAlternative(
+          reason: 'ALT',
+          polylineWkt: 'LINESTRING(11.516 3.868, 11.522 3.878, 11.511 3.890)',
+          extraDistanceKm: 0.2,
+          extraDurationMinutes: -1,
+        ),
+      ],
+    );
+
+    final options = resolveRouteOptions(
+      estimate: estimate,
+      origin: origin,
+      destination: destination,
+      preview: preview,
+    );
+    expect(isRoadItinerary(preview), isTrue);
+    expect(options.first.polyline, preview.polyline);
+    expect(options[1].polyline, preview.alternatives.first.polylineWkt);
+    expect(options[2].polyline, preview.polyline);
+    expect(options.every((o) => o.isDemo), isFalse);
+  });
+
   test('prefers API options even when fewer than three kinds are returned', () {
     final estimate = FareEstimate.fromJson({
       'id': 'est-partial',

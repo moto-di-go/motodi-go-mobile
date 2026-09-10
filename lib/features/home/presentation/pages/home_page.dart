@@ -309,7 +309,7 @@ class _PendingValidationCard extends StatelessWidget {
             label: 'Voir mon dossier'.tr(context),
             leadingIcon: Icons.description_outlined,
             backgroundColor: AppColors.textPrimary,
-            onPressed: () => context.push(RouteConstants.kycSubmitted),
+            onPressed: () => context.push(RouteConstants.kycDocuments),
           ),
         ],
       ),

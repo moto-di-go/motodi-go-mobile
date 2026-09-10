@@ -1020,12 +1020,12 @@ class KycUploadSuccessPage extends StatelessWidget {
                 const SizedBox(height: 36),
                 PrimaryAuthButton(
                   label: 'Voir mes documents'.tr(context),
-                  onPressed: () => context.canPop() ? context.pop() : context.go(RouteConstants.kycDocuments),
+                  onPressed: () => context.go(RouteConstants.kycDocuments),
                 ),
                 const SizedBox(height: 14),
                 SecondaryAuthButton(
                   label: 'Ajouter un autre document'.tr(context),
-                  onPressed: () => context.canPop() ? context.pop() : context.go(RouteConstants.kycDocuments),
+                  onPressed: () => context.go(RouteConstants.kycDocuments),
                 ),
               ],
             ),
@@ -1145,7 +1145,7 @@ class KycSubmittedPage extends StatelessWidget {
         children: [
           _KycBottomButton(
             label: 'Voir mes documents'.tr(context),
-            onPressed: () => context.canPop() ? context.pop() : context.go(RouteConstants.kycDocuments),
+            onPressed: () => context.push(RouteConstants.kycDocuments),
           ),
           const SizedBox(height: 14),
           _KycBottomButton(
@@ -1884,6 +1884,25 @@ class _DocumentListTile extends StatelessWidget {
                 'Détails'.tr(context),
                 style: TextStyle(
                   color: Color(0xFFC62828),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            )
+          else if (status == KycDocumentStatus.pendingReview ||
+              status == KycDocumentStatus.uploaded ||
+              status == KycDocumentStatus.encrypted)
+            TextButton(
+              onPressed: onAdd,
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 0),
+                minimumSize: const Size(48, 32),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                'Modifier'.tr(context),
+                style: TextStyle(
+                  color: AppColors.primary,
                   fontSize: 13,
                   fontWeight: FontWeight.w900,
                 ),

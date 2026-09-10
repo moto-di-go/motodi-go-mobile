@@ -334,20 +334,34 @@ class RoutePreview {
   final double distanceKm;
   final int durationMinutes;
   final String engine;
+  final List<RouteAlternative> alternatives;
+  final List<RouteOption> options;
 
   const RoutePreview({
     required this.polyline,
     this.distanceKm = 0,
     this.durationMinutes = 0,
     this.engine = '',
+    this.alternatives = const [],
+    this.options = const [],
   });
 
   factory RoutePreview.fromJson(Map<String, dynamic> json) {
+    final rawAlts = json['alternatives'] as List<dynamic>? ?? const [];
+    final rawOptions = json['options'] as List<dynamic>? ?? const [];
     return RoutePreview(
       polyline: json['polyline'] as String? ?? json['polylineWkt'] as String? ?? '',
       distanceKm: (json['distanceKm'] as num?)?.toDouble() ?? 0,
       durationMinutes: (json['durationMinutes'] as num?)?.toInt() ?? 0,
       engine: json['engine'] as String? ?? '',
+      alternatives: rawAlts
+          .whereType<Map>()
+          .map((item) => RouteAlternative.fromJson(Map<String, dynamic>.from(item)))
+          .toList(),
+      options: rawOptions
+          .whereType<Map>()
+          .map((item) => RouteOption.fromJson(Map<String, dynamic>.from(item)))
+          .toList(),
     );
   }
 }

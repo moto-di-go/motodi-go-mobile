@@ -322,6 +322,15 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
 
   Future<void> _estimateRoute(LatLng origin, LatLng destination) async {
     FareEstimate? estimate;
+    Object? estimateError;
+    // Same principle as intercity detail map: road geometry from /urban/route/preview.
+    final previewFuture = _remote.previewRoute(
+      originLat: origin.latitude,
+      originLon: origin.longitude,
+      destinationLat: destination.latitude,
+      destinationLon: destination.longitude,
+      costing: 'motorcycle',
+    );
     try {
       estimate = await _remote.estimate(
         originLat: origin.latitude,
@@ -330,15 +339,20 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
         destinationLon: destination.longitude,
       );
     } catch (error) {
-      if (!isClosed) emit(state.copyWith(apiError: error.toString()));
+      estimateError = error;
     }
+    final preview = await previewFuture;
     if (isClosed) return;
+    if (estimateError != null && !isRoadItinerary(preview)) {
+      emit(state.copyWith(apiError: estimateError.toString()));
+    }
     final options = resolveRouteOptions(
       estimate: estimate,
       origin: origin,
       destination: destination,
+      preview: preview,
     );
-    final demo = estimate == null || estimate.options.isEmpty;
+    final demo = !isRoadItinerary(preview) && (estimate == null || estimate.options.isEmpty);
     emit(
       state.copyWith(
         estimate: estimate,
@@ -346,6 +360,9 @@ class UrbanRideCubit extends Cubit<UrbanRideState> {
         selectedKind: RouteOptionKind.recommended,
         routeOptionsDemo: demo,
         step: UrbanRideStep.tripSummary,
+        apiError: estimateError != null && estimate == null && !isRoadItinerary(preview)
+            ? estimateError.toString()
+            : null,
       ),
     );
   }
