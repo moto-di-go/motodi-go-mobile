@@ -916,6 +916,10 @@ const Map<String, String> _frToEn = {
   'KYC · {status}': 'KYC · {status}',
   'Votre profil {profile} doit être validé (KYC · {status}) avant d’activer la disponibilité et le partage GPS.':
       'Your {profile} profile must be validated (KYC · {status}) before enabling availability and GPS sharing.',
+  'Quitter l\'application ?': 'Exit the app?',
+  'Voulez-vous vraiment quitter Moto\'di Go ?': 'Do you really want to leave Moto\'di Go?',
+  'Quitter': 'Exit',
+  'OK': 'OK',
 };
 
 String translateAppText(

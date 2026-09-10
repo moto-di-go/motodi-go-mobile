@@ -15,6 +15,7 @@ import 'package:motodi_go_mobile/features/profiles/presentation/cubit/profile_cu
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_hub_figma_icons.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/profile_widgets.dart';
 import 'package:motodi_go_mobile/l10n/app_localizations.dart';
+import 'package:motodi_go_mobile/routes/app_router.dart';
 
 TextStyle _drawerText({
   double fontSize = 14,
@@ -239,10 +240,7 @@ class HomeSideDrawer extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton.icon(
-                          onPressed: () {
-                            onClose();
-                            _showLogoutConfirm(context);
-                          },
+                          onPressed: () => _showLogoutConfirm(context),
                           icon: const Icon(Icons.logout_rounded, color: Color(0xFFC62828), size: 22),
                           label: Text(
                             'Se déconnecter'.tr(context),
@@ -388,8 +386,17 @@ void _showProfileSwitcher(BuildContext context) {
                         compact: true,
                         onTap: () {
                           if (profile.validationStatus == ValidationStatus.suspended) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Ce profil est suspendu.'.tr(context))),
+                            showDialog<void>(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                content: Text('Ce profil est suspendu.'.tr(context)),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.of(ctx).pop(),
+                                    child: Text('OK'.tr(context)),
+                                  ),
+                                ],
+                              ),
                             );
                             return;
                           }
@@ -411,8 +418,12 @@ void _showProfileSwitcher(BuildContext context) {
 }
 
 void _showLogoutConfirm(BuildContext context) {
+  // Capture before any route pop — closing the drawer first used to unmount
+  // this context, so logout never ran and navigation was skipped.
+  final sessionCubit = context.read<SessionCubit>();
   showModalBottomSheet<void>(
     context: context,
+    useRootNavigator: true,
     backgroundColor: Colors.transparent,
     builder: (sheetContext) {
       return Container(
@@ -426,22 +437,25 @@ void _showLogoutConfirm(BuildContext context) {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Se déconnecter ?'.tr(context),
+              'Se déconnecter ?'.tr(sheetContext),
               style: _drawerText(fontSize: 24, fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 18),
             PrimaryAuthButton(
-              label: 'Se déconnecter'.tr(context),
+              label: 'Se déconnecter'.tr(sheetContext),
               backgroundColor: AppColors.error,
               onPressed: () async {
                 Navigator.of(sheetContext).pop();
-                await context.read<SessionCubit>().logout();
-                if (context.mounted) context.go(RouteConstants.login);
+                await sessionCubit.logout();
+                final navContext = rootNavigatorKey.currentContext;
+                if (navContext != null && navContext.mounted) {
+                  navContext.go(RouteConstants.login);
+                }
               },
             ),
             const SizedBox(height: 10),
             SecondaryAuthButton(
-              label: 'Annuler'.tr(context),
+              label: 'Annuler'.tr(sheetContext),
               onPressed: () => Navigator.of(sheetContext).pop(),
             ),
           ],

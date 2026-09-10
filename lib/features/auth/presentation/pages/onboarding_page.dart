@@ -5,6 +5,7 @@ import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/l10n/app_locale_controller.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/core/utils/extensions.dart';
+import 'package:motodi_go_mobile/core/widgets/app_exit_scope.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_buttons.dart';
 
@@ -17,7 +18,8 @@ class OnboardingPage extends StatelessWidget {
     final langCode = localeController.locale?.languageCode ?? Localizations.localeOf(context).languageCode;
     final isFr = langCode != 'en';
 
-    return Scaffold(
+    return AppExitScope(
+      child: Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
@@ -134,6 +136,7 @@ class OnboardingPage extends StatelessWidget {
           ),
         ),
       ),
+    ),
     );
   }
 }

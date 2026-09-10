@@ -111,7 +111,7 @@ class _LoginViewState extends State<_LoginView> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () => context.go(RouteConstants.forgotPassword),
+                  onPressed: () => context.push(RouteConstants.forgotPassword),
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.primary,
                     padding: EdgeInsets.zero,

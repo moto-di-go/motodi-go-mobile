@@ -275,7 +275,7 @@ class _NotificationsBody extends StatelessWidget {
       if (notification.bookingId != null && notification.bookingId!.isNotEmpty) {
         context.push(RouteConstants.walletPayPath(notification.bookingId!));
       } else {
-        context.go(RouteConstants.wallet);
+        context.push(RouteConstants.wallet);
       }
       return;
     }
@@ -297,7 +297,7 @@ class _NotificationsBody extends StatelessWidget {
         notification.type == AppNotificationType.cancellation ||
         notification.type == AppNotificationType.departureReminder ||
         notification.type == AppNotificationType.statusChange) {
-      context.go(RouteConstants.intercity);
+      context.push(RouteConstants.intercity);
     }
   }
 }

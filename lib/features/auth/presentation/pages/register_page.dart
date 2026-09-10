@@ -49,7 +49,7 @@ class _RegisterViewState extends State<_RegisterView> {
     return BlocConsumer<AuthFormCubit, AuthFormState>(
       listener: (context, state) {
         if (state.isSuccess && state.registerResult != null) {
-          context.go(
+          context.push(
             RouteConstants.otp,
             extra: RegistrationOtpArgs(
               phoneNumber: state.registerResult!.phoneNumber,

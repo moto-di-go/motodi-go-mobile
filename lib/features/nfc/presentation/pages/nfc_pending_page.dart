@@ -45,12 +45,30 @@ class _NfcPendingView extends StatelessWidget {
               );
               if (!context.mounted) return;
             } else if (state.status == NfcSyncStatusView.success) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Synchronisation terminée'.tr(context))),
+              showDialog<void>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  content: Text('Synchronisation terminée'.tr(context)),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      child: Text('OK'.tr(context)),
+                    ),
+                  ],
+                ),
               );
             } else if (state.status == NfcSyncStatusView.failure && state.errorMessage != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.errorMessage!)),
+              showDialog<void>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  content: Text(state.errorMessage!),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      child: Text('OK'.tr(context)),
+                    ),
+                  ],
+                ),
               );
             }
             if (!context.mounted) return;

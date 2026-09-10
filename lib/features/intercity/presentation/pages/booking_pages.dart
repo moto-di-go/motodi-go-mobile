@@ -848,9 +848,18 @@ class _IntercitySubscribePageState extends State<IntercitySubscribePage> {
                     },
                   );
                 } else {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(state.subscribeErrorMessage!.tr(context))));
+                  showDialog<void>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      content: Text(state.subscribeErrorMessage!.tr(context)),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(ctx).pop(),
+                          child: Text('OK'.tr(context)),
+                        ),
+                      ],
+                    ),
+                  );
                 }
               }
             },
@@ -1224,14 +1233,21 @@ class _IntercityBookingStatusPageState extends State<IntercityBookingStatusPage>
     setState(() => _remaining = remaining.isNegative ? Duration.zero : remaining);
     if (!_expirySnackShown && remaining.inMinutes <= 5 && remaining.inSeconds > 0) {
       _expirySnackShown = true;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            remaining.inMinutes <= 1
-                ? 'Votre place expire dans moins d’une minute.'.tr(context)
-                : Localizations.localeOf(context).languageCode == 'en' ? 'Your seat expires in ${remaining.inMinutes} min.' : 'Votre place expire dans ${remaining.inMinutes} min.',
-          ),
-          backgroundColor: const Color(0xFFB45309),
+      final expiryMessage = remaining.inMinutes <= 1
+          ? 'Votre place expire dans moins d’une minute.'.tr(context)
+          : Localizations.localeOf(context).languageCode == 'en'
+              ? 'Your seat expires in ${remaining.inMinutes} min.'
+              : 'Votre place expire dans ${remaining.inMinutes} min.';
+      showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          content: Text(expiryMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text('OK'.tr(context)),
+            ),
+          ],
         ),
       );
     }

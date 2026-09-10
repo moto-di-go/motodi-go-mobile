@@ -254,10 +254,17 @@ class _ProfileHubView extends StatelessWidget {
                     height: 56,
                     child: OutlinedButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(
-                          SnackBar(content: Text('Bientôt disponible'.tr(context))),
+                        showDialog<void>(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            content: Text('Bientôt disponible'.tr(context)),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(ctx).pop(),
+                                child: Text('OK'.tr(context)),
+                              ),
+                            ],
+                          ),
                         );
                       },
                       style: OutlinedButton.styleFrom(

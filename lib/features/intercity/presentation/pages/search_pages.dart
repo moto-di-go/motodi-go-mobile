@@ -1243,11 +1243,18 @@ class IntercityEmptyResultsPage extends StatelessWidget {
                             InkWell(
                               borderRadius: BorderRadius.circular(12),
                               onTap: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
+                                showDialog<void>(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
                                     content: Text(
                                       'Les alertes trajets arriveront bientôt. Fonctionnalité en préparation.'.tr(context),
                                     ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.of(ctx).pop(),
+                                        child: Text('OK'.tr(context)),
+                                      ),
+                                    ],
                                   ),
                                 );
                               },

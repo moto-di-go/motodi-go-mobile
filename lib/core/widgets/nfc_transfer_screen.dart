@@ -145,8 +145,17 @@ class NfcTransferScreen extends StatelessWidget {
                 onPressed: () async {
                   await Clipboard.setData(ClipboardData(text: signedToken));
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Jeton copié'.tr(context))),
+                    showDialog<void>(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        content: Text('Jeton copié'.tr(context)),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(ctx).pop(),
+                            child: Text('OK'.tr(context)),
+                          ),
+                        ],
+                      ),
                     );
                   }
                 },

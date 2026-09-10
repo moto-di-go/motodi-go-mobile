@@ -199,7 +199,7 @@ class _MissingOtpArgs extends StatelessWidget {
       showBack: true,
       bottom: PrimaryAuthButton(
         label: 'Créer un compte'.tr(context),
-        onPressed: () => context.go(RouteConstants.register),
+        onPressed: () => context.canPop() ? context.pop() : context.go(RouteConstants.register),
       ),
       child: Text('Relancez la création de compte pour recevoir un nouveau code.'.tr(context)),
     );

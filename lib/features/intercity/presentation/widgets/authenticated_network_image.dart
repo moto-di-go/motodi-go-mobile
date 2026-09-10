@@ -2,8 +2,8 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:motodi_go_mobile/core/config/app_config.dart';
 import 'package:motodi_go_mobile/core/storage/auth_storage_keys.dart';
 
 // Role : Affiche une image protegee (photo vehicule) en ajoutant le Bearer token
@@ -57,7 +57,7 @@ class _AuthenticatedNetworkImageState extends State<AuthenticatedNetworkImage> {
     final cached = _cache[widget.path];
     if (cached != null) return cached;
 
-    final baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://10.0.2.2:8080/api/v1';
+    final baseUrl = AppConfig.apiBaseUrl;
     final normalizedBase = baseUrl.replaceFirst(RegExp(r'/$'), '');
     var relative = widget.path;
     if (relative.startsWith(normalizedBase)) {

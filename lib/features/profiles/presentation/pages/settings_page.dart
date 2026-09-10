@@ -9,6 +9,7 @@ import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_buttons.dart';
 import 'package:motodi_go_mobile/core/utils/extensions.dart';
 import 'package:motodi_go_mobile/features/profiles/presentation/widgets/settings_figma_icons.dart';
+import 'package:motodi_go_mobile/routes/app_router.dart';
 
 TextStyle _settingsText({
   double fontSize = 14,
@@ -37,14 +38,25 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _shareLocationEnabled = false;
 
   void _soon() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Bientôt disponible'.tr(context))),
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        content: Text('Bientôt disponible'.tr(context)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text('OK'.tr(context)),
+          ),
+        ],
+      ),
     );
   }
 
   void _showLogoutSheet() {
+    final sessionCubit = context.read<SessionCubit>();
     showModalBottomSheet<void>(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       builder: (sheetContext) {
         return Container(
@@ -61,14 +73,14 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               const SizedBox(height: 26),
               Text(
-                'Se déconnecter ?'.tr(context),
+                'Se déconnecter ?'.tr(sheetContext),
                 textAlign: TextAlign.center,
                 style: _settingsText(fontSize: 28, fontWeight: FontWeight.w900),
               ),
               const SizedBox(height: 16),
               Text(
                 'Vous devrez saisir à nouveau votre numéro et votre mot de passe pour vous reconnecter.'.tr(
-                  context,
+                  sheetContext,
                 ),
                 textAlign: TextAlign.center,
                 style: _settingsText(
@@ -80,17 +92,20 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               const SizedBox(height: 34),
               PrimaryAuthButton(
-                label: 'Se déconnecter'.tr(context),
+                label: 'Se déconnecter'.tr(sheetContext),
                 backgroundColor: const Color(0xFFDC2626),
                 onPressed: () async {
                   Navigator.of(sheetContext).pop();
-                  await context.read<SessionCubit>().logout();
-                  if (mounted) context.go(RouteConstants.login);
+                  await sessionCubit.logout();
+                  final navContext = rootNavigatorKey.currentContext;
+                  if (navContext != null && navContext.mounted) {
+                    navContext.go(RouteConstants.login);
+                  }
                 },
               ),
               const SizedBox(height: 14),
               SecondaryAuthButton(
-                label: 'Annuler'.tr(context),
+                label: 'Annuler'.tr(sheetContext),
                 onPressed: () => Navigator.of(sheetContext).pop(),
               ),
             ],

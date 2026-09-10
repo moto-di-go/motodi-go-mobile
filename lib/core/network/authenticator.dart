@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:motodi_go_mobile/core/config/app_config.dart';
 import 'package:motodi_go_mobile/core/storage/auth_storage_keys.dart';
 
 // Rafraichit le JWT sur 401 sans repasser par Chopper, afin d'eviter une boucle.
@@ -33,7 +33,7 @@ class AppAuthenticator extends Authenticator {
   }
 
   Future<Map<String, dynamic>?> _refreshToken(String refreshToken) async {
-    final baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://10.0.2.2:8080/api/v1';
+    final baseUrl = AppConfig.apiBaseUrl;
     final uri = Uri.parse('${baseUrl.replaceFirst(RegExp(r'/$'), '')}/auth/refresh');
     try {
       final response = await http

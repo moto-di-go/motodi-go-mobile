@@ -147,8 +147,17 @@ class _OfflineSettingsView extends StatelessWidget {
                   onPressed: () async {
                     await context.read<OfflineSettingsCubit>().clearCaches();
                     if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Cache vidé'.tr(context))),
+                      showDialog<void>(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          content: Text('Cache vidé'.tr(context)),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(ctx).pop(),
+                              child: Text('OK'.tr(context)),
+                            ),
+                          ],
+                        ),
                       );
                     }
                   },

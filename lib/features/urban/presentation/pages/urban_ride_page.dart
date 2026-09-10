@@ -186,7 +186,7 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
       UrbanRideStep.empty => UrbanEmptySheet(
         cubit: cubit,
         error: state.apiError?.tr(context),
-        onIntercity: () => context.go(RouteConstants.intercity),
+        onIntercity: () => context.push(RouteConstants.intercity),
       ),
       UrbanRideStep.driverDetail => UrbanDriverDetailSheet(state: state, cubit: cubit),
       UrbanRideStep.confirm => UrbanConfirmSheet(state: state, cubit: cubit),
@@ -247,8 +247,17 @@ class _UrbanRideViewState extends State<_UrbanRideView> {
                           compact: true,
                           onTap: () {
                             if (profile.validationStatus == ValidationStatus.suspended) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Ce profil est suspendu.'.tr(context))),
+                              showDialog<void>(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  content: Text('Ce profil est suspendu.'.tr(context)),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.of(ctx).pop(),
+                                      child: Text('OK'.tr(context)),
+                                    ),
+                                  ],
+                                ),
                               );
                               return;
                             }

@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
+import 'package:motodi_go_mobile/core/config/app_config.dart';
 import 'package:motodi_go_mobile/core/error/failure.dart';
 import 'package:motodi_go_mobile/core/network/network_info.dart';
 import 'package:motodi_go_mobile/features/auth/data/models/api_error_model.dart';
@@ -117,11 +117,12 @@ class OfflineRepositoryImpl implements OfflineRepository {
     }
   }
 
-  /// Remappe les hôtes Docker / localhost vers l'hôte de l'API (émulateur = 10.0.2.2).
+  /// Remappe les hôtes Docker / localhost vers l'hôte de l'API
+  /// (émulateur = 10.0.2.2, appareil physique = IP LAN via dart-define).
   String _resolveDownloadUrl(String rawUrl) {
     final parsed = Uri.tryParse(rawUrl);
     if (parsed == null || !parsed.hasScheme) return rawUrl;
-    final apiBase = dotenv.env['API_BASE_URL'] ?? 'http://10.0.2.2:8080/api/v1';
+    final apiBase = AppConfig.apiBaseUrl;
     final apiHost = Uri.tryParse(apiBase)?.host;
     if (apiHost == null || apiHost.isEmpty) return rawUrl;
 

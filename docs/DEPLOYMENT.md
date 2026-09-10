@@ -254,6 +254,80 @@ Créer `.env.staging` et `.env.prod` à partir de `.env.example`.
 
 ---
 
+## Appareil physique + Docker local (LAN / hotspot)
+
+Objectif : installer un APK release sur un vrai smartphone Android qui parle au stack Docker
+tourant sur le PC (gateway `:8080`, MinIO `:9000`).
+
+Ne **pas** modifier `.env` pour l’IP LAN : `make run-dev` / émulateur restent sur `10.0.2.2`.
+L’URL appareil est injectée au build via `--dart-define=API_BASE_URL=...`
+(`AppConfig.apiBaseUrl` dans `lib/core/config/app_config.dart`).
+
+### 1. Préparer le réseau
+
+1. Démarrer le stack : depuis `motodi-go-devops`, `docker compose up` (gateway healthy).
+2. Connecter le PC au hotspot du téléphone (ou même Wi-Fi).
+3. Noter l’**IPv4 du PC** (pas celle du téléphone) :
+
+```powershell
+Get-NetIPAddress -AddressFamily IPv4 -InterfaceAlias 'Wi-Fi' | Select-Object IPAddress
+# ou: ipconfig
+```
+
+4. Smoke depuis Chrome **sur le téléphone** :
+
+```text
+http://<IP_PC>:8080/actuator/health/readiness
+```
+
+Doit répondre `{"status":"UP"}`. Si échec : pare-feu Windows (ports TCP 8080 et 9000),
+bind Docker (`0.0.0.0` et non seulement `127.0.0.1`), ou isolation hotspot Android.
+
+Règles pare-feu (PowerShell **Administrateur**) si besoin :
+
+```powershell
+New-NetFirewallRule -DisplayName 'MotoDiGo-API-Gateway-8080' -Direction Inbound -Protocol TCP -LocalPort 8080 -Action Allow -Profile Any
+New-NetFirewallRule -DisplayName 'MotoDiGo-MinIO-9000' -Direction Inbound -Protocol TCP -LocalPort 9000 -Action Allow -Profile Any
+```
+
+### 2. Builder l’APK
+
+```bash
+cd motodi-go-mobile
+make build-apk-device LAN_IP=192.168.43.12
+# → build/app/outputs/flutter-apk/app-release.apk
+```
+
+Si l’IP du PC change, **rebuild** obligatoire (URL cuite dans l’APK).
+
+### 3. Installer
+
+USB debugging + sources inconnues, puis :
+
+```bash
+adb install -r build/app/outputs/flutter-apk/app-release.apk
+```
+
+Si une version debug est déjà installée : `adb uninstall com.motodigo.app` puis réinstaller
+(signatures différentes).
+
+### 4. Fallback USB (`adb reverse`)
+
+Si le hotspot isole le trafic téléphone → clients :
+
+```bash
+adb reverse tcp:8080 tcp:8080
+adb reverse tcp:9000 tcp:9000
+make build-apk-device LAN_IP=127.0.0.1
+adb install -r build/app/outputs/flutter-apk/app-release.apk
+```
+
+### 5. Smoke fonctionnalités
+
+Rejouer login/OTP, home, urbain, interurbain, cartes offline (MinIO), images KYC/annonces, SSE suivi.
+
+---
+
 ## Checklist pré-release
 
 - [ ] `make check` → lint + tests passent

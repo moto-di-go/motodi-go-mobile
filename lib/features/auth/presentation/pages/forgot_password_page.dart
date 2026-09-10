@@ -42,7 +42,7 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
     return BlocConsumer<AuthFormCubit, AuthFormState>(
       listener: (context, state) {
         if (state.isSuccess && state.phoneNumber != null) {
-          context.go(RouteConstants.resetOtp, extra: ResetOtpArgs(phoneNumber: state.phoneNumber!));
+          context.push(RouteConstants.resetOtp, extra: ResetOtpArgs(phoneNumber: state.phoneNumber!));
         }
       },
       builder: (context, state) {
@@ -98,7 +98,9 @@ class ResetOtpPage extends StatelessWidget {
         showBack: true,
         bottom: PrimaryAuthButton(
           label: 'Envoyer le code'.tr(context),
-          onPressed: () => context.go(RouteConstants.forgotPassword),
+          onPressed: () => context.canPop()
+              ? context.pop()
+              : context.go(RouteConstants.forgotPassword),
         ),
         child: Text('Saisissez votre numéro pour recevoir un code.'.tr(context)),
       );
@@ -140,12 +142,21 @@ class _ResetOtpViewState extends State<_ResetOtpView> {
             isLoading: state.isLoading,
             onPressed: () {
               if (_codeController.text.length != 6) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text('Entrez le code à 6 chiffres.'.tr(context))));
+                showDialog<void>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    content: Text('Entrez le code à 6 chiffres.'.tr(context)),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(),
+                        child: Text('OK'.tr(context)),
+                      ),
+                    ],
+                  ),
+                );
                 return;
               }
-              context.go(
+              context.push(
                 RouteConstants.resetPassword,
                 extra: ResetOtpArgs(
                   phoneNumber: widget.args.phoneNumber,
@@ -211,7 +222,9 @@ class NewPasswordPage extends StatelessWidget {
         showBack: true,
         bottom: PrimaryAuthButton(
           label: 'Retour'.tr(context),
-          onPressed: () => context.go(RouteConstants.forgotPassword),
+          onPressed: () => context.canPop()
+              ? context.pop()
+              : context.go(RouteConstants.forgotPassword),
         ),
         child: Text('Relancez la récupération pour obtenir un code.'.tr(context)),
       );

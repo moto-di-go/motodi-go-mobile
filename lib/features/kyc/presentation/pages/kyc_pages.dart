@@ -78,7 +78,7 @@ class KycStatusPage extends StatelessWidget {
             showBack: true,
             bottom: _KycBottomButton(
               label: 'Continuer la validation'.tr(context),
-              onPressed: () => context.go(RouteConstants.kycDocuments),
+              onPressed: () => context.push(RouteConstants.kycDocuments),
             ),
             child: _KycStatusContent(bundle: state.bundle!),
           );
@@ -770,7 +770,7 @@ class KycPreviewPage extends StatelessWidget {
         title: 'Aperçu du document'.tr(context),
         child: AppErrorView(
           message: 'Aucun document selectionne.'.tr(context),
-          onRetry: () => context.go(RouteConstants.kycDocuments),
+          onRetry: () => context.canPop() ? context.pop() : context.go(RouteConstants.kycDocuments),
         ),
       );
     }
@@ -786,7 +786,7 @@ class KycPreviewPage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           TextButton(
-            onPressed: () => context.go(RouteConstants.kycDocuments),
+            onPressed: () => context.canPop() ? context.pop() : context.go(RouteConstants.kycDocuments),
             child: Text(
               'Reprendre'.tr(context),
               style: TextStyle(color: Color(0xFF54615A), fontSize: 15, fontWeight: FontWeight.w800),
@@ -823,7 +823,7 @@ class _KycUploadingPageState extends State<KycUploadingPage> {
         title: 'Envoi en cours'.tr(context),
         child: AppErrorView(
           message: 'Aucun document selectionne.'.tr(context),
-          onRetry: () => context.go(RouteConstants.kycDocuments),
+          onRetry: () => context.canPop() ? context.pop() : context.go(RouteConstants.kycDocuments),
         ),
       );
     }
@@ -863,7 +863,7 @@ class _KycUploadingPageState extends State<KycUploadingPage> {
               title: 'Envoi impossible'.tr(context),
               bottom: SecondaryAuthButton(
                 label: 'Retour aux documents'.tr(context),
-                onPressed: () => context.go(RouteConstants.kycDocuments),
+                onPressed: () => context.canPop() ? context.pop() : context.go(RouteConstants.kycDocuments),
               ),
               child: AppErrorView(
                 message: state.errorMessage ?? "L'envoi du document a echoue. Reessayez.".tr(context),
@@ -949,7 +949,7 @@ class _KycUploadingPageState extends State<KycUploadingPage> {
                       label: "Annuler l'envoi".tr(context),
                       onPressed: () {
                         context.read<KycCubit>().cancelUpload();
-                        context.go(RouteConstants.kycDocuments);
+                        context.canPop() ? context.pop() : context.go(RouteConstants.kycDocuments);
                       },
                     ),
                   ],
@@ -1020,12 +1020,12 @@ class KycUploadSuccessPage extends StatelessWidget {
                 const SizedBox(height: 36),
                 PrimaryAuthButton(
                   label: 'Voir mes documents'.tr(context),
-                  onPressed: () => context.go(RouteConstants.kycDocuments),
+                  onPressed: () => context.canPop() ? context.pop() : context.go(RouteConstants.kycDocuments),
                 ),
                 const SizedBox(height: 14),
                 SecondaryAuthButton(
                   label: 'Ajouter un autre document'.tr(context),
-                  onPressed: () => context.go(RouteConstants.kycDocuments),
+                  onPressed: () => context.canPop() ? context.pop() : context.go(RouteConstants.kycDocuments),
                 ),
               ],
             ),
@@ -1049,7 +1049,7 @@ class KycInvalidFilePage extends StatelessWidget {
       title: 'Fichier invalide'.tr(context),
       bottom: PrimaryAuthButton(
         label: 'Choisir un autre fichier'.tr(context),
-        onPressed: () => context.go(RouteConstants.kycDocuments),
+        onPressed: () => context.canPop() ? context.pop() : context.go(RouteConstants.kycDocuments),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1145,7 +1145,7 @@ class KycSubmittedPage extends StatelessWidget {
         children: [
           _KycBottomButton(
             label: 'Voir mes documents'.tr(context),
-            onPressed: () => context.go(RouteConstants.kycDocuments),
+            onPressed: () => context.canPop() ? context.pop() : context.go(RouteConstants.kycDocuments),
           ),
           const SizedBox(height: 14),
           _KycBottomButton(
@@ -1317,7 +1317,7 @@ class KycRejectedDocumentPage extends StatelessWidget {
         title: 'Document rejete'.tr(context),
         child: AppErrorView(
           message: 'Aucun document rejete selectionne.'.tr(context),
-          onRetry: () => context.go(RouteConstants.kycDocuments),
+          onRetry: () => context.canPop() ? context.pop() : context.go(RouteConstants.kycDocuments),
         ),
       );
     }
@@ -1630,7 +1630,7 @@ class KycNotificationDetailPage extends StatelessWidget {
                     PrimaryAuthButton(
                       label: 'Ouvrir le statut KYC'.tr(context),
                       trailingIcon: Icons.arrow_forward_rounded,
-                      onPressed: () => context.go(RouteConstants.kycDocuments),
+                      onPressed: () => context.canPop() ? context.pop() : context.go(RouteConstants.kycDocuments),
                     ),
                   ],
                 ),

@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
+import 'package:motodi_go_mobile/core/config/app_config.dart';
 import 'package:motodi_go_mobile/core/storage/auth_storage_keys.dart';
 
 /// Lightweight SSE client for `/realtime/sse?channel=trip:{id}` with JWT.
@@ -26,7 +26,7 @@ class TripSseClient {
       final token = await _storage.read(key: AuthStorageKeys.accessToken);
       if (token == null || token.isEmpty) return null;
 
-      final baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://10.0.2.2:8080/api/v1';
+      final baseUrl = AppConfig.apiBaseUrl;
       final uri = Uri.parse(
         '$baseUrl/realtime/sse',
       ).replace(queryParameters: {'channel': 'trip:$tripId'});

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:motodi_go_mobile/core/constants/route_constants.dart';
 import 'package:motodi_go_mobile/core/theme/app_colors.dart';
 import 'package:motodi_go_mobile/core/utils/extensions.dart';
+import 'package:motodi_go_mobile/core/widgets/app_exit_scope.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:motodi_go_mobile/features/auth/presentation/widgets/motodi_logo.dart';
@@ -13,7 +14,8 @@ class WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AuthScaffold(
+    return AppExitScope(
+      child: AuthScaffold(
       padding: const EdgeInsets.fromLTRB(22, 30, 22, 26),
       scrollable: false,
       child: Expanded(
@@ -48,7 +50,7 @@ class WelcomePage extends StatelessWidget {
               icon: const _PhoneIcon(),
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
-              onPressed: () => context.go(RouteConstants.register),
+              onPressed: () => context.push(RouteConstants.register),
             ),
             const SizedBox(height: 11),
             _WelcomeActionButton(
@@ -58,7 +60,7 @@ class WelcomePage extends StatelessWidget {
               foregroundColor: AppColors.textPrimary,
               borderColor: const Color(0xFFDEE2DA),
               elevation: 0,
-              onPressed: () => context.go(RouteConstants.login),
+              onPressed: () => context.push(RouteConstants.login),
             ),
             const SizedBox(height: 11),
             Center(
@@ -108,6 +110,7 @@ class WelcomePage extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

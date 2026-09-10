@@ -84,9 +84,18 @@ class _OfflineMapsView extends StatelessWidget {
                 listener: (context, state) {
                   final message = state.errorMessage ?? state.successMessage;
                   if (message == null || message.isEmpty) return;
-                  ScaffoldMessenger.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text(message.tr(context))));
+                  showDialog<void>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      content: Text(message.tr(context)),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(ctx).pop(),
+                          child: Text('OK'.tr(context)),
+                        ),
+                      ],
+                    ),
+                  );
                 },
                 builder: (context, state) {
                   if (state.status == OfflineMapsStatus.loading && state.areas.isEmpty) {

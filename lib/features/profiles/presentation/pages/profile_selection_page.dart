@@ -45,11 +45,18 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
         } else if (state.status == ProfileStatus.failure &&
             state.errorMessage != null &&
             state.profiles.isNotEmpty) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(content: Text('Impossible de continuer pour le moment.'.tr(context))),
-            );
+          showDialog<void>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              content: Text('Impossible de continuer pour le moment.'.tr(context)),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: Text('OK'.tr(context)),
+                ),
+              ],
+            ),
+          );
         }
       },
       builder: (context, state) {
@@ -141,10 +148,17 @@ class _ProfileSelectionViewState extends State<_ProfileSelectionView> {
       return;
     }
     if (profile.validationStatus == ValidationStatus.suspended) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(
-        SnackBar(content: Text('Ce profil est suspendu.'.tr(context))),
+      showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          content: Text('Ce profil est suspendu.'.tr(context)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text('OK'.tr(context)),
+            ),
+          ],
+        ),
       );
       return;
     }

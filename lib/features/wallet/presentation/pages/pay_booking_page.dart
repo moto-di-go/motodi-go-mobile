@@ -52,9 +52,18 @@ class _PayBookingView extends StatelessWidget {
               prev.status != next.status,
           listener: (context, state) {
             if (state.errorMessage != null && state.status != PayBookingStatus.failure) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+              showDialog<void>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  content: Text(state.errorMessage!),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      child: Text('OK'.tr(context)),
+                    ),
+                  ],
+                ),
+              );
             }
             if (state.status == PayBookingStatus.success && state.payment != null) {
               final payment = state.payment!;
@@ -65,12 +74,21 @@ class _PayBookingView extends StatelessWidget {
                   extra: receipt,
                 );
               } else {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(
-                  SnackBar(content: Text('Paiement confirmé.'.tr(context))),
+                showDialog<void>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    content: Text('Paiement confirmé.'.tr(context)),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(ctx).pop();
+                          context.go(RouteConstants.wallet);
+                        },
+                        child: Text('OK'.tr(context)),
+                      ),
+                    ],
+                  ),
                 );
-                context.go(RouteConstants.wallet);
               }
             }
           },

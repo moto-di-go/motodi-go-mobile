@@ -59,7 +59,18 @@ class _DepositViewState extends State<_DepositView> {
           listener: (context, state) {
             final message = state.errorMessage;
             if (message == null) return;
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+            showDialog<void>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                content: Text(message),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    child: Text('OK'.tr(context)),
+                  ),
+                ],
+              ),
+            );
           },
           builder: (context, state) {
             if (_amountController.text != state.amountText &&
@@ -252,7 +263,18 @@ class _DepositViewState extends State<_DepositView> {
     final cubit = context.read<DepositCubit>();
     final validation = cubit.validateForm();
     if (validation != null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(validation)));
+      showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          content: Text(validation),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text('OK'.tr(context)),
+            ),
+          ],
+        ),
+      );
       return;
     }
 

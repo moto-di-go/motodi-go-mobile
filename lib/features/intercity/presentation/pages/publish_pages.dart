@@ -918,9 +918,18 @@ class IntercityPreviewPage extends StatelessWidget {
               }
               if (state.createStatus == IntercityCreateStatus.failure &&
                   state.createErrorMessage != null) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(state.createErrorMessage!.tr(context))));
+                showDialog<void>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    content: Text(state.createErrorMessage!.tr(context)),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(),
+                        child: Text('OK'.tr(context)),
+                      ),
+                    ],
+                  ),
+                );
               }
             },
             builder: (context, state) {
@@ -1123,7 +1132,7 @@ class IntercityPublishSuccessPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(22),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(22),
-                  onTap: () => context.go(RouteConstants.intercityMyAnnouncements),
+                  onTap: () => context.push(RouteConstants.intercityMyAnnouncements),
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 18),
@@ -1171,7 +1180,7 @@ class IntercityPublishSuccessPage extends StatelessWidget {
               ),
               const SizedBox(height: 18),
               TextButton(
-                onPressed: () => context.go(RouteConstants.intercityPublishGuard),
+                onPressed: () => context.push(RouteConstants.intercityPublishGuard),
                 style: TextButton.styleFrom(
                   foregroundColor: const Color(0xFF101512),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -1204,7 +1213,18 @@ class IntercityPublishSuccessPage extends StatelessWidget {
       await SharePlus.instance.share(ShareParams(text: text));
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+        showDialog<void>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            content: Text(text),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: Text('OK'.tr(context)),
+              ),
+            ],
+          ),
+        );
       }
     }
   }

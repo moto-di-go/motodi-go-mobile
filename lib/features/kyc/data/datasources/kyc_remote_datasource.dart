@@ -1,9 +1,9 @@
 import 'package:chopper/chopper.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:injectable/injectable.dart';
+import 'package:motodi_go_mobile/core/config/app_config.dart';
 import 'package:motodi_go_mobile/core/storage/auth_storage_keys.dart';
 import 'package:motodi_go_mobile/features/auth/data/models/api_error_model.dart';
 import 'package:motodi_go_mobile/features/kyc/data/models/kyc_models.dart';
@@ -77,7 +77,7 @@ class KycRemoteDataSourceImpl implements KycRemoteDataSource {
   }
 
   String _baseUrl() {
-    return (dotenv.env['API_BASE_URL'] ?? 'http://10.0.2.2:8080/api/v1').replaceFirst(
+    return AppConfig.apiBaseUrl.replaceFirst(
       RegExp(r'/$'),
       '',
     );

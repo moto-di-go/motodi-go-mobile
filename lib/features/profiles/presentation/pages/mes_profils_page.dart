@@ -62,16 +62,32 @@ class _MesProfilsView extends StatelessWidget {
             if (state.isSaved) {
               await context.read<SessionCubit>().refreshAfterProfileChange();
               if (context.mounted) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(
-                  SnackBar(content: Text('Profil activé'.tr(context))),
+                showDialog<void>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    content: Text('Profil activé'.tr(context)),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(),
+                        child: Text('OK'.tr(context)),
+                      ),
+                    ],
+                  ),
                 );
               }
             } else if (state.status == ProfileStatus.failure && state.errorMessage != null) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+              showDialog<void>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  content: Text(state.errorMessage!),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      child: Text('OK'.tr(context)),
+                    ),
+                  ],
+                ),
+              );
             }
           },
           builder: (context, state) {
@@ -110,8 +126,17 @@ class _MesProfilsView extends StatelessWidget {
                                 footer: _blockedBanner(context, profile),
                                 onTap: () {
                                   if (profile.validationStatus == ValidationStatus.suspended) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Ce profil est suspendu.'.tr(context))),
+                                    showDialog<void>(
+                                      context: context,
+                                      builder: (ctx) => AlertDialog(
+                                        content: Text('Ce profil est suspendu.'.tr(context)),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.of(ctx).pop(),
+                                            child: Text('OK'.tr(context)),
+                                          ),
+                                        ],
+                                      ),
                                     );
                                     return;
                                   }

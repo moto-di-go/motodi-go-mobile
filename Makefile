@@ -1,6 +1,6 @@
 .PHONY: help setup install codegen codegen-watch run-dev run-staging run-prod \
         analyze format test test-watch coverage coverage-open lint check rename set-env \
-        build-apk-dev build-apk-prod build-aab-prod build-ios-dev build-ios-prod \
+        build-apk-dev build-apk-device build-apk-prod build-aab-prod build-ios-dev build-ios-prod \
         clean clean-full deploy-android deploy-ios
 
 # Affiche l'aide
@@ -71,6 +71,17 @@ set-env: ## Copier .env.example → .env et lister les variables à remplir
 # === BUILD ===
 build-apk-dev: ## APK debug pour développement
 	flutter build apk --debug --dart-define=APP_ENV=development
+
+# APK release signé pour smartphone physique → Docker local (hotspot / LAN).
+# Usage: make build-apk-device LAN_IP=192.168.43.12
+# Fallback USB: adb reverse tcp:8080 tcp:8080 && make build-apk-device LAN_IP=127.0.0.1
+build-apk-device: ## APK release device → gateway Docker (LAN_IP requis)
+ifndef LAN_IP
+	$(error LAN_IP is required. Example: make build-apk-device LAN_IP=192.168.43.12)
+endif
+	flutter build apk --release \
+		--dart-define=APP_ENV=development \
+		--dart-define=API_BASE_URL=http://$(LAN_IP):8080/api/v1
 
 build-apk-prod: ## APK release production (obfusqué + split debug info)
 	flutter build apk --release \

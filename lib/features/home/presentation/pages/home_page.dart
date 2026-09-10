@@ -66,7 +66,7 @@ class HomePage extends StatelessWidget {
                     ),
                     _SquareIconButton(
                       icon: const MotodigoNotifGrayIcon(size: 30),
-                      onTap: () => context.go(RouteConstants.notifications),
+                      onTap: () => context.push(RouteConstants.notifications),
                       badge: true,
                     ),
                     const SizedBox(width: 14),
@@ -124,7 +124,7 @@ class HomePage extends StatelessWidget {
                       context,
                     ),
                     locked: isLocked,
-                    onTap: isLocked ? null : () => context.go(RouteConstants.intercity),
+                    onTap: isLocked ? null : () => context.push(RouteConstants.intercity),
                   ),
                   _FeatureTile(
                     icon: Icons.my_location_rounded,
@@ -208,8 +208,17 @@ class HomePage extends StatelessWidget {
                           compact: true,
                           onTap: () {
                             if (profile.validationStatus == ValidationStatus.suspended) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Ce profil est suspendu.'.tr(context))),
+                              showDialog<void>(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  content: Text('Ce profil est suspendu.'.tr(context)),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.of(ctx).pop(),
+                                      child: Text('OK'.tr(context)),
+                                    ),
+                                  ],
+                                ),
                               );
                               return;
                             }
@@ -300,7 +309,7 @@ class _PendingValidationCard extends StatelessWidget {
             label: 'Voir mon dossier'.tr(context),
             leadingIcon: Icons.description_outlined,
             backgroundColor: AppColors.textPrimary,
-            onPressed: () => context.go(RouteConstants.kycSubmitted),
+            onPressed: () => context.push(RouteConstants.kycSubmitted),
           ),
         ],
       ),

@@ -1,17 +1,16 @@
 import 'package:chopper/chopper.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:motodi_go_mobile/core/config/app_config.dart';
 import 'package:motodi_go_mobile/core/network/interceptors.dart';
 import 'package:motodi_go_mobile/core/network/authenticator.dart';
 import 'package:motodi_go_mobile/core/network/json_type_converter.dart';
 
 // Rôle : Configure le ChopperClient central avec intercepteurs, auth et convertisseurs JSON.
-// Dépendances : chopper, flutter_dotenv, interceptors.dart, authenticator.dart
+// Dépendances : chopper, app_config, interceptors.dart, authenticator.dart
 // Désactiver : remplacer ChopperClient par Dio ou http selon vos besoins.
 class AppApiClient {
   // TODO: [TEMPLATE] Renommer 'AppApiClient' selon votre projet
   static ChopperClient create() {
-    // TODO: [TEMPLATE] Adapter la clé .env si nécessaire
-    final baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://10.0.2.2:8080/api/v1';
+    final baseUrl = AppConfig.apiBaseUrl;
 
     return ChopperClient(
       baseUrl: Uri.parse(baseUrl),
